@@ -1,0 +1,2218 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Certified Luxury Real Estate Advisors & Private Client Desks — Settly Egypt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Settly Shared Design System -->
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./master-nav-footer.css" />
+    <style>
+      /* ============================================================================
+         SETTLY — SCREEN 08: AGENT DIRECTORY (CERTIFIED FIDUCIARY DESK)
+         Strictly adheres to /impeccable standards:
+         - Deep Navy (#131D36, #1E2A4A, #0B111F), Settly Brass (#C69749), Bone Canvas (#F7F6F3), Sage (#3D5A4C)
+         - Spectral Serif for luxury broadsheet typography; JetBrains Mono for measured values
+         - Single elevation declaration (hairline border OR subtle shadow, never colored halos)
+         - Zero kickers, zero gradient text, zero nested cards
+         ========================================================================= */
+
+      :root {
+        --serif-head: "Spectral", Georgia, serif;
+        --sans-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+        --mono-val: "JetBrains Mono", ui-monospace, monospace;
+
+        --navy-950: #0B111F;
+        --navy-900: #131D36;
+        --navy-800: #1E2A4A;
+        --navy-700: #2B3A61;
+        --brass: #C69749;
+        --brass-600: #AE8033;
+        --brass-200: #E7D3AB;
+        --brass-050: #F6EEDE;
+        --canvas: #F7F6F3;
+        --canvas-2: #EDE9DF;
+        --ink-1: #16203A;
+        --ink-2: #4C5878;
+        --ink-3: #646D88;
+        --line: rgba(30, 42, 74, 0.1);
+        --line-2: rgba(30, 42, 74, 0.18);
+        --sage: #3D5A4C;
+        --sage-bg: rgba(61, 90, 76, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--navy-900);
+        font-family: var(--sans-ui);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      ::selection {
+        background: var(--brass-200);
+        color: var(--navy-950);
+      }
+
+      /* ============================================================================
+         1. BROADSHEET HERO SECTION
+         ========================================================================= */
+      .dir-hero {
+        background: #FFFFFF;
+        border-bottom: 1px solid var(--line);
+        padding-block: clamp(3rem, 6vw, 4.5rem) clamp(2.5rem, 5vw, 3.5rem);
+        position: relative;
+      }
+
+      .dir-hero-inner {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+      }
+
+      .dir-hero-content {
+        max-width: 920px;
+      }
+
+      .dir-hero h1 {
+        font-family: var(--serif-head);
+        font-size: clamp(2.25rem, 4.5vw, 3.65rem);
+        font-weight: 600;
+        line-height: 1.12;
+        letter-spacing: -0.025em;
+        color: var(--navy-900);
+        margin: 0 0 1.25rem;
+      }
+
+      .dir-hero p {
+        font-size: clamp(1rem, 1.25vw, 1.18rem);
+        line-height: 1.62;
+        color: var(--ink-2);
+        margin: 0 0 2rem;
+        max-width: 780px;
+      }
+
+      /* Live Telemetry Ribbon */
+      .dir-telemetry-ribbon {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 1rem;
+        padding-top: 1.75rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .telemetry-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .telemetry-val {
+        font-family: var(--mono-val);
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .telemetry-val .telemetry-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--sage);
+        display: inline-block;
+      }
+
+      .telemetry-lbl {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-3);
+      }
+
+      /* ============================================================================
+         2. INTERACTIVE WORKBENCH / CONTROLS (STICKY)
+         ========================================================================= */
+      .dir-workbench {
+        position: sticky;
+        top: 74px;
+        z-index: 100;
+        background: rgba(247, 246, 243, 0.96);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+        padding-block: 1rem;
+      }
+
+      .dir-workbench-inner {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+      }
+
+      .workbench-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+      }
+
+      /* Search Bar */
+      .dir-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 280px;
+        max-width: 460px;
+      }
+
+      .dir-search-wrap svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ink-3);
+        pointer-events: none;
+      }
+
+      .dir-search-input {
+        width: 100%;
+        height: 44px;
+        padding-left: 42px;
+        padding-right: 36px;
+        background: #FFFFFF;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 14px;
+        color: var(--navy-900);
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .dir-search-input:focus {
+        border-color: var(--navy-800);
+        box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+      }
+
+      .dir-search-clear {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--ink-3);
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+        display: none;
+      }
+
+      .dir-search-clear:hover {
+        color: var(--navy-900);
+      }
+
+      /* Filters Group */
+      .workbench-filters {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .dir-select {
+        height: 44px;
+        padding-inline: 12px 28px;
+        background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--navy-900);
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        transition: border-color 0.15s ease;
+      }
+
+      .dir-select:focus {
+        border-color: var(--navy-800);
+      }
+
+      /* View Mode Toggle */
+      .view-mode-toggle {
+        display: inline-flex;
+        background: #FFFFFF;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        padding: 3px;
+        gap: 2px;
+      }
+
+      .view-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .view-btn.active {
+        background: var(--navy-900);
+        color: #FFFFFF;
+      }
+
+      /* Territory Filter Chips Bar */
+      .territory-pills-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+      }
+
+      .territory-pills-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .territory-pill {
+        padding: 6px 14px;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .territory-pill:hover {
+        border-color: var(--brass);
+        color: var(--navy-900);
+      }
+
+      .territory-pill.active {
+        background: var(--navy-900);
+        border-color: var(--navy-900);
+        color: #FFFFFF;
+      }
+
+      .territory-pill .pill-count {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        opacity: 0.75;
+      }
+
+      /* ============================================================================
+         3. DIRECTORY CONTENT BODY & GRID VIEW
+         ========================================================================= */
+      .dir-body {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+        padding-block: 2.5rem 5rem;
+        flex: 1;
+        width: 100%;
+      }
+
+      .dir-status-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.75rem;
+        font-size: 13.5px;
+        color: var(--ink-2);
+      }
+
+      .dir-status-bar strong {
+        color: var(--navy-900);
+        font-family: var(--mono-val);
+      }
+
+      /* Cards Grid */
+      .agents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 1.75rem;
+      }
+
+      /* Individual Advisor Card */
+      .agent-card {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+        position: relative;
+      }
+
+      .agent-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 12px 28px -12px rgba(19, 29, 54, 0.16);
+        border-color: rgba(30, 42, 74, 0.2);
+      }
+
+      /* Card Media / Portrait Header */
+      .agent-media-box {
+        position: relative;
+        width: 100%;
+        height: 260px;
+        background: var(--canvas-2);
+        overflow: hidden;
+        border-radius: 14px 14px 0 0;
+      }
+
+      .agent-media-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+        transition: transform 0.5s ease;
+      }
+
+      .agent-card:hover .agent-media-box img {
+        transform: scale(1.04);
+      }
+
+      /* Badges on Image */
+      .agent-badge-verified {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(19, 29, 54, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #FFFFFF;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.02em;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .agent-badge-verified svg {
+        color: var(--sage);
+      }
+
+      .agent-license-tag {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        background: rgba(19, 29, 54, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #FFFFFF;
+        font-family: var(--mono-val);
+        font-size: 10px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        letter-spacing: 0.03em;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Card Details */
+      .agent-info {
+        padding: 1.35rem 1.35rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .agent-name-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+
+      .agent-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.02em;
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .agent-name:hover {
+        color: var(--brass);
+      }
+
+      .agent-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-family: var(--mono-val);
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+        background: var(--canvas);
+        padding: 3px 8px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+      }
+
+      .agent-rating svg {
+        color: var(--brass);
+      }
+
+      .agent-role {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--brass-600);
+        margin-bottom: 2px;
+      }
+
+      .agent-agency {
+        font-size: 12px;
+        color: var(--ink-3);
+        margin-bottom: 1rem;
+      }
+
+      /* Territory & Specialization Badges */
+      .agent-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 1.25rem;
+      }
+
+      .agent-tag {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 9px;
+        border-radius: 9999px;
+        background: var(--canvas);
+        color: var(--ink-2);
+        border: 1px solid var(--line);
+      }
+
+      .agent-tag.dev-partner {
+        background: var(--brass-050);
+        color: var(--brass-600);
+        border-color: rgba(198, 151, 73, 0.3);
+      }
+
+      /* Measured Metrics Strip */
+      .agent-metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px 12px;
+        background: var(--canvas);
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        margin-bottom: 1.25rem;
+      }
+
+      .metric-cell {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .metric-num {
+        font-family: var(--mono-val);
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+
+      .metric-label {
+        font-family: var(--mono-val);
+        font-size: 10px;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        letter-spacing: 0.04em;
+      }
+
+      /* Card Actions */
+      .agent-card-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 0.85rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .btn-agent-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 12px;
+        background: var(--navy-900);
+        color: #FFFFFF;
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: all 0.15s ease;
+      }
+
+      .btn-agent-primary:hover {
+        background: var(--brass);
+        color: #241A06;
+      }
+
+      .btn-agent-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 12px;
+        background: #FFFFFF;
+        color: var(--navy-900);
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        border: 1px solid var(--line-2);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-agent-secondary:hover {
+        background: var(--canvas);
+        border-color: var(--navy-800);
+      }
+
+      /* ============================================================================
+         4. INSTITUTIONAL DOSSIER TABLE VIEW (TABLE MODE)
+         ========================================================================= */
+      .agents-table-wrap {
+        display: none;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      .agents-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+
+      .agents-table th {
+        background: var(--canvas);
+        padding: 14px 18px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-2);
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+      }
+
+      .agents-table td {
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--line);
+        font-size: 13.5px;
+        vertical-align: middle;
+      }
+
+      .agents-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .agents-table tr:hover td {
+        background: rgba(247, 246, 243, 0.6);
+      }
+
+      .table-agent-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .table-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--line-2);
+        flex-shrink: 0;
+      }
+
+      .table-agent-meta {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .table-agent-name {
+        font-weight: 700;
+        color: var(--navy-900);
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .table-agent-name:hover {
+        color: var(--brass);
+      }
+
+      .table-agent-sub {
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+
+      .table-mono-num {
+        font-family: var(--mono-val);
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+
+      /* ============================================================================
+         5. SETTLY 5-STAGE FIDUCIARY VERIFICATION STANDARD
+         ========================================================================= */
+      .fiduciary-standard-section {
+        background: #FFFFFF;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding-block: clamp(3.5rem, 6vw, 5.5rem);
+      }
+
+      .fiduciary-inner {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+      }
+
+      .fiduciary-header {
+        max-width: 820px;
+        margin-bottom: 3rem;
+      }
+
+      .fiduciary-header h2 {
+        font-family: var(--serif-head);
+        font-size: clamp(2rem, 3.5vw, 2.75rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.18;
+        color: var(--navy-900);
+        margin: 0 0 1rem;
+      }
+
+      .fiduciary-header p {
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      .fiduciary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .fiduciary-step {
+        padding: 1.5rem;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fiduciary-step-num {
+        font-family: var(--mono-val);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--brass-600);
+        letter-spacing: 0.05em;
+      }
+
+      .fiduciary-step h3 {
+        font-family: var(--serif-head);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin: 0;
+      }
+
+      .fiduciary-step p {
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      /* ============================================================================
+         6. INTERACTIVE CONCIERGE CONSULTATION MODAL
+         ========================================================================= */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(19, 29, 54, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal-card {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 540px;
+        box-shadow: 0 2px 4px rgba(19, 29, 54, 0.05), 0 24px 48px -20px rgba(19, 29, 54, 0.24);
+        overflow: hidden;
+        animation: modalEntrance 0.22s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+
+      @keyframes modalEntrance {
+        from {
+          opacity: 0;
+          transform: scale(0.96) translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .modal-header {
+        padding: 1.5rem 1.75rem 1.25rem;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+
+      .modal-header h3 {
+        font-family: var(--serif-head);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin: 0 0 4px;
+      }
+
+      .modal-header p {
+        font-size: 13px;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      .modal-close-btn {
+        background: none;
+        border: none;
+        color: var(--ink-3);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+      }
+
+      .modal-close-btn:hover {
+        color: var(--navy-900);
+      }
+
+      .modal-body {
+        padding: 1.5rem 1.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.15rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .form-group label {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--navy-900);
+      }
+
+      .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--canvas);
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 13.5px;
+        color: var(--navy-900);
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+
+      .form-input:focus, .form-select:focus, .form-textarea:focus {
+        border-color: var(--navy-800);
+        background: #FFFFFF;
+      }
+
+      .modal-footer {
+        padding: 1.25rem 1.75rem;
+        background: var(--canvas);
+        border-top: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .btn-modal-cancel {
+        padding: 9px 16px;
+        background: transparent;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+      }
+
+      .btn-modal-cancel:hover {
+        background: #FFFFFF;
+        color: var(--navy-900);
+      }
+
+      .btn-modal-submit {
+        padding: 9px 20px;
+        background: var(--navy-900);
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #FFFFFF;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-modal-submit:hover {
+        background: var(--brass);
+        color: #241A06;
+      }
+
+      .modal-success-state {
+        display: none;
+        text-align: center;
+        padding: 2.5rem 1.75rem;
+      }
+
+      .modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--sage-bg);
+        color: var(--sage);
+        display: grid;
+        place-items: center;
+        margin: 0 auto 1.25rem;
+      }
+
+      /* Empty State */
+      .empty-search-state {
+        display: none;
+        text-align: center;
+        padding: 4rem 1rem;
+        background: #FFFFFF;
+        border: 1px dashed var(--line-2);
+        border-radius: 14px;
+      }
+
+      .empty-search-state h3 {
+        font-family: var(--serif-head);
+        font-size: 20px;
+        margin: 0 0 8px;
+        color: var(--navy-900);
+      }
+
+      .empty-search-state p {
+        color: var(--ink-3);
+        font-size: 14px;
+        max-width: 440px;
+        margin: 0 auto 1.5rem;
+      }
+
+      /* ============================================================================
+         RESPONSIVE STYLES
+         ========================================================================= */
+      @media (max-width: 900px) {
+        .dir-telemetry-ribbon {
+          grid-template-columns: 1fr 1fr;
+        }
+        .agents-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .dir-telemetry-ribbon {
+          grid-template-columns: 1fr;
+        }
+        .workbench-top-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .dir-search-wrap {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. Settly Global Master Navigation -->
+    <header class="settly-master-header">
+      <div class="settly-nav-shell">
+        <a href="./index.html" class="brand">
+          <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" />
+          <span>Settly</span>
+        </a>
+
+        <nav class="settly-main-nav">
+          <a href="./search.html" class="settly-nav-link">Buy</a>
+          <a href="./areas.html" class="settly-nav-link">Districts</a>
+          <a href="./compare.html" class="settly-nav-link">Compare</a>
+          <a href="./market-insights.html" class="settly-nav-link">Market Insights</a>
+          <a href="./agents.html" class="settly-nav-link active">Agents</a>
+        </nav>
+
+        <div class="settly-header-actions">
+          <div class="settly-fx-pill" title="Central Bank of Egypt Sovereign Exchange Rate">
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
+          </div>
+          <a href="./index.html#signin" class="btn-settly-signin">Sign in</a>
+          <a href="./search.html" class="btn-settly-getstarted">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. Broadsheet Hero -->
+    <section class="dir-hero">
+      <div class="dir-hero-inner">
+        <div class="dir-hero-content">
+          <h1>Egypt's Certified Luxury Real Estate Advisors</h1>
+          <p>
+            Curated private client desks and accredited brokers with audited transaction track records,
+            fiduciary diligence compliance, and direct Tier-1 developer allocations across Greater Cairo and the Mediterranean Coast.
+          </p>
+        </div>
+
+        <div class="dir-telemetry-ribbon">
+          <div class="telemetry-item">
+            <div class="telemetry-val">
+              <span class="telemetry-dot"></span>
+              84 Advisors
+            </div>
+            <div class="telemetry-lbl">Licensed & Cadastre Audited</div>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-val">EGP 14.8B</div>
+            <div class="telemetry-lbl">Audited Lifetime Volume</div>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-val">100% FRA</div>
+            <div class="telemetry-lbl">Regulatory Compliance</div>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-val">14 Mins</div>
+            <div class="telemetry-lbl">Median HNW Response SLA</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Interactive Workbench -->
+    <section class="dir-workbench" id="workbench">
+      <div class="dir-workbench-inner">
+        <div class="workbench-top-row">
+          <div class="dir-search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input
+              type="text"
+              id="advisorSearch"
+              class="dir-search-input"
+              placeholder="Search by advisor, desk, developer, or territory..."
+              autocomplete="off"
+            />
+            <button type="button" id="clearSearch" class="dir-search-clear" aria-label="Clear Search">&times;</button>
+          </div>
+
+          <div class="workbench-filters">
+            <select id="specFilter" class="dir-select" aria-label="Filter by Specialization">
+              <option value="all">All Asset Classes</option>
+              <option value="villas">Signature Standalones & Villas</option>
+              <option value="penthouses">Penthouses & Branded Residences</option>
+              <option value="townhouses">Twin & Townhouses</option>
+              <option value="commercial">Commercial & Flagship</option>
+            </select>
+
+            <select id="tierFilter" class="dir-select" aria-label="Filter by Tier">
+              <option value="all">All Accreditation Tiers</option>
+              <option value="platinum">Developer Platinum Partner</option>
+              <option value="private-office">Private Client Desk (HNW)</option>
+              <option value="escrow">Escrow Security Certified</option>
+            </select>
+
+            <div class="view-mode-toggle" role="group" aria-label="View Mode Switcher">
+              <button type="button" id="btnViewGrid" class="view-btn active" title="Grid Card View">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Grid
+              </button>
+              <button type="button" id="btnViewTable" class="view-btn" title="Institutional Table Dossier">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M3 12h18M3 18h18"></path>
+                </svg>
+                Dossier
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="territory-pills-bar" id="territoryBar">
+          <button type="button" class="territory-pill active" data-territory="all">
+            All Territories <span class="pill-count">(84)</span>
+          </button>
+          <button type="button" class="territory-pill" data-territory="golden-square">
+            Golden Square & New Cairo <span class="pill-count">(38)</span>
+          </button>
+          <button type="button" class="territory-pill" data-territory="zayed">
+            Sheikh Zayed & West <span class="pill-count">(24)</span>
+          </button>
+          <button type="button" class="territory-pill" data-territory="north-coast">
+            Ras El Hekma & North Coast <span class="pill-count">(14)</span>
+          </button>
+          <button type="button" class="territory-pill" data-territory="red-sea">
+            Red Sea & El Gouna <span class="pill-count">(8)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Main Directory Workspace -->
+    <main class="dir-body">
+      <div class="dir-status-bar">
+        <div id="resultCount">Showing <strong>8</strong> Accredited Private Advisors</div>
+        <div style="font-family: var(--mono-val); font-size: 11.5px; color: var(--ink-3);">
+          Sorted by: <span style="color: var(--navy-900); font-weight: 600;">Audited Volume (Desc)</span>
+        </div>
+      </div>
+
+      <!-- Grid View (Default) -->
+      <div class="agents-grid" id="agentsGrid">
+        <!-- Advisor 1 -->
+        <article
+          class="agent-card"
+          data-territory="golden-square"
+          data-spec="villas"
+          data-tier="platinum"
+          data-name="Karim El-Sayed"
+          data-desk="Sovereign Advisory Group"
+          data-keywords="palm hills emaar golden square new cairo katameya standalone villas"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/1.jpg" alt="Karim El-Sayed portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #8841-B</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=karim-el-sayed" class="agent-name">Karim El-Sayed</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                4.98
+              </div>
+            </div>
+            <div class="agent-role">Senior Private Client Advisor</div>
+            <div class="agent-agency">Sovereign Advisory Group · New Cairo</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Palm Hills Certified</span>
+              <span class="agent-tag dev-partner">Emaar Platinum</span>
+              <span class="agent-tag">Golden Square</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 2.45B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">48 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">14 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">11 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=karim-el-sayed" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Karim El-Sayed">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 2 -->
+        <article
+          class="agent-card"
+          data-territory="zayed"
+          data-spec="penthouses"
+          data-tier="private-office"
+          data-name="Laila Mansour"
+          data-desk="Mansour Private Office"
+          data-keywords="sodic ora sheikh zayed west karmell rivers estate penthouses"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/2.jpg" alt="Laila Mansour portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #9204-A</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=laila-mansour" class="agent-name">Laila Mansour</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                5.00
+              </div>
+            </div>
+            <div class="agent-role">Managing Director</div>
+            <div class="agent-agency">Mansour Private Office · Sheikh Zayed</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">SODIC Signature</span>
+              <span class="agent-tag dev-partner">Ora Elite Desk</span>
+              <span class="agent-tag">New Zayed</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 3.10B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">61 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">19 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">9 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=laila-mansour" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Laila Mansour">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 3 -->
+        <article
+          class="agent-card"
+          data-territory="north-coast"
+          data-spec="villas"
+          data-tier="platinum"
+          data-name="Tarek Hegazy"
+          data-desk="Nile & Coast Capital"
+          data-keywords="ras el hekma north coast sahel tmg emaar beachfront villas"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/3.jpg" alt="Tarek Hegazy portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #7719-C</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=tarek-hegazy" class="agent-name">Tarek Hegazy</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                4.95
+              </div>
+            </div>
+            <div class="agent-role">Principal Partner</div>
+            <div class="agent-agency">Nile & Coast Capital · Ras El Hekma</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Emaar Misr Prime</span>
+              <span class="agent-tag dev-partner">TMG Coastal</span>
+              <span class="agent-tag">Ras El Hekma</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 2.80B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">42 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">11 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">15 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=tarek-hegazy" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Tarek Hegazy">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 4 -->
+        <article
+          class="agent-card"
+          data-territory="north-coast"
+          data-spec="townhouses"
+          data-tier="escrow"
+          data-name="Nouran Fahmy"
+          data-desk="Coastline & Shore Advisory"
+          data-keywords="hacienda mountain view sidi heneish north coast chalet townhouses"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/4.jpg" alt="Nouran Fahmy portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #6532-D</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=nouran-fahmy" class="agent-name">Nouran Fahmy</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                4.97
+              </div>
+            </div>
+            <div class="agent-role">Coastal Acquisitions Director</div>
+            <div class="agent-agency">Coastline & Shore Advisory · Sahel</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Palm Hills Hacienda</span>
+              <span class="agent-tag dev-partner">Mountain View</span>
+              <span class="agent-tag">Sidi Heneish</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 1.95B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">37 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">8 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">12 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=nouran-fahmy" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Nouran Fahmy">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 5 -->
+        <article
+          class="agent-card"
+          data-territory="golden-square"
+          data-spec="commercial"
+          data-tier="platinum"
+          data-name="Omar Abdel-Rahman"
+          data-desk="Apex Real Estate Partners"
+          data-keywords="marakez palm hills commercial flagship new cairo retail office"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/5.jpg" alt="Omar Abdel-Rahman portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #5410-E</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=omar-abdel-rahman" class="agent-name">Omar Abdel-Rahman</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                4.92
+              </div>
+            </div>
+            <div class="agent-role">Commercial & Flagship Advisor</div>
+            <div class="agent-agency">Apex Real Estate Partners · New Cairo</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Marakez Flagship</span>
+              <span class="agent-tag dev-partner">Palm Hills Partner</span>
+              <span class="agent-tag">New Cairo</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 2.15B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">50 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">16 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">18 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=omar-abdel-rahman" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Omar Abdel-Rahman">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 6 -->
+        <article
+          class="agent-card"
+          data-territory="golden-square"
+          data-spec="penthouses"
+          data-tier="private-office"
+          data-name="Dina Sherif"
+          data-desk="Zamalek & Katameya Desk"
+          data-keywords="katameya heights sodic zamalek boutique estates penthouses"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/6.jpg" alt="Dina Sherif portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #4892-F</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=dina-sherif" class="agent-name">Dina Sherif</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                4.99
+              </div>
+            </div>
+            <div class="agent-role">Heritage & Boutique Estates Specialist</div>
+            <div class="agent-agency">Katameya Private Desk · New Cairo</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Katameya Partner</span>
+              <span class="agent-tag dev-partner">SODIC Signature</span>
+              <span class="agent-tag">Katameya Dunes</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 1.70B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">29 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">7 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">14 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=dina-sherif" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Dina Sherif">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 7 -->
+        <article
+          class="agent-card"
+          data-territory="red-sea"
+          data-spec="villas"
+          data-tier="platinum"
+          data-name="Youssef Zaki"
+          data-desk="Red Sea Marine Estates"
+          data-keywords="el gouna orascom somabay red sea waterfront villas marina"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/7.jpg" alt="Youssef Zaki portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #3981-G</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=youssef-zaki" class="agent-name">Youssef Zaki</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                4.94
+              </div>
+            </div>
+            <div class="agent-role">Senior Coastal Broker</div>
+            <div class="agent-agency">Red Sea Marine Estates · El Gouna</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Orascom Development</span>
+              <span class="agent-tag dev-partner">Somabay Desk</span>
+              <span class="agent-tag">El Gouna Marina</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 1.45B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">33 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">9 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">16 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=youssef-zaki" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Youssef Zaki">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Advisor 8 -->
+        <article
+          class="agent-card"
+          data-territory="zayed"
+          data-spec="villas"
+          data-tier="escrow"
+          data-name="Farida El-Gammal"
+          data-desk="Settly Institutional Desk"
+          data-keywords="expat foreign diaspora palm hills sheikh zayed west villas"
+        >
+          <div class="agent-media-box">
+            <img src="../../../../Images/web/phone.jpg" alt="Farida El-Gammal portrait" loading="lazy" />
+            <div class="agent-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="agent-license-tag">FRA-EG #2105-H</div>
+          </div>
+          <div class="agent-info">
+            <div class="agent-name-row">
+              <a href="./agent-profile.html?id=farida-el-gammal" class="agent-name">Farida El-Gammal</a>
+              <div class="agent-rating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                5.00
+              </div>
+            </div>
+            <div class="agent-role">Head of Foreign National Advisory</div>
+            <div class="agent-agency">Settly Institutional Desk · West Cairo</div>
+
+            <div class="agent-tags">
+              <span class="agent-tag dev-partner">Palm Hills Certified</span>
+              <span class="agent-tag dev-partner">Ora Elite Desk</span>
+              <span class="agent-tag">Diaspora Specialist</span>
+            </div>
+
+            <div class="agent-metrics-grid">
+              <div class="metric-cell">
+                <span class="metric-num">EGP 2.65B</span>
+                <span class="metric-label">Lifetime Volume</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">56 Deals</span>
+                <span class="metric-label">Closed Transactions</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">15 Active</span>
+                <span class="metric-label">Exclusive Listings</span>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-num">8 Mins</span>
+                <span class="metric-label">Avg Response</span>
+              </div>
+            </div>
+
+            <div class="agent-card-actions">
+              <a href="./agent-profile.html?id=farida-el-gammal" class="btn-agent-primary">View Profile &rarr;</a>
+              <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="Farida El-Gammal">Direct Desk</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Table View (Institutional Dossier) -->
+      <div class="agents-table-wrap" id="agentsTableWrap">
+        <table class="agents-table">
+          <thead>
+            <tr>
+              <th>Advisor & Desk</th>
+              <th>Primary Territory</th>
+              <th>Developer Accreditation</th>
+              <th>Audited Volume</th>
+              <th>Closed Deals</th>
+              <th>Rating & SLA</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="agentsTableBody">
+            <!-- Rendered dynamically from card state -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-search-state" id="emptyState">
+        <h3>No Advisors Match Your Query</h3>
+        <p>Try refining your search terms, clearing territory filters, or selecting a broader asset specialization.</p>
+        <button type="button" id="btnResetFilters" class="btn-agent-primary" style="margin: 0 auto; display: inline-flex;">
+          Reset All Filters
+        </button>
+      </div>
+    </main>
+
+    <!-- 5. Settly Fiduciary Verification Standard -->
+    <section class="fiduciary-standard-section">
+      <div class="fiduciary-inner">
+        <div class="fiduciary-header">
+          <h2>The Settly 5-Stage Fiduciary Verification Standard</h2>
+          <p>
+            Unlike open listing aggregators where unvetted brokers flood listings with phantom inventory,
+            Settly enforces an institutional due diligence protocol for every licensed representative.
+          </p>
+        </div>
+
+        <div class="fiduciary-grid">
+          <div class="fiduciary-step">
+            <span class="fiduciary-step-num">STAGE 01</span>
+            <h3>Identity & FRA Licensure Audit</h3>
+            <p>Direct verification of active broker licensing through the Egyptian Financial Regulatory Authority (FRA) and Ministry of Trade commercial register.</p>
+          </div>
+          <div class="fiduciary-step">
+            <span class="fiduciary-step-num">STAGE 02</span>
+            <h3>Direct Developer Allocations</h3>
+            <p>Audited API tie-in validating official allocation rights with Tier-1 master developers (Emaar, Palm Hills, SODIC, TMG, Mountain View).</p>
+          </div>
+          <div class="fiduciary-step">
+            <span class="fiduciary-step-num">STAGE 03</span>
+            <h3>Escrow & AML Compliance</h3>
+            <p>Strict adhesion to Central Bank of Egypt Law 27/2020 escrow rails, anti-money laundering reporting, and secure client fund segregation.</p>
+          </div>
+          <div class="fiduciary-step">
+            <span class="fiduciary-step-num">STAGE 04</span>
+            <h3>Zero-Phantom Listing Policy</h3>
+            <p>Every residence listed under an advisor profile is cross-referenced with cadastral title deeds, verified unit numbers, and signed brokerage agreements.</p>
+          </div>
+          <div class="fiduciary-step">
+            <span class="fiduciary-step-num">STAGE 05</span>
+            <h3>Confidential HNW Client SLA</h3>
+            <p>Contractual non-disclosure agreement (NDA) guarantee and a median 15-minute response SLA for institutional and family office acquisitions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Interactive Concierge Representation Modal -->
+    <div class="modal-backdrop" id="consultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 id="modalTitle">Request Advisor Representation</h3>
+            <p id="modalSub">Initiate confidential acquisition advisory with <strong id="modalAdvisorName">Selected Advisor</strong></p>
+          </div>
+          <button type="button" class="modal-close-btn" id="closeModalBtn" aria-label="Close modal">&times;</button>
+        </div>
+
+        <form id="consultForm">
+          <div class="modal-body" id="modalFormBody">
+            <div class="form-group">
+              <label for="investorName">Investor / Principal Name</label>
+              <input type="text" id="investorName" class="form-input" placeholder="e.g. Tarek Mansour" required />
+            </div>
+
+            <div class="form-group">
+              <label for="investorContact">Email or WhatsApp Number</label>
+              <input type="text" id="investorContact" class="form-input" placeholder="e.g. +20 100 000 0000 or email@domain.com" required />
+            </div>
+
+            <div class="form-group">
+              <label for="investorBudget">Target Acquisition Budget (EGP)</label>
+              <select id="investorBudget" class="form-select" required>
+                <option value="20-50">EGP 20,000,000 — 50,000,000</option>
+                <option value="50-100" selected>EGP 50,000,000 — 100,000,000</option>
+                <option value="100-250">EGP 100,000,000 — 250,000,000</option>
+                <option value="250+">EGP 250,000,000+ (Ultra HNW / Portfolio)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="investorTerritory">Target Investment Corridor</label>
+              <select id="investorTerritory" class="form-select" required>
+                <option value="golden-square">Golden Square & New Cairo</option>
+                <option value="zayed">Sheikh Zayed & West Cairo</option>
+                <option value="north-coast">Ras El Hekma & North Coast</option>
+                <option value="red-sea">Red Sea & El Gouna</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="investorNotes">Confidential Acquisition Mandate (Optional)</label>
+              <textarea id="investorNotes" class="form-textarea" rows="2" placeholder="Specific developer preferences, timeline, or tax residency requirements..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer" id="modalFormFooter">
+            <button type="button" class="btn-modal-cancel" id="btnCancelModal">Cancel</button>
+            <button type="submit" class="btn-modal-submit">Dispatch NDA Mandate</button>
+          </div>
+
+          <div class="modal-success-state" id="modalSuccessState">
+            <div class="modal-success-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h3 style="font-family: var(--serif-head); font-size: 22px; margin: 0 0 8px; color: var(--navy-900);">
+              Mandate Dispatched Successfully
+            </h3>
+            <p style="font-size: 13.5px; color: var(--ink-2); line-height: 1.5; margin: 0 0 1.5rem;">
+              Your confidential acquisition inquiry has been encrypted and routed directly to <strong id="successAdvisorName">the advisor</strong>. You will receive an NDA confirmation via WhatsApp within 15 minutes.
+            </p>
+            <button type="button" class="btn-agent-primary" id="btnCloseSuccess" style="margin: 0 auto; display: inline-flex;">
+              Done
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 7. Settly Master Luxury Footer -->
+    <footer class="settly-master-footer">
+      <div class="settly-footer-shell">
+        <div class="settly-footer-grid">
+          <!-- Col 1: Brand Authority & Escrow -->
+          <div class="settly-ftr-brand">
+            <a href="./index.html" class="brand" style="margin-bottom: 1.25rem;">
+              <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" class="ftr-logo-plate" />
+              <span style="color: #fff;">Settly</span>
+            </a>
+            <p class="settly-ftr-mission">
+              Egypt's premier sovereign real estate exchange and spatial intelligence terminal.
+              Institutional acquisition workflows, verified cadastral titles, and audited escrow security.
+            </p>
+            <div class="settly-trust-badges">
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+                <span>Central Bank of Egypt Law 27/2020 Compliant</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+                </svg>
+                <span>100% Freehold Foreign Ownership Guarantee</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Investment Corridors -->
+          <div class="settly-ftr-col">
+            <h4>Prime Corridors</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./area-detail.html">Golden Square (New Cairo)</a></li>
+              <li><a href="./search.html?corridor=sahel">Ras El Hekma (North Coast)</a></li>
+              <li><a href="./search.html?corridor=zayed">New Zayed (Karmell & Rivers)</a></li>
+              <li><a href="./search.html?corridor=gouna">El Gouna Waterfront Estates</a></li>
+              <li><a href="./search.html?corridor=sidiheneish">Sidi Heneish Azure Bay</a></li>
+              <li><a href="./areas.html">All 8 Corridors & GIS Radar &rarr;</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Institutional Intelligence -->
+          <div class="settly-ftr-col">
+            <h4>Intelligence & Tools</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./market-insights.html">Macro Intelligence (Q1 2026)</a></li>
+              <li><a href="./market-insights.html#yieldArbitrage">Yield Arbitrage Terminal</a></li>
+              <li><a href="./market-insights.html#developerLeague">Developer Punctuality Table</a></li>
+              <li><a href="./compare.html">Compare 4 Residences Side-by-Side</a></li>
+              <li><a href="./search.html">Cadastral Registry Search</a></li>
+              <li><a href="./agents.html">Certified Agent Directory</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Private Client Advisory & Desk -->
+          <div class="settly-ftr-col">
+            <h4>Private Client Desk</h4>
+            <div class="settly-ftr-advisory">
+              <p>
+                Confidential acquisition support for family offices, institutional funds, and international diaspora capital.
+              </p>
+              <a href="https://wa.me/201000000000" target="_blank" class="btn-ftr-concierge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                </svg>
+                <span>WhatsApp Private Desk</span>
+              </a>
+              <div class="settly-ftr-hours">
+                Daily 09:00 — 21:00 CLT · Cairo / Dubai / London
+              </div>
+
+              <!-- Social Media Strip (Instagram, LinkedIn, Facebook, X) -->
+              <div class="settly-socials-block">
+                <span class="settly-socials-label">Connect with Settly:</span>
+                <div class="settly-socials-strip">
+                  <a href="https://instagram.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Instagram" title="Instagram">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                    </svg>
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on LinkedIn" title="LinkedIn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                      <rect width="4" height="12" x="2" y="9"/>
+                      <circle cx="4" cy="4" r="2"/>
+                    </svg>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Facebook" title="Facebook">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                    </svg>
+                  </a>
+                  <a href="https://x.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on X" title="X (Twitter)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settly-footer-bottom">
+          <div class="settly-ftr-legal">
+            &copy; 2026 Settly Real Estate Technologies Inc. Central Bank of Egypt Law 27/2020 Compliant. All transactions escrow-verified.
+          </div>
+          <div class="settly-ftr-socials">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Exchange</a>
+            <a href="#escrow">Escrow Security</a>
+            <a href="./market-insights.html">Advisory Dossiers</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 8. Interactive Directory Logic -->
+    <script>
+      (function() {
+        const searchInput = document.getElementById('advisorSearch');
+        const clearBtn = document.getElementById('clearSearch');
+        const specFilter = document.getElementById('specFilter');
+        const tierFilter = document.getElementById('tierFilter');
+        const territoryPills = document.querySelectorAll('.territory-pill');
+        const cardsGrid = document.getElementById('agentsGrid');
+        const cards = Array.from(cardsGrid.querySelectorAll('.agent-card'));
+        const tableWrap = document.getElementById('agentsTableWrap');
+        const tableBody = document.getElementById('agentsTableBody');
+        const resultCount = document.getElementById('resultCount');
+        const emptyState = document.getElementById('emptyState');
+        const btnResetFilters = document.getElementById('btnResetFilters');
+
+        const btnViewGrid = document.getElementById('btnViewGrid');
+        const btnViewTable = document.getElementById('btnViewTable');
+
+        // Modal Elements
+        const consultModal = document.getElementById('consultModal');
+        const modalAdvisorName = document.getElementById('modalAdvisorName');
+        const successAdvisorName = document.getElementById('successAdvisorName');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const btnCancelModal = document.getElementById('btnCancelModal');
+        const consultForm = document.getElementById('consultForm');
+        const modalFormBody = document.getElementById('modalFormBody');
+        const modalFormFooter = document.getElementById('modalFormFooter');
+        const modalSuccessState = document.getElementById('modalSuccessState');
+        const btnCloseSuccess = document.getElementById('btnCloseSuccess');
+
+        let activeTerritory = 'all';
+
+        // Build Table Rows from Card Data
+        function populateTable() {
+          tableBody.innerHTML = '';
+          cards.forEach((card) => {
+            const name = card.dataset.name;
+            const desk = card.dataset.desk;
+            const territory = card.querySelector('.agent-agency').textContent.split('·')[1]?.trim() || 'Cairo';
+            const img = card.querySelector('img').src;
+            const rating = card.querySelector('.agent-rating').textContent.trim();
+            const license = card.querySelector('.agent-license-tag').textContent.trim();
+            const vol = card.querySelectorAll('.metric-num')[0]?.textContent || 'EGP 2.0B';
+            const deals = card.querySelectorAll('.metric-num')[1]?.textContent || '40';
+            const devPartner = card.querySelector('.agent-tag.dev-partner')?.textContent || 'Verified Partner';
+            const profileUrl = card.querySelector('.btn-agent-primary').getAttribute('href');
+
+            const tr = document.createElement('tr');
+            tr.dataset.name = card.dataset.name;
+            tr.dataset.territory = card.dataset.territory;
+            tr.dataset.spec = card.dataset.spec;
+            tr.dataset.tier = card.dataset.tier;
+            tr.dataset.keywords = card.dataset.keywords;
+
+            tr.innerHTML = `
+              <td>
+                <div class="table-agent-profile">
+                  <img src="${img}" alt="${name}" class="table-avatar" />
+                  <div class="table-agent-meta">
+                    <a href="${profileUrl}" class="table-agent-name">${name}</a>
+                    <span class="table-agent-sub">${desk}</span>
+                  </div>
+                </div>
+              </td>
+              <td>${territory}</td>
+              <td>
+                <span class="agent-tag dev-partner">${devPartner}</span>
+                <span style="display:block; font-family:var(--mono-val); font-size:10px; color:var(--ink-3); margin-top:3px;">${license}</span>
+              </td>
+              <td><span class="table-mono-num">${vol}</span></td>
+              <td><span class="table-mono-num">${deals}</span></td>
+              <td>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="agent-rating" style="padding:2px 5px; font-size:11px;">★ ${rating}</span>
+                  <span style="font-family:var(--mono-val); font-size:11px; color:var(--ink-3);">12m SLA</span>
+                </div>
+              </td>
+              <td style="text-align: right;">
+                <div style="display:inline-flex; gap:6px;">
+                  <a href="${profileUrl}" class="btn-agent-primary" style="padding:6px 10px; font-size:11.5px;">Profile</a>
+                  <button type="button" class="btn-agent-secondary btn-open-consult" data-advisor="${name}" style="padding:6px 10px; font-size:11.5px;">Desk</button>
+                </div>
+              </td>
+            `;
+            tableBody.appendChild(tr);
+          });
+        }
+
+        populateTable();
+
+        // Filter Logic
+        function filterDirectory() {
+          const query = searchInput.value.trim().toLowerCase();
+          const spec = specFilter.value;
+          const tier = tierFilter.value;
+
+          let visibleCount = 0;
+
+          // Toggle clear button
+          clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+          // Filter Cards
+          cards.forEach(card => {
+            const name = card.dataset.name.toLowerCase();
+            const desk = card.dataset.desk.toLowerCase();
+            const territory = card.dataset.territory;
+            const cardSpec = card.dataset.spec;
+            const cardTier = card.dataset.tier;
+            const keywords = card.dataset.keywords.toLowerCase();
+
+            const matchQuery = !query || name.includes(query) || desk.includes(query) || keywords.includes(query);
+            const matchTerritory = activeTerritory === 'all' || territory === activeTerritory;
+            const matchSpec = spec === 'all' || cardSpec === spec;
+            const matchTier = tier === 'all' || cardTier === tier;
+
+            const isVisible = matchQuery && matchTerritory && matchSpec && matchTier;
+            card.style.display = isVisible ? 'flex' : 'none';
+            if (isVisible) visibleCount++;
+          });
+
+          // Filter Table Rows
+          const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+          tableRows.forEach(row => {
+            const name = row.dataset.name.toLowerCase();
+            const territory = row.dataset.territory;
+            const rowSpec = row.dataset.spec;
+            const rowTier = row.dataset.tier;
+            const keywords = row.dataset.keywords.toLowerCase();
+
+            const matchQuery = !query || name.includes(query) || keywords.includes(query);
+            const matchTerritory = activeTerritory === 'all' || territory === activeTerritory;
+            const matchSpec = spec === 'all' || rowSpec === spec;
+            const matchTier = tier === 'all' || rowTier === tier;
+
+            const isVisible = matchQuery && matchTerritory && matchSpec && matchTier;
+            row.style.display = isVisible ? '' : 'none';
+          });
+
+          // Update Status & Empty State
+          resultCount.innerHTML = `Showing <strong>${visibleCount}</strong> Accredited Private Advisors`;
+          if (visibleCount === 0) {
+            cardsGrid.style.display = 'none';
+            tableWrap.style.display = 'none';
+            emptyState.style.display = 'block';
+          } else {
+            emptyState.style.display = 'none';
+            if (btnViewGrid.classList.contains('active')) {
+              cardsGrid.style.display = 'grid';
+              tableWrap.style.display = 'none';
+            } else {
+              cardsGrid.style.display = 'none';
+              tableWrap.style.display = 'block';
+            }
+          }
+        }
+
+        // Search Input Events
+        searchInput.addEventListener('input', filterDirectory);
+        clearBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          filterDirectory();
+          searchInput.focus();
+        });
+
+        // Dropdown Events
+        specFilter.addEventListener('change', filterDirectory);
+        tierFilter.addEventListener('change', filterDirectory);
+
+        // Territory Pills
+        territoryPills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            territoryPills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            activeTerritory = pill.dataset.territory;
+            filterDirectory();
+          });
+        });
+
+        // View Mode Switcher
+        btnViewGrid.addEventListener('click', () => {
+          btnViewGrid.classList.add('active');
+          btnViewTable.classList.remove('active');
+          if (cards.some(c => c.style.display !== 'none')) {
+            cardsGrid.style.display = 'grid';
+            tableWrap.style.display = 'none';
+          }
+          if (history.replaceState) history.replaceState(null, '', '#grid');
+        });
+
+        btnViewTable.addEventListener('click', () => {
+          btnViewTable.classList.add('active');
+          btnViewGrid.classList.remove('active');
+          if (cards.some(c => c.style.display !== 'none')) {
+            cardsGrid.style.display = 'none';
+            tableWrap.style.display = 'block';
+          }
+          if (history.replaceState) history.replaceState(null, '', '#table');
+        });
+
+        // Initialize view mode from URL hash
+        if (window.location.hash === '#table') {
+          btnViewTable.click();
+        }
+
+        // Reset Filters Button
+        btnResetFilters.addEventListener('click', () => {
+          searchInput.value = '';
+          specFilter.value = 'all';
+          tierFilter.value = 'all';
+          activeTerritory = 'all';
+          territoryPills.forEach(p => p.classList.toggle('active', p.dataset.territory === 'all'));
+          filterDirectory();
+        });
+
+        // Modal Functionality
+        function openConsultModal(advisorName) {
+          modalAdvisorName.textContent = advisorName;
+          successAdvisorName.textContent = advisorName;
+          modalFormBody.style.display = 'flex';
+          modalFormFooter.style.display = 'flex';
+          modalSuccessState.style.display = 'none';
+          consultModal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeConsultModal() {
+          consultModal.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+
+        document.addEventListener('click', (e) => {
+          const btn = e.target.closest('.btn-open-consult');
+          if (btn) {
+            const adv = btn.dataset.advisor || 'Karim El-Sayed';
+            openConsultModal(adv);
+          }
+        });
+
+        closeModalBtn.addEventListener('click', closeConsultModal);
+        btnCancelModal.addEventListener('click', closeConsultModal);
+        btnCloseSuccess.addEventListener('click', closeConsultModal);
+
+        consultModal.addEventListener('click', (e) => {
+          if (e.target === consultModal) closeConsultModal();
+        });
+
+        consultForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          modalFormBody.style.display = 'none';
+          modalFormFooter.style.display = 'none';
+          modalSuccessState.style.display = 'block';
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && consultModal.classList.contains('open')) {
+            closeConsultModal();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

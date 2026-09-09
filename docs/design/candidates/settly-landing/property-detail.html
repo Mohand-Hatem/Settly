@@ -1,0 +1,1889 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lake View Signature Villa — Golden Square, New Cairo | Settly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Leaflet GIS Map CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <!-- Settly Shared Design System -->
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      /* ============================================================================
+         SETTLY — SCREEN 03: PROPERTY DETAIL (OPERATE & PERSUADE)
+         Impeccable craft rules: editorial architectural stage, transparent financial
+         schedule, CAD floorplan tabs, sticky viewing console, and verified metrics.
+         ========================================================================= */
+
+      body {
+        background: var(--canvas);
+        color: var(--navy-900);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Compact Top Header */
+      .detail-hdr {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+      }
+      .detail-hdr-row {
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+      }
+
+      /* Sub-header Breadcrumb Bar */
+      .breadcrumb-bar {
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding-block: 0.75rem;
+      }
+      .breadcrumb-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .breadcrumb-trail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+      .breadcrumb-trail a {
+        color: var(--ink-2);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .breadcrumb-trail a:hover {
+        color: var(--navy-900);
+      }
+      .breadcrumb-trail .sep {
+        color: var(--line-2);
+      }
+      .breadcrumb-trail .current {
+        color: var(--navy-900);
+        font-weight: 700;
+      }
+      .detail-actions-cluster {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cluster-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: var(--canvas);
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .cluster-btn:hover {
+        background: var(--navy-900);
+        color: #fff;
+        border-color: var(--navy-900);
+      }
+      .cluster-btn.favorited {
+        background: #fff;
+        color: var(--error);
+        border-color: var(--error);
+      }
+
+      /* =====================================================================
+         HERO ARCHITECTURAL GALLERY STAGE
+         ===================================================================== */
+      .gallery-stage {
+        padding-block: 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+      }
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 10px;
+        height: 520px;
+        border-radius: 18px;
+        overflow: hidden;
+        position: relative;
+      }
+      .gallery-main {
+        position: relative;
+        height: 100%;
+        cursor: pointer;
+        overflow: hidden;
+        background: var(--canvas-2);
+      }
+      .gallery-main img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+      .gallery-main:hover img {
+        transform: scale(1.03);
+      }
+      .gallery-side {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 10px;
+        height: 100%;
+      }
+      .gallery-thumb {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        cursor: pointer;
+        background: var(--canvas-2);
+      }
+      .gallery-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      .gallery-thumb:hover img {
+        transform: scale(1.04);
+      }
+      .gallery-floating-triggers {
+        position: absolute;
+        bottom: 16px;
+        inset-inline-end: 16px;
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+      .gallery-trigger-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: rgba(19, 29, 54, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 99px;
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.18s;
+      }
+      .gallery-trigger-btn:hover {
+        background: rgba(19, 29, 54, 0.98);
+        border-color: var(--brass);
+      }
+
+      /* =====================================================================
+         MAIN DETAIL BODY WORKSPACE (68% Content / 32% Sticky Action Console)
+         ===================================================================== */
+      .detail-workspace {
+        padding-block: 2.5rem 5rem;
+      }
+      .detail-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 2.5rem;
+        align-items: start;
+      }
+
+      /* Main Column */
+      .detail-main-col {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+        min-width: 0;
+      }
+
+      /* Section Plate Cards */
+      .detail-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.75rem 2rem;
+        box-shadow: var(--shadow-1);
+      }
+      .detail-card-title {
+        font-family: var(--serif);
+        font-size: 1.45rem;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* Property Identity Header Block */
+      .prop-header-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 2rem;
+        box-shadow: var(--shadow-1);
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .prop-badges-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .badge-dev {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: var(--navy-900);
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 6px;
+      }
+      .badge-verified {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        background: var(--sage-050);
+        color: var(--sage);
+        border: 1px solid rgba(61, 90, 76, 0.25);
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .badge-ref {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-inline-start: auto;
+      }
+      .prop-headline-h1 {
+        font-family: var(--serif);
+        font-size: clamp(2rem, 3.2vw, 2.6rem);
+        font-weight: 600;
+        color: var(--navy-900);
+        line-height: 1.15;
+        margin: 0;
+      }
+      .prop-loc-subtitle {
+        font-family: var(--sans);
+        font-size: 14.5px;
+        color: var(--ink-2);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .prop-loc-subtitle svg {
+        color: var(--brass);
+        flex: none;
+      }
+      .prop-price-stage {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .prop-price-big {
+        font-family: var(--mono-ui);
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--navy-900);
+        letter-spacing: -0.025em;
+        font-variant-numeric: tabular-nums;
+      }
+      .prop-price-big small {
+        font-size: 1rem;
+        color: var(--ink-3);
+        margin-inline-start: 6px;
+      }
+      .prop-unit-sqm {
+        font-family: var(--mono-ui);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--brass-700);
+        background: var(--brass-050);
+        border: 1px solid var(--brass-200);
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* 6-Metric Dimensional Grid */
+      .matrix-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .matrix-card {
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .matrix-val {
+        font-family: var(--mono-ui);
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--navy-900);
+        font-variant-numeric: tabular-nums;
+      }
+      .matrix-lbl {
+        font-family: var(--sans);
+        font-size: 11.5px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .matrix-sub {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-2);
+        margin-top: 2px;
+      }
+
+      /* Financial Architecture & Payment Breakdown */
+      .finance-progression-bar {
+        display: grid;
+        grid-template-columns: 10% 70% 8% 12%;
+        gap: 4px;
+        margin-block: 1rem 1.5rem;
+        height: 10px;
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .prog-seg-down { background: var(--brass); }
+      .prog-seg-inst { background: var(--navy-800); }
+      .prog-seg-maint { background: var(--sage); }
+      .prog-seg-final { background: var(--ink-3); }
+
+      .finance-schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--mono-ui);
+        font-size: 12.5px;
+      }
+      .finance-schedule-table th {
+        text-align: inset-inline-start;
+        font-weight: 700;
+        color: var(--navy-900);
+        padding: 10px 12px;
+        background: var(--canvas-2);
+        border-bottom: 1px solid var(--line-2);
+      }
+      .finance-schedule-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink-1);
+        font-variant-numeric: tabular-nums;
+      }
+      .finance-schedule-table tr:hover td {
+        background: var(--canvas);
+      }
+
+      /* Reactive Calculator Slider */
+      .calc-box {
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .calc-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 8px;
+        font-family: var(--mono-ui);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .calc-slider {
+        width: 100%;
+        accent-color: var(--brass);
+      }
+      .calc-readout-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .calc-readout-item {
+        background: #fff;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+      }
+      .calc-readout-item span {
+        display: block;
+        font-family: var(--sans);
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+      .calc-readout-item b {
+        font-family: var(--mono-ui);
+        font-size: 14px;
+        color: var(--navy-900);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Architectural Floorplans Section */
+      .floor-tab-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 1.25rem;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+      }
+      .floor-tab-btn {
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--line-2);
+        background: var(--canvas);
+        font-family: var(--mono-ui);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .floor-tab-btn.active {
+        background: var(--navy-900);
+        color: #fff;
+        border-color: var(--navy-900);
+      }
+      .floor-plan-view-box {
+        position: relative;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 380px;
+        justify-content: center;
+      }
+      .cad-blueprint-svg {
+        width: 100%;
+        max-width: 580px;
+        height: auto;
+      }
+      .floor-rooms-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+      }
+      .room-item {
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        color: var(--ink-2);
+        display: flex;
+        justify-content: space-between;
+      }
+      .room-item b {
+        color: var(--navy-900);
+      }
+
+      /* Location & GIS Map Section */
+      .detail-map-canvas {
+        height: 340px;
+        width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+      }
+      .commute-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 1.25rem;
+      }
+      .commute-card {
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+      }
+      .commute-time {
+        font-family: var(--mono-ui);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .commute-place {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 2px;
+      }
+
+      /* Legal Verification Dossier */
+      .legal-check-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .legal-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .legal-icon {
+        color: var(--sage);
+        flex: none;
+        margin-top: 2px;
+      }
+      .legal-text b {
+        display: block;
+        font-size: 13px;
+        color: var(--navy-900);
+      }
+      .legal-text span {
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+
+      /* =====================================================================
+         STICKY RIGHT COLUMN (Agent, Scheduler, Inquire Action)
+         ===================================================================== */
+      .detail-sticky-col {
+        position: sticky;
+        top: 96px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      /* Action Console Box */
+      .action-console-card {
+        background: #fff;
+        border: 1px solid var(--line-2);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-2);
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .console-status-pill {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--sage);
+        background: var(--sage-050);
+        border: 1px solid rgba(61, 90, 76, 0.25);
+        padding: 4px 10px;
+        border-radius: 6px;
+        align-self: flex-start;
+      }
+
+      /* Interactive Viewing Booking Calendar */
+      .viewing-scheduler-box {
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1rem;
+      }
+      .sched-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .sched-month {
+        font-family: var(--mono-ui);
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .sched-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 3px;
+        text-align: center;
+      }
+      .sched-dow {
+        font-family: var(--mono-ui);
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--ink-3);
+        padding-bottom: 4px;
+      }
+      .sched-day {
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        background: none;
+        color: var(--navy-900);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .sched-day:hover:not(.disabled) {
+        background: var(--canvas-2);
+      }
+      .sched-day.selected {
+        background: var(--navy-900);
+        color: #fff;
+      }
+      .sched-day.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .time-chips-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .time-chip {
+        padding: 5px 0;
+        text-align: center;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .time-chip:hover,
+      .time-chip.active {
+        background: var(--brass);
+        color: #131d36;
+        border-color: var(--brass-600);
+      }
+
+      /* Agent Profile Card */
+      .agent-advisor-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+      }
+      .advisor-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex: none;
+        border: 2px solid var(--brass);
+      }
+      .advisor-info b {
+        display: block;
+        font-size: 13.5px;
+        color: var(--navy-900);
+      }
+      .advisor-info span {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+
+      /* Inquire & Action Buttons */
+      .btn-inquire-whatsapp {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        background: #25D366;
+        color: #fff;
+        font-weight: 700;
+        font-size: 13.5px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: filter 0.15s;
+      }
+      .btn-inquire-whatsapp:hover {
+        filter: brightness(0.95);
+      }
+      .btn-submit-offer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        background: var(--navy-900);
+        color: #fff;
+        font-weight: 700;
+        font-size: 13.5px;
+        border-radius: 10px;
+        border: 0;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .btn-submit-offer:hover {
+        background: var(--brass-700);
+      }
+
+      /* Similar Verified Residences Grid */
+      .similar-section {
+        background: #fff;
+        border-top: 1px solid var(--line);
+        padding-block: 4rem;
+      }
+
+      /* Responsive Breakpoints */
+      @media (max-width: 1080px) {
+        .gallery-grid {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+        .gallery-main {
+          height: 360px;
+        }
+        .gallery-side {
+          display: none;
+        }
+        .detail-layout {
+          grid-template-columns: 1fr;
+        }
+        .detail-sticky-col {
+          position: static;
+        }
+        .matrix-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* ============================================================================
+         LUXURY FOOTER & CONCIERGE PRE-FOOTER (IMPECCABLE CRAFT)
+         ========================================================================= */
+      .pre-ftr-strip {
+        background: #111A2E;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 2.25rem 0;
+        color: #fff;
+      }
+      .pre-ftr-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      .pre-ftr-text h3 {
+        font-family: var(--serif-display);
+        font-size: clamp(1.25rem, 2vw, 1.6rem);
+        font-weight: 600;
+        color: #fff;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.35rem;
+      }
+      .pre-ftr-text p {
+        font-size: 13.5px;
+        color: #98A5C2;
+        max-width: 580px;
+        line-height: 1.5;
+      }
+      .pre-ftr-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .btn-pre-whatsapp {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #25D366;
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: filter 0.15s;
+      }
+      .btn-pre-whatsapp:hover {
+        filter: brightness(0.95);
+      }
+      .btn-pre-phone {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-family: var(--mono-ui);
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.15s;
+      }
+      .btn-pre-phone:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      /* Main Footer */
+      .ftr-luxury {
+        background: #0B111F;
+        color: #A5B2CE;
+        position: relative;
+        padding-top: 4.5rem;
+        padding-bottom: 2.25rem;
+        border-top: 1px solid rgba(198, 151, 73, 0.25);
+      }
+      .ftr-luxury::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(198, 151, 73, 0.5), transparent);
+      }
+      .ftr-luxury-grid {
+        display: grid;
+        grid-template-columns: 2fr 1.1fr 1.1fr 1.2fr;
+        gap: clamp(2rem, 4vw, 4rem);
+        padding-bottom: 3.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .ftr-luxury-brand .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.1rem;
+      }
+      .ftr-luxury-brand .brand img {
+        background: #fff;
+        border-radius: 8px;
+        padding: 4px;
+        height: 36px;
+        width: 36px;
+      }
+      .ftr-brand-desc {
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: #8C99B8;
+        max-width: 38ch;
+        margin-bottom: 1.5rem;
+      }
+      .ftr-badges-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .ftr-badge-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: #CBD5E1;
+      }
+      .ftr-badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--brass);
+        flex: none;
+      }
+      .ftr-col h4 {
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #fff;
+        margin-bottom: 1.25rem;
+      }
+      .ftr-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .ftr-col ul li a {
+        color: #9AA7C4;
+        text-decoration: none;
+        font-size: 13.5px;
+        transition: color 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .ftr-col ul li a:hover {
+        color: var(--brass);
+      }
+      .ftr-col ul li a .ftr-subtag {
+        font-family: var(--mono-ui);
+        font-size: 10px;
+        color: #6C7A9C;
+      }
+
+      /* Footer Bottom Sub-Bar */
+      .ftr-luxury-btm {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        padding-top: 2rem;
+        flex-wrap: wrap;
+        font-family: var(--mono-ui);
+        font-size: 12px;
+        color: #7482A0;
+      }
+      .ftr-btm-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ftr-btm-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .ftr-socials {
+        display: flex;
+        gap: 10px;
+      }
+      .ftr-social-link {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #CBD5E1;
+        text-decoration: none;
+        transition: all 0.15s;
+      }
+      .ftr-social-link:hover {
+        background: var(--navy-800);
+        color: var(--brass);
+        border-color: var(--brass);
+      }
+
+      @media (max-width: 992px) {
+        .ftr-luxury-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 2.5rem;
+        }
+      }
+      @media (max-width: 640px) {
+        .ftr-luxury-grid {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+        .pre-ftr-row {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .ftr-luxury-btm {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="./master-nav-footer.css" />
+  </head>
+  <body>
+    <!-- Global Header -->
+        <!-- Settly Global Master Navigation with Mega-Menus -->
+        <!-- Settly Global Master Navigation (Simplified & Luxury) -->
+        <!-- Settly Global Master Navigation -->
+    <header class="settly-master-header">
+      <div class="settly-nav-shell">
+        <!-- Original Settly Brand Mark & Title -->
+        <a href="./index.html" class="brand">
+          <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" />
+          <span>Settly</span>
+        </a>
+
+        <!-- Simplified Primary Navigation -->
+        <nav class="settly-main-nav">
+          <a href="./search.html" class="settly-nav-link active">Buy</a>
+          <a href="./areas.html" class="settly-nav-link">Districts</a>
+          <a href="./compare.html" class="settly-nav-link">Compare</a>
+          <a href="./market-insights.html" class="settly-nav-link">Market Insights</a>
+          <a href="./agents.html" class="settly-nav-link">Agents</a>
+        </nav>
+
+        <!-- Right Header Actions -->
+        <div class="settly-header-actions">
+          <div class="settly-fx-pill" title="Central Bank of Egypt Sovereign Exchange Rate">
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
+          </div>
+          <a href="./index.html#signin" class="btn-settly-signin">Sign in</a>
+          <a href="./search.html" class="btn-settly-getstarted">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sub-header Breadcrumb Bar -->
+    <div class="breadcrumb-bar">
+      <div class="wrap breadcrumb-row">
+        <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+          <a href="./index.html">Egypt</a>
+          <span class="sep">/</span>
+          <a href="./search.html">New Cairo</a>
+          <span class="sep">/</span>
+          <a href="./area-detail.html">Golden Square</a>
+          <span class="sep">/</span>
+          <a href="./search.html">Palm Hills</a>
+          <span class="sep">/</span>
+          <span class="current">Lake View Signature Villa</span>
+        </nav>
+
+        <div class="detail-actions-cluster">
+          <a href="./compare.html" class="cluster-btn" style="text-decoration: none;" title="Compare against similar residences">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+            <span>Compare (3)</span>
+          </a>
+          <button type="button" class="cluster-btn" id="btnShareListing" title="Share listing">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>Share</span>
+          </button>
+          <button type="button" class="cluster-btn" id="btnSaveListing" title="Save to favorites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <span id="saveBtnText">Save</span>
+          </button>
+          <button type="button" class="cluster-btn" id="btnPrintBrochure" title="Download CAD dossier">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>CAD Dossier (PDF)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Architectural Gallery Stage -->
+    <section class="gallery-stage">
+      <div class="wrap">
+        <div class="gallery-grid">
+          <!-- Primary Showcase Photo -->
+          <div class="gallery-main" id="galleryMainPhoto">
+            <img src="../../../../Images/web/11.jpg" alt="Lake View Signature Villa facade and lake frontage" id="mainHeroImg" />
+          </div>
+
+          <!-- 4 Curated Side Shots -->
+          <div class="gallery-side">
+            <div class="gallery-thumb" data-full="../../../../Images/web/1.jpg">
+              <img src="../../../../Images/web/1.jpg" alt="Double height reception interior" />
+            </div>
+            <div class="gallery-thumb" data-full="../../../../Images/web/3.jpg">
+              <img src="../../../../Images/web/3.jpg" alt="Master suite with terrace" />
+            </div>
+            <div class="gallery-thumb" data-full="../../../../Images/web/4.jpg">
+              <img src="../../../../Images/web/4.jpg" alt="Private pool and courtyard" />
+            </div>
+            <div class="gallery-thumb" data-full="../../../../Images/web/7.jpg">
+              <img src="../../../../Images/web/7.jpg" alt="Dining pavilion and show kitchen" />
+            </div>
+          </div>
+
+          <!-- Floating Interactive Triggers -->
+          <div class="gallery-floating-triggers">
+            <button type="button" class="gallery-trigger-btn" id="btnOpenPhotos">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <span>View all 24 Photos</span>
+            </button>
+            <button type="button" class="gallery-trigger-btn" id="btnOpen3D">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m21 16-9 5-9-5V8l9-5 9 5v8Z"/><path d="m3.27 6.96 8.73 4.99 8.73-4.99"/><path d="M12 22.08V12"/></svg>
+              <span>3D Virtual Tour</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Detail Workspace -->
+    <main class="detail-workspace">
+      <div class="wrap detail-layout">
+        <!-- ===============================================================
+             LEFT COLUMN (Property Architecture, Finance & CAD Specs)
+             =============================================================== -->
+        <div class="detail-main-col">
+          <!-- Property Identity Header Block -->
+          <div class="prop-header-card">
+            <div class="prop-badges-row">
+              <span class="badge-dev">Palm Hills Developments</span>
+              <span class="badge-verified">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                100% Freehold · CAD Audited
+              </span>
+              <span class="badge-ref">Ref: SET-NC-9042</span>
+            </div>
+
+            <h1 class="prop-headline-h1">Lake View Signature Villa</h1>
+
+            <div class="prop-loc-subtitle">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+              <span>Lake View Residence · Zone A, Golden Square, New Cairo</span>
+            </div>
+
+            <div class="prop-price-stage">
+              <div>
+                <div class="prop-price-big">32,500,000<small>EGP</small></div>
+                <div style="font-family: var(--mono-ui); font-size: 11.5px; color: var(--ink-3); margin-top: 4px;">
+                  Official Master Developer Contract Price · 0% Agency Surcharge
+                </div>
+              </div>
+              <div class="prop-unit-sqm">EGP 60,185 / m² BUA</div>
+            </div>
+          </div>
+
+          <!-- 6-Metric Dimensional Grid -->
+          <div class="matrix-grid">
+            <div class="matrix-card">
+              <div class="matrix-val">540 m²</div>
+              <div class="matrix-lbl">Built-Up Area (BUA)</div>
+              <div class="matrix-sub">Verified internal footprint</div>
+            </div>
+            <div class="matrix-card">
+              <div class="matrix-val">720 m²</div>
+              <div class="matrix-lbl">Land / Plot Area</div>
+              <div class="matrix-sub">Private landscaped garden</div>
+            </div>
+            <div class="matrix-card">
+              <div class="matrix-val">5 Suites</div>
+              <div class="matrix-lbl">Bedrooms</div>
+              <div class="matrix-sub">All en-suite with walk-in dressing</div>
+            </div>
+            <div class="matrix-card">
+              <div class="matrix-val">6 Baths</div>
+              <div class="matrix-lbl">Bathrooms</div>
+              <div class="matrix-sub">Plus guest powder room</div>
+            </div>
+            <div class="matrix-card">
+              <div class="matrix-val">3 Bays</div>
+              <div class="matrix-lbl">Covered Parking</div>
+              <div class="matrix-sub">EV fast-charger pre-wired</div>
+            </div>
+            <div class="matrix-card">
+              <div class="matrix-val">G + 1 + Roof</div>
+              <div class="matrix-lbl">Building Levels</div>
+              <div class="matrix-sub">90 m² sky lounge & terrace</div>
+            </div>
+          </div>
+
+          <!-- Financial Architecture & Payment Breakdown -->
+          <div class="detail-card">
+            <h2 class="detail-card-title">
+              <span>Financial Architecture & Payment Plan</span>
+              <span style="font-family: var(--mono-ui); font-size: 12px; color: var(--brass-600); font-weight: 700;">7-Year Developer Plan</span>
+            </h2>
+
+            <div style="font-size: 13.5px; color: var(--ink-2); line-height: 1.6;">
+              Direct allocation contract through Palm Hills Developments. Backed by Central Bank of Egypt audited escrow account with full title-deed registration upon final installment.
+            </div>
+
+            <!-- Visual Progress Track -->
+            <div class="finance-progression-bar" title="Payment Schedule Breakdown">
+              <div class="prog-seg-down" title="10% Down Payment"></div>
+              <div class="prog-seg-inst" title="70% Equal Quarterly Installments"></div>
+              <div class="prog-seg-maint" title="8% Maintenance on Delivery"></div>
+              <div class="prog-seg-final" title="12% Final Handover Balloon"></div>
+            </div>
+
+            <table class="finance-schedule-table">
+              <thead>
+                <tr>
+                  <th>Milestone</th>
+                  <th>Percentage</th>
+                  <th>Amount (EGP)</th>
+                  <th>Timing</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>Reservation & Contract Signing</b></td>
+                  <td>10.0%</td>
+                  <td>3,250,000</td>
+                  <td>Immediate on agreement</td>
+                </tr>
+                <tr>
+                  <td><b>28 Equal Quarterly Installments</b></td>
+                  <td>70.0%</td>
+                  <td>1,044,642 <small style="color: var(--ink-3);">/ quarter</small></td>
+                  <td>Every 90 days over 7 years</td>
+                </tr>
+                <tr>
+                  <td><b>Maintenance Reserve Deposit</b></td>
+                  <td>8.0%</td>
+                  <td>2,600,000</td>
+                  <td>Upon key handover (Q4 2026)</td>
+                </tr>
+                <tr>
+                  <td><b>Handover & Title Delivery</b></td>
+                  <td>12.0%</td>
+                  <td>3,900,000</td>
+                  <td>On delivery inspection</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Reactive Down Payment Calculator -->
+            <div class="calc-box">
+              <div class="calc-head">
+                <span>Interactive Payment Scenario Simulator</span>
+                <span id="sliderDownPctText">Down Payment: 10% (3,250,000 EGP)</span>
+              </div>
+              <input type="range" min="10" max="30" step="5" value="10" class="calc-slider" id="downSlider" />
+              <div class="calc-readout-row">
+                <div class="calc-readout-item">
+                  <span>Down Payment Amount</span>
+                  <b id="calcDownAmount">3,250,000 EGP</b>
+                </div>
+                <div class="calc-readout-item">
+                  <span>Estimated Quarterly Installment</span>
+                  <b id="calcQuarterlyAmount">1,044,642 EGP</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Architectural Floorplans Section -->
+          <div class="detail-card">
+            <h2 class="detail-card-title">
+              <span>Architectural Floorplans (CAD Verified)</span>
+              <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--sage); font-weight: 700;">DWG Stamp #EG-2024-88</span>
+            </h2>
+
+            <div class="floor-tab-bar" role="tablist">
+              <button type="button" class="floor-tab-btn active" data-floor="ground">Ground Floor (240 m²)</button>
+              <button type="button" class="floor-tab-btn" data-floor="first">First Floor (210 m²)</button>
+              <button type="button" class="floor-tab-btn" data-floor="roof">Penthouse Roof (90 m²)</button>
+            </div>
+
+            <div class="floor-plan-view-box">
+              <!-- Ground Floor Blueprint Diagram -->
+              <svg class="cad-blueprint-svg" viewBox="0 0 600 380" id="cadBlueprintSvg">
+                <!-- Perimeter Wall -->
+                <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" stroke-width="3" />
+                <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" stroke-dasharray="4,4" />
+                <!-- Internal Dividers -->
+                <line x1="280" y1="30" x2="280" y2="350" stroke="var(--navy-800)" stroke-width="2" />
+                <line x1="280" y1="180" x2="560" y2="180" stroke="var(--navy-800)" stroke-width="2" />
+                <line x1="40" y1="210" x2="280" y2="210" stroke="var(--navy-800)" stroke-width="2" />
+                <!-- Double Reception -->
+                <rect x="45" y="35" width="230" height="170" fill="rgba(198, 151, 73, 0.08)" />
+                <text x="70" y="80" font-family="Plus Jakarta Sans" font-weight="700" font-size="14" fill="var(--navy-900)">Double Reception & Salon</text>
+                <text x="70" y="105" font-family="JetBrains Mono" font-size="12" fill="var(--ink-3)">11.8m × 8.2m (96.8 m²)</text>
+                <!-- Dining & Show Kitchen -->
+                <text x="70" y="250" font-family="Plus Jakarta Sans" font-weight="700" font-size="14" fill="var(--navy-900)">Show Kitchen & Dining</text>
+                <text x="70" y="275" font-family="JetBrains Mono" font-size="12" fill="var(--ink-3)">6.4m × 5.8m (37.1 m²)</text>
+                <!-- Guest Suite -->
+                <text x="310" y="80" font-family="Plus Jakarta Sans" font-weight="700" font-size="14" fill="var(--navy-900)">Guest Suite (En-suite)</text>
+                <text x="310" y="105" font-family="JetBrains Mono" font-size="12" fill="var(--ink-3)">5.2m × 4.8m (25.0 m²)</text>
+                <!-- Terrace & Pool -->
+                <rect x="290" y="190" width="260" height="150" fill="rgba(61, 90, 76, 0.08)" />
+                <text x="310" y="240" font-family="Plus Jakarta Sans" font-weight="700" font-size="14" fill="var(--navy-900)">Covered Loggia & Terrace</text>
+                <text x="310" y="265" font-family="JetBrains Mono" font-size="12" fill="var(--ink-3)">Direct Pool Frontage (48.0 m²)</text>
+              </svg>
+
+              <div class="floor-rooms-list" id="floorRoomsList">
+                <div class="room-item"><span>Grand Reception:</span><b>96.8 m²</b></div>
+                <div class="room-item"><span>Dining Room:</span><b>24.5 m²</b></div>
+                <div class="room-item"><span>Show Kitchen:</span><b>18.2 m²</b></div>
+                <div class="room-item"><span>Guest Suite:</span><b>25.0 m²</b></div>
+                <div class="room-item"><span>Maid's Quarters:</span><b>12.4 m²</b></div>
+                <div class="room-item"><span>Covered Loggia:</span><b>48.0 m²</b></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location GIS Context & Commute Telemetry -->
+          <div class="detail-card">
+            <h2 class="detail-card-title">
+              <span>Location Context & District Map</span>
+              <span style="font-family: var(--mono-ui); font-size: 11.5px; color: var(--ink-3);">30°00'55"N 31°29'16"E</span>
+            </h2>
+
+            <div class="detail-map-canvas" id="detailMap"></div>
+
+            <div class="commute-cards-grid">
+              <div class="commute-card">
+                <div class="commute-time">4 mins</div>
+                <div class="commute-place">Dusit Thani LakeView</div>
+              </div>
+              <div class="commute-card">
+                <div class="commute-time">8 mins</div>
+                <div class="commute-place">AUC New Cairo Campus</div>
+              </div>
+              <div class="commute-card">
+                <div class="commute-time">12 mins</div>
+                <div class="commute-place">Cairo Festival City</div>
+              </div>
+              <div class="commute-card">
+                <div class="commute-time">18 mins</div>
+                <div class="commute-place">Cairo Int'l Airport</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legal & Title Verification Dossier -->
+          <div class="detail-card">
+            <h2 class="detail-card-title">
+              <span>Title Deed & Legal Audit Dossier</span>
+              <span class="badge-verified">Certified 100% Clear</span>
+            </h2>
+
+            <div class="legal-check-list">
+              <div class="legal-item">
+                <svg class="legal-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="legal-text">
+                  <b>Freehold Ownership</b>
+                  <span>Direct title issuance without leasehold expiration. Foreign ownership eligible.</span>
+                </div>
+              </div>
+              <div class="legal-item">
+                <svg class="legal-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="legal-text">
+                  <b>Construction License #184/2023</b>
+                  <span>Authorized by New Urban Communities Authority (NUCA) with 0 height violations.</span>
+                </div>
+              </div>
+              <div class="legal-item">
+                <svg class="legal-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="legal-text">
+                  <b>Bank Escrow Account Protected</b>
+                  <span>Installments disbursed strictly against surveyed construction milestones.</span>
+                </div>
+              </div>
+              <div class="legal-item">
+                <svg class="legal-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="legal-text">
+                  <b>Zero Overdue Maintenance Fees</b>
+                  <span>Clean developer audit sheet with zero outstanding developer debt.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             RIGHT STICKY COLUMN (Action Console, Viewing Scheduler & Broker)
+             =============================================================== -->
+        <aside class="detail-sticky-col">
+          <!-- Main Action Box -->
+          <div class="action-console-card">
+            <span class="console-status-pill">Available · Direct Allocation</span>
+
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-family: var(--sans); font-size: 13px; color: var(--ink-3);">Contract Price:</span>
+              <b style="font-family: var(--mono-ui); font-size: 1.45rem; color: var(--navy-900);">32,500,000 EGP</b>
+            </div>
+
+            <!-- Viewing Scheduler -->
+            <div class="viewing-scheduler-box">
+              <div class="sched-header">
+                <span class="sched-month">March 2026</span>
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Private Tour</span>
+              </div>
+              <div class="sched-calendar-grid">
+                <div class="sched-dow">M</div>
+                <div class="sched-dow">T</div>
+                <div class="sched-dow">W</div>
+                <div class="sched-dow">T</div>
+                <div class="sched-dow">F</div>
+                <div class="sched-dow">S</div>
+                <div class="sched-dow">S</div>
+                <button type="button" class="sched-day disabled">9</button>
+                <button type="button" class="sched-day disabled">10</button>
+                <button type="button" class="sched-day disabled">11</button>
+                <button type="button" class="sched-day selected">12</button>
+                <button type="button" class="sched-day">13</button>
+                <button type="button" class="sched-day">14</button>
+                <button type="button" class="sched-day">15</button>
+              </div>
+
+              <div class="time-chips-row">
+                <button type="button" class="time-chip">10:30 AM</button>
+                <button type="button" class="time-chip active">02:00 PM</button>
+                <button type="button" class="time-chip">04:30 PM</button>
+              </div>
+            </div>
+
+            <!-- Book Viewing CTA -->
+            <button type="button" class="btn-submit-offer" id="btnBookViewing" style="background: var(--brass); color: #131d36;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span>Schedule Private Viewing</span>
+            </button>
+
+            <!-- Direct WhatsApp Ingestion -->
+            <a href="https://wa.me/201000000000?text=I%20am%20interested%20in%20Lake%20View%20Signature%20Villa%20(Ref:%20SET-NC-9042)" target="_blank" class="btn-inquire-whatsapp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <span>Instant WhatsApp Ingestion</span>
+            </a>
+
+            <!-- Make Binding Offer -->
+            <button type="button" class="btn-submit-offer" id="btnMakeOffer">
+              <span>Submit Escrow Offer</span>
+            </button>
+
+            <!-- Agent Representation Card -->
+            <div class="agent-advisor-box">
+              <img src="../../../../Images/web/phone.jpg" alt="Karim El-Sayed, Senior Broker" class="advisor-avatar" />
+              <div class="advisor-info">
+                <b>Karim El-Sayed</b>
+                <span>Senior Palm Hills Advisor · 64 Deals</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Similar Verified Residences -->
+    <section class="similar-section">
+      <div class="wrap">
+        <div class="shead shead-row" style="max-width: none; margin-bottom: 2rem;">
+          <div>
+            <h2 style="font-family: var(--serif); font-size: 1.8rem; margin: 0;">Similar Verified Residences</h2>
+            <p style="margin-top: 4px; font-size: 13.5px; color: var(--ink-3);">Comparable units in Golden Square and Sheikh Zayed with active installment terms.</p>
+          </div>
+          <a class="slink" href="./search.html">Explore all 24 units →</a>
+        </div>
+
+        <div class="props" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+          <!-- Similar 1: Mivida Crescent Standalone -->
+          <article class="prop">
+            <div class="prop-media">
+              <img src="../../../../Images/web/7.jpg" alt="Mivida Crescent Standalone" loading="lazy" />
+              <div class="prop-tags">
+                <span class="tag tag-dev">Emaar Misr</span>
+                <span class="tag tag-ok">Verified</span>
+              </div>
+              <span class="prop-sqm">EGP 78,225 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">Golden Square, New Cairo</p>
+              <h3>Mivida Crescent Standalone</h3>
+              <p class="prop-price">48,500,000<small>EGP</small></p>
+              <div style="font-family: var(--mono-ui); font-size: 11.5px; color: var(--ink-3); margin-top: 4px;">6 Beds · 7 Baths · 620 m²</div>
+            </div>
+          </article>
+
+          <!-- Similar 2: Villette Sky Villa -->
+          <article class="prop">
+            <div class="prop-media">
+              <img src="../../../../Images/web/6.jpg" alt="Villette Sky Villa" loading="lazy" />
+              <div class="prop-tags">
+                <span class="tag tag-dev">SODIC</span>
+                <span class="tag tag-ok">Verified</span>
+              </div>
+              <span class="prop-sqm">EGP 69,743 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">Villette, New Cairo</p>
+              <h3>Villette Sky Villa</h3>
+              <p class="prop-price">27,200,000<small>EGP</small></p>
+              <div style="font-family: var(--mono-ui); font-size: 11.5px; color: var(--ink-3); margin-top: 4px;">4 Beds · 4 Baths · 390 m²</div>
+            </div>
+          </article>
+
+          <!-- Similar 3: Palm Court Signature Villa -->
+          <article class="prop">
+            <div class="prop-media">
+              <img src="../../../../Images/web/4.jpg" alt="Palm Court Signature Villa" loading="lazy" />
+              <div class="prop-tags">
+                <span class="tag tag-dev">Palm Hills</span>
+                <span class="tag tag-ok">Verified</span>
+              </div>
+              <span class="prop-sqm">EGP 75,000 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">Palm Hills, New Cairo</p>
+              <h3>Palm Court Signature Villa</h3>
+              <p class="prop-price">36,000,000<small>EGP</small></p>
+              <div style="font-family: var(--mono-ui); font-size: 11.5px; color: var(--ink-3); margin-top: 4px;">5 Beds · 6 Baths · 480 m²</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pre-Footer Private Advisory Strip -->
+    <aside class="pre-ftr-strip">
+      <div class="wrap pre-ftr-row">
+        <div class="pre-ftr-text">
+          <h3>Require Private Representation or Off-Market Allocations?</h3>
+          <p>
+            Settly's Private Client Desk manages confidential acquisitions, bespoke payment term negotiations,
+            and notarized title verification for family offices and institutional investors.
+          </p>
+        </div>
+        <div class="pre-ftr-actions">
+          <a href="https://wa.me/201000000000" target="_blank" rel="noopener noreferrer" class="btn-pre-whatsapp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.18 8.18 0 0 1-5.82 2.41c-1.45 0-2.88-.38-4.14-1.11l-.3-.17-3.08.81.82-3-.19-.31a8.216 8.216 0 0 1-1.25-4.47c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.01-1.24-.74-.66-1.25-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.71 4.3 3.8.6.26 1.07.42 1.44.54.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.17-.48-.3"/></svg>
+            <span>Speak with Private Advisor</span>
+          </a>
+          <a href="tel:+20221298000" class="btn-pre-phone">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>+20 (2) 2129 8000</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Luxury Global Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+    <footer class="settly-master-footer">
+      <div class="settly-footer-shell">
+        <div class="settly-footer-grid">
+          <!-- Col 1: Brand Authority & Escrow -->
+          <div class="settly-ftr-brand">
+            <a href="./index.html" class="brand" style="margin-bottom: 1.25rem;">
+              <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" class="ftr-logo-plate" />
+              <span style="color: #fff;">Settly</span>
+            </a>
+            <p class="settly-ftr-desc">
+              Settly is Egypt's institutional luxury real estate exchange. Curating verified prime residential and commercial assets with Central Bank of Egypt statutory escrow protection across Greater Cairo and the Mediterranean Coast.
+            </p>
+            <div class="settly-trust-badges">
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Central Bank of Egypt Escrow Audited (Law 27/2020)</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Tier-1 Licensed Master Developer Exchange</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                <span>100% Freehold Foreign Ownership Guarantee</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Investment Corridors -->
+          <div class="settly-ftr-col">
+            <h4>Prime Corridors</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./area-detail.html">Golden Square (New Cairo)</a></li>
+              <li><a href="./search.html?corridor=sahel">Ras El Hekma (North Coast)</a></li>
+              <li><a href="./search.html?corridor=zayed">New Zayed (Karmell & Rivers)</a></li>
+              <li><a href="./search.html?corridor=gouna">El Gouna Waterfront Estates</a></li>
+              <li><a href="./search.html?corridor=sidiheneish">Sidi Heneish Azure Bay</a></li>
+              <li><a href="./areas.html">All 8 Corridors & GIS Radar →</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Institutional Intelligence -->
+          <div class="settly-ftr-col">
+            <h4>Intelligence & Tools</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./market-insights.html">Macro Intelligence (Q1 2026)</a></li>
+              <li><a href="./market-insights.html#yieldArbitrage">Yield Arbitrage Terminal</a></li>
+              <li><a href="./market-insights.html#developerLeague">Developer Punctuality Table</a></li>
+              <li><a href="./compare.html">Compare 4 Residences Side-by-Side</a></li>
+              <li><a href="./search.html">Cadastral Registry Search</a></li>
+              <li><a href="./agents.html">Certified Agent Directory</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Private Client Advisory & Desk -->
+          <div class="settly-ftr-col">
+            <h4>Private Client Desk</h4>
+            <div class="settly-ftr-advisory">
+              <p>
+                Confidential acquisition support for family offices, institutional funds, and international diaspora capital.
+              </p>
+              <a href="https://wa.me/201000000000" target="_blank" class="btn-ftr-concierge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                <span>WhatsApp Private Desk</span>
+              </a>
+              <div class="settly-ftr-hours">
+                Daily 09:00 — 21:00 CLT · Cairo / Dubai / London
+              </div>
+
+              <!-- Social Media Strip (Instagram, LinkedIn, Facebook, X) -->
+              <div class="settly-socials-block">
+                <span class="settly-socials-label">Connect with Settly:</span>
+                <div class="settly-socials-strip">
+                  <a href="https://instagram.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Instagram" title="Instagram">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on LinkedIn" title="LinkedIn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Facebook" title="Facebook">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                  </a>
+                  <a href="https://x.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on X" title="X (Twitter)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="settly-footer-bottom">
+          <div class="settly-ftr-legal">
+            © 2026 Settly Real Estate Technologies Inc. Central Bank of Egypt Law 27/2020 Compliant. All transactions escrow-verified.
+          </div>
+          <div class="settly-ftr-socials">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Exchange</a>
+            <a href="#escrow">Escrow Security</a>
+            <a href="./market-insights.html">Advisory Dossiers</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Leaflet GIS Map Script -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- Interactive Detail Scripts -->
+    <script>
+      // 1. Gallery Thumbnail Switcher
+      const thumbs = document.querySelectorAll(".gallery-thumb");
+      const mainImg = document.getElementById("mainHeroImg");
+      thumbs.forEach((thumb) => {
+        thumb.addEventListener("click", () => {
+          const fullSrc = thumb.dataset.full;
+          if (fullSrc && mainImg) {
+            mainImg.style.opacity = "0.4";
+            setTimeout(() => {
+              mainImg.src = fullSrc;
+              mainImg.style.opacity = "1";
+            }, 140);
+          }
+        });
+      });
+
+      // 2. Favorite Toggle Button
+      const saveBtn = document.getElementById("btnSaveListing");
+      const saveText = document.getElementById("saveBtnText");
+      if (saveBtn) {
+        saveBtn.addEventListener("click", () => {
+          saveBtn.classList.toggle("favorited");
+          const isFav = saveBtn.classList.contains("favorited");
+          const svg = saveBtn.querySelector("svg");
+          if (isFav) {
+            svg.setAttribute("fill", "currentColor");
+            saveText.textContent = "Saved";
+          } else {
+            svg.setAttribute("fill", "none");
+            saveText.textContent = "Save";
+          }
+        });
+      }
+
+      // 3. Reactive Payment Calculator Slider
+      const slider = document.getElementById("downSlider");
+      const downPctText = document.getElementById("sliderDownPctText");
+      const calcDownAmt = document.getElementById("calcDownAmount");
+      const calcQtrAmt = document.getElementById("calcQuarterlyAmount");
+      const basePrice = 32500000;
+
+      if (slider && downPctText && calcDownAmt && calcQtrAmt) {
+        slider.addEventListener("input", (e) => {
+          const pct = parseInt(e.target.value, 10);
+          const downVal = basePrice * (pct / 100);
+          const remVal = basePrice - downVal;
+          const quarterlyVal = remVal / 28; // 28 quarters = 7 years
+
+          downPctText.textContent = `Down Payment: ${pct}% (${downVal.toLocaleString("en-US")} EGP)`;
+          calcDownAmt.textContent = `${downVal.toLocaleString("en-US")} EGP`;
+          calcQtrAmt.textContent = `${Math.round(quarterlyVal).toLocaleString("en-US")} EGP`;
+        });
+      }
+
+      // 4. Interactive Floorplan Tabs
+      const floorBtns = document.querySelectorAll(".floor-tab-btn");
+      const roomsList = document.getElementById("floorRoomsList");
+
+      const floorData = {
+        ground: [
+          { name: "Grand Reception", area: "96.8 m²" },
+          { name: "Dining Room", area: "24.5 m²" },
+          { name: "Show Kitchen", area: "18.2 m²" },
+          { name: "Guest Suite", area: "25.0 m²" },
+          { name: "Maid's Quarters", area: "12.4 m²" },
+          { name: "Covered Loggia", area: "48.0 m²" }
+        ],
+        first: [
+          { name: "Master Suite", area: "42.0 m²" },
+          { name: "Walk-in Dressing", area: "14.5 m²" },
+          { name: "Suite 2 (En-suite)", area: "26.4 m²" },
+          { name: "Suite 3 (En-suite)", area: "24.8 m²" },
+          { name: "Suite 4 (En-suite)", area: "22.0 m²" },
+          { name: "Family Living Room", area: "38.5 m²" }
+        ],
+        roof: [
+          { name: "Sky Lounge & Bar", area: "36.0 m²" },
+          { name: "Open Roof Deck", area: "78.5 m²" },
+          { name: "Kitchenette / BBQ", area: "12.0 m²" },
+          { name: "Guest Bathroom", area: "6.5 m²" }
+        ]
+      };
+
+      floorBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          floorBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          const floor = btn.dataset.floor;
+          if (floorData[floor] && roomsList) {
+            roomsList.innerHTML = "";
+            floorData[floor].forEach((item) => {
+              const div = document.createElement("div");
+              div.className = "room-item";
+              div.innerHTML = `<span>${item.name}:</span><b>${item.area}</b>`;
+              roomsList.appendChild(div);
+            });
+          }
+        });
+      });
+
+      // 5. Viewing Scheduler Day Selection
+      const schedDays = document.querySelectorAll(".sched-day:not(.disabled)");
+      schedDays.forEach((day) => {
+        day.addEventListener("click", () => {
+          schedDays.forEach((d) => d.classList.remove("selected"));
+          day.classList.add("selected");
+        });
+      });
+
+      // 6. Time Slot Chips
+      const timeChips = document.querySelectorAll(".time-chip");
+      timeChips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          timeChips.forEach((c) => c.classList.remove("active"));
+          chip.classList.add("active");
+        });
+      });
+
+      // 7. Booking Action Toast
+      const bookBtn = document.getElementById("btnBookViewing");
+      if (bookBtn) {
+        bookBtn.addEventListener("click", () => {
+          bookBtn.textContent = "✓ Viewing Request Confirmed";
+          bookBtn.style.background = "var(--sage)";
+          bookBtn.style.color = "#fff";
+          setTimeout(() => {
+            bookBtn.textContent = "Schedule Private Viewing";
+            bookBtn.style.background = "var(--brass)";
+            bookBtn.style.color = "#131d36";
+          }, 3500);
+        });
+      }
+
+      // 8. Leaflet Location GIS Map
+      window.addEventListener("DOMContentLoaded", () => {
+        if (typeof L !== "undefined") {
+          const villaCoords = [30.0155, 31.4880]; // Lake View, Golden Square
+          const map = L.map("detailMap", {
+            center: villaCoords,
+            zoom: 15,
+            zoomControl: true,
+            attributionControl: false
+          });
+
+          L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+            subdomains: "abcd",
+            maxZoom: 19
+          }).addTo(map);
+
+          // Custom Settly Pin
+          const icon = L.divIcon({
+            className: "settly-leaflet-pin",
+            html: '<div class="pin on"><b>Lake View Villa</b></div>',
+            iconSize: [120, 36],
+            iconAnchor: [60, 36]
+          });
+
+          L.marker(villaCoords, { icon: icon }).addTo(map);
+
+          // Compound perimeter boundary
+          const compoundBoundary = [
+            [30.0190, 31.4820],
+            [30.0210, 31.4920],
+            [30.0120, 31.4950],
+            [30.0100, 31.4840]
+          ];
+          L.polygon(compoundBoundary, {
+            color: "#C69749",
+            weight: 2,
+            dashArray: "5, 5",
+            fillColor: "#C69749",
+            fillOpacity: 0.1
+          }).addTo(map);
+        }
+      });
+    </script>
+  </body>
+</html>

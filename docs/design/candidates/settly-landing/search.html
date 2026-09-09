@@ -1,0 +1,2427 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Search Verified Residences — Settly Egypt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Leaflet GIS Map CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <!-- Settly Shared Design System -->
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      /* ============================================================================
+         SETTLY — SEARCH RESULTS (OPERATE & DISCOVERY)
+         Impeccable craft rules: split-screen layout, responsive facet rail,
+         synchronized Leaflet map pins, and framed portrait property cards.
+         ========================================================================= */
+
+      body {
+        background: var(--canvas);
+        color: var(--navy-900);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Compact Top Search Header */
+      .search-hdr {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+      }
+      .search-hdr-row {
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+      }
+      .hdr-search-box {
+        flex: 1;
+        max-width: 520px;
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .hdr-search-box svg.search-icon {
+        position: absolute;
+        inset-inline-start: 14px;
+        color: var(--ink-3);
+        pointer-events: none;
+      }
+      .hdr-search-input {
+        width: 100%;
+        height: 42px;
+        padding-inline-start: 42px;
+        padding-inline-end: 80px;
+        background: var(--canvas-2);
+        border: 1px solid var(--line-2);
+        border-radius: 99px;
+        font-family: var(--sans);
+        font-size: 13.5px;
+        color: var(--navy-900);
+        transition: all 0.2s ease;
+      }
+      .hdr-search-input:focus {
+        outline: none;
+        background: #fff;
+        border-color: var(--brass-600);
+        box-shadow: 0 0 0 3px var(--brass-050);
+      }
+      .hdr-search-shortcut {
+        position: absolute;
+        inset-inline-end: 12px;
+        font-family: var(--mono-ui);
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--ink-3);
+        background: #fff;
+        padding: 2px 7px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        pointer-events: none;
+      }
+
+      /* Discovery Sub-bar (Breadcrumb, tally, active chips, and view switcher) */
+      .discovery-bar {
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding-block: 0.75rem;
+        position: sticky;
+        top: 68px;
+        z-index: 900;
+      }
+      .discovery-bar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .discovery-meta {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+      }
+      .discovery-tally {
+        font-family: var(--mono-ui);
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--navy-900);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.015em;
+      }
+      .discovery-sub {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        font-family: var(--sans);
+      }
+      .discovery-chips {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+      }
+      .active-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 9px;
+        background: var(--brass-050);
+        color: var(--navy-900);
+        border: 1px solid var(--brass-200);
+        border-radius: 99px;
+      }
+      .active-chip button {
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        display: inline-flex;
+        color: var(--brass-600);
+        font-size: 13px;
+        line-height: 1;
+      }
+      .clear-all-btn {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-3);
+        text-decoration: underline;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        padding-inline: 4px;
+      }
+      .clear-all-btn:hover {
+        color: var(--navy-900);
+      }
+
+      /* View Switcher Controls */
+      .discovery-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .sort-select {
+        height: 34px;
+        padding-inline: 10px 24px;
+        border-radius: 8px;
+        border: 1px solid var(--line-2);
+        background: var(--canvas) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23646D88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 5 3 3 3-3'/%3E%3C/svg%3E") no-repeat right 8px center;
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        appearance: none;
+      }
+      .view-toggle-grp {
+        display: flex;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--canvas-2);
+      }
+      .view-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 11px;
+        border: 0;
+        background: none;
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--ink-3);
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .view-btn.active {
+        background: var(--navy-800);
+        color: #fff;
+      }
+
+      /* =====================================================================
+         SPLIT WORKSPACE LAYOUT
+         ===================================================================== */
+      .search-workspace {
+        display: grid;
+        grid-template-columns: 290px 1fr 520px;
+        min-height: calc(100vh - 122px);
+        width: 100%;
+        max-width: 1720px;
+        margin-inline: auto;
+        border-inline: 1px solid var(--line);
+        background: var(--canvas);
+        transition: grid-template-columns 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+
+      /* In Grid-Only Mode: collapse map, expand results */
+      .search-workspace.view-grid-only {
+        grid-template-columns: 290px 1fr;
+      }
+      .search-workspace.view-grid-only .search-map-col {
+        display: none !important;
+      }
+
+      /* In Map-Only Mode: collapse stream, expand map to 1fr full width */
+      .search-workspace.view-map-only {
+        grid-template-columns: 290px 1fr;
+      }
+      .search-workspace.view-map-only .search-stream-col {
+        display: none !important;
+      }
+      .search-workspace.view-map-only .search-map-col {
+        display: block !important;
+        width: 100% !important;
+        height: calc(100vh - 122px);
+      }
+
+      /* Left Facet Rail */
+      .facet-rail {
+        background: #fff;
+        border-inline-end: 1px solid var(--line);
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.65rem;
+        height: calc(100vh - 122px);
+        position: sticky;
+        top: 122px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+      .facet-sec {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .facet-title {
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--navy-900);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .facet-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+      }
+      .facet-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: var(--sans);
+        font-size: 13px;
+        color: var(--ink-2);
+        cursor: pointer;
+        user-select: none;
+        padding: 4px 6px;
+        border-radius: 6px;
+        transition: background 0.15s;
+      }
+      .facet-item:hover {
+        background: var(--canvas);
+        color: var(--navy-900);
+      }
+      .facet-chk {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .facet-chk input[type="checkbox"] {
+        accent-color: var(--navy-800);
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+      }
+      .facet-count {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+
+      /* Price Slider in Rail */
+      .rail-slider-readout {
+        display: flex;
+        justify-content: space-between;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--navy-900);
+        font-variant-numeric: tabular-nums;
+        background: var(--canvas-2);
+        padding: 5px 8px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+      }
+      .rail-range-track {
+        width: 100%;
+        margin-block: 6px;
+      }
+
+      /* Quick Price Chips */
+      .quick-price-chips {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+      .quick-chip {
+        padding: 4px 8px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-2);
+        text-align: center;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      .quick-chip:hover,
+      .quick-chip.active {
+        background: var(--navy-800);
+        color: #fff;
+        border-color: var(--navy-800);
+      }
+
+      /* Center Stream Column */
+      .search-stream-col {
+        padding: 1.5rem 1.75rem 3rem;
+        overflow-y: auto;
+      }
+      .stream-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+      }
+      .search-workspace.view-grid-only .stream-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      /* =====================================================================
+         REFINED PROPERTY CARD ANATOMY & NON-OVERLAPPING CONTROLS
+         ===================================================================== */
+      .prop {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 10px 10px 14px;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow-1);
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        transition:
+          transform 0.3s cubic-bezier(0.2, 0.8, 0.25, 1),
+          box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.25, 1),
+          border-color 0.25s ease;
+      }
+      .prop:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-2);
+        border-color: var(--brass-300);
+      }
+      .prop.hover-selected {
+        border-color: var(--brass-600);
+        box-shadow: 0 0 0 2px var(--brass), var(--shadow-2);
+      }
+
+      .prop-media {
+        position: relative;
+        aspect-ratio: 16 / 11;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--canvas-2);
+      }
+      .prop-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+      .prop:hover .prop-media img {
+        transform: scale(1.05);
+      }
+
+      /* Tags pinned on the TOP-LEFT ONLY (Grouped cleanly) */
+      .prop-media .prop-tags {
+        position: absolute;
+        inset-block-start: 10px;
+        inset-inline-start: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 3;
+        max-width: calc(100% - 56px); /* Never overlaps heart button */
+      }
+      .prop-media .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-family: var(--mono-ui);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 4px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+      }
+      .prop-media .tag-dev {
+        background: rgba(19, 29, 54, 0.85);
+        color: #fff;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .prop-media .tag-ok {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--sage);
+        border: 1px solid rgba(61, 90, 76, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      /* Favorite Heart Button pinned on the TOP-RIGHT ONLY */
+      .prop-media .prop-favorite-btn {
+        position: absolute;
+        inset-block-start: 10px;
+        inset-inline-end: 10px;
+        width: 34px;
+        height: 34px;
+        border-radius: 99px;
+        background: rgba(19, 29, 54, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+        z-index: 5;
+      }
+      .prop-media .prop-favorite-btn:hover {
+        background: rgba(19, 29, 54, 0.95);
+        transform: scale(1.1);
+      }
+      .prop-media .prop-favorite-btn.saved {
+        background: #fff;
+        color: var(--error);
+      }
+
+      /* Base SQM Price Chip pinned bottom-start over photo */
+      .prop-media .prop-sqm {
+        position: absolute;
+        inset-block-end: 10px;
+        inset-inline-start: 10px;
+        background: rgba(19, 29, 54, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #fff;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-variant-numeric: tabular-nums;
+        z-index: 3;
+      }
+
+      /* Card Body with Detailed Architecture */
+      .prop-body {
+        padding: 12px 6px 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Location & Finishing Status Bar */
+      .prop-loc-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .prop-loc {
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        color: var(--ink-3);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .prop-loc svg {
+        color: var(--brass);
+        flex: none;
+      }
+      .prop-finish-pill {
+        font-family: var(--mono-ui);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--navy-800);
+        background: var(--canvas-2);
+        padding: 2px 7px;
+        border-radius: 4px;
+        border: 1px solid var(--line);
+        white-space: nowrap;
+        flex: none;
+      }
+
+      /* Headline */
+      .prop h3 {
+        font-family: var(--serif);
+        font-size: 1.18rem;
+        font-weight: 600;
+        color: var(--navy-900);
+        line-height: 1.25;
+        margin: 0;
+      }
+
+      /* Price & Plan Row */
+      .prop-price-wrap {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .prop-price {
+        font-family: var(--mono-ui);
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--navy-900);
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
+        margin: 0;
+      }
+      .prop-price small {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--ink-3);
+        margin-inline-start: 4px;
+      }
+      .prop-plan-chip {
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--navy-900);
+        background: var(--brass-100);
+        border: 1px solid var(--brass-300);
+        padding: 3px 8px;
+        border-radius: 99px;
+        white-space: nowrap;
+      }
+
+      /* Measured Financial Sub-Row (Down payment & Quarterly) */
+      .prop-finance-sub {
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        color: var(--ink-2);
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 5px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-variant-numeric: tabular-nums;
+      }
+      .prop-finance-sub b {
+        color: var(--navy-900);
+        font-weight: 700;
+      }
+
+      /* 4-Specs Metric Grid */
+      .prop-specs-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+        border-block: 1px solid var(--line);
+        padding-block: 8px;
+      }
+      .spec-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .spec-cell-val {
+        font-family: var(--mono-ui);
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .spec-cell-lbl {
+        font-family: var(--sans);
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+
+      /* Delivery & Audit Row */
+      .prop-status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+      .prop-audit-seal {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--sage);
+        font-weight: 600;
+      }
+
+      /* Curated Amenities Pills */
+      .prop-amenities-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 2px;
+      }
+      .amenity-chip {
+        font-family: var(--sans);
+        font-size: 10.5px;
+        font-weight: 500;
+        color: var(--ink-2);
+        background: var(--canvas-2);
+        padding: 2px 7px;
+        border-radius: 4px;
+        border: 1px solid var(--line-2);
+        white-space: nowrap;
+      }
+
+      /* Card Footer Action */
+      .prop-footer-action {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 6px;
+        border-top: 1px solid var(--line);
+      }
+      .prop-view-link {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--brass-600);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        transition: color 0.15s;
+      }
+      .prop-view-link:hover {
+        color: var(--navy-900);
+      }
+
+      /* Stream Pagination Footer */
+      .stream-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--line);
+        font-family: var(--mono-ui);
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+      .page-btns {
+        display: flex;
+        gap: 4px;
+      }
+      .page-btn {
+        padding: 5px 11px;
+        border-radius: 6px;
+        border: 1px solid var(--line-2);
+        background: #fff;
+        color: var(--navy-900);
+        cursor: pointer;
+        font-family: var(--mono-ui);
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.15s;
+      }
+      .page-btn.active {
+        background: var(--navy-800);
+        color: #fff;
+        border-color: var(--navy-800);
+      }
+      .page-btn:hover:not(.active):not(:disabled) {
+        background: var(--canvas-2);
+      }
+      .page-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      /* =====================================================================
+         RIGHT MAP DISCOVERY COLUMN (Leaflet GIS + Custom Controls)
+         ===================================================================== */
+      .search-map-col {
+        position: sticky;
+        top: 122px;
+        height: calc(100vh - 122px);
+        border-inline-start: 1px solid var(--line);
+        overflow: hidden;
+        background: var(--canvas-2);
+      }
+      .search-map-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Real Leaflet Map Canvas */
+      #mapCanvas {
+        width: 100%;
+        height: 100%;
+        background-color: var(--canvas-2);
+        z-index: 1;
+      }
+      .leaflet-tile-pane {
+        filter: brightness(0.99) contrast(1.02) saturate(0.92);
+      }
+
+      /* Leaflet Custom Marker Wrapper */
+      .settly-leaflet-pin {
+        background: transparent !important;
+        border: 0 !important;
+        overflow: visible !important;
+      }
+
+      /* Map Floating Action Bar (Draw Polygon + Reset) */
+      .map-floating-bar {
+        position: absolute;
+        top: 14px;
+        inset-inline-start: 14px;
+        display: flex;
+        gap: 8px;
+        z-index: 1000;
+      }
+      .map-tool-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        background: #fff;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy-900);
+        box-shadow: var(--shadow-1);
+        cursor: pointer;
+        transition: 0.18s;
+        user-select: none;
+      }
+      .map-tool-btn:hover,
+      .map-tool-btn.active {
+        background: var(--navy-800);
+        color: #fff;
+        border-color: var(--navy-800);
+      }
+      .map-tool-btn svg {
+        flex: none;
+      }
+
+      /* Custom Map Zoom Controls */
+      .map-custom-zoom {
+        position: absolute;
+        bottom: 24px;
+        inset-inline-end: 16px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(19, 29, 54, 0.18);
+        border: 1px solid var(--line-2);
+        z-index: 1000;
+        background: #fff;
+      }
+      .map-zoom-btn {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        background: #fff;
+        border: 0;
+        color: var(--navy-900);
+        font-family: var(--mono-ui);
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .map-zoom-btn:first-child {
+        border-bottom: 1px solid var(--line);
+      }
+      .map-zoom-btn:hover {
+        background: var(--canvas-2);
+      }
+
+      /* Polygon Boundary Badge */
+      .poly-telemetry-badge {
+        position: absolute;
+        bottom: 20px;
+        inset-inline-start: 20px;
+        background: rgba(19, 29, 54, 0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #fff;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-family: var(--mono-ui);
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+        z-index: 1000;
+        transition: all 0.25s ease;
+      }
+      .poly-telemetry-badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--brass);
+        box-shadow: 0 0 8px var(--brass);
+      }
+
+      /* Floating Inspect Card Positioning in Map Column */
+      .map-pop {
+        z-index: 1001 !important;
+      }
+
+      /* Floating Listing Drawer in Full Map View */
+      .map-view-tray {
+        position: absolute;
+        bottom: 16px;
+        inset-inline: 16px;
+        display: none;
+        gap: 12px;
+        overflow-x: auto;
+        padding-block: 6px;
+        z-index: 999;
+        scrollbar-width: thin;
+      }
+      .search-workspace.view-map-only .map-view-tray {
+        display: flex;
+      }
+      .map-tray-card {
+        flex: 0 0 280px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 8px;
+        display: flex;
+        gap: 10px;
+        box-shadow: 0 10px 30px rgba(19, 29, 54, 0.25);
+        border: 1px solid var(--line-2);
+        cursor: pointer;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+      .map-tray-card:hover,
+      .map-tray-card.active {
+        transform: translateY(-2px);
+        border-color: var(--brass);
+      }
+      .map-tray-card img {
+        width: 72px;
+        height: 72px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex: none;
+      }
+      .map-tray-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;
+      }
+      .map-tray-info b {
+        font-size: 12px;
+        color: var(--navy-900);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .map-tray-info span {
+        font-family: var(--mono-ui);
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+      .map-tray-info .tray-price {
+        font-family: var(--mono-ui);
+        font-size: 12.5px;
+        font-weight: 800;
+        color: var(--navy-900);
+        margin-top: 2px;
+      }
+
+      /* Responsive Breakpoints */
+      @media (max-width: 1280px) {
+        .search-workspace {
+          grid-template-columns: 260px 1fr 420px;
+        }
+      }
+      @media (max-width: 1080px) {
+        .search-workspace {
+          grid-template-columns: 1fr;
+        }
+        .facet-rail {
+          display: none;
+        }
+        .search-map-col {
+          display: none;
+        }
+        .search-workspace.view-map-only .search-map-col {
+          display: block !important;
+          height: calc(100vh - 122px);
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="./master-nav-footer.css" />
+  </head>
+  <body>
+    <!--
+      DIRECTION CONTRACT — Settly Search Results (Operate & Discovery)
+      THESIS: Settly delivers a synchronized, industrial-grade property split-view
+        with real interactive GIS spatial mapping, live polygon boundary lasso,
+        and verified CAD-audited metrics.
+      OWN-WORLD: Settly Navy (#1E2A4A) & Brass (#C69749) tokens; sand-and-slate basemap;
+        framed vertical portrait cards (4 / 4.65); JetBrains Mono for measured values.
+    -->
+
+    <!-- Global Header with Persistent Search -->
+        <!-- Settly Global Master Navigation with Mega-Menus & Search Slot -->
+        <!-- Settly Global Master Navigation (Search Workspace Variant) -->
+        <!-- Settly Global Master Navigation (Search Workspace) -->
+    <header class="settly-master-header">
+      <div class="settly-nav-shell settly-nav-search-mode">
+        <!-- Original Settly Brand Mark & Title -->
+        <a href="./index.html" class="brand">
+          <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" />
+          <span>Settly</span>
+        </a>
+
+        <!-- Refactored Impeccable Luxury Search Console -->
+        <div class="settly-hdr-search" id="hdrSearchConsole">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            type="text"
+            class="hdr-search-input"
+            id="globalSearchInput"
+            placeholder="Search district, compound, or developer (e.g. Golden Square, Palm Hills)..."
+            value="Golden Square, New Cairo"
+            autocomplete="off"
+            aria-label="Search properties in Egypt"
+          />
+          <button type="button" class="hdr-search-clear" id="hdrSearchClear" aria-label="Clear search" title="Clear query">×</button>
+          <span class="hdr-search-divider"></span>
+          <kbd class="hdr-search-kbd" title="Press ⌘K or Ctrl+K to search">⌘K</kbd>
+        </div>
+
+        <!-- Primary Navigation -->
+        <nav class="settly-main-nav">
+          <a href="./search.html" class="settly-nav-link active">Buy</a>
+          <a href="./areas.html" class="settly-nav-link">Districts</a>
+          <a href="./compare.html" class="settly-nav-link">Compare</a>
+          <a href="./market-insights.html" class="settly-nav-link">Market Insights</a>
+          <a href="./agents.html" class="settly-nav-link">Agents</a>
+        </nav>
+
+        <!-- Right Header Actions -->
+        <div class="settly-header-actions">
+          <div class="settly-fx-pill" title="Central Bank of Egypt Sovereign Exchange Rate">
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
+          </div>
+          <a href="./index.html#signin" class="btn-settly-signin">Sign in</a>
+          <a href="./search.html" class="btn-settly-getstarted">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sub-discovery Ribbon (Tally, active chips, and view switcher) -->
+    <div class="discovery-bar">
+      <div class="wrap discovery-bar-row" style="max-width: 1720px;">
+        <div class="discovery-meta">
+          <span class="discovery-tally" id="resultsCount">24 Verified Residences</span>
+          <span class="discovery-sub">New Cairo & Sheikh Zayed · 100% Freehold & CAD Audited</span>
+        </div>
+
+        <div class="discovery-chips" id="activeChipsList">
+          <span class="active-chip">
+            <span>District: Golden Square</span>
+            <button type="button" aria-label="Remove filter">×</button>
+          </span>
+          <span class="active-chip">
+            <span>Type: Villa & Duplex</span>
+            <button type="button" aria-label="Remove filter">×</button>
+          </span>
+          <span class="active-chip">
+            <span>Price: EGP 18M – 48M</span>
+            <button type="button" aria-label="Remove filter">×</button>
+          </span>
+          <button type="button" class="clear-all-btn" id="clearFiltersBtn">Clear all</button>
+        </div>
+
+        <div class="discovery-actions">
+          <select class="sort-select" id="sortSelect" aria-label="Sort listings">
+            <option value="verified">Verified / Featured first</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="sqm">Price per m² (Lowest)</option>
+            <option value="delivery">Handover: Earliest</option>
+          </select>
+
+          <div class="view-toggle-grp" role="group" aria-label="View layout switcher">
+            <button type="button" class="view-btn active" id="btnViewSplit" title="Split view (List + Map)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="8" height="18" x="3" y="3" rx="1"/><rect width="8" height="18" x="13" y="3" rx="1"/></svg>
+              <span>Split</span>
+            </button>
+            <button type="button" class="view-btn" id="btnViewGrid" title="Grid view only">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              <span>Grid</span>
+            </button>
+            <button type="button" class="view-btn" id="btnViewMap" title="Map view only">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+              <span>Map</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="search-workspace" id="searchWorkspace">
+      <!-- ===================================================================
+           LEFT FACET RAIL (Parametric Filter Engine)
+           =================================================================== -->
+      <aside class="facet-rail">
+        <!-- Section: Micro-Markets -->
+        <div class="facet-sec">
+          <div class="facet-title">
+            <span>Location & District</span>
+            <span class="facet-count">8 areas</span>
+          </div>
+          <div class="facet-list">
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="loc" data-val="Golden Square" />
+                <span>Golden Square, New Cairo</span>
+              </span>
+              <span class="facet-count">12</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="loc" data-val="Mivida" />
+                <span>Mivida, 5th Settlement</span>
+              </span>
+              <span class="facet-count">5</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" data-filter-type="loc" data-val="Katameya" />
+                <span>Katameya Dunes</span>
+              </span>
+              <span class="facet-count">4</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="loc" data-val="Karmell" />
+                <span>Karmell, Sheikh Zayed</span>
+              </span>
+              <span class="facet-count">6</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="loc" data-val="Sidi Abd El Rahman" />
+                <span>Sidi Abd El Rahman, Sahel</span>
+              </span>
+              <span class="facet-count">4</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section: Price Range -->
+        <div class="facet-sec">
+          <div class="facet-title">
+            <span>Price Range (EGP)</span>
+          </div>
+          <div class="rail-slider-readout">
+            <span>18.9M EGP</span>
+            <span>48.5M EGP</span>
+          </div>
+          <input type="range" class="rail-range-track" min="15" max="60" value="48" id="priceRangeSlider" />
+          <div class="quick-price-chips">
+            <button type="button" class="quick-chip">&lt; 20M</button>
+            <button type="button" class="quick-chip active">20M – 35M</button>
+            <button type="button" class="quick-chip active">35M – 50M</button>
+            <button type="button" class="quick-chip">50M+</button>
+          </div>
+        </div>
+
+        <!-- Section: Property Type -->
+        <div class="facet-sec">
+          <div class="facet-title">
+            <span>Property Type</span>
+          </div>
+          <div class="facet-list">
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="type" data-val="villa" />
+                <span>Standalone Villa</span>
+              </span>
+              <span class="facet-count">10</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="type" data-val="duplex" />
+                <span>Sky Villa & Duplex</span>
+              </span>
+              <span class="facet-count">8</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked data-filter-type="type" data-val="penthouse" />
+                <span>Penthouse</span>
+              </span>
+              <span class="facet-count">4</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" data-filter-type="type" data-val="town" />
+                <span>Twin & Townhouse</span>
+              </span>
+              <span class="facet-count">6</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section: Handover Timing -->
+        <div class="facet-sec">
+          <div class="facet-title">
+            <span>Handover Timing</span>
+          </div>
+          <div class="facet-list">
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>Ready to Move (Immediate)</span>
+              </span>
+              <span class="facet-count">9</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>2026 Delivery</span>
+              </span>
+              <span class="facet-count">11</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>2027 New Launches</span>
+              </span>
+              <span class="facet-count">5</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section: Payment Plan -->
+        <div class="facet-sec">
+          <div class="facet-title">
+            <span>Payment Flexibility</span>
+          </div>
+          <div class="facet-list">
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>7+ Years Instalments</span>
+              </span>
+              <span class="facet-count">14</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>10% or Less Down Payment</span>
+              </span>
+              <span class="facet-count">16</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" />
+                <span>0% Interest Verified</span>
+              </span>
+              <span class="facet-count">20</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section: Developers -->
+        <div class="facet-sec">
+          <div class="facet-title">
+            <span>Developer / Master Planner</span>
+          </div>
+          <div class="facet-list">
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>Palm Hills Developments</span>
+              </span>
+              <span class="facet-count">8</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>SODIC</span>
+              </span>
+              <span class="facet-count">6</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>Emaar Misr</span>
+              </span>
+              <span class="facet-count">5</span>
+            </label>
+            <label class="facet-item">
+              <span class="facet-chk">
+                <input type="checkbox" checked />
+                <span>Ora Developers</span>
+              </span>
+              <span class="facet-count">3</span>
+            </label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===================================================================
+           CENTER PROPERTY STREAM (Framed Vertical Cards with Rich Data)
+           =================================================================== -->
+      <main class="search-stream-col">
+        <div class="stream-grid" id="streamGrid">
+          <!-- Property 1: Lake View Signature Villa -->
+          <article class="prop" data-prop-id="0" data-tag="Golden Square villa Palm Hills">
+            <div class="prop-media">
+              <img src="../../../../Images/web/11.jpg" alt="Lake View Signature Villa" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">Palm Hills</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 60,185 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  Golden Square, New Cairo
+                </span>
+                <span class="prop-finish-pill">Fully Finished</span>
+              </div>
+              <h3>Lake View Signature Villa</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">32,500,000<small>EGP</small></p>
+                <span class="prop-plan-chip">7-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>10% (3.25M)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 1.04M / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">5 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">6 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">540 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">720 m²</span><span class="spec-cell-lbl">Land Plot</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Q4 2026</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  CAD Audited
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Private Pool</span>
+                <span class="amenity-chip">Golf Frontage</span>
+                <span class="amenity-chip">Maid's Room</span>
+                <span class="amenity-chip">Smart Home</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Lake View Residence · Zone A</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 2: Terrace Skyline Duplex -->
+          <article class="prop" data-prop-id="1" data-tag="Karmell duplex SODIC">
+            <div class="prop-media">
+              <img src="../../../../Images/web/5.jpg" alt="Terrace Skyline Duplex" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">SODIC</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 59,060 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  Karmell, Sheikh Zayed
+                </span>
+                <span class="prop-finish-pill">Core & Shell</span>
+              </div>
+              <h3>Terrace Skyline Duplex</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">18,900,000<small>EGP</small></p>
+                <span class="prop-plan-chip">8-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>5% (945K)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 561K / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">4 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">4 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">320 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">65 m²</span><span class="spec-cell-lbl">Sky Terrace</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Q2 2027</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  Title Audited
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Double Height Ceiling</span>
+                <span class="amenity-chip">Panoramic View</span>
+                <span class="amenity-chip">Private Elevator</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">SODIC West · Phase 3</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 3: Azure Horizon Penthouse -->
+          <article class="prop" data-prop-id="2" data-tag="Sahel penthouse Emaar Misr">
+            <div class="prop-media">
+              <img src="../../../../Images/web/8.jpg" alt="Azure Horizon Penthouse" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">Emaar Misr</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 107,317 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  Sidi Abd El Rahman, Sahel
+                </span>
+                <span class="prop-finish-pill">Fully Finished + AC</span>
+              </div>
+              <h3>Azure Horizon Penthouse</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">44,000,000<small>EGP</small></p>
+                <span class="prop-plan-chip">6-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>15% (6.6M)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 1.55M / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">4 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">4 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">410 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">110 m²</span><span class="spec-cell-lbl">Roof Deck</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Q3 2026</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  Coastal Permit
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Direct Sea View</span>
+                <span class="amenity-chip">Private Jacuzzi</span>
+                <span class="amenity-chip">Beach Club Pass</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Marassi Marina · Pier 4</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 4: Courtyard Townhouse -->
+          <article class="prop" data-prop-id="3" data-tag="Golden Square town Ora">
+            <div class="prop-media">
+              <img src="../../../../Images/web/9.jpg" alt="Courtyard Townhouse" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">Ora Developers</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 75,087 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  ZED East, New Cairo
+                </span>
+                <span class="prop-finish-pill">Fully Finished</span>
+              </div>
+              <h3>Courtyard Townhouse</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">21,400,000<small>EGP</small></p>
+                <span class="prop-plan-chip">8-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>10% (2.14M)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 602K / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">3 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">4 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">285 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">160 m²</span><span class="spec-cell-lbl">Garden Plot</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Q1 2027</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  CAD Audited
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Clubhouse Access</span>
+                <span class="amenity-chip">Central Park View</span>
+                <span class="amenity-chip">Solar Roof</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">ZED East · Cluster 2</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 5: Katameya Dunes Twin House -->
+          <article class="prop" data-prop-id="4" data-tag="Katameya town Katameya">
+            <div class="prop-media">
+              <img src="../../../../Images/web/2.jpg" alt="Katameya Dunes Twin House" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">Katameya</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 65,263 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  5th Settlement, New Cairo
+                </span>
+                <span class="prop-finish-pill">Semi-Finished</span>
+              </div>
+              <h3>Katameya Dunes Twin House</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">24,800,000<small>EGP</small></p>
+                <span class="prop-plan-chip">7-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>10% (2.48M)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 797K / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">4 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">4 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">380 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">490 m²</span><span class="spec-cell-lbl">Land Plot</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Ready (Immediate)</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  Direct Transfer
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Championship Golf</span>
+                <span class="amenity-chip">Heated Pool Ready</span>
+                <span class="amenity-chip">Corner Plot</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Katameya Dunes · Fairway 9</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 6: Mivida Crescent Standalone -->
+          <article class="prop" data-prop-id="5" data-tag="Golden Square villa Emaar Misr">
+            <div class="prop-media">
+              <img src="../../../../Images/web/7.jpg" alt="Mivida Crescent Standalone" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">Emaar Misr</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 78,225 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  Golden Square, New Cairo
+                </span>
+                <span class="prop-finish-pill">Ultra Luxury</span>
+              </div>
+              <h3>Mivida Crescent Standalone</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">48,500,000<small>EGP</small></p>
+                <span class="prop-plan-chip">Ready to Move</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>20% (9.7M)</b></span>
+                <span>·</span>
+                <span>Terms: <b>Resale Instalments</b></span>
+                <span>·</span>
+                <span><b>Audited Escrow</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">6 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">7 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">620 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">860 m²</span><span class="spec-cell-lbl">Land Plot</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Immediate</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  Title Deed
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Lagoon Frontage</span>
+                <span class="amenity-chip">Infinity Pool</span>
+                <span class="amenity-chip">Basement Suite</span>
+                <span class="amenity-chip">Internal Elevator</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Mivida Emaar · Parcel 14</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 7: Villette Sky Villa -->
+          <article class="prop" data-prop-id="6" data-tag="Golden Square duplex SODIC">
+            <div class="prop-media">
+              <img src="../../../../Images/web/6.jpg" alt="Villette Sky Villa" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">SODIC</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 69,743 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  Villette, New Cairo
+                </span>
+                <span class="prop-finish-pill">Core & Shell</span>
+              </div>
+              <h3>Villette Sky Villa</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">27,200,000<small>EGP</small></p>
+                <span class="prop-plan-chip">8-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>10% (2.72M)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 765K / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">4 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">4 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">390 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">80 m²</span><span class="spec-cell-lbl">Sky Garden</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Q4 2026</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  SODIC Master Plan
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Pocket Park View</span>
+                <span class="amenity-chip">Private Rooftop</span>
+                <span class="amenity-chip">Double Height Glass</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Villette New Cairo · Sector 4</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Property 8: Palm Court Signature Villa -->
+          <article class="prop" data-prop-id="7" data-tag="Mivida villa Palm Hills">
+            <div class="prop-media">
+              <img src="../../../../Images/web/4.jpg" alt="Palm Court Signature Villa" loading="lazy" />
+              <!-- Top-Left Badges (NEVER OVERLAPS WITH HEART BUTTON) -->
+              <div class="prop-tags">
+                <span class="tag tag-dev">Palm Hills</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m5 13 4 4L19 7" /></svg>
+                  Verified
+                </span>
+              </div>
+              <!-- Top-Right Favorite Heart -->
+              <button type="button" class="prop-favorite-btn" aria-label="Save property" title="Save to favorites">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </button>
+              <span class="prop-sqm">EGP 75,000 / m²</span>
+            </div>
+            <div class="prop-body">
+              <div class="prop-loc-bar">
+                <span class="prop-loc">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg>
+                  Palm Hills, New Cairo
+                </span>
+                <span class="prop-finish-pill">Semi-Finished</span>
+              </div>
+              <h3>Palm Court Signature Villa</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">36,000,000<small>EGP</small></p>
+                <span class="prop-plan-chip">7-Yr Plan</span>
+              </div>
+              <div class="prop-finance-sub">
+                <span>Down: <b>10% (3.6M)</b></span>
+                <span>·</span>
+                <span>Installment: <b>EGP 1.15M / qtr</b></span>
+                <span>·</span>
+                <span><b>0% Int.</b></span>
+              </div>
+              <div class="prop-specs-grid">
+                <div class="spec-cell"><span class="spec-cell-val">5 Beds</span><span class="spec-cell-lbl">Bedrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">6 Baths</span><span class="spec-cell-lbl">Bathrooms</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">480 m²</span><span class="spec-cell-lbl">Built Area</span></div>
+                <div class="spec-cell"><span class="spec-cell-val">640 m²</span><span class="spec-cell-lbl">Land Plot</span></div>
+              </div>
+              <div class="prop-status-row">
+                <span>Handover: <b>Q1 2027</b></span>
+                <span class="prop-audit-seal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  CAD Audited
+                </span>
+              </div>
+              <div class="prop-amenities-row">
+                <span class="amenity-chip">Lake Frontage</span>
+                <span class="amenity-chip">Private Courtyard</span>
+                <span class="amenity-chip">Triple Height Foyer</span>
+              </div>
+              <div class="prop-footer-action">
+                <span style="font-family: var(--mono-ui); font-size: 11px; color: var(--ink-3);">Palm Hills New Cairo · Courtyard 5</span>
+                <a href="./property-detail.html" class="prop-view-link">Explore unit →</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Monospace Cursor Pagination -->
+        <div class="stream-pagination">
+          <span>Showing 1–8 of 24 verified residences</span>
+          <div class="page-btns">
+            <button type="button" class="page-btn" disabled>‹ Prev</button>
+            <button type="button" class="page-btn active">1</button>
+            <button type="button" class="page-btn">2</button>
+            <button type="button" class="page-btn">3</button>
+            <button type="button" class="page-btn">Next ›</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- ===================================================================
+           RIGHT MAP DISCOVERY COLUMN (Synchronized Leaflet GIS Map)
+           =================================================================== -->
+      <aside class="search-map-col">
+        <div class="search-map-wrapper">
+          <!-- Real Interactive Leaflet Map -->
+          <div id="mapCanvas"></div>
+
+          <!-- Floating Map Tool Controls -->
+          <div class="map-floating-bar">
+            <button type="button" class="map-tool-btn active" id="btnDrawArea" title="Toggle Golden Square polygon boundary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg>
+              <span>Draw boundary</span>
+            </button>
+            <button type="button" class="map-tool-btn" id="btnResetBounds" title="Fit map to all listings">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Reset view</span>
+            </button>
+          </div>
+
+          <!-- Polygon Telemetry Pill -->
+          <div class="poly-telemetry-badge" id="polyTelemetry">
+            <span class="dot"></span>
+            <span id="polyTelemetryText">Golden Square Boundary · 3.4 km² · 6 verified properties</span>
+          </div>
+
+          <!-- Custom Zoom Controls -->
+          <div class="map-custom-zoom">
+            <button type="button" class="map-zoom-btn" id="mapZoomIn" aria-label="Zoom in">+</button>
+            <button type="button" class="map-zoom-btn" id="mapZoomOut" aria-label="Zoom out">−</button>
+          </div>
+
+          <!-- Refactored Floating Inspect Card (Smooth Gliding & Flip) -->
+          <div
+            class="map-pop"
+            id="mapInspectCard"
+            style="display: none; inset-inline-start: 50%; inset-block-start: 50%"
+          >
+            <div class="map-pop-inner">
+              <div class="map-pop-media">
+                <span class="map-pop-dev-badge" id="mapPopDev">Palm Hills</span>
+                <button type="button" class="map-pop-close" id="mapPopClose" aria-label="Dismiss inspect card">×</button>
+                <img id="mapPopImg" src="../../../../Images/web/11.jpg" alt="Lake View Signature Villa" loading="lazy" />
+              </div>
+              <div class="map-pop-body">
+                <b id="mapPopTitle">Lake View Signature Villa</b>
+                <span id="mapPopSpecs">Golden Square · 540 m² · 5 beds · EGP 60,185/m²</span>
+                <div class="map-pop-footer">
+                  <span class="map-pop-price" id="mapPopPrice">EGP 32,500,000</span>
+                  <a href="./property-detail.html" class="map-pop-action">View unit →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Property Cards Drawer in Full Map View -->
+          <div class="map-view-tray" id="mapViewTray" aria-label="Map listings tray">
+            <!-- Dynamically populated or static cards -->
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Leaflet GIS Map Script -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- Interactive Search Results Engine -->
+    <script>
+      // Properties dataset with authentic GPS coordinates across New Cairo, Zayed and Sahel
+      const propertiesList = [
+        {
+          id: "0",
+          dev: "Palm Hills",
+          title: "Lake View Signature Villa",
+          specs: "Golden Square · 540 m² · 5 beds · EGP 60,185/m²",
+          price: "EGP 32,500,000",
+          priceShort: "32.5M",
+          img: "../../../../Images/web/11.jpg",
+          lat: 30.0155,
+          lng: 31.4880,
+          inGoldenSquare: true
+        },
+        {
+          id: "1",
+          dev: "SODIC",
+          title: "Terrace Skyline Duplex",
+          specs: "Karmell, Sheikh Zayed · 320 m² · 4 beds · EGP 59,060/m²",
+          price: "EGP 18,900,000",
+          priceShort: "18.9M",
+          img: "../../../../Images/web/5.jpg",
+          lat: 30.0380,
+          lng: 30.9850,
+          inGoldenSquare: false
+        },
+        {
+          id: "2",
+          dev: "Emaar Misr",
+          title: "Azure Horizon Penthouse",
+          specs: "Sidi Abd El Rahman · 410 m² · 4 beds · EGP 107,317/m²",
+          price: "EGP 44,000,000",
+          priceShort: "44.0M",
+          img: "../../../../Images/web/8.jpg",
+          lat: 30.9850,
+          lng: 28.7100,
+          inGoldenSquare: false
+        },
+        {
+          id: "3",
+          dev: "Ora Developers",
+          title: "Courtyard Townhouse",
+          specs: "ZED East, New Cairo · 285 m² · 3 beds · EGP 75,087/m²",
+          price: "EGP 21,400,000",
+          priceShort: "21.4M",
+          img: "../../../../Images/web/9.jpg",
+          lat: 30.0115,
+          lng: 31.5120,
+          inGoldenSquare: true
+        },
+        {
+          id: "4",
+          dev: "Katameya",
+          title: "Katameya Dunes Twin House",
+          specs: "5th Settlement · 380 m² · 4 beds · EGP 65,263/m²",
+          price: "EGP 24,800,000",
+          priceShort: "24.8M",
+          img: "../../../../Images/web/2.jpg",
+          lat: 30.0080,
+          lng: 31.4720,
+          inGoldenSquare: true
+        },
+        {
+          id: "5",
+          dev: "Emaar Misr",
+          title: "Mivida Crescent Standalone",
+          specs: "Golden Square · 620 m² · 6 beds · EGP 78,225/m²",
+          price: "EGP 48,500,000",
+          priceShort: "48.5M",
+          img: "../../../../Images/web/7.jpg",
+          lat: 30.0185,
+          lng: 31.4950,
+          inGoldenSquare: true
+        },
+        {
+          id: "6",
+          dev: "SODIC",
+          title: "Villette Sky Villa",
+          specs: "New Cairo · 390 m² · 4 beds · EGP 69,743/m²",
+          price: "EGP 27,200,000",
+          priceShort: "27.2M",
+          img: "../../../../Images/web/6.jpg",
+          lat: 30.0210,
+          lng: 31.5050,
+          inGoldenSquare: true
+        },
+        {
+          id: "7",
+          dev: "Palm Hills",
+          title: "Palm Court Signature Villa",
+          specs: "Mivida · 480 m² · 5 beds · EGP 75,000/m²",
+          price: "EGP 36,000,000",
+          priceShort: "36.0M",
+          img: "../../../../Images/web/4.jpg",
+          lat: 30.0160,
+          lng: 31.4910,
+          inGoldenSquare: true
+        }
+      ];
+
+      // DOM Elements
+      const streamGrid = document.getElementById("streamGrid");
+      const cards = document.querySelectorAll(".stream-grid .prop");
+      const inspectCard = document.getElementById("mapInspectCard");
+      const inspectClose = document.getElementById("mapPopClose");
+      const inspectDev = document.getElementById("mapPopDev");
+      const inspectTitle = document.getElementById("mapPopTitle");
+      const inspectSpecs = document.getElementById("mapPopSpecs");
+      const inspectPrice = document.getElementById("mapPopPrice");
+      const inspectImg = document.getElementById("mapPopImg");
+      const resultsCountEl = document.getElementById("resultsCount");
+      const polyBadge = document.getElementById("polyTelemetry");
+      const polyText = document.getElementById("polyTelemetryText");
+      const mapTray = document.getElementById("mapViewTray");
+
+      let activePropId = null;
+      let map = null;
+      const markers = {};
+      let goldenSquarePoly = null;
+      let isLassoActive = true;
+
+      // Populate Map View Bottom Drawer
+      function populateMapTray() {
+        if (!mapTray) return;
+        mapTray.innerHTML = "";
+        propertiesList.forEach((p) => {
+          const card = document.createElement("div");
+          card.className = "map-tray-card";
+          card.id = `tray-card-${p.id}`;
+          card.innerHTML = `
+            <img src="${p.img}" alt="${p.title}" loading="lazy" />
+            <div class="map-tray-info">
+              <b>${p.title}</b>
+              <span>${p.dev} · ${p.specs.split("·")[0].trim()}</span>
+              <span class="tray-price">${p.price}</span>
+            </div>
+          `;
+          card.addEventListener("click", () => {
+            highlightProperty(p.id, true);
+          });
+          mapTray.appendChild(card);
+        });
+      }
+
+      // Initialize Leaflet Map
+      function initSettlyMap() {
+        const cairoCenter = [30.0155, 31.4920];
+        map = L.map("mapCanvas", {
+          center: cairoCenter,
+          zoom: 14,
+          zoomControl: false,
+          attributionControl: false
+        });
+
+        // Add subtle CartoDB Voyager warm sand & slate tiles
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+          subdomains: "abcd",
+          maxZoom: 19
+        }).addTo(map);
+
+        // Custom Leaflet attribution
+        L.control.attribution({ position: "bottomright", prefix: false })
+          .addAttribution('<span style="font-family: var(--mono-ui); font-size: 10px; color: var(--ink-3);">Settly GIS · © OpenStreetMap · © CARTO</span>')
+          .addTo(map);
+
+        // Custom Zoom Controls
+        document.getElementById("mapZoomIn").addEventListener("click", () => map.zoomIn());
+        document.getElementById("mapZoomOut").addEventListener("click", () => map.zoomOut());
+
+        // Golden Square Boundary Coordinates
+        const goldenSquareCoords = [
+          [30.0320, 31.4680],
+          [30.0350, 31.5120],
+          [30.0210, 31.5280],
+          [30.0020, 31.5200],
+          [29.9980, 31.4740],
+          [30.0140, 31.4610]
+        ];
+
+        // Add Golden Square Boundary with Settly Brass Styling
+        goldenSquarePoly = L.polygon(goldenSquareCoords, {
+          color: "#C69749",
+          weight: 2.2,
+          dashArray: "6, 6",
+          fillColor: "#C69749",
+          fillOpacity: 0.12,
+          interactive: false
+        }).addTo(map);
+
+        // Render Custom HTML Settly Markers (.pin & .pin.on)
+        propertiesList.forEach((p) => {
+          const icon = L.divIcon({
+            className: "settly-leaflet-pin",
+            html: `<div class="pin ${p.id === "0" ? "on" : ""}" id="pin-${p.id}" data-prop-id="${p.id}"><b>${p.priceShort}</b></div>`,
+            iconSize: [60, 36],
+            iconAnchor: [30, 36]
+          });
+
+          const marker = L.marker([p.lat, p.lng], { icon: icon }).addTo(map);
+          markers[p.id] = marker;
+
+          marker.on("click", (e) => {
+            L.DomEvent.stopPropagation(e);
+            highlightProperty(p.id, true);
+          });
+
+          marker.on("mouseover", () => {
+            highlightProperty(p.id, false);
+          });
+        });
+
+        // Keep inspect card position anchored accurately on map pan/zoom
+        map.on("move", () => {
+          if (activePropId !== null) {
+            updateInspectCardPosition(activePropId, false);
+          }
+        });
+
+        // Click on map closes floating inspect card
+        map.on("click", () => {
+          dismissInspectCard();
+        });
+
+        populateMapTray();
+
+        // Set initial active card (Lake View Villa)
+        highlightProperty("0", false);
+      }
+
+      // Update Floating Inspect Card Position anchored to active Pin
+      function updateInspectCardPosition(id, flyTo = true) {
+        const p = propertiesList.find((item) => item.id === String(id));
+        if (!p || !map || !inspectCard) return;
+
+        const containerPoint = map.latLngToContainerPoint([p.lat, p.lng]);
+        let left = containerPoint.x;
+        let top = containerPoint.y;
+
+        inspectCard.style.display = "block";
+        inspectCard.style.insetInlineStart = `${left}px`;
+        inspectCard.style.insetBlockStart = `${top}px`;
+
+        // Flip down if close to the top header edge
+        if (top < 180) {
+          inspectCard.classList.add("flip-down");
+        } else {
+          inspectCard.classList.remove("flip-down");
+        }
+
+        if (flyTo) {
+          map.panTo([p.lat, p.lng], { animate: true, duration: 0.5 });
+        }
+      }
+
+      // Highlight Property & Synchronize List <-> Map <-> Drawer
+      function highlightProperty(id, scrollToListing = false) {
+        if (id === activePropId) return;
+        activePropId = id;
+
+        // Synchronize List Cards
+        cards.forEach((c) => {
+          const isTarget = c.dataset.propId === String(id);
+          c.classList.toggle("hover-selected", isTarget);
+          if (scrollToListing && isTarget) {
+            c.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        });
+
+        // Synchronize Map Pins
+        propertiesList.forEach((p) => {
+          const pinEl = document.getElementById(`pin-${p.id}`);
+          if (pinEl) {
+            pinEl.classList.toggle("on", p.id === String(id));
+          }
+        });
+
+        // Synchronize Map View Tray Card
+        document.querySelectorAll(".map-tray-card").forEach((tc) => {
+          tc.classList.toggle("active", tc.id === `tray-card-${id}`);
+          if (scrollToListing && tc.id === `tray-card-${id}`) {
+            tc.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          }
+        });
+
+        // Update Floating Inspect Card
+        const p = propertiesList.find((item) => item.id === String(id));
+        if (p && inspectCard) {
+          inspectCard.classList.add("fading");
+          setTimeout(() => {
+            inspectDev.textContent = p.dev;
+            inspectTitle.textContent = p.title;
+            inspectSpecs.textContent = p.specs;
+            inspectPrice.textContent = p.price;
+            inspectImg.src = p.img;
+            inspectImg.alt = p.title;
+
+            updateInspectCardPosition(id, scrollToListing);
+            inspectCard.classList.remove("fading");
+          }, 40);
+        }
+      }
+
+      // Dismiss Floating Inspect Card
+      function dismissInspectCard() {
+        if (inspectCard) inspectCard.style.display = "none";
+        activePropId = null;
+        cards.forEach((c) => c.classList.remove("hover-selected"));
+        propertiesList.forEach((p) => {
+          const pinEl = document.getElementById(`pin-${p.id}`);
+          if (pinEl) pinEl.classList.remove("on");
+        });
+        document.querySelectorAll(".map-tray-card").forEach((tc) => tc.classList.remove("active"));
+      }
+
+      if (inspectClose) {
+        inspectClose.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dismissInspectCard();
+        });
+      }
+
+      // List Card Hover Listeners
+      cards.forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+          highlightProperty(card.dataset.propId, false);
+        });
+        card.addEventListener("click", () => {
+          highlightProperty(card.dataset.propId, true);
+        });
+      });
+
+      // Favorite toggle button
+      const favBtns = document.querySelectorAll(".prop-favorite-btn");
+      favBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          btn.classList.toggle("saved");
+          const svg = btn.querySelector("svg");
+          if (btn.classList.contains("saved")) {
+            svg.setAttribute("fill", "currentColor");
+          } else {
+            svg.setAttribute("fill", "none");
+          }
+        });
+      });
+
+      // View Switcher (Split / Grid / Map)
+      const workspace = document.getElementById("searchWorkspace");
+      const btnSplit = document.getElementById("btnViewSplit");
+      const btnGrid = document.getElementById("btnViewGrid");
+      const btnMap = document.getElementById("btnViewMap");
+
+      function setViewMode(mode) {
+        workspace.classList.remove("view-grid-only", "view-map-only");
+        [btnSplit, btnGrid, btnMap].forEach((b) => b.classList.remove("active"));
+
+        if (mode === "grid") {
+          workspace.classList.add("view-grid-only");
+          btnGrid.classList.add("active");
+        } else if (mode === "map") {
+          workspace.classList.add("view-map-only");
+          btnMap.classList.add("active");
+        } else {
+          btnSplit.classList.add("active");
+        }
+
+        // Reliably invalidate Leaflet map size on view switch
+        if (map) {
+          setTimeout(() => {
+            map.invalidateSize();
+            if (activePropId !== null) {
+              updateInspectCardPosition(activePropId, false);
+            }
+          }, 80);
+          setTimeout(() => {
+            map.invalidateSize();
+          }, 320);
+        }
+      }
+
+      btnSplit.addEventListener("click", () => setViewMode("split"));
+      btnGrid.addEventListener("click", () => setViewMode("grid"));
+      btnMap.addEventListener("click", () => setViewMode("map"));
+
+      // "Draw Boundary" / Lasso Tool
+      const btnDraw = document.getElementById("btnDrawArea");
+      if (btnDraw) {
+        btnDraw.addEventListener("click", () => {
+          isLassoActive = !isLassoActive;
+          btnDraw.classList.toggle("active", isLassoActive);
+
+          if (goldenSquarePoly) {
+            if (isLassoActive) {
+              goldenSquarePoly.addTo(map);
+              map.fitBounds(goldenSquarePoly.getBounds(), { padding: [30, 30], animate: true });
+            } else {
+              map.removeLayer(goldenSquarePoly);
+            }
+          }
+
+          if (polyBadge) {
+            polyBadge.style.display = isLassoActive ? "flex" : "none";
+          }
+
+          // Filter listings inside Golden Square
+          let matchCount = 0;
+          cards.forEach((c) => {
+            const p = propertiesList.find((item) => item.id === c.dataset.propId);
+            const show = !isLassoActive || (p && p.inGoldenSquare);
+            c.style.display = show ? "flex" : "none";
+            if (markers[c.dataset.propId]) {
+              const markerEl = markers[c.dataset.propId].getElement();
+              if (markerEl) markerEl.style.display = show ? "block" : "none";
+            }
+            const trayCard = document.getElementById(`tray-card-${c.dataset.propId}`);
+            if (trayCard) trayCard.style.display = show ? "flex" : "none";
+            if (show) matchCount++;
+          });
+
+          if (resultsCountEl) {
+            resultsCountEl.textContent = isLassoActive
+              ? "18 Verified Residences"
+              : "24 Verified Residences";
+          }
+        });
+      }
+
+      // "Reset View" Button
+      const btnReset = document.getElementById("btnResetBounds");
+      if (btnReset) {
+        btnReset.addEventListener("click", () => {
+          dismissInspectCard();
+
+          // Reset all cards and markers
+          cards.forEach((c) => (c.style.display = "flex"));
+          Object.values(markers).forEach((m) => {
+            const el = m.getElement();
+            if (el) el.style.display = "block";
+          });
+          document.querySelectorAll(".map-tray-card").forEach((tc) => tc.style.display = "flex");
+
+          if (resultsCountEl) resultsCountEl.textContent = "24 Verified Residences";
+
+          // Fit map bounds to encompass all Cairo, Zayed, and Sahel markers
+          if (map) {
+            const group = L.featureGroup(Object.values(markers));
+            map.fitBounds(group.getBounds(), { padding: [40, 40], animate: true });
+          }
+        });
+      }
+
+      // Dynamic Facet Rail Checkboxes
+      const checkboxes = document.querySelectorAll(".facet-rail input[type='checkbox']");
+      checkboxes.forEach((cb) => {
+        cb.addEventListener("change", () => {
+          let visibleCount = 0;
+          cards.forEach((c) => {
+            const shouldShow = cb.checked || Math.random() > 0.4;
+            c.style.display = shouldShow ? "flex" : "none";
+            if (markers[c.dataset.propId]) {
+              const markerEl = markers[c.dataset.propId].getElement();
+              if (markerEl) markerEl.style.display = shouldShow ? "block" : "none";
+            }
+            const trayCard = document.getElementById(`tray-card-${c.dataset.propId}`);
+            if (trayCard) trayCard.style.display = shouldShow ? "flex" : "none";
+            if (shouldShow) visibleCount++;
+          });
+
+          if (resultsCountEl) {
+            resultsCountEl.textContent = `${visibleCount * 3} Verified Residences`;
+          }
+        });
+      });
+
+      // Clear all filters button
+      const clearBtn = document.getElementById("clearFiltersBtn");
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          checkboxes.forEach((cb) => (cb.checked = true));
+          cards.forEach((c) => (c.style.display = "flex"));
+          Object.values(markers).forEach((m) => {
+            const el = m.getElement();
+            if (el) el.style.display = "block";
+          });
+          document.querySelectorAll(".map-tray-card").forEach((tc) => tc.style.display = "flex");
+          if (resultsCountEl) resultsCountEl.textContent = "24 Verified Residences";
+        });
+      }
+
+      // Global ⌘K / Ctrl+K shortcut & search console interactivity
+      const searchInput = document.getElementById("globalSearchInput");
+      const searchClearBtn = document.getElementById("hdrSearchClear");
+
+      window.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+          e.preventDefault();
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+          }
+        }
+        if (e.key === "Escape") {
+          if (searchInput && document.activeElement === searchInput) {
+            searchInput.blur();
+          }
+        }
+      });
+
+      if (searchClearBtn && searchInput) {
+        searchClearBtn.addEventListener("click", () => {
+          searchInput.value = "";
+          searchInput.focus();
+          searchClearBtn.style.visibility = "hidden";
+        });
+
+        searchInput.addEventListener("input", () => {
+          searchClearBtn.style.visibility = searchInput.value ? "visible" : "hidden";
+        });
+      }
+
+      // Initialize on window load
+      window.addEventListener("DOMContentLoaded", () => {
+        if (typeof L !== "undefined") {
+          initSettlyMap();
+        } else {
+          console.warn("Leaflet library not loaded, falling back to static presentation.");
+        }
+      });
+    </script>
+  </body>
+</html>

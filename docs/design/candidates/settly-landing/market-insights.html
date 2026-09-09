@@ -1,0 +1,3055 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Egypt Luxury Real Estate Market Insights & Macro Intelligence — Settly Q1 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Settly Shared Design System -->
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      /* ============================================================================
+         SETTLY — SCREEN 07: MARKET INSIGHTS (IMPECCABLE CRAFT REFACTOR)
+         Strictly follows /impeccable craft floor:
+         - Zero kickers, zero colored card top-lines, zero nested cards
+         - Deep Navy (#1E2A4A, #101728, #0B111F), Settly Brass (#C69749), Bone (#F7F6F3), Sage (#3D5A4C)
+         - Spectral Serif for luxury broadsheet typography; JetBrains Mono for measured values
+         - Single elevation declaration (hairline border OR subtle shadow, never colored halos)
+         ========================================================================= */
+
+      :root {
+        --serif-lead: "Spectral", Georgia, serif;
+        --sans-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+        --mono-val: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      body {
+        background: var(--canvas);
+        color: var(--navy-900);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        font-family: var(--sans-ui);
+      }
+
+      /* Sticky Top Navigation */
+      .mi-nav-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+      }
+      .mi-nav-row {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+      .mi-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.85rem;
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .mi-nav-links a {
+        color: var(--ink-2);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .mi-nav-links a:hover,
+      .mi-nav-links a.active {
+        color: var(--navy-900);
+      }
+
+      /* Live Econometric Telemetry Bar (react-fast-marquee style infinite stream) */
+      .mi-ticker-bar {
+        background: #0B111F;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.65rem 0;
+        color: #E2E8F0;
+        font-family: var(--mono-val);
+        font-size: 12px;
+        position: relative;
+        overflow: hidden;
+        user-select: none;
+      }
+      .mi-marquee-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+      }
+      .mi-marquee-track {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        width: max-content;
+        will-change: transform;
+        animation: settlyMarquee 38s linear infinite;
+      }
+      .mi-marquee-wrapper:hover .mi-marquee-track {
+        animation-play-state: paused;
+      }
+      @keyframes settlyMarquee {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        100% {
+          transform: translate3d(-50%, 0, 0);
+        }
+      }
+      .mi-ticker-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .mi-ticker-dim {
+        color: #7E8DAA;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .mi-ticker-bright {
+        color: #fff;
+        font-weight: 600;
+      }
+      .mi-ticker-gain {
+        color: #4ADE80;
+        font-weight: 700;
+      }
+      .mi-ticker-sep {
+        color: rgba(255, 255, 255, 0.2);
+        margin: 0 4px;
+      }
+
+      /* ============================================================================
+         1. ATMOSPHERIC ARCHITECTURAL HERO & EXECUTIVE REPORT DECK
+         ========================================================================= */
+      .mi-hero-panoramic {
+        position: relative;
+        background: #0B111F;
+        color: #fff;
+        padding: clamp(3.5rem, 6vw, 5.5rem) 0 4rem;
+        overflow: hidden;
+      }
+      .mi-hero-backdrop {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.32;
+        filter: saturate(0.85);
+      }
+      .mi-hero-scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          95deg,
+          rgba(11, 17, 31, 0.98) 0%,
+          rgba(11, 17, 31, 0.92) 42%,
+          rgba(11, 17, 31, 0.65) 75%,
+          rgba(11, 17, 31, 0.45) 100%
+        );
+      }
+      .mi-hero-content {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: clamp(2rem, 4vw, 4rem);
+        align-items: center;
+      }
+      .mi-hero-breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-family: var(--mono-val);
+        color: var(--brass-200);
+        margin-bottom: 1.25rem;
+      }
+      .mi-hero-breadcrumbs a {
+        color: #9AA7C4;
+        text-decoration: none;
+      }
+      .mi-hero-breadcrumbs a:hover {
+        color: #fff;
+      }
+      .mi-hero-headline {
+        font-family: var(--serif-lead);
+        font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        margin: 0 0 1.25rem;
+        color: #fff;
+      }
+      .mi-hero-standfirst {
+        font-size: clamp(15px, 1.15vw, 17px);
+        color: #C3CBE0;
+        line-height: 1.65;
+        max-width: 640px;
+        margin: 0 0 2rem;
+      }
+      .mi-hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .btn-hero-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 13px 24px;
+        background: var(--brass);
+        color: #101728;
+        font-weight: 700;
+        font-size: 13.5px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background 0.15s, transform 0.15s;
+        border: none;
+        cursor: pointer;
+      }
+      .btn-hero-primary:hover {
+        background: #d4a759;
+        transform: translateY(-1px);
+      }
+      .btn-hero-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 20px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-weight: 600;
+        font-size: 13.5px;
+        border-radius: 8px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        transition: background 0.15s;
+      }
+      .btn-hero-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      /* Executive Telemetry Plate (Hero Right) */
+      .mi-hero-cockpit {
+        background: rgba(16, 23, 40, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .cockpit-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .cockpit-title {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--brass-200);
+        font-weight: 700;
+      }
+      .cockpit-badge {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        padding: 3px 8px;
+        background: rgba(61, 90, 76, 0.4);
+        color: #A7F3D0;
+        border-radius: 4px;
+        border: 1px solid rgba(61, 90, 76, 0.6);
+      }
+      .cockpit-metrics-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .cockpit-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .cockpit-label {
+        font-size: 13px;
+        color: #98A5C2;
+        line-height: 1.4;
+      }
+      .cockpit-label strong {
+        display: block;
+        color: #fff;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+      .cockpit-val-box {
+        text-align: right;
+      }
+      .cockpit-val-num {
+        font-family: var(--mono-val);
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.1;
+      }
+      .cockpit-val-sub {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        color: #4ADE80;
+        font-weight: 600;
+      }
+
+      /* ============================================================================
+         2. EDITORIAL MEMO & MACRO SIGNALS GRID (BROADSHEET REGISTER)
+         ========================================================================= */
+      .mi-broadsheet-strip {
+        padding: clamp(3rem, 5vw, 4.5rem) 0;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+      }
+      .mi-memo-layout {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: clamp(2.5rem, 5vw, 4.5rem);
+        align-items: start;
+      }
+      .mi-economist-memo {
+        display: flex;
+        flex-direction: column;
+      }
+      .memo-author-strip {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .memo-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--line-2);
+      }
+      .memo-meta {
+        display: flex;
+        flex-direction: column;
+      }
+      .memo-name {
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--navy-900);
+      }
+      .memo-role {
+        font-size: 12px;
+        font-family: var(--mono-val);
+        color: var(--ink-3);
+      }
+      .memo-headline {
+        font-family: var(--serif-lead);
+        font-size: clamp(1.6rem, 2.3vw, 2.2rem);
+        font-weight: 600;
+        color: var(--navy-900);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        margin: 0 0 1.25rem;
+      }
+      .memo-prose {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--ink-2);
+      }
+      .memo-prose p {
+        margin: 0 0 1.25rem;
+      }
+      .memo-prose p:first-of-type::first-letter {
+        font-family: var(--serif-lead);
+        font-size: 3.6rem;
+        float: left;
+        line-height: 0.85;
+        margin-right: 0.75rem;
+        color: var(--navy-900);
+        font-weight: 600;
+      }
+      .memo-quote {
+        border-left: 2px solid var(--brass);
+        padding-left: 1.25rem;
+        margin: 1.5rem 0;
+        font-family: var(--serif-lead);
+        font-size: 18px;
+        font-style: italic;
+        color: var(--navy-900);
+        line-height: 1.45;
+      }
+
+      /* Macro Signals Rail (Right Side) */
+      .mi-signals-rail {
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .signals-rail-hdr {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--navy-800);
+        font-weight: 700;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+      }
+      .signal-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .signal-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .signal-row-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .signal-corridor {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--navy-900);
+      }
+      .signal-badge-val {
+        font-family: var(--mono-val);
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .signal-subtext {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        line-height: 1.45;
+      }
+
+      /* ============================================================================
+         3. ECONOMETRIC TIME-SERIES APPRECIATION CHART
+         ========================================================================= */
+      .mi-chart-section {
+        padding: clamp(3.5rem, 6vw, 5rem) 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .mi-section-head {
+        margin-bottom: 2rem;
+        max-width: 800px;
+      }
+      .mi-section-h2 {
+        font-family: var(--serif-lead);
+        font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+        font-weight: 600;
+        color: var(--navy-900);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+      }
+      .mi-section-lead {
+        font-size: 15px;
+        color: var(--ink-2);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* shadcn/ui Charts (Recharts Architecture & Styling) */
+      .chart-workbench {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      .chart-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 1.25rem;
+      }
+      .chart-card-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .chart-card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.01em;
+      }
+      .chart-card-desc {
+        font-size: 13px;
+        color: var(--ink-3);
+      }
+      
+      /* shadcn Chart Legend (<ChartLegendContent />) */
+      .chart-actions-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .corridor-legend-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .legend-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 11px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--navy-900);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+      }
+      .legend-pill:hover {
+        background: var(--canvas);
+        border-color: var(--line-2);
+      }
+      .legend-pill.inactive {
+        opacity: 0.38;
+        background: var(--canvas);
+        border-color: transparent;
+      }
+      /* shadcn indicator swatch */
+      .legend-circle {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .circle-gold { background: #C69749; }
+      .circle-sahel { background: #3D5A4C; }
+      .circle-zayed { background: #1E2A4A; }
+      .circle-gouna { background: #64748B; }
+
+      /* shadcn Segmented Control */
+      .timeframe-group {
+        display: inline-flex;
+        align-items: center;
+        background: var(--canvas);
+        padding: 3px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+      }
+      .tf-btn {
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: none;
+        background: transparent;
+        font-family: var(--mono-val);
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .tf-btn:hover {
+        color: var(--navy-900);
+      }
+      .tf-btn.active {
+        background: #fff;
+        color: var(--navy-900);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      }
+
+      /* SVG Viewport & Gridlines */
+      .svg-canvas-container {
+        width: 100%;
+        height: 380px;
+        position: relative;
+        cursor: crosshair;
+      }
+      .svg-canvas-container svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      /* shadcn Floating Tooltip Card (<ChartTooltipContent />) */
+      .chart-hover-overlay {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(11, 17, 31, 0.94);
+        backdrop-filter: blur(12px);
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+        box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35);
+        min-width: 220px;
+        transition: opacity 0.1s ease;
+        z-index: 10;
+      }
+      .chart-hover-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        color: var(--brass-200);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 6px;
+      }
+      .chart-hover-rows-box {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .chart-hover-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .chart-hover-label-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #94A3B8;
+        font-size: 11.5px;
+      }
+      .chart-hover-swatch {
+        width: 7px;
+        height: 7px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .chart-hover-val {
+        font-family: var(--mono-val);
+        font-weight: 600;
+        font-size: 12px;
+        color: #fff;
+      }
+
+      /* Tabular Index Under Chart */
+      .chart-summary-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.75rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--line);
+      }
+      .chart-sum-col {
+        display: flex;
+        flex-direction: column;
+      }
+      .chart-sum-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+        margin-bottom: 0.25rem;
+      }
+      .chart-sum-price {
+        font-family: var(--mono-val);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--navy-900);
+        margin-bottom: 0.15rem;
+      }
+      .chart-sum-delta {
+        font-family: var(--mono-val);
+        font-size: 12px;
+        color: var(--sage);
+        font-weight: 600;
+      }
+
+      /* ============================================================================
+         4. INSTITUTIONAL YIELD ARBITRAGE TERMINAL
+         ========================================================================= */
+      .yield-terminal-box {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 2.25rem;
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 2.5rem;
+      }
+      .terminal-controls-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding-right: 2rem;
+        border-right: 1px solid var(--line);
+      }
+      .term-control-block {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .term-control-title {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        letter-spacing: 0.04em;
+      }
+      .term-stepped-pills {
+        display: flex;
+        gap: 6px;
+      }
+      .step-pill {
+        flex: 1;
+        padding: 8px 4px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-family: var(--mono-val);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s;
+      }
+      .step-pill.active {
+        background: var(--navy-900);
+        color: #fff;
+        border-color: var(--navy-900);
+      }
+      .term-currency-toggle {
+        display: flex;
+        background: var(--canvas);
+        padding: 3px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+      }
+      .term-curr-btn {
+        flex: 1;
+        padding: 6px 0;
+        border: none;
+        background: transparent;
+        font-family: var(--mono-val);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s;
+      }
+      .term-curr-btn.active {
+        background: #fff;
+        color: var(--navy-900);
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      }
+      .term-select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--line-2);
+        background: #fff;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        outline: none;
+      }
+
+      /* Terminal Comparison Balance Sheet */
+      .terminal-sheet-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .sheet-grid-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .sheet-card {
+        border-radius: 10px;
+        padding: 1.75rem;
+        display: flex;
+        flex-direction: column;
+      }
+      .sheet-card.mode-primary {
+        background: var(--canvas);
+        border: 1px solid var(--line);
+      }
+      .sheet-card.mode-resale {
+        background: #111A2E;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sheet-header-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+      }
+      .sheet-card-title {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .sheet-badge {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+      .badge-neutral {
+        background: #E2E8F0;
+        color: var(--navy-900);
+      }
+      .badge-brass {
+        background: rgba(198, 151, 73, 0.25);
+        color: var(--brass-200);
+      }
+      .sheet-main-number {
+        font-family: var(--mono-val);
+        font-size: clamp(1.8rem, 2.2vw, 2.3rem);
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 0.25rem;
+      }
+      .sheet-main-label {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        margin-bottom: 1.5rem;
+      }
+      .sheet-card.mode-resale .sheet-main-label {
+        color: #94A3B8;
+      }
+      .sheet-rows-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        font-size: 13px;
+      }
+      .sheet-card.mode-resale .sheet-rows-list {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sheet-data-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .sheet-data-row .val {
+        font-family: var(--mono-val);
+        font-weight: 600;
+      }
+
+      .terminal-footer-note {
+        margin-top: 1.5rem;
+        padding: 1rem 1.25rem;
+        background: var(--brass-050);
+        border: 1px solid var(--brass-200);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--navy-900);
+        line-height: 1.55;
+      }
+
+      /* ============================================================================
+         5. AUDITED MASTER DEVELOPER LEAGUE TABLE
+         ========================================================================= */
+      .mi-table-box {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .table-toolbar-row {
+        padding: 1.25rem 1.75rem;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .table-tab-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tbl-tab-btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tbl-tab-btn.active {
+        background: var(--navy-900);
+        color: #fff;
+        border-color: var(--navy-900);
+      }
+      .league-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .league-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 13.5px;
+      }
+      .league-table th {
+        background: var(--canvas);
+        padding: 12px 18px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid var(--line);
+      }
+      .league-table td {
+        padding: 15px 18px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+      }
+      .league-table tr:hover td {
+        background: #FAFAFA;
+      }
+      .dev-identity-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .dev-monogram {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono-val);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--navy-800);
+      }
+      .pct-bar-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 140px;
+      }
+      .pct-track {
+        flex: 1;
+        height: 6px;
+        background: #E2E8F0;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .pct-fill {
+        height: 100%;
+        background: var(--sage);
+        border-radius: 999px;
+      }
+      .escrow-verified-seal {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 9px;
+        border-radius: 4px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        background: #ECFDF5;
+        color: #065F46;
+        border: 1px solid #A7F3D0;
+      }
+
+      /* ============================================================================
+         6. FOREIGN CAPITAL ORIGIN & SOVEREIGN TELEMETRY
+         ========================================================================= */
+      .capital-telemetry-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+      .cap-panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .cap-panel-head h3 {
+        font-family: var(--serif-lead);
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin: 0 0 0.5rem;
+      }
+      .cap-panel-head p {
+        font-size: 13px;
+        color: var(--ink-2);
+        margin: 0 0 1.5rem;
+        line-height: 1.5;
+      }
+      .inflow-rows-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .inflow-item-line {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .inflow-meta-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13.5px;
+      }
+      .inflow-name {
+        font-weight: 600;
+        color: var(--navy-900);
+      }
+      .inflow-num {
+        font-family: var(--mono-val);
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+      .inflow-bar-slot {
+        height: 7px;
+        background: var(--canvas);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .inflow-bar-level {
+        height: 100%;
+        border-radius: 999px;
+      }
+      .level-gcc { background: var(--brass); }
+      .level-expat { background: var(--navy-800); }
+      .level-europe { background: var(--sage); }
+      .level-domestic { background: #94A3B8; }
+
+      .currency-distribution-bar {
+        display: flex;
+        height: 28px;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 1.25rem;
+      }
+      .bar-usd {
+        width: 58%;
+        background: #0B111F;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono-val);
+        font-size: 11.5px;
+        font-weight: 700;
+      }
+      .bar-egp {
+        width: 34%;
+        background: var(--brass);
+        color: #0B111F;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono-val);
+        font-size: 11.5px;
+        font-weight: 700;
+      }
+      .bar-other {
+        width: 8%;
+        background: var(--sage);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono-val);
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .escrow-mandate-card {
+        margin-top: 1.5rem;
+        padding: 1.15rem;
+        background: var(--canvas);
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        font-size: 12.5px;
+        color: var(--ink-2);
+        line-height: 1.55;
+      }
+
+      /* ============================================================================
+         7. INSTITUTIONAL RESEARCH LIBRARY & DOSSIERS
+         ========================================================================= */
+      .mi-dossiers-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.75rem;
+      }
+      .mi-dossier-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .mi-dossier-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.12);
+      }
+      .dossier-media-frame {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+        background: #0B111F;
+      }
+      .dossier-media-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+      }
+      .mi-dossier-card:hover .dossier-media-frame img {
+        transform: scale(1.05);
+      }
+      .dossier-edition-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(11, 17, 31, 0.88);
+        backdrop-filter: blur(8px);
+        color: #fff;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+      .dossier-content-body {
+        padding: 1.75rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        justify-content: space-between;
+      }
+      .dossier-meta-date {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-bottom: 0.5rem;
+      }
+      .dossier-card-title {
+        font-family: var(--serif-lead);
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--navy-900);
+        line-height: 1.3;
+        margin: 0 0 0.75rem;
+      }
+      .dossier-summary-text {
+        font-size: 13.5px;
+        color: var(--ink-2);
+        line-height: 1.6;
+        margin: 0 0 1.5rem;
+      }
+      .dossier-action-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+      }
+      .btn-download-trigger {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy-900);
+        text-decoration: none;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+      .btn-download-trigger:hover {
+        color: var(--brass-600);
+      }
+
+      /* Modal Dialog */
+      .dossier-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 17, 31, 0.78);
+        backdrop-filter: blur(8px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+      .dossier-modal-backdrop.open {
+        display: flex;
+      }
+      .dossier-modal-window {
+        background: #fff;
+        border-radius: 14px;
+        max-width: 500px;
+        width: 100%;
+        padding: 2.25rem;
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);
+      }
+      .dossier-modal-close {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--ink-3);
+      }
+
+      /* ============================================================================
+         8. PRE-FOOTER PRIVATE ADVISORY STRIP & LUXURY FOOTER
+         ========================================================================= */
+      .pre-ftr-strip {
+        background: #111A2E;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 2.5rem 0;
+        color: #fff;
+      }
+      .pre-ftr-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      .pre-ftr-text h3 {
+        font-family: var(--serif-lead);
+        font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 0.4rem;
+      }
+      .pre-ftr-text p {
+        font-size: 14px;
+        color: #98A5C2;
+        max-width: 600px;
+        line-height: 1.55;
+        margin: 0;
+      }
+      .pre-ftr-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .btn-pre-ftr-wa {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 20px;
+        background: #25D366;
+        color: #fff;
+        font-weight: 700;
+        font-size: 13.5px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: filter 0.15s;
+      }
+      .btn-pre-ftr-wa:hover {
+        filter: brightness(0.95);
+      }
+      .btn-pre-ftr-call {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 20px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-weight: 600;
+        font-size: 13.5px;
+        border-radius: 8px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transition: background 0.15s;
+      }
+      .btn-pre-ftr-call:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      /* Luxury 4-Column Footer */
+      .ftr-luxury {
+        background: #0B111F;
+        color: #fff;
+        padding: clamp(3.5rem, 6vw, 4.5rem) 0 2rem;
+        position: relative;
+      }
+      .ftr-luxury::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(198, 151, 73, 0.5), transparent);
+      }
+      .ftr-luxury-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: clamp(2rem, 4vw, 3.5rem);
+        margin-bottom: 3.5rem;
+      }
+      .ftr-luxury-brand h2 {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.85rem;
+      }
+      .ftr-luxury-brand p {
+        font-size: 13.5px;
+        color: #9AA7C4;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        max-width: 320px;
+      }
+      .ftr-luxury-trust-badges {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .ftr-trust-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        color: #7482A0;
+      }
+      .ftr-luxury-col h4 {
+        font-family: var(--serif-lead);
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 1.25rem;
+      }
+      .ftr-luxury-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .ftr-luxury-col ul li a {
+        font-size: 13px;
+        color: #9AA7C4;
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .ftr-luxury-col ul li a:hover {
+        color: var(--brass-200);
+      }
+      .ftr-luxury-btm {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 1.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: #6C7A9C;
+      }
+      .ftr-legal-notice {
+        font-family: var(--mono-val);
+        font-size: 11px;
+      }
+      .ftr-social-strip {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .ftr-social-link {
+        color: #9AA7C4;
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .ftr-social-link:hover {
+        color: var(--brass);
+      }
+
+      /* Responsive Adaptations */
+      @media (max-width: 1080px) {
+        .mi-hero-content {
+          grid-template-columns: 1fr;
+        }
+        .mi-memo-layout {
+          grid-template-columns: 1fr;
+        }
+        .yield-terminal-box {
+          grid-template-columns: 1fr;
+        }
+        .terminal-controls-col {
+          padding-right: 0;
+          border-right: none;
+          padding-bottom: 2rem;
+          border-bottom: 1px solid var(--line);
+        }
+        .capital-telemetry-grid {
+          grid-template-columns: 1fr;
+        }
+        .mi-dossiers-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .ftr-luxury-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 640px) {
+        .sheet-grid-columns {
+          grid-template-columns: 1fr;
+        }
+        .chart-summary-strip {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .mi-dossiers-grid {
+          grid-template-columns: 1fr;
+        }
+        .ftr-luxury-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="./master-nav-footer.css" />
+  </head>
+  <body>
+    <!-- Top Sticky Header -->
+        <!-- Settly Global Master Navigation with Mega-Menus -->
+        <!-- Settly Global Master Navigation (Simplified & Luxury) -->
+        <!-- Settly Global Master Navigation -->
+    <header class="settly-master-header header-dark">
+      <div class="settly-nav-shell">
+        <!-- Original Settly Brand Mark & Title -->
+        <a href="./index.html" class="brand">
+          <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" />
+          <span>Settly</span>
+        </a>
+
+        <!-- Simplified Primary Navigation -->
+        <nav class="settly-main-nav">
+          <a href="./search.html" class="settly-nav-link">Buy</a>
+          <a href="./areas.html" class="settly-nav-link">Districts</a>
+          <a href="./compare.html" class="settly-nav-link">Compare</a>
+          <a href="./market-insights.html" class="settly-nav-link active">Market Insights</a>
+          <a href="./agents.html" class="settly-nav-link">Agents</a>
+        </nav>
+
+        <!-- Right Header Actions -->
+        <div class="settly-header-actions">
+          <div class="settly-fx-pill" title="Central Bank of Egypt Sovereign Exchange Rate">
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
+          </div>
+          <a href="./index.html#signin" class="btn-settly-signin">Sign in</a>
+          <a href="./search.html" class="btn-settly-getstarted">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Econometric Ticker Ribbon (react-fast-marquee style infinite loop) -->
+    <div class="mi-ticker-bar" title="Live Econometric Telemetry — Hover to pause stream">
+      <div class="mi-marquee-wrapper">
+        <div class="mi-marquee-track">
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">CREI-30 Index</span>
+          <span class="mi-ticker-bright">1,482.4 pts</span>
+          <span class="mi-ticker-gain">▲ +3.2% MoM</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Golden Square Median</span>
+          <span class="mi-ticker-bright">68,500 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +44.2% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Ras El Hekma Prime</span>
+          <span class="mi-ticker-bright">112,000 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +78.5% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Prime Gross Yield</span>
+          <span class="mi-ticker-bright">9.4% Median</span>
+          <span style="color: var(--brass-200); font-weight: 700;">● Sovereign Benchmark</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Q1 Capital Volume</span>
+          <span class="mi-ticker-bright">EGP 48.2B</span>
+          <span class="mi-ticker-gain">▲ +21.4% QoQ</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">CBE Escrow Solvency</span>
+          <span class="mi-ticker-bright">100% Audited</span>
+          <span class="mi-ticker-gain">Law 27/2020</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">USD / EGP Sovereign</span>
+          <span class="mi-ticker-bright">48.85</span>
+          <span style="color: #94A3B8;">Central Bank of Egypt</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">New Zayed Prime</span>
+          <span class="mi-ticker-bright">56,200 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +38.6% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">El Gouna Waterfront</span>
+          <span class="mi-ticker-bright">105,000 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +41.0% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">CREI-30 Index</span>
+          <span class="mi-ticker-bright">1,482.4 pts</span>
+          <span class="mi-ticker-gain">▲ +3.2% MoM</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Golden Square Median</span>
+          <span class="mi-ticker-bright">68,500 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +44.2% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Ras El Hekma Prime</span>
+          <span class="mi-ticker-bright">112,000 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +78.5% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Prime Gross Yield</span>
+          <span class="mi-ticker-bright">9.4% Median</span>
+          <span style="color: var(--brass-200); font-weight: 700;">● Sovereign Benchmark</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">Q1 Capital Volume</span>
+          <span class="mi-ticker-bright">EGP 48.2B</span>
+          <span class="mi-ticker-gain">▲ +21.4% QoQ</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">CBE Escrow Solvency</span>
+          <span class="mi-ticker-bright">100% Audited</span>
+          <span class="mi-ticker-gain">Law 27/2020</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">USD / EGP Sovereign</span>
+          <span class="mi-ticker-bright">48.85</span>
+          <span style="color: #94A3B8;">Central Bank of Egypt</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">New Zayed Prime</span>
+          <span class="mi-ticker-bright">56,200 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +38.6% YoY</span>
+        </div>
+        <span class="mi-ticker-sep">/</span>
+        <div class="mi-ticker-group">
+          <span class="mi-ticker-dim">El Gouna Waterfront</span>
+          <span class="mi-ticker-bright">105,000 EGP/m²</span>
+          <span class="mi-ticker-gain">▲ +41.0% YoY</span>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================================
+         1. ATMOSPHERIC ARCHITECTURAL HERO & EXECUTIVE REPORT DECK
+         ========================================================================= -->
+    <section class="mi-hero-panoramic">
+      <img src="../../../../Images/web/hero.jpg" alt="Cairo Prime Real Estate Landscape" class="mi-hero-backdrop" />
+      <div class="mi-hero-scrim"></div>
+
+      <div class="wrap mi-hero-content">
+        <div>
+          <div class="mi-hero-breadcrumbs">
+            <a href="./index.html">Settly Exchange</a>
+            <span>/</span>
+            <span>Market Intelligence</span>
+            <span>/</span>
+            <span style="color: #fff;">Q1 2026 Sovereign & Private Capital Report</span>
+          </div>
+          <h1 class="mi-hero-headline">
+            Egypt Luxury Real Estate Macro Intelligence & Capital Flow
+          </h1>
+          <p class="mi-hero-standfirst">
+            Audited transaction telemetry analyzing price per square meter trajectories, master developer handover punctuality, primary vs. resale yield arbitrage, and sovereign foreign capital allocations across Greater Cairo and the Mediterranean Coast.
+          </p>
+          <div class="mi-hero-actions">
+            <button onclick="openDossierModal('Q1 2026 Complete Macro Dossier', '42 Pages · Institutional PDF')" class="btn-hero-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download Executive Dossier (42 Pages)</span>
+            </button>
+            <a href="#econometricModel" class="btn-hero-secondary">
+              <span>Explore Econometric Curves ↓</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Executive Cockpit (Right Plate) -->
+        <div class="mi-hero-cockpit">
+          <div class="cockpit-hdr">
+            <span class="cockpit-title">Executive Telemetry Deck</span>
+            <span class="cockpit-badge">Q1 2026 Audited</span>
+          </div>
+          <div class="cockpit-metrics-stack">
+            <div class="cockpit-row">
+              <div class="cockpit-label">
+                <strong>Ras El Hekma Sovereign Horizon</strong>
+                <span>Frontline beachfront valuation surge</span>
+              </div>
+              <div class="cockpit-val-box">
+                <div class="cockpit-val-num">+62.4%</div>
+                <div class="cockpit-val-sub">12-Mo Appreciation</div>
+              </div>
+            </div>
+
+            <div class="cockpit-row">
+              <div class="cockpit-label">
+                <strong>Golden Square Liquidity Velocity</strong>
+                <span>New Cairo median transaction speed</span>
+              </div>
+              <div class="cockpit-val-box">
+                <div class="cockpit-val-num">44 Days</div>
+                <div class="cockpit-val-sub">142 Audited Units</div>
+              </div>
+            </div>
+
+            <div class="cockpit-row">
+              <div class="cockpit-label">
+                <strong>Primary Launch Premium Spread</strong>
+                <span>Off-plan 8-year plan vs cash resale</span>
+              </div>
+              <div class="cockpit-val-box">
+                <div class="cockpit-val-num">+18.4%</div>
+                <div class="cockpit-val-sub">0% Interest Leverage</div>
+              </div>
+            </div>
+
+            <div class="cockpit-row">
+              <div class="cockpit-label">
+                <strong>Foreign Capital Allocation</strong>
+                <span>Gulf & Diaspora offshore FDI inflows</span>
+              </div>
+              <div class="cockpit-val-box">
+                <div class="cockpit-val-num">$4.2B USD</div>
+                <div class="cockpit-val-sub">58% USD Contracts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         2. EDITORIAL MEMO & MACRO SIGNALS GRID (BROADSHEET REGISTER)
+         ========================================================================= -->
+    <section class="mi-broadsheet-strip">
+      <div class="wrap mi-memo-layout">
+        <!-- Lead Economist Column -->
+        <div class="mi-economist-memo">
+          <div class="memo-author-strip">
+            <img src="../../../../Images/web/2.jpg" alt="Dr. Hisham El-Gazzar" class="memo-avatar" />
+            <div class="memo-meta">
+              <span class="memo-name">Dr. Hisham El-Gazzar</span>
+              <span class="memo-role">Chief Economist & Head of Sovereign Advisory · Settly Research</span>
+            </div>
+          </div>
+
+          <h2 class="memo-headline">
+            The Structural Re-Pricing of Egypt's Premier Living Assets
+          </h2>
+
+          <div class="memo-prose">
+            <p>
+              The first quarter of 2026 marks an unprecedented bifurcation in Egypt's residential property landscape. The injection of the $35 billion Ras El Hekma foreign direct investment agreement, paired with the Central Bank of Egypt's foreign-exchange stabilization framework, has permanently separated commodity residential stock from prime sovereign real estate assets.
+            </p>
+            <p>
+              Capital allocators are no longer evaluating acquisitions purely through the lens of local inflationary hedges. Instead, institutional capital and GCC private family offices are treating verified master-planned compounds in New Cairo's Golden Square and the Mediterranean shoreline as sovereign dollar-indexed stores of value.
+            </p>
+            <div class="memo-quote">
+              "Developers offering 8-year payment plans at 0% nominal interest are effectively subsidizing buyer balance sheets against macroeconomic currency adjustments."
+            </div>
+            <p>
+              For liquid buyers with offshore currency reserves, immediate-handover resale properties offer an extraordinary 22% to 28% cash-discount arbitrage compared to primary off-plan launches. We anticipate this yield spread will narrow significantly through the final delivery cycles of 2026.
+            </p>
+          </div>
+        </div>
+
+        <!-- Macro Signals Rail -->
+        <div class="mi-signals-rail">
+          <div class="signals-rail-hdr">
+            <span>Market Conviction Matrix</span>
+            <span>Q1 Benchmark</span>
+          </div>
+
+          <div class="signal-item">
+            <div class="signal-row-top">
+              <span class="signal-corridor">New Cairo (Golden Square)</span>
+              <span class="signal-badge-val">68,500 EGP/m²</span>
+            </div>
+            <div class="signal-subtext">
+              High liquidity corridor. 142 audited units currently traded with average absorption cycle of 44 days. Palm Hills and Emaar maintain strongest secondary pricing.
+            </div>
+          </div>
+
+          <div class="signal-item">
+            <div class="signal-row-top">
+              <span class="signal-corridor">Ras El Hekma Bay (Sahel)</span>
+              <span class="signal-badge-val">112,000 EGP/m²</span>
+            </div>
+            <div class="signal-subtext">
+              Exponential growth trajectory (+78.5% YoY). Transition from seasonal summer retreat to 12-month sovereign Mediterranean Riviera driving unprecedented Gulf allocations.
+            </div>
+          </div>
+
+          <div class="signal-item">
+            <div class="signal-row-top">
+              <span class="signal-corridor">West Cairo (Karmell & Zayed)</span>
+              <span class="signal-badge-val">56,200 EGP/m²</span>
+            </div>
+            <div class="signal-subtext">
+              Steady capital compounding (+38.6% YoY). Sphinx Airport operations and New Zayed master infrastructure driving strong corporate executive relocations.
+            </div>
+          </div>
+
+          <div class="signal-item">
+            <div class="signal-row-top">
+              <span class="signal-corridor">El Gouna Lagoon Estates</span>
+              <span class="signal-badge-val">105,000 EGP/m²</span>
+            </div>
+            <div class="signal-subtext">
+              Highest EUR/USD rental yield in Egypt (11.5% net). 100% freehold foreign ownership with instant European residency eligibility.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         3. ECONOMETRIC TIME-SERIES APPRECIATION CHART
+         ========================================================================= -->
+    <section class="mi-chart-section" id="econometricModel">
+      <div class="wrap">
+        <div class="mi-section-head">
+          <h2 class="mi-section-h2">Historical Capital Trajectory (2022 — 2026)</h2>
+          <p class="mi-section-lead">
+            Verified transaction benchmark prices per square meter (BUA) across Egypt's 4 premier luxury investment corridors. Toggle corridors or timeframes to inspect comparative CAGR curves.
+          </p>
+        </div>
+
+        <div class="chart-workbench">
+          <!-- shadcn Card Header -->
+          <div class="chart-card-header">
+            <div class="chart-card-meta">
+              <div class="chart-card-title">Corridor Valuation Curves (EGP/m² BUA)</div>
+              <div class="chart-card-desc">Audited quarterly transaction benchmarks · Monotone spline interpolation</div>
+            </div>
+            <!-- shadcn Timeframe Switch -->
+            <div class="timeframe-group">
+              <button class="tf-btn" onclick="setTimeframe('6M')">6M</button>
+              <button class="tf-btn" onclick="setTimeframe('1Y')">1Y</button>
+              <button class="tf-btn" onclick="setTimeframe('3Y')">3Y</button>
+              <button class="tf-btn active" onclick="setTimeframe('5Y')">5Y (Full)</button>
+            </div>
+          </div>
+
+          <!-- shadcn Chart Legend Toolbar (<ChartLegendContent />) -->
+          <div class="chart-actions-toolbar">
+            <div class="corridor-legend-group">
+              <div class="legend-pill" data-corridor="goldensq" onclick="toggleCorridor('goldensq')">
+                <span class="legend-circle circle-gold"></span>
+                <span>Golden Square (New Cairo)</span>
+              </div>
+              <div class="legend-pill" data-corridor="sahel" onclick="toggleCorridor('sahel')">
+                <span class="legend-circle circle-sahel"></span>
+                <span>Ras El Hekma (Sahel)</span>
+              </div>
+              <div class="legend-pill" data-corridor="zayed" onclick="toggleCorridor('zayed')">
+                <span class="legend-circle circle-zayed"></span>
+                <span>Karmell & New Zayed</span>
+              </div>
+              <div class="legend-pill" data-corridor="gouna" onclick="toggleCorridor('gouna')">
+                <span class="legend-circle circle-gouna"></span>
+                <span>El Gouna Waterfront</span>
+              </div>
+            </div>
+            <div style="font-family: var(--mono-val); font-size: 11px; color: var(--ink-3);">
+              Source: REID Audited Land Registry
+            </div>
+          </div>
+
+          <!-- SVG Canvas (Recharts CartesianGrid & Area Monotone Splines) -->
+          <div class="svg-canvas-container" id="svgContainer">
+            <svg id="corridorSvgChart" viewBox="0 0 1000 360" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="grad-goldensq" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#C69749" stop-opacity="0.14"/>
+                  <stop offset="100%" stop-color="#C69749" stop-opacity="0.0"/>
+                </linearGradient>
+                <linearGradient id="grad-sahel" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#3D5A4C" stop-opacity="0.14"/>
+                  <stop offset="100%" stop-color="#3D5A4C" stop-opacity="0.0"/>
+                </linearGradient>
+                <linearGradient id="grad-zayed" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1E2A4A" stop-opacity="0.12"/>
+                  <stop offset="100%" stop-color="#1E2A4A" stop-opacity="0.0"/>
+                </linearGradient>
+                <linearGradient id="grad-gouna" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#64748B" stop-opacity="0.12"/>
+                  <stop offset="100%" stop-color="#64748B" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Minimalist Horizontal-only Cartesian Gridlines (Recharts 3 3) -->
+              <g stroke="rgba(0, 0, 0, 0.06)" stroke-width="1" stroke-dasharray="3,3">
+                <line x1="60" y1="40" x2="980" y2="40"/>
+                <line x1="60" y1="105" x2="980" y2="105"/>
+                <line x1="60" y1="170" x2="980" y2="170"/>
+                <line x1="60" y1="235" x2="980" y2="235"/>
+                <line x1="60" y1="300" x2="980" y2="300"/>
+              </g>
+
+              <!-- Muted Y-Axis Labels (Recharts tickLine={false} axisLine={false}) -->
+              <g fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="end">
+                <text x="50" y="44">120k</text>
+                <text x="50" y="109">95k</text>
+                <text x="50" y="174">70k</text>
+                <text x="50" y="239">45k</text>
+                <text x="50" y="304">20k</text>
+              </g>
+
+              <!-- Dynamic X-Axis & Curves -->
+              <g id="xAxisLabels" fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="middle"></g>
+              <g id="chartSeriesPaths"></g>
+
+              <!-- Crosshair Snap & Active Intersect Dots -->
+              <line id="hoverCrosshair" x1="0" y1="30" x2="0" y2="310" stroke="rgba(30, 42, 74, 0.4)" stroke-width="1" stroke-dasharray="3,3" style="display: none;"/>
+              <g id="intersectDots"></g>
+            </svg>
+
+            <!-- shadcn Floating Tooltip Card (<ChartTooltipContent />) -->
+            <div id="chartHoverCard" class="chart-hover-overlay" style="display: none;">
+              <div class="chart-hover-head">
+                <span id="hoverQuarter">Q1 2026</span>
+                <span style="color: #94A3B8; font-weight: normal; text-transform: none;">BUA benchmark</span>
+              </div>
+              <div class="chart-hover-rows-box">
+                <div class="chart-hover-row" id="rowGold">
+                  <div class="chart-hover-label-group">
+                    <span class="chart-hover-swatch" style="background: #C69749;"></span>
+                    <span>Golden Square</span>
+                  </div>
+                  <span class="chart-hover-val" id="hoverValGold">68,500 EGP/m²</span>
+                </div>
+                <div class="chart-hover-row" id="rowSahel">
+                  <div class="chart-hover-label-group">
+                    <span class="chart-hover-swatch" style="background: #3D5A4C;"></span>
+                    <span>Ras El Hekma</span>
+                  </div>
+                  <span class="chart-hover-val" id="hoverValSahel">112,000 EGP/m²</span>
+                </div>
+                <div class="chart-hover-row" id="rowZayed">
+                  <div class="chart-hover-label-group">
+                    <span class="chart-hover-swatch" style="background: #1E2A4A;"></span>
+                    <span>New Zayed</span>
+                  </div>
+                  <span class="chart-hover-val" id="hoverValZayed">56,200 EGP/m²</span>
+                </div>
+                <div class="chart-hover-row" id="rowGouna">
+                  <div class="chart-hover-label-group">
+                    <span class="chart-hover-swatch" style="background: #64748B;"></span>
+                    <span>El Gouna</span>
+                  </div>
+                  <span class="chart-hover-val" id="hoverValGouna">105,000 EGP/m²</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabular Summary Under Chart -->
+          <div class="chart-summary-strip">
+            <div class="chart-sum-col">
+              <span class="chart-sum-title">Golden Square</span>
+              <span class="chart-sum-price">68,500 EGP/m²</span>
+              <span class="chart-sum-delta">+44.2% YoY · 3Y CAGR +31.8%</span>
+            </div>
+            <div class="chart-sum-col">
+              <span class="chart-sum-title">Ras El Hekma</span>
+              <span class="chart-sum-price">112,000 EGP/m²</span>
+              <span class="chart-sum-delta">+78.5% YoY · 3Y CAGR +48.1%</span>
+            </div>
+            <div class="chart-sum-col">
+              <span class="chart-sum-title">Karmell & Zayed</span>
+              <span class="chart-sum-price">56,200 EGP/m²</span>
+              <span class="chart-sum-delta">+38.6% YoY · 3Y CAGR +26.4%</span>
+            </div>
+            <div class="chart-sum-col">
+              <span class="chart-sum-title">El Gouna Estates</span>
+              <span class="chart-sum-price">105,000 EGP/m²</span>
+              <span class="chart-sum-delta">+41.0% YoY · 3Y CAGR +34.2%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         4. INSTITUTIONAL YIELD ARBITRAGE TERMINAL
+         ========================================================================= -->
+    <section class="mi-chart-section" id="yieldArbitrage">
+      <div class="wrap">
+        <div class="mi-section-head">
+          <h2 class="mi-section-h2">Primary Launch vs. Resale Yield Arbitrage</h2>
+          <p class="mi-section-lead">
+            Evaluate capital efficiency: 8-year developer installment schedules (0% interest leverage) versus immediate-handover resale properties with active gross rental cash flows.
+          </p>
+        </div>
+
+        <div class="yield-terminal-box">
+          <!-- Terminal Controls Column -->
+          <div class="terminal-controls-col">
+            <div class="term-control-block">
+              <span class="term-control-title">Target Capital Allocation</span>
+              <div class="term-stepped-pills">
+                <button class="step-pill" onclick="setAllocationBudget(20000000, this)">20M</button>
+                <button class="step-pill active" onclick="setAllocationBudget(32500000, this)">32.5M</button>
+                <button class="step-pill" onclick="setAllocationBudget(50000000, this)">50M</button>
+                <button class="step-pill" onclick="setAllocationBudget(75000000, this)">75M</button>
+              </div>
+            </div>
+
+            <div class="term-control-block">
+              <span class="term-control-title">Settlement Currency Denomination</span>
+              <div class="term-currency-toggle">
+                <button class="term-curr-btn active" onclick="setTerminalCurrency('EGP', this)">EGP</button>
+                <button class="term-curr-btn" onclick="setTerminalCurrency('USD', this)">USD ($48.85)</button>
+                <button class="term-curr-btn" onclick="setTerminalCurrency('AED', this)">AED (13.30)</button>
+              </div>
+            </div>
+
+            <div class="term-control-block">
+              <span class="term-control-title">Corridor Benchmark</span>
+              <select id="terminalCorridorSelect" class="term-select" onchange="recalculateYieldTerminal()">
+                <option value="goldensq" selected>Golden Square, New Cairo (9.2% Net Yield)</option>
+                <option value="sahel">Ras El Hekma / Sahel (14.2% Seasonal Yield)</option>
+                <option value="zayed">Karmell & New Zayed (8.6% Net Yield)</option>
+                <option value="gouna">El Gouna Lagoon Estates (11.5% Net Yield)</option>
+              </select>
+            </div>
+
+            <div class="terminal-footer-note">
+              <strong>Arbitrage Insight:</strong> For dollar or offshore liquidity holders, ready resale acquisitions provide an instant 24% to 28% cash-discount arbitrage. For domestic balance sheets, 8-year 0% developer installments provide sovereign inflationary shielding.
+            </div>
+          </div>
+
+          <!-- Comparison Balance Sheet -->
+          <div class="terminal-sheet-col">
+            <div class="sheet-grid-columns">
+              <!-- Primary 8-Yr Card -->
+              <div class="sheet-card mode-primary">
+                <div class="sheet-header-line">
+                  <span class="sheet-card-title">Option A: Primary Launch</span>
+                  <span class="sheet-badge badge-neutral">8-Yr 0% Schedule</span>
+                </div>
+                <div class="sheet-main-number" id="primaryEntryDown">EGP 3.25M</div>
+                <div class="sheet-main-label">Initial 10% Reservation & Down Payment</div>
+
+                <div class="sheet-rows-list">
+                  <div class="sheet-data-row">
+                    <span>Quarterly Outlay (32 Qtrs):</span>
+                    <span class="val" id="primaryQuarterlyOutlay">EGP 914,062</span>
+                  </div>
+                  <div class="sheet-data-row">
+                    <span>Nominal Financing Cost:</span>
+                    <span class="val" style="color: var(--sage);">0.0% (Developer Subsidized)</span>
+                  </div>
+                  <div class="sheet-data-row">
+                    <span>Capital Appreciation at Handover:</span>
+                    <span class="val" id="primaryProjectedGain">+48.5% (Projected)</span>
+                  </div>
+                  <div class="sheet-data-row">
+                    <span>Handover Timeline:</span>
+                    <span class="val">Q4 2027 / Q2 2028</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Resale Secondary Card -->
+              <div class="sheet-card mode-resale">
+                <div class="sheet-header-line">
+                  <span class="sheet-card-title">Option B: Ready Resale</span>
+                  <span class="sheet-badge badge-brass">Immediate Cashflow</span>
+                </div>
+                <div class="sheet-main-number" id="resaleAnnualGross">EGP 2.99M / yr</div>
+                <div class="sheet-main-label">Estimated Gross Annual Rental Cashflow</div>
+
+                <div class="sheet-rows-list">
+                  <div class="sheet-data-row">
+                    <span>Net Sovereign Yield:</span>
+                    <span class="val" style="color: var(--brass-200);" id="resaleNetYieldPct">9.2% Net</span>
+                  </div>
+                  <div class="sheet-data-row">
+                    <span>Cash Purchase Discount:</span>
+                    <span class="val" style="color: #4ADE80;" id="resaleDiscountSaving">-24.0% (EGP 7.8M saved)</span>
+                  </div>
+                  <div class="sheet-data-row">
+                    <span>Payback Horizon:</span>
+                    <span class="val" id="resalePaybackTimeline">10.8 Years</span>
+                  </div>
+                  <div class="sheet-data-row">
+                    <span>Physical Status:</span>
+                    <span class="val" style="color: #4ADE80;">Ready for Immediate Letting</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 13px;">
+              <span style="color: var(--ink-3);">Underwritten by Settly Financial Research (CBE Law 27/2020 Protected)</span>
+              <a href="./compare.html" style="color: var(--navy-900); font-weight: 700; text-decoration: none;">Compare Specific Units in Catalog →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         5. AUDITED MASTER DEVELOPER LEAGUE TABLE
+         ========================================================================= -->
+    <section class="mi-chart-section" id="developerAudits">
+      <div class="wrap">
+        <div class="mi-section-head">
+          <h2 class="mi-section-h2">Audited Master Developer League Table</h2>
+          <p class="mi-section-lead">
+            Independent institutional audits verifying on-time delivery punctuality, construction velocity, CBE escrow solvency ratings, and customer handover satisfaction across Egypt's 6 Tier-1 developers.
+          </p>
+        </div>
+
+        <div class="mi-table-box">
+          <div class="table-toolbar-row">
+            <div class="table-tab-group">
+              <button class="tbl-tab-btn active" onclick="filterLeagueTable(this, 'all')">All Master Developers (6)</button>
+              <button class="tbl-tab-btn" onclick="filterLeagueTable(this, 'east')">East Cairo</button>
+              <button class="tbl-tab-btn" onclick="filterLeagueTable(this, 'west')">West Cairo</button>
+              <button class="tbl-tab-btn" onclick="filterLeagueTable(this, 'coastal')">Coastal (Sahel / Gouna)</button>
+            </div>
+            <div style="font-family: var(--mono-val); font-size: 11.5px; color: var(--ink-3);">
+              CBE Tier-1 Escrow Audited: 100%
+            </div>
+          </div>
+
+          <div class="league-table-wrap">
+            <table class="league-table" id="leagueTableEl">
+              <thead>
+                <tr>
+                  <th>Master Developer</th>
+                  <th>Land Bank</th>
+                  <th>Delivered Units</th>
+                  <th>Delivery Punctuality</th>
+                  <th>Escrow Solvency</th>
+                  <th>Handover CSAT</th>
+                  <th>Prime Communities</th>
+                  <th>Audit Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-region="east coastal">
+                  <td>
+                    <div class="dev-identity-cell">
+                      <div class="dev-monogram">EM</div>
+                      <div>
+                        <div>Emaar Misr</div>
+                        <div style="font-size: 11px; font-weight: 500; color: var(--ink-3);">EGX: EMFD · Founded 1997</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">18.2M m²</td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">4,200 Units</td>
+                  <td>
+                    <div class="pct-bar-container">
+                      <div class="pct-track"><div class="pct-fill" style="width: 98.2%;"></div></div>
+                      <span style="font-family: var(--mono-val); font-weight: 700;">98.2%</span>
+                    </div>
+                  </td>
+                  <td><span class="escrow-verified-seal">AAA · Tier 1</span></td>
+                  <td style="font-family: var(--mono-val); font-weight: 700; color: var(--sage);">96% CSAT</td>
+                  <td style="font-size: 12.5px; color: var(--ink-2);">Golden Square, Marassi, Uptown</td>
+                  <td>
+                    <span style="color: var(--sage); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Audited Q1 '26</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr data-region="east west coastal">
+                  <td>
+                    <div class="dev-identity-cell">
+                      <div class="dev-monogram">PH</div>
+                      <div>
+                        <div>Palm Hills Developments</div>
+                        <div style="font-size: 11px; font-weight: 500; color: var(--ink-3);">EGX: PHDC · Founded 1997</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">27.5M m²</td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">6,850 Units</td>
+                  <td>
+                    <div class="pct-bar-container">
+                      <div class="pct-track"><div class="pct-fill" style="width: 94.6%;"></div></div>
+                      <span style="font-family: var(--mono-val); font-weight: 700;">94.6%</span>
+                    </div>
+                  </td>
+                  <td><span class="escrow-verified-seal">AAA · Tier 1</span></td>
+                  <td style="font-family: var(--mono-val); font-weight: 700; color: var(--sage);">93% CSAT</td>
+                  <td style="font-size: 12.5px; color: var(--ink-2);">Lake View, Badya, Hacienda</td>
+                  <td>
+                    <span style="color: var(--sage); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Audited Q1 '26</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr data-region="east west coastal">
+                  <td>
+                    <div class="dev-identity-cell">
+                      <div class="dev-monogram">SO</div>
+                      <div>
+                        <div>SODIC Real Estate</div>
+                        <div style="font-size: 11px; font-weight: 500; color: var(--ink-3);">EGX: OCDI · Founded 1996</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">16.0M m²</td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">5,120 Units</td>
+                  <td>
+                    <div class="pct-bar-container">
+                      <div class="pct-track"><div class="pct-fill" style="width: 96.4%;"></div></div>
+                      <span style="font-family: var(--mono-val); font-weight: 700;">96.4%</span>
+                    </div>
+                  </td>
+                  <td><span class="escrow-verified-seal">AAA · Tier 1</span></td>
+                  <td style="font-family: var(--mono-val); font-weight: 700; color: var(--sage);">95% CSAT</td>
+                  <td style="font-size: 12.5px; color: var(--ink-2);">Villette, Karmell, June Sahel</td>
+                  <td>
+                    <span style="color: var(--sage); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Audited Q1 '26</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr data-region="west east coastal">
+                  <td>
+                    <div class="dev-identity-cell">
+                      <div class="dev-monogram">OR</div>
+                      <div>
+                        <div>Ora Developers</div>
+                        <div style="font-size: 11px; font-weight: 500; color: var(--ink-3);">Private Consortium · Founded 2016</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">11.4M m²</td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">1,840 Units</td>
+                  <td>
+                    <div class="pct-bar-container">
+                      <div class="pct-track"><div class="pct-fill" style="width: 91.8%;"></div></div>
+                      <span style="font-family: var(--mono-val); font-weight: 700;">91.8%</span>
+                    </div>
+                  </td>
+                  <td><span class="escrow-verified-seal">AA+ · Tier 1</span></td>
+                  <td style="font-family: var(--mono-val); font-weight: 700; color: var(--sage);">92% CSAT</td>
+                  <td style="font-size: 12.5px; color: var(--ink-2);">ZED Zayed, ZED East, Silversands</td>
+                  <td>
+                    <span style="color: var(--sage); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Audited Q1 '26</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr data-region="east">
+                  <td>
+                    <div class="dev-identity-cell">
+                      <div class="dev-monogram">KD</div>
+                      <div>
+                        <div>Katameya Group</div>
+                        <div style="font-size: 11px; font-weight: 500; color: var(--ink-3);">Private Luxury · Founded 1998</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">4.8M m²</td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">950 Units</td>
+                  <td>
+                    <div class="pct-bar-container">
+                      <div class="pct-track"><div class="pct-fill" style="width: 97.1%;"></div></div>
+                      <span style="font-family: var(--mono-val); font-weight: 700;">97.1%</span>
+                    </div>
+                  </td>
+                  <td><span class="escrow-verified-seal">AAA · Tier 1</span></td>
+                  <td style="font-family: var(--mono-val); font-weight: 700; color: var(--sage);">97% CSAT</td>
+                  <td style="font-size: 12.5px; color: var(--ink-2);">Katameya Dunes, Heights, Creeks</td>
+                  <td>
+                    <span style="color: var(--sage); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Audited Q1 '26</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr data-region="east coastal">
+                  <td>
+                    <div class="dev-identity-cell">
+                      <div class="dev-monogram">HA</div>
+                      <div>
+                        <div>Hassan Allam Properties</div>
+                        <div style="font-size: 11px; font-weight: 500; color: var(--ink-3);">Holding Group · Founded 1936</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">14.2M m²</td>
+                  <td style="font-family: var(--mono-val); font-weight: 600;">3,420 Units</td>
+                  <td>
+                    <div class="pct-bar-container">
+                      <div class="pct-track"><div class="pct-fill" style="width: 95.5%;"></div></div>
+                      <span style="font-family: var(--mono-val); font-weight: 700;">95.5%</span>
+                    </div>
+                  </td>
+                  <td><span class="escrow-verified-seal">AAA · Tier 1</span></td>
+                  <td style="font-family: var(--mono-val); font-weight: 700; color: var(--sage);">94% CSAT</td>
+                  <td style="font-size: 12.5px; color: var(--ink-2);">SwanLake, HAPTown, Little Venice</td>
+                  <td>
+                    <span style="color: var(--sage); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Audited Q1 '26</span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         6. FOREIGN CAPITAL ORIGIN & SOVEREIGN TELEMETRY
+         ========================================================================= -->
+    <section class="mi-chart-section">
+      <div class="wrap">
+        <div class="mi-section-head">
+          <h2 class="mi-section-h2">Foreign Capital Origins & Settlement Currencies</h2>
+          <p class="mi-section-lead">
+            Distribution of international and diaspora liquidity across luxury acquisitions exceeding EGP 20M+ in Greater Cairo and coastal zones.
+          </p>
+        </div>
+
+        <div class="capital-telemetry-grid">
+          <!-- Column 1: Geographic Sources -->
+          <div class="cap-panel">
+            <div class="cap-panel-head">
+              <h3>Geographic Allocation of Foreign Capital</h3>
+              <p>Tracking the origin of registered cross-border capital deployed into Egyptian prime real estate.</p>
+            </div>
+
+            <div class="inflow-rows-group">
+              <div class="inflow-item-line">
+                <div class="inflow-meta-line">
+                  <span class="inflow-name">Gulf Cooperation Council (UAE, KSA, Qatar)</span>
+                  <span class="inflow-num">42% (EGP 20.2B)</span>
+                </div>
+                <div class="inflow-bar-slot"><div class="inflow-bar-level level-gcc" style="width: 42%;"></div></div>
+              </div>
+
+              <div class="inflow-item-line">
+                <div class="inflow-meta-line">
+                  <span class="inflow-name">Egyptian Diaspora & Expatriate Wealth</span>
+                  <span class="inflow-num">31% (EGP 14.9B)</span>
+                </div>
+                <div class="inflow-bar-slot"><div class="inflow-bar-level level-expat" style="width: 31%;"></div></div>
+              </div>
+
+              <div class="inflow-item-line">
+                <div class="inflow-meta-line">
+                  <span class="inflow-name">European & North American Family Offices</span>
+                  <span class="inflow-num">16% (EGP 7.7B)</span>
+                </div>
+                <div class="inflow-bar-slot"><div class="inflow-bar-level level-europe" style="width: 16%;"></div></div>
+              </div>
+
+              <div class="inflow-item-line">
+                <div class="inflow-meta-line">
+                  <span class="inflow-name">Domestic Institutional Treasuries</span>
+                  <span class="inflow-num">11% (EGP 5.4B)</span>
+                </div>
+                <div class="inflow-bar-slot"><div class="inflow-bar-level level-domestic" style="width: 11%;"></div></div>
+              </div>
+            </div>
+
+            <div style="font-family: var(--mono-val); font-size: 11px; color: var(--ink-3); margin-top: 1.5rem;">
+              Source: Ministry of Housing & Settly Regulatory Registry (N = 1,240 Verified Transactions)
+            </div>
+          </div>
+
+          <!-- Column 2: Settlement Currencies -->
+          <div class="cap-panel">
+            <div class="cap-panel-head">
+              <h3>Settlement Currency Distribution</h3>
+              <p>Contractual denominating currency utilized across primary and secondary luxury closings.</p>
+            </div>
+
+            <div>
+              <div class="currency-distribution-bar">
+                <div class="bar-usd">USD 58%</div>
+                <div class="bar-egp">EGP 34%</div>
+                <div class="bar-other">8%</div>
+              </div>
+
+              <div style="display: flex; gap: 1.25rem; font-size: 12.5px; color: var(--ink-2); flex-wrap: wrap;">
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <span style="width: 10px; height: 10px; border-radius: 2px; background: #0B111F;"></span>
+                  <strong>USD:</strong> 58% Offshore Wire
+                </span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <span style="width: 10px; height: 10px; border-radius: 2px; background: var(--brass);"></span>
+                  <strong>EGP:</strong> 34% Domestic Escrow
+                </span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <span style="width: 10px; height: 10px; border-radius: 2px; background: var(--sage);"></span>
+                  <strong>AED / EUR:</strong> 8% Bilateral
+                </span>
+              </div>
+
+              <div class="escrow-mandate-card">
+                <strong style="color: var(--navy-900); display: block; margin-bottom: 4px;">CBE Law 27/2020 Statutory Escrow Framework:</strong>
+                Foreign-currency capital deposits are held in Central Bank-licensed escrow accounts. Disbursements to developers require certified engineering milestone verification by the New Urban Communities Authority (NUCA).
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line);">
+              <span style="font-size: 12.5px; font-weight: 600; color: var(--navy-900);">Institutional Currency Settlement Desk</span>
+              <a href="#institutionalBriefing" style="font-size: 12.5px; font-weight: 700; color: var(--brass-600); text-decoration: none;">Inquire with Treasury Desk →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         7. INSTITUTIONAL RESEARCH LIBRARY & DOSSIERS
+         ========================================================================= -->
+    <section class="mi-chart-section" style="background: #fff;">
+      <div class="wrap">
+        <div class="mi-section-head">
+          <h2 class="mi-section-h2">Institutional Research Library</h2>
+          <p class="mi-section-lead">
+            Authoritative 30+ page macro intelligence publications authored by Settly's sovereign advisory and research divisions for family offices and institutional acquirers.
+          </p>
+        </div>
+
+        <div class="mi-dossiers-grid">
+          <!-- Dossier 1 -->
+          <div class="mi-dossier-card">
+            <div class="dossier-media-frame">
+              <img src="../../../../Images/web/10.jpg" alt="Ras El Hekma Horizon" />
+              <span class="dossier-edition-badge">Sovereign Focus</span>
+            </div>
+            <div class="dossier-content-body">
+              <div>
+                <div class="dossier-meta-date">Published Feb 2026 · 38 Pages · PDF 14.2 MB</div>
+                <h3 class="dossier-card-title">The Ras El Hekma Horizon: 10-Year Coastal Sovereign Capital Analysis</h3>
+                <p class="dossier-summary-text">
+                  Exhaustive econometric breakdown of the $35B master agreement, infrastructure milestones, freehold master developers, and projected 10-year IRR for frontline Mediterranean beachfront assets.
+                </p>
+              </div>
+              <div class="dossier-action-bar">
+                <span style="font-family: var(--mono-val); font-size: 11px; color: var(--ink-3);">Dr. H. El-Gazzar</span>
+                <button class="btn-download-trigger" onclick="openDossierModal('The Ras El Hekma Horizon', '38 Pages · Sovereign Coastal Analysis')">
+                  <span>Download Dossier</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dossier 2 -->
+          <div class="mi-dossier-card">
+            <div class="dossier-media-frame">
+              <img src="../../../../Images/web/7.jpg" alt="New Cairo vs New Capital" />
+              <span class="dossier-edition-badge">Urban Transition</span>
+            </div>
+            <div class="dossier-content-body">
+              <div>
+                <div class="dossier-meta-date">Published Jan 2026 · 32 Pages · PDF 11.8 MB</div>
+                <h3 class="dossier-card-title">New Cairo vs. New Capital: Commercial Spine Absorption & Spillovers</h3>
+                <p class="dossier-summary-text">
+                  Empirical analysis of ministry relocations, commercial bank headquarters along Road 90, and residential value migration between Golden Square, Mostakbal City, and the New Capital.
+                </p>
+              </div>
+              <div class="dossier-action-bar">
+                <span style="font-family: var(--mono-val); font-size: 11px; color: var(--ink-3);">K. El-Shennawy</span>
+                <button class="btn-download-trigger" onclick="openDossierModal('New Cairo vs. New Capital', '32 Pages · Urban Transition Analysis')">
+                  <span>Download Dossier</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dossier 3 -->
+          <div class="mi-dossier-card">
+            <div class="dossier-media-frame">
+              <img src="../../../../Images/web/6.jpg" alt="Currency Floatation & Hedging" />
+              <span class="dossier-edition-badge">Financial Strategy</span>
+            </div>
+            <div class="dossier-content-body">
+              <div>
+                <div class="dossier-meta-date">Published Dec 2025 · 26 Pages · PDF 9.4 MB</div>
+                <h3 class="dossier-card-title">Inflationary Hedging & Multi-Currency Settlement Frameworks</h3>
+                <p class="dossier-summary-text">
+                  Structuring prime acquisitions through 8-year developer payment plans at 0% nominal interest as synthetic sovereign debt hedges against currency depreciation.
+                </p>
+              </div>
+              <div class="dossier-action-bar">
+                <span style="font-family: var(--mono-val); font-size: 11px; color: var(--ink-3);">Settly Research</span>
+                <button class="btn-download-trigger" onclick="openDossierModal('Inflationary Hedging Frameworks', '26 Pages · Financial Strategy Dossier')">
+                  <span>Download Dossier</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================
+         8. PRE-FOOTER PRIVATE ADVISORY STRIP
+         ========================================================================= -->
+    <section class="pre-ftr-strip" id="institutionalBriefing">
+      <div class="wrap pre-ftr-row">
+        <div class="pre-ftr-text">
+          <h3>Require Bespoke Institutional Allocation or Portfolio Underwriting?</h3>
+          <p>
+            Connect directly with Settly's Chief Macroeconomist and Private Wealth Advisory Desk. We provide customized financial models, escrow audits, and off-market parcel representation for family offices and institutional buyers.
+          </p>
+        </div>
+        <div class="pre-ftr-actions">
+          <a
+            href="https://wa.me/201000000000?text=Hello%20Settly%20Research,%20I%20would%20like%20to%20schedule%20an%20institutional%20market%20intelligence%20briefing."
+            target="_blank"
+            rel="noopener"
+            class="btn-pre-ftr-wa"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.274.072.376-.043s.433-.506.549-.68c.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+            <span>WhatsApp Chief Economist</span>
+          </a>
+          <a href="tel:+20221298000" class="btn-pre-ftr-call">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>+20 (2) 2129 8000</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Luxury 4-Column Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+    <footer class="settly-master-footer">
+      <div class="settly-footer-shell">
+        <div class="settly-footer-grid">
+          <!-- Col 1: Brand Authority & Escrow -->
+          <div class="settly-ftr-brand">
+            <a href="./index.html" class="brand" style="margin-bottom: 1.25rem;">
+              <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" class="ftr-logo-plate" />
+              <span style="color: #fff;">Settly</span>
+            </a>
+            <p class="settly-ftr-desc">
+              Settly is Egypt's institutional luxury real estate exchange. Curating verified prime residential and commercial assets with Central Bank of Egypt statutory escrow protection across Greater Cairo and the Mediterranean Coast.
+            </p>
+            <div class="settly-trust-badges">
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Central Bank of Egypt Escrow Audited (Law 27/2020)</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Tier-1 Licensed Master Developer Exchange</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                <span>100% Freehold Foreign Ownership Guarantee</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Investment Corridors -->
+          <div class="settly-ftr-col">
+            <h4>Prime Corridors</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./area-detail.html">Golden Square (New Cairo)</a></li>
+              <li><a href="./search.html?corridor=sahel">Ras El Hekma (North Coast)</a></li>
+              <li><a href="./search.html?corridor=zayed">New Zayed (Karmell & Rivers)</a></li>
+              <li><a href="./search.html?corridor=gouna">El Gouna Waterfront Estates</a></li>
+              <li><a href="./search.html?corridor=sidiheneish">Sidi Heneish Azure Bay</a></li>
+              <li><a href="./areas.html">All 8 Corridors & GIS Radar →</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Institutional Intelligence -->
+          <div class="settly-ftr-col">
+            <h4>Intelligence & Tools</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./market-insights.html">Macro Intelligence (Q1 2026)</a></li>
+              <li><a href="./market-insights.html#yieldArbitrage">Yield Arbitrage Terminal</a></li>
+              <li><a href="./market-insights.html#developerLeague">Developer Punctuality Table</a></li>
+              <li><a href="./compare.html">Compare 4 Residences Side-by-Side</a></li>
+              <li><a href="./search.html">Cadastral Registry Search</a></li>
+              <li><a href="./agents.html">Certified Agent Directory</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Private Client Advisory & Desk -->
+          <div class="settly-ftr-col">
+            <h4>Private Client Desk</h4>
+            <div class="settly-ftr-advisory">
+              <p>
+                Confidential acquisition support for family offices, institutional funds, and international diaspora capital.
+              </p>
+              <a href="https://wa.me/201000000000" target="_blank" class="btn-ftr-concierge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                <span>WhatsApp Private Desk</span>
+              </a>
+              <div class="settly-ftr-hours">
+                Daily 09:00 — 21:00 CLT · Cairo / Dubai / London
+              </div>
+
+              <!-- Social Media Strip (Instagram, LinkedIn, Facebook, X) -->
+              <div class="settly-socials-block">
+                <span class="settly-socials-label">Connect with Settly:</span>
+                <div class="settly-socials-strip">
+                  <a href="https://instagram.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Instagram" title="Instagram">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on LinkedIn" title="LinkedIn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Facebook" title="Facebook">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                  </a>
+                  <a href="https://x.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on X" title="X (Twitter)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="settly-footer-bottom">
+          <div class="settly-ftr-legal">
+            © 2026 Settly Real Estate Technologies Inc. Central Bank of Egypt Law 27/2020 Compliant. All transactions escrow-verified.
+          </div>
+          <div class="settly-ftr-socials">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Exchange</a>
+            <a href="#escrow">Escrow Security</a>
+            <a href="./market-insights.html">Advisory Dossiers</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Instant Modal Window -->
+    <div id="dossierModalEl" class="dossier-modal-backdrop" onclick="if(event.target === this) closeDossierModal();">
+      <div class="dossier-modal-window">
+        <button class="dossier-modal-close" onclick="closeDossierModal()">✕</button>
+        <div style="font-family: var(--mono-val); font-size: 11px; font-weight: 700; color: var(--brass-600); text-transform: uppercase; margin-bottom: 0.5rem;">
+          Institutional Publication Dispatch
+        </div>
+        <h3 id="modalTitleEl" style="font-family: var(--serif-lead); font-size: 21px; font-weight: 600; color: var(--navy-900); margin: 0 0 0.5rem;">
+          Download Publication
+        </h3>
+        <p id="modalSubEl" style="font-size: 13.5px; color: var(--ink-2); margin: 0 0 1.5rem;">
+          42 Pages · Full Institutional PDF
+        </p>
+
+        <form onsubmit="handleModalSubmit(event)" style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Institutional / Investor Email</label>
+            <input type="email" required placeholder="investor@familyoffice.com" class="term-select" style="width: 100%; box-sizing: border-box;" />
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Organization / Fund Type</label>
+            <select class="term-select" style="width: 100%; box-sizing: border-box;">
+              <option>Family Office / Sovereign Wealth</option>
+              <option>Private Real Estate Fund</option>
+              <option>High-Net-Worth Private Acquirer</option>
+              <option>Commercial Bank Treasury Desk</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-hero-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem; cursor: pointer; border: none;">
+            <span>Instant Download (.PDF)</span>
+          </button>
+        </form>
+        <div style="font-size: 11px; font-family: var(--mono-val); color: var(--ink-3); margin-top: 1rem; text-align: center;">
+          Encrypted download link dispatched immediately. Zero promotional spam.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================================
+         INTERACTIVE ENGINE
+         ========================================================================= -->
+    <script>
+      /* --- 1. SVG Econometric Chart Engine --- */
+      const chartDatasets = {
+        '5Y': {
+          labels: ['Q1 22', 'Q3 22', 'Q1 23', 'Q3 23', 'Q1 24', 'Q3 24', 'Q1 25', 'Q3 25', 'Q1 26'],
+          goldensq: [26400, 31000, 36500, 42000, 47500, 53000, 59500, 64000, 68500],
+          sahel: [21000, 25500, 32000, 39000, 48000, 63000, 82000, 98000, 112000],
+          zayed: [24000, 27500, 31800, 36000, 41200, 46000, 50800, 53500, 56200],
+          gouna: [38000, 44000, 52000, 61000, 71000, 81000, 91000, 99000, 105000]
+        },
+        '3Y': {
+          labels: ['Q1 23', 'Q3 23', 'Q1 24', 'Q3 24', 'Q1 25', 'Q3 25', 'Q1 26'],
+          goldensq: [36500, 42000, 47500, 53000, 59500, 64000, 68500],
+          sahel: [32000, 39000, 48000, 63000, 82000, 98000, 112000],
+          zayed: [31800, 36000, 41200, 46000, 50800, 53500, 56200],
+          gouna: [52000, 61000, 71000, 81000, 91000, 99000, 105000]
+        },
+        '1Y': {
+          labels: ['Q1 25', 'Q2 25', 'Q3 25', 'Q4 25', 'Q1 26'],
+          goldensq: [59500, 61800, 64000, 66200, 68500],
+          sahel: [82000, 90000, 98000, 105000, 112000],
+          zayed: [50800, 52100, 53500, 54900, 56200],
+          gouna: [91000, 95000, 99000, 102000, 105000]
+        },
+        '6M': {
+          labels: ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26'],
+          goldensq: [64800, 65600, 66400, 67200, 67900, 68500],
+          sahel: [100000, 102500, 105000, 107500, 110000, 112000],
+          zayed: [53800, 54400, 55000, 55400, 55800, 56200],
+          gouna: [100000, 101200, 102500, 103500, 104200, 105000]
+        }
+      };
+
+      const activeCorridors = {
+        goldensq: true,
+        sahel: true,
+        zayed: true,
+        gouna: true
+      };
+
+      let activeTf = '5Y';
+
+      function renderEconometricChart() {
+        const ds = chartDatasets[activeTf];
+        const xMin = 60;
+        const xMax = 980;
+        const yMinVal = 20000;
+        const yMaxVal = 120000;
+        const yMinY = 300;
+        const yMaxY = 40;
+
+        // Render X labels
+        const xLabelsContainer = document.getElementById('xAxisLabels');
+        if (xLabelsContainer) {
+          xLabelsContainer.innerHTML = '';
+          const step = (xMax - xMin) / (ds.labels.length - 1);
+          ds.labels.forEach((lbl, idx) => {
+            const x = xMin + (idx * step);
+            const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textEl.setAttribute('x', x);
+            textEl.setAttribute('y', '325');
+            textEl.textContent = lbl;
+            xLabelsContainer.appendChild(textEl);
+          });
+        }
+
+        const seriesConfig = [
+          { key: 'sahel', stroke: '#3D5A4C', grad: 'url(#grad-sahel)', width: 2.5 },
+          { key: 'gouna', stroke: '#64748B', grad: 'url(#grad-gouna)', width: 2 },
+          { key: 'goldensq', stroke: '#C69749', grad: 'url(#grad-goldensq)', width: 2.5 },
+          { key: 'zayed', stroke: '#1E2A4A', grad: 'url(#grad-zayed)', width: 2 }
+        ];
+
+        const pathsContainer = document.getElementById('chartSeriesPaths');
+        if (!pathsContainer) return;
+        pathsContainer.innerHTML = '';
+
+        const step = (xMax - xMin) / (ds.labels.length - 1);
+
+        seriesConfig.forEach(conf => {
+          if (!activeCorridors[conf.key]) return;
+          const vals = ds[conf.key];
+          let points = [];
+
+          vals.forEach((v, idx) => {
+            const x = xMin + (idx * step);
+            const normY = (v - yMinVal) / (yMaxVal - yMinVal);
+            const y = yMinY - (normY * (yMinY - yMaxY));
+            points.push({ x, y, v });
+          });
+
+          // Monotone cubic bezier curves (Recharts type="monotone")
+          let d = `M ${points[0].x} ${points[0].y}`;
+          for (let i = 0; i < points.length - 1; i++) {
+            const p0 = points[i];
+            const p1 = points[i + 1];
+            const cpX1 = p0.x + (p1.x - p0.x) * 0.45;
+            const cpY1 = p0.y;
+            const cpX2 = p1.x - (p1.x - p0.x) * 0.45;
+            const cpY2 = p1.y;
+            d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${p1.x} ${p1.y}`;
+          }
+
+          // Minimalist Area Fill
+          const areaD = `${d} L ${points[points.length - 1].x} ${yMinY} L ${points[0].x} ${yMinY} Z`;
+          const areaPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          areaPath.setAttribute('d', areaD);
+          areaPath.setAttribute('fill', conf.grad);
+          pathsContainer.appendChild(areaPath);
+
+          // Line Stroke (Crisp hairline curve)
+          const linePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          linePath.setAttribute('d', d);
+          linePath.setAttribute('fill', 'none');
+          linePath.setAttribute('stroke', conf.stroke);
+          linePath.setAttribute('stroke-width', conf.width);
+          linePath.setAttribute('stroke-linecap', 'round');
+          linePath.setAttribute('stroke-linejoin', 'round');
+          pathsContainer.appendChild(linePath);
+        });
+      }
+
+      function toggleCorridor(key) {
+        activeCorridors[key] = !activeCorridors[key];
+        const chip = document.querySelector(`.legend-pill[data-corridor="${key}"]`);
+        if (chip) {
+          chip.classList.toggle('inactive', !activeCorridors[key]);
+        }
+        const tooltipRowMap = {
+          goldensq: 'rowGold',
+          sahel: 'rowSahel',
+          zayed: 'rowZayed',
+          gouna: 'rowGouna'
+        };
+        const rowEl = document.getElementById(tooltipRowMap[key]);
+        if (rowEl) {
+          rowEl.style.display = activeCorridors[key] ? 'flex' : 'none';
+        }
+        renderEconometricChart();
+      }
+
+      function setTimeframe(tf) {
+        activeTf = tf;
+        document.querySelectorAll('.tf-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.textContent.includes(tf));
+        });
+        renderEconometricChart();
+      }
+
+      // Chart Hover Scrubber & shadcn Tooltip Interaction
+      const svgContainer = document.getElementById('svgContainer');
+      const hoverCard = document.getElementById('chartHoverCard');
+      const crosshair = document.getElementById('hoverCrosshair');
+      const dotsContainer = document.getElementById('intersectDots');
+
+      if (svgContainer && hoverCard && crosshair) {
+        svgContainer.addEventListener('mousemove', (e) => {
+          const rect = svgContainer.getBoundingClientRect();
+          const relX = e.clientX - rect.left;
+          const svgWidth = rect.width;
+          const svgCoordX = (relX / svgWidth) * 1000;
+
+          if (svgCoordX >= 55 && svgCoordX <= 985) {
+            const ds = chartDatasets[activeTf];
+            const step = (980 - 60) / (ds.labels.length - 1);
+            let closestIdx = Math.round((svgCoordX - 60) / step);
+            closestIdx = Math.max(0, Math.min(ds.labels.length - 1, closestIdx));
+            const snappedX = 60 + (closestIdx * step);
+
+            crosshair.setAttribute('x1', snappedX);
+            crosshair.setAttribute('x2', snappedX);
+            crosshair.style.display = 'block';
+            hoverCard.style.display = 'flex';
+
+            // Draw snap intersect dots
+            if (dotsContainer) {
+              dotsContainer.innerHTML = '';
+              const yMinVal = 20000;
+              const yMaxVal = 120000;
+              const yMinY = 300;
+              const yMaxY = 40;
+
+              const seriesDotConfig = [
+                { key: 'sahel', stroke: '#3D5A4C' },
+                { key: 'gouna', stroke: '#64748B' },
+                { key: 'goldensq', stroke: '#C69749' },
+                { key: 'zayed', stroke: '#1E2A4A' }
+              ];
+
+              seriesDotConfig.forEach(conf => {
+                if (!activeCorridors[conf.key]) return;
+                const v = ds[conf.key][closestIdx];
+                const normY = (v - yMinVal) / (yMaxVal - yMinVal);
+                const dotY = yMinY - (normY * (yMinY - yMaxY));
+
+                const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                c.setAttribute('cx', snappedX);
+                c.setAttribute('cy', dotY);
+                c.setAttribute('r', '4');
+                c.setAttribute('fill', '#fff');
+                c.setAttribute('stroke', conf.stroke);
+                c.setAttribute('stroke-width', '2');
+                dotsContainer.appendChild(c);
+              });
+            }
+
+            document.getElementById('hoverQuarter').textContent = ds.labels[closestIdx];
+            document.getElementById('hoverValGold').textContent = ds.goldensq[closestIdx].toLocaleString() + ' EGP/m²';
+            document.getElementById('hoverValSahel').textContent = ds.sahel[closestIdx].toLocaleString() + ' EGP/m²';
+            document.getElementById('hoverValZayed').textContent = ds.zayed[closestIdx].toLocaleString() + ' EGP/m²';
+            document.getElementById('hoverValGouna').textContent = ds.gouna[closestIdx].toLocaleString() + ' EGP/m²';
+          } else {
+            crosshair.style.display = 'none';
+            hoverCard.style.display = 'none';
+            if (dotsContainer) dotsContainer.innerHTML = '';
+          }
+        });
+
+        svgContainer.addEventListener('mouseleave', () => {
+          crosshair.style.display = 'none';
+          hoverCard.style.display = 'none';
+          if (dotsContainer) dotsContainer.innerHTML = '';
+        });
+      }
+
+      /* --- 2. Yield Arbitrage Terminal Engine --- */
+      let currentAllocationEGP = 32500000;
+      let currentCurr = 'EGP';
+
+      const terminalFx = {
+        EGP: { rate: 1.0, prefix: 'EGP ' },
+        USD: { rate: 48.85, prefix: '$' },
+        AED: { rate: 13.30, prefix: 'AED ' }
+      };
+
+      const terminalCorridorData = {
+        goldensq: { yieldRate: 0.092, cashDiscount: 0.24 },
+        sahel: { yieldRate: 0.142, cashDiscount: 0.28 },
+        zayed: { yieldRate: 0.086, cashDiscount: 0.22 },
+        gouna: { yieldRate: 0.115, cashDiscount: 0.26 }
+      };
+
+      function setAllocationBudget(val, btn) {
+        currentAllocationEGP = val;
+        document.querySelectorAll('.step-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        recalculateYieldTerminal();
+      }
+
+      function setTerminalCurrency(curr, btn) {
+        currentCurr = curr;
+        document.querySelectorAll('.term-curr-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        recalculateYieldTerminal();
+      }
+
+      function recalculateYieldTerminal() {
+        const select = document.getElementById('terminalCorridorSelect');
+        if (!select) return;
+        const cKey = select.value;
+        const cData = terminalCorridorData[cKey];
+        const fx = terminalFx[currentCurr];
+
+        // Option A: Primary 8-Yr
+        const downEGP = currentAllocationEGP * 0.10;
+        const qtrEGP = (currentAllocationEGP * 0.90) / 32;
+
+        const downEl = document.getElementById('primaryEntryDown');
+        const qtrEl = document.getElementById('primaryQuarterlyOutlay');
+        if (downEl && qtrEl) {
+          if (currentCurr === 'EGP') {
+            downEl.textContent = 'EGP ' + (downEGP / 1000000).toFixed(2) + 'M';
+            qtrEl.textContent = 'EGP ' + Math.round(qtrEGP).toLocaleString();
+          } else {
+            downEl.textContent = fx.prefix + Math.round(downEGP / fx.rate).toLocaleString();
+            qtrEl.textContent = fx.prefix + Math.round(qtrEGP / fx.rate).toLocaleString();
+          }
+        }
+
+        // Option B: Resale
+        const rentEGP = currentAllocationEGP * cData.yieldRate;
+        const discountValEGP = currentAllocationEGP * cData.cashDiscount;
+        const paybackYrs = (currentAllocationEGP / rentEGP).toFixed(1);
+
+        const rentEl = document.getElementById('resaleAnnualGross');
+        const yieldEl = document.getElementById('resaleNetYieldPct');
+        const discountEl = document.getElementById('resaleDiscountSaving');
+        const paybackEl = document.getElementById('resalePaybackTimeline');
+
+        if (rentEl) {
+          if (currentCurr === 'EGP') {
+            rentEl.textContent = 'EGP ' + (rentEGP / 1000000).toFixed(2) + 'M / yr';
+          } else {
+            rentEl.textContent = fx.prefix + (rentEGP / fx.rate / 1000000).toFixed(2) + 'M / yr';
+          }
+        }
+        if (yieldEl) {
+          yieldEl.textContent = (cData.yieldRate * 100).toFixed(1) + '% Net';
+        }
+        if (discountEl) {
+          discountEl.textContent = `-${(cData.cashDiscount * 100).toFixed(0)}% (` + (discountValEGP / 1000000).toFixed(1) + 'M saved)';
+        }
+        if (paybackEl) {
+          paybackEl.textContent = paybackYrs + ' Years';
+        }
+      }
+
+      /* --- 3. Developer League Table Filtering --- */
+      function filterLeagueTable(btn, region) {
+        document.querySelectorAll('.tbl-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const rows = document.querySelectorAll('#leagueTableEl tbody tr');
+        rows.forEach(row => {
+          const r = row.getAttribute('data-region') || '';
+          if (region === 'all' || r.includes(region)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      /* --- 4. Modal Window Logic --- */
+      function openDossierModal(title, sub) {
+        const modal = document.getElementById('dossierModalEl');
+        if (!modal) return;
+        document.getElementById('modalTitleEl').textContent = title;
+        document.getElementById('modalSubEl').textContent = sub;
+        modal.classList.add('open');
+      }
+
+      function closeDossierModal() {
+        const modal = document.getElementById('dossierModalEl');
+        if (modal) modal.classList.remove('open');
+      }
+
+      function handleModalSubmit(e) {
+        e.preventDefault();
+        alert('Verification complete. Your institutional research dossier download has commenced.');
+        closeDossierModal();
+      }
+
+      // Initialize
+      document.addEventListener('DOMContentLoaded', () => {
+        renderEconometricChart();
+        recalculateYieldTerminal();
+      });
+    </script>
+  </body>
+</html>

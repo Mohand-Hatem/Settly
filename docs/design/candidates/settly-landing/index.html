@@ -1,0 +1,2616 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Settly — Intelligent Real Estate for Egypt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./master-nav-footer.css" />
+  </head>
+  <body>
+    <!--
+  DIRECTION CONTRACT — Settly landing (Persuade)
+  THESIS: Egypt's property market sells on noise; Settly sells on verified structure. The page
+    refuses the aggregator wall of thumbnails and leads with one architectural photograph and a
+    working search console.
+  OWN-WORLD: Deep navy (#1E2A4A) and brass (#C69749) taken from the Settly mark; warm bone canvas;
+    white plates with hairline rules; Plus Jakarta Sans display over IBM Plex Sans for every
+    number, unit and label. Logical properties throughout so Arabic is a mirror, not a patch.
+  STORY: A buyer sees a real Egyptian home, understands Settly indexes them with verified metrics,
+    and starts a search in the first viewport.
+  FIRST VIEWPORT: Full-bleed hero photograph, navy scrim raked from the inline-start edge; headline,
+    sub and the search console pinned left; trending districts beneath.
+  FORM: Editorial property broadsheet meets an instrument panel. Brief-pinned by the supplied logo,
+    hero photograph and reference sheet, so no direction roll was run.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the
+    verdict, DESIGN.md, and every shipping raster carrying its provenance.
+-->
+
+    <div class="ribbon">
+      Design mockup — layout and visual system are real;
+      <b>all listings, prices and figures are illustrative placeholders</b>, not
+      market data.
+    </div>
+
+        <!-- Settly Global Master Navigation with Mega-Menus -->
+        <!-- Settly Global Master Navigation (Simplified & Luxury) -->
+        <!-- Settly Global Master Navigation -->
+    <header class="settly-master-header">
+      <div class="settly-nav-shell">
+        <!-- Original Settly Brand Mark & Title -->
+        <a href="./index.html" class="brand">
+          <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" />
+          <span>Settly</span>
+        </a>
+
+        <!-- Simplified Primary Navigation -->
+        <nav class="settly-main-nav">
+          <a href="./search.html" class="settly-nav-link active">Buy</a>
+          <a href="./areas.html" class="settly-nav-link">Districts</a>
+          <a href="./compare.html" class="settly-nav-link">Compare</a>
+          <a href="./market-insights.html" class="settly-nav-link">Market Insights</a>
+          <a href="./agents.html" class="settly-nav-link">Agents</a>
+        </nav>
+
+        <!-- Right Header Actions -->
+        <div class="settly-header-actions">
+          <div class="settly-fx-pill" title="Central Bank of Egypt Sovereign Exchange Rate">
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
+          </div>
+          <a href="./index.html#signin" class="btn-settly-signin">Sign in</a>
+          <a href="./search.html" class="btn-settly-getstarted">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================================================================== hero -->
+    <section class="hero" id="top">
+      <div class="hero-bg">
+        <img
+          src="../../../../Images/web/hero.jpg"
+          alt="A contemporary Egyptian villa at dusk, glazed façade lit from within, reflecting pool in the foreground."
+          fetchpriority="high"
+        />
+      </div>
+      <div class="wrap hero-in">
+        <div class="hero-copy">
+          <div class="hero-badges rise d1">
+            <span class="hbadge">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              Verified listings
+            </span>
+            <span class="hbadge">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              Map &amp; semantic search
+            </span>
+            <span class="hbadge">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 7h16v12H4z" />
+                <path d="M4 11h16" />
+                <path d="M8 4v3" />
+              </svg>
+              Bilingual EN / العربية
+            </span>
+          </div>
+
+          <h1 class="rise d2">
+            Find your next home in Egypt, <em>faster</em> and with complete
+            clarity.
+          </h1>
+          <p class="hero-sub rise d2">
+            Villas, penthouses and duplexes across New Cairo, Sheikh Zayed and
+            the North Coast. Each one carries verified area, price per square
+            metre and handover terms, so you compare the numbers instead of the
+            marketing.
+          </p>
+
+          <div class="console rise d3">
+            <div class="tabs" role="tablist" aria-label="Listing type">
+              <button class="tab" role="tab" aria-selected="true" type="button">
+                Buy
+              </button>
+              <button
+                class="tab"
+                role="tab"
+                aria-selected="false"
+                type="button"
+              >
+                Rent
+              </button>
+              <button
+                class="tab"
+                role="tab"
+                aria-selected="false"
+                type="button"
+              >
+                New launches
+              </button>
+            </div>
+            <div class="console-body">
+              <div class="field">
+                <label for="f-loc">Location</label>
+                <select id="f-loc">
+                  <option>All regions — Egypt</option>
+                  <option>New Cairo (Fifth Settlement)</option>
+                  <option>Sheikh Zayed &amp; 6th of October</option>
+                  <option>North Coast (Sahel)</option>
+                  <option>New Administrative Capital</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-type">Property type</label>
+                <select id="f-type">
+                  <option>Any type</option>
+                  <option>Standalone villa</option>
+                  <option>Twin house</option>
+                  <option>Duplex</option>
+                  <option>Penthouse</option>
+                  <option>Apartment</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-price">Price</label>
+                <select id="f-price">
+                  <option>Any price (EGP)</option>
+                  <option>Under 15,000,000</option>
+                  <option>15,000,000 – 35,000,000</option>
+                  <option>35,000,000 and above</option>
+                </select>
+              </div>
+              <div class="console-go">
+                <a class="btn btn-accent" href="./search.html" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m20 20-3.5-3.5" />
+                  </svg>
+                  Search
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="trending rise d4">
+            <span>Popular:</span>
+            <a href="#">New Cairo villas</a>
+            <a href="#">Sahel chalets</a>
+            <a href="#">Zayed duplexes</a>
+            <a href="#">Ready to move</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ capability -->
+    <section class="cap">
+      <div class="wrap">
+        <div class="cap-grid">
+          <div class="cap-item">
+            <div class="cap-ico">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </div>
+            <div>
+              <h3>Verified listings</h3>
+              <p>
+                Agents are identity-verified and every listing is moderated
+                before it goes live.
+              </p>
+            </div>
+          </div>
+          <div class="cap-item">
+            <div class="cap-ico">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 4-6 2.5v13L9 17l6 3 6-2.5v-13L15 7z" />
+                <path d="M9 4v13M15 7v13" />
+              </svg>
+            </div>
+            <div>
+              <h3>Map &amp; semantic search</h3>
+              <p>
+                Filter on a live map, or just describe the home you want in your
+                own words.
+              </p>
+            </div>
+          </div>
+          <div class="cap-item">
+            <div class="cap-ico">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+                <path d="M2.5 10h19" />
+                <path d="M7 15h4" />
+              </svg>
+            </div>
+            <div>
+              <h3>Secure reservation</h3>
+              <p>
+                Reserve an accepted offer with a deposit paid inside the
+                platform, receipted.
+              </p>
+            </div>
+          </div>
+          <div class="cap-item">
+            <div class="cap-ico">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="9.5" />
+                <path d="M2.5 12h19" />
+                <path d="M12 2.5a15 15 0 0 1 0 19a15 15 0 0 1 0-19" />
+              </svg>
+            </div>
+            <div>
+              <h3>Built bilingual</h3>
+              <p>
+                English and Arabic are equal citizens, with full right-to-left
+                and no auto-translation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== workflows -->
+    <section class="sect" id="buy">
+      <div class="wrap">
+        <div class="shead">
+          <h2>Three ways to find it, depending on how you think.</h2>
+          <p>
+            Some buyers arrive with a spreadsheet. Some arrive with a
+            neighbourhood. Some arrive with a sentence. Settly answers all three
+            from the same live index.
+          </p>
+        </div>
+
+        <!-- 3 Bespoke Discovery Consoles -->
+        <div class="discovery-cockpit">
+          <!-- Console 1: Parametric (Spreadsheet) -->
+          <div class="discovery-console">
+            <div class="console-top">
+              <div class="console-header-row">
+                <span class="console-badge">Parametric</span>
+                <div class="console-ico">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2.2" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="2.2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="2.2" fill="currentColor" stroke="none"/></svg>
+                </div>
+              </div>
+              <h3>Filter on precise criteria</h3>
+              <p>
+                Narrow by handover quarter, developer track record, instalment length, and exact price per square metre.
+              </p>
+            </div>
+            <div class="console-ui">
+              <div class="param-bracket">
+                <span>PRICE PER SQM</span>
+                <span class="param-bracket-val" id="paramPriceReadout">EGP 38k — 52k / m²</span>
+              </div>
+              <div class="param-slider-track">
+                <div class="param-slider-fill"></div>
+                <div class="param-slider-thumb" style="inset-inline-start: 18%;"></div>
+                <div class="param-slider-thumb" style="inset-inline-start: 78%;"></div>
+              </div>
+              <div class="param-chips">
+                <span class="param-chip active" data-count="142">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  Ready to move
+                </span>
+                <span class="param-chip active" data-count="96">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  7+ Yr plan
+                </span>
+                <span class="param-chip" data-count="68">+ Pool</span>
+                <span class="param-chip" data-count="114">+ Core & shell</span>
+              </div>
+              <div class="console-tally-bar">
+                <span>INDEXED COMPOUNDS</span>
+                <span class="console-tally-count" id="paramTallyCount">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  142 verified units
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Console 2: Radar Map (Neighbourhood) -->
+          <div class="discovery-console">
+            <div class="console-top">
+              <div class="console-header-row">
+                <span class="console-badge">Spatial Map</span>
+                <div class="console-ico">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4-6 2.5v13L9 17l6 3 6-2.5v-13L15 7z"/><path d="M9 4v13M15 7v13"/></svg>
+                </div>
+              </div>
+              <h3>Explore on the terrain</h3>
+              <p>
+                Pan compound by compound across Cairo and the coast. Draw a custom polygon boundary to isolate units in your exact zone.
+              </p>
+            </div>
+            <div class="console-ui">
+              <div class="radar-viewport">
+                <div class="radar-grid"></div>
+                <div class="radar-road r1"></div>
+                <div class="radar-road r2"></div>
+                <div class="radar-poly"></div>
+                <div class="radar-pin p1 active" title="Mivida Compound">Mivida · 52k/m²</div>
+                <div class="radar-pin p2" title="Villette by Sodic">Villette · 46k/m²</div>
+                <div class="radar-coords">30°01'N 31°29'E · Golden Square</div>
+              </div>
+              <div class="console-tally-bar">
+                <span>POLYGON BOUNDARY</span>
+                <span class="console-tally-count">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  3.4 km² · 48 units inside
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Console 3: Sentence (Natural Language Intent) -->
+          <div class="discovery-console">
+            <div class="console-top">
+              <div class="console-header-row">
+                <span class="console-badge">Natural Language</span>
+                <div class="console-ico">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18.5 15.5 19 17l1.5.5L19 18l-.5 1.5L18 18l-1.5-.5L18 17z"/></svg>
+                </div>
+              </div>
+              <h3>Describe it in a sentence</h3>
+              <p>
+                Write what you want the way you would say it out loud. Settly parses intent, isolates constraints, and matches real inventory.
+              </p>
+            </div>
+            <div class="console-ui">
+              <div class="sentence-prompt-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <div class="sentence-text">
+                  “4-bed villa with a garden in Tagamoa, ready this year”<span class="sentence-cursor"></span>
+                </div>
+              </div>
+              <div class="intent-tags">
+                <span class="intent-tag">Location: Tagamoa</span>
+                <span class="intent-tag">Beds: 4</span>
+                <span class="intent-tag">Handover: 2026</span>
+                <span class="intent-tag">Garden: Yes</span>
+              </div>
+              <div class="console-tally-bar">
+                <span>INTENT PARSER</span>
+                <span class="console-tally-count">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m9 12 2 2 4-4"/></svg>
+                  98% confidence · 14 matches
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- react-fast-marquee: Infinite Live Search Ticker -->
+        <div class="fast-marquee-wrapper" aria-label="Live search stream across Egypt">
+          <div class="fast-marquee-track">
+            <!-- Set A -->
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-param">Parametric</span>
+              <span class="marquee-query">New Cairo · 7-Year Plan · &lt; EGP 48,000/m²</span>
+              <span class="marquee-result">142 units</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-sentence">Sentence</span>
+              <span class="marquee-query">“Chalet in Marassi or Hacienda with sea view, summer 2026”</span>
+              <span class="marquee-result">8 matches</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-map">Map radar</span>
+              <span class="marquee-query">Drawn boundary: Golden Square, New Cairo (3.4 km²)</span>
+              <span class="marquee-result">68 units</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-sentence">Sentence</span>
+              <span class="marquee-query">“4-bed standalone in Villette with garden under 32M”</span>
+              <span class="marquee-result">14 matches</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-param">Parametric</span>
+              <span class="marquee-query">El Gouna · Seafront · 10% Down · 5-Yr Plan</span>
+              <span class="marquee-result">19 units</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-map">Map radar</span>
+              <span class="marquee-query">Drawn boundary: New Zayed (Karma 4 / Allegria)</span>
+              <span class="marquee-result">37 units</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-sentence">Sentence</span>
+              <span class="marquee-query">“Duplex in Badya with solar roof and 10-year instalments”</span>
+              <span class="marquee-result">23 matches</span>
+            </a>
+            <a href="#buy" class="marquee-card">
+              <span class="marquee-mode-pill pill-param">Parametric</span>
+              <span class="marquee-query">Ras El Hekma · Q2 2027 Handover · Direct beach</span>
+              <span class="marquee-result">29 units</span>
+            </a>
+
+            <!-- Set B (duplicate for continuous seamless infinite loop) -->
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-param">Parametric</span>
+              <span class="marquee-query">New Cairo · 7-Year Plan · &lt; EGP 48,000/m²</span>
+              <span class="marquee-result">142 units</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-sentence">Sentence</span>
+              <span class="marquee-query">“Chalet in Marassi or Hacienda with sea view, summer 2026”</span>
+              <span class="marquee-result">8 matches</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-map">Map radar</span>
+              <span class="marquee-query">Drawn boundary: Golden Square, New Cairo (3.4 km²)</span>
+              <span class="marquee-result">68 units</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-sentence">Sentence</span>
+              <span class="marquee-query">“4-bed standalone in Villette with garden under 32M”</span>
+              <span class="marquee-result">14 matches</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-param">Parametric</span>
+              <span class="marquee-query">El Gouna · Seafront · 10% Down · 5-Yr Plan</span>
+              <span class="marquee-result">19 units</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-map">Map radar</span>
+              <span class="marquee-query">Drawn boundary: New Zayed (Karma 4 / Allegria)</span>
+              <span class="marquee-result">37 units</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-sentence">Sentence</span>
+              <span class="marquee-query">“Duplex in Badya with solar roof and 10-year instalments”</span>
+              <span class="marquee-result">23 matches</span>
+            </a>
+            <a href="#buy" class="marquee-card" aria-hidden="true">
+              <span class="marquee-mode-pill pill-param">Parametric</span>
+              <span class="marquee-query">Ras El Hekma · Q2 2027 Handover · Direct beach</span>
+              <span class="marquee-result">29 units</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= properties -->
+    <section class="sect" id="areas" style="padding-top: 0">
+      <div class="wrap">
+        <div class="shead shead-row" style="max-width: none">
+          <div style="max-width: 52ch">
+            <h2>Featured residences</h2>
+            <p>
+              A sample of what an indexed listing looks like: verified area,
+              developer, and the metric that lets you compare across compounds.
+            </p>
+          </div>
+          <a class="slink" href="#">
+            Browse all listings
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="props">
+          <!-- Residence 1: Lake View Signature Villa -->
+          <article class="prop">
+            <div class="prop-media">
+              <img
+                src="../../../../Images/web/11.jpg"
+                alt="Lake View Signature Villa"
+                loading="lazy"
+              />
+              <div class="prop-tags">
+                <span class="tag tag-dev">Palm Hills</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m5 13 4 4L19 7" />
+                  </svg>
+                  Verified
+                </span>
+              </div>
+              <span class="prop-sqm">EGP 60,185 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+                  <circle cx="12" cy="10" r="2.4" />
+                </svg>
+                Golden Square, New Cairo
+              </p>
+              <h3>Lake View Signature Villa</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">32,500,000<small>EGP</small></p>
+                <span class="prop-plan-chip">7-Yr Plan</span>
+              </div>
+              <div class="prop-specs">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M3 18v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5" />
+                    <path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" />
+                    <path d="M3 18h18" />
+                  </svg>
+                  5 Beds
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z" />
+                    <path d="M7 12V6a2 2 0 0 1 4 0" />
+                  </svg>
+                  6 Baths
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16v16H4z" />
+                    <path d="M4 10h6V4" />
+                  </svg>
+                  540 m²
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Residence 2: Terrace Skyline Duplex -->
+          <article class="prop">
+            <div class="prop-media">
+              <img
+                src="../../../../Images/web/5.jpg"
+                alt="Terrace Skyline Duplex"
+                loading="lazy"
+              />
+              <div class="prop-tags">
+                <span class="tag tag-dev">SODIC</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m5 13 4 4L19 7" />
+                  </svg>
+                  Verified
+                </span>
+              </div>
+              <span class="prop-sqm">EGP 59,060 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+                  <circle cx="12" cy="10" r="2.4" />
+                </svg>
+                Karmell, Sheikh Zayed
+              </p>
+              <h3>Terrace Skyline Duplex</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">18,900,000<small>EGP</small></p>
+                <span class="prop-plan-chip">8-Yr Plan</span>
+              </div>
+              <div class="prop-specs">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M3 18v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5" />
+                    <path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" />
+                    <path d="M3 18h18" />
+                  </svg>
+                  4 Beds
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z" />
+                    <path d="M7 12V6a2 2 0 0 1 4 0" />
+                  </svg>
+                  4 Baths
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16v16H4z" />
+                    <path d="M4 10h6V4" />
+                  </svg>
+                  320 m²
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Residence 3: Azure Horizon Penthouse -->
+          <article class="prop">
+            <div class="prop-media">
+              <img
+                src="../../../../Images/web/2.jpg"
+                alt="Azure Horizon Penthouse"
+                loading="lazy"
+              />
+              <div class="prop-tags">
+                <span class="tag tag-dev">Emaar Misr</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m5 13 4 4L19 7" />
+                  </svg>
+                  Verified
+                </span>
+              </div>
+              <span class="prop-sqm">EGP 107,317 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+                  <circle cx="12" cy="10" r="2.4" />
+                </svg>
+                Sidi Abd El Rahman, North Coast
+              </p>
+              <h3>Azure Horizon Penthouse</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">44,000,000<small>EGP</small></p>
+                <span class="prop-plan-chip">6-Yr Plan</span>
+              </div>
+              <div class="prop-specs">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M3 18v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5" />
+                    <path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" />
+                    <path d="M3 18h18" />
+                  </svg>
+                  4 Beds
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z" />
+                    <path d="M7 12V6a2 2 0 0 1 4 0" />
+                  </svg>
+                  5 Baths
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M4 4h16v16H4z" />
+                    <path d="M4 10h6V4" />
+                  </svg>
+                  410 m²
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Residence 4: Courtyard Townhouse -->
+          <article class="prop">
+            <div class="prop-media">
+              <img
+                src="../../../../Images/web/9.jpg"
+                alt="Courtyard Townhouse"
+                loading="lazy"
+              />
+              <div class="prop-tags">
+                <span class="tag tag-dev">Ora Developers</span>
+                <span class="tag tag-ok">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m5 13 4 4L19 7" />
+                  </svg>
+                  Verified
+                </span>
+              </div>
+              <span class="prop-sqm">EGP 75,087 / m²</span>
+            </div>
+            <div class="prop-body">
+              <p class="prop-loc">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+                  <circle cx="12" cy="10" r="2.4" />
+                </svg>
+                ZED East, New Cairo
+              </p>
+              <h3>Courtyard Townhouse</h3>
+              <div class="prop-price-wrap">
+                <p class="prop-price">21,400,000<small>EGP</small></p>
+                <span class="prop-plan-chip">7-Yr Plan</span>
+              </div>
+              <div class="prop-specs">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M3 18v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5" />
+                    <path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" />
+                    <path d="M3 18h18" />
+                  </svg>
+                  3 Beds
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z" />
+                    <path d="M7 12V6a2 2 0 0 1 4 0" />
+                  </svg>
+                  4 Baths
+                </span>
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16v16H4z" />
+                    <path d="M4 10h6V4" />
+                  </svg>
+                  285 m²
+                </span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== map -->
+    <section class="sect mapsec" id="map">
+      <div class="wrap">
+        <div class="shead shead-row" style="max-width: none">
+          <div style="max-width: 52ch">
+            <h2>Draw the area. See what's inside it.</h2>
+            <p>
+              Compound boundaries rarely match how people actually search. Draw
+              your own shape on the map and every verified unit inside it comes
+              back with its metrics attached.
+            </p>
+          </div>
+          <a class="slink" href="#">
+            Open the map
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="map-shell">
+          <aside class="map-rail">
+            <p class="map-count"><b>142 units</b> in this area</p>
+            <div class="map-filters" id="mapRailFilters">
+              <button type="button" class="on" data-tag="all">All (6)</button>
+              <button type="button" data-tag="villa">Villas (3)</button>
+              <button type="button" data-tag="town">Twin & Town (3)</button>
+              <button type="button" data-tag="ready">Ready 2026</button>
+            </div>
+            <div class="map-hits" id="mapHitsList">
+              <!-- Item 0 (Pin 0) -->
+              <div class="map-hit on" data-index="0" data-tag="villa ready" data-dev="Palm Hills" data-price="EGP 32,500,000" data-sqm="EGP 60,185/m²">
+                <img src="../../../../Images/web/11.jpg" alt="Lake View Signature Villa" loading="lazy" />
+                <div>
+                  <b>Lake View Signature Villa</b>
+                  <span>Golden Square · 540 m² · 5 beds</span>
+                </div>
+              </div>
+              <!-- Item 1 (Pin 1) -->
+              <div class="map-hit" data-index="1" data-tag="town" data-dev="Katameya" data-price="EGP 18,900,000" data-sqm="EGP 60,960/m²">
+                <img src="../../../../Images/web/2.jpg" alt="Katameya Dunes Twin House" loading="lazy" />
+                <div>
+                  <b>Katameya Dunes Twin House</b>
+                  <span>Fifth Settlement · 310 m² · 4 beds</span>
+                </div>
+              </div>
+              <!-- Item 2 (Pin 2) -->
+              <div class="map-hit" data-index="2" data-tag="villa ready" data-dev="Emaar Misr" data-price="EGP 44,000,000" data-sqm="EGP 64,700/m²">
+                <img src="../../../../Images/web/7.jpg" alt="Mivida Crescent Standalone" loading="lazy" />
+                <div>
+                  <b>Mivida Crescent Standalone</b>
+                  <span>Golden Square · 680 m² · 6 beds</span>
+                </div>
+              </div>
+              <!-- Item 3 (Pin 3) -->
+              <div class="map-hit" data-index="3" data-tag="town ready" data-dev="SODIC" data-price="EGP 21,400,000" data-sqm="EGP 75,080/m²">
+                <img src="../../../../Images/web/9.jpg" alt="Courtyard Townhouse" loading="lazy" />
+                <div>
+                  <b>Courtyard Townhouse</b>
+                  <span>South 90th · 285 m² · 3 beds</span>
+                </div>
+              </div>
+              <!-- Item 4 (Pin 4) -->
+              <div class="map-hit" data-index="4" data-tag="villa" data-dev="Palm Hills" data-price="EGP 29,800,000" data-sqm="EGP 63,400/m²">
+                <img src="../../../../Images/web/4.jpg" alt="Palm Court Residence" loading="lazy" />
+                <div>
+                  <b>Palm Court Residence</b>
+                  <span>Mivida · 470 m² · 4 beds</span>
+                </div>
+              </div>
+              <!-- Item 5 (Pin 5) -->
+              <div class="map-hit" data-index="5" data-tag="town ready" data-dev="SODIC" data-price="EGP 26,200,000" data-sqm="EGP 67,170/m²">
+                <img src="../../../../Images/web/5.jpg" alt="Villette Sky Villa" loading="lazy" />
+                <div>
+                  <b>Villette Sky Villa</b>
+                  <span>New Cairo · 390 m² · 4 beds</span>
+                </div>
+              </div>
+            </div>
+            <p class="map-draw">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 16.5V5.5A1.5 1.5 0 0 1 5.5 4h13" />
+                <path d="m14 2.5 4.5 3-4.5 3" />
+                <circle cx="5" cy="19" r="2.2" />
+                <path d="M8 19h11.5" />
+              </svg>
+              Custom boundary · 3.2 km across
+            </p>
+          </aside>
+
+          <div class="map-canvas">
+            <svg
+              class="basemap"
+              viewBox="0 0 1000 620"
+              preserveAspectRatio="xMidYMid slice"
+              role="img"
+              aria-label="Stylised map of a New Cairo district with property markers."
+            >
+              <defs>
+                <pattern
+                  id="blocks"
+                  width="52"
+                  height="42"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <rect width="34" height="25" rx="3" fill="#E4DECF" />
+                </pattern>
+                <pattern
+                  id="blocks2"
+                  width="44"
+                  height="36"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <rect width="27" height="20" rx="3" fill="#E7E1D3" />
+                </pattern>
+              </defs>
+
+              <rect width="1000" height="620" fill="#EDE9DF" />
+
+              <!-- urban grain -->
+              <rect
+                x="60"
+                y="40"
+                width="380"
+                height="240"
+                fill="url(#blocks)"
+              />
+              <rect
+                x="560"
+                y="60"
+                width="380"
+                height="200"
+                fill="url(#blocks2)"
+              />
+              <rect
+                x="80"
+                y="360"
+                width="300"
+                height="220"
+                fill="url(#blocks2)"
+              />
+              <rect
+                x="620"
+                y="380"
+                width="330"
+                height="200"
+                fill="url(#blocks)"
+              />
+
+              <!-- parkland -->
+              <path
+                d="M430 300q60-40 130-20t120 10 90-30v130q-70 34-150 20t-140-6-50-24z"
+                fill="#D9E3D4"
+              />
+              <circle cx="180" cy="318" r="46" fill="#D9E3D4" />
+              <!-- water -->
+              <path
+                d="M470 372q70 26 140 12t120-16v44q-64 22-136 16t-124-24z"
+                fill="#C7D6E3"
+              />
+
+              <!-- road casings then roads -->
+              <g stroke="#DCD5C4" fill="none" stroke-linecap="round">
+                <path d="M0 300h1000" stroke-width="26" />
+                <path d="M500 0v620" stroke-width="22" />
+                <path
+                  d="M-20 120C220 96 300 220 520 210s360-120 520-96"
+                  stroke-width="18"
+                />
+              </g>
+              <g stroke="#FFFFFF" fill="none" stroke-linecap="round">
+                <path d="M0 300h1000" stroke-width="18" />
+                <path d="M500 0v620" stroke-width="14" />
+                <path
+                  d="M-20 120C220 96 300 220 520 210s360-120 520-96"
+                  stroke-width="11"
+                />
+                <g stroke-width="6" opacity=".92">
+                  <path d="M150 0v300M300 0v300M700 300v320M850 60v240" />
+                  <path d="M0 180h500M500 460h500M0 470h380" />
+                </g>
+              </g>
+
+              <!-- drawn search boundary -->
+              <path
+                d="M250 150 L640 120 L780 330 L560 500 L230 430 Z"
+                fill="rgba(198,151,73,.13)"
+                stroke="#C69749"
+                stroke-width="2.5"
+                stroke-dasharray="9 7"
+                stroke-linejoin="round"
+              />
+
+              <g
+                font-family="IBM Plex Sans, sans-serif"
+                font-size="12.5"
+                fill="#6E7690"
+                letter-spacing="1.4"
+              >
+                <text x="120" y="86" text-transform="uppercase">
+                  FIFTH SETTLEMENT
+                </text>
+                <text x="610" y="104">GOLDEN SQUARE</text>
+                <text x="118" y="546">KATAMEYA</text>
+                <text x="676" y="556">MIVIDA</text>
+              </g>
+            </svg>
+
+            <!-- Refactored Floating Inspect Card -->
+            <div
+              class="map-pop"
+              id="mapInspectCard"
+              style="inset-inline-start: 44%; inset-block-start: 47%"
+            >
+              <div class="map-pop-inner">
+                <div class="map-pop-media">
+                  <span class="map-pop-dev-badge" id="mapPopDev">Palm Hills</span>
+                  <button type="button" class="map-pop-close" id="mapPopClose" aria-label="Dismiss inspect card">×</button>
+                  <img id="mapPopImg" src="../../../../Images/web/11.jpg" alt="Lake View Signature Villa" loading="lazy" />
+                </div>
+                <div class="map-pop-body">
+                  <b id="mapPopTitle">Lake View Signature Villa</b>
+                  <span id="mapPopSpecs">Golden Square · 540 m² · 5 beds · EGP 60,185/m²</span>
+                  <div class="map-pop-footer">
+                    <span class="map-pop-price" id="mapPopPrice">EGP 32,500,000</span>
+                    <a href="#buy" class="map-pop-action">View unit →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Interactive Map Pins (with data attributes) -->
+            <div
+              class="pin on"
+              data-index="0"
+              data-flip="false"
+              style="inset-inline-start: 44%; inset-block-start: 47%"
+            >
+              <b>32.5M</b>
+            </div>
+            <div
+              class="pin"
+              data-index="1"
+              data-flip="true"
+              style="inset-inline-start: 27%; inset-block-start: 33%"
+            >
+              <b>18.9M</b>
+            </div>
+            <div
+              class="pin"
+              data-index="2"
+              data-flip="true"
+              style="inset-inline-start: 62%; inset-block-start: 29%"
+            >
+              <b>44.0M</b>
+            </div>
+            <div
+              class="pin"
+              data-index="3"
+              data-flip="false"
+              style="inset-inline-start: 35%; inset-block-start: 69%"
+            >
+              <b>21.4M</b>
+            </div>
+            <div
+              class="pin"
+              data-index="4"
+              data-flip="false"
+              style="inset-inline-start: 58%; inset-block-start: 63%"
+            >
+              <b>29.8M</b>
+            </div>
+            <div
+              class="pin"
+              data-index="5"
+              data-flip="false"
+              style="inset-inline-start: 71%; inset-block-start: 48%"
+            >
+              <b>26.2M</b>
+            </div>
+
+            <div class="map-zoom">
+              <button type="button" aria-label="Zoom in">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </button>
+              <button type="button" aria-label="Zoom out">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                >
+                  <path d="M5 12h14" />
+                </svg>
+              </button>
+            </div>
+            <span class="map-scale">500 m</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== steps -->
+    <section class="sect steps-sect" id="how">
+      <div class="wrap">
+        <div class="shead" style="text-align: center; margin-inline: auto">
+          <h2>From first search to keys in hand.</h2>
+          <p>
+            The whole purchase runs in one place, and every step leaves a record
+            you can go back to.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-ico">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.6-3.6" />
+              </svg>
+            </div>
+            <h3>Discover</h3>
+            <p>Search, filter, compare side by side, and save what you like.</p>
+          </div>
+          <div class="step">
+            <div class="step-ico">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="5" width="18" height="16" rx="2.5" />
+                <path d="M3 10h18M8 3v4M16 3v4" />
+                <path d="m9.5 15 1.8 1.8 3.2-3.4" />
+              </svg>
+            </div>
+            <h3>Request a viewing</h3>
+            <p>Propose a time with the agent and confirm it in the thread.</p>
+          </div>
+          <div class="step">
+            <div class="step-ico">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 7.5 12 4l8 3.5" />
+                <path d="M4 7.5v9L12 20l8-3.5v-9" />
+                <path d="M8.5 13.5h7" />
+              </svg>
+            </div>
+            <h3>Make an offer</h3>
+            <p>
+              Submit a figure, counter, and track every round of the
+              negotiation.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-ico">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="6" width="18" height="13" rx="2.5" />
+                <path d="M3 10.5h18" />
+                <circle cx="16.5" cy="15" r="1.4" />
+              </svg>
+            </div>
+            <h3>Reserve</h3>
+            <p>
+              Pay the reservation deposit on the accepted offer and get a
+              receipt.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ viewing -->
+    <section class="sect viewing">
+      <div class="wrap viewing-grid">
+        <div>
+          <h2 style="font-size: clamp(1.85rem, 3.2vw, 2.6rem)">
+            Book the viewing without the phone tag.
+          </h2>
+          <p
+            style="
+              font-size: 1.06rem;
+              color: var(--ink-2);
+              line-height: 1.68;
+              margin-block: 1rem 1.8rem;
+              max-width: 48ch;
+            "
+          >
+            Pick a slot from the agent's real availability and send the request.
+            They accept, propose another time, or decline, and the whole
+            exchange stays attached to the listing so nobody is reconstructing
+            it from memory a week later.
+          </p>
+          <div class="checks" style="margin-block: 0 2rem">
+            <div class="check">
+              <div class="check-ico">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4>Availability comes from the agent</h4>
+                <p>
+                  Slots shown are the ones they published. You are not
+                  requesting into a void.
+                </p>
+              </div>
+            </div>
+            <div class="check">
+              <div class="check-ico">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4>Reschedule and cancel are first-class</h4>
+                <p>
+                  Both sides can move a confirmed viewing, and both sides get
+                  told.
+                </p>
+              </div>
+            </div>
+          </div>
+          <a class="btn btn-primary" href="#">Request a viewing</a>
+        </div>
+
+        <div class="cal">
+          <div class="cal-top">
+            <b>March 2026</b>
+            <div class="cal-nav">
+              <button type="button" aria-label="Previous month">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m15 6-6 6 6 6" />
+                </svg>
+              </button>
+              <button type="button" aria-label="Next month">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 6 6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-dow">Mo</div>
+            <div class="cal-dow">Tu</div>
+            <div class="cal-dow">We</div>
+            <div class="cal-dow">Th</div>
+            <div class="cal-dow">Fr</div>
+            <div class="cal-dow">Sa</div>
+            <div class="cal-dow">Su</div>
+            <span class="cal-d off">23</span><span class="cal-d off">24</span
+            ><span class="cal-d off">25</span> <span class="cal-d off">26</span
+            ><span class="cal-d off">27</span><span class="cal-d off">28</span>
+            <button class="cal-d" type="button">1</button>
+            <button class="cal-d" type="button">2</button>
+            <button class="cal-d has" type="button">3</button>
+            <button class="cal-d" type="button">4</button>
+            <button class="cal-d has" type="button">5</button>
+            <button class="cal-d" type="button">6</button>
+            <button class="cal-d has" type="button">7</button>
+            <button class="cal-d" type="button">8</button>
+            <button class="cal-d" type="button">9</button>
+            <button class="cal-d has" type="button">10</button>
+            <button class="cal-d" type="button">11</button>
+            <button class="cal-d sel has" type="button" aria-pressed="true">
+              12
+            </button>
+            <button class="cal-d has" type="button">13</button>
+            <button class="cal-d" type="button">14</button>
+            <button class="cal-d" type="button">15</button>
+            <button class="cal-d has" type="button">16</button>
+            <button class="cal-d" type="button">17</button>
+            <button class="cal-d" type="button">18</button>
+            <button class="cal-d has" type="button">19</button>
+            <button class="cal-d" type="button">20</button>
+            <button class="cal-d has" type="button">21</button>
+            <button class="cal-d" type="button">22</button>
+            <button class="cal-d" type="button">23</button>
+            <button class="cal-d has" type="button">24</button>
+            <button class="cal-d" type="button">25</button>
+            <button class="cal-d" type="button">26</button>
+            <button class="cal-d has" type="button">27</button>
+            <button class="cal-d" type="button">28</button>
+          </div>
+          <hr class="cal-sep" />
+          <p class="cal-lab">Thursday 12 March · available slots</p>
+          <div class="slots">
+            <button class="slot" type="button">10:00</button>
+            <button class="slot" type="button" disabled>11:30</button>
+            <button class="slot on" type="button" aria-pressed="true">
+              14:00
+            </button>
+            <button class="slot" type="button">16:30</button>
+          </div>
+          <button class="btn btn-accent" type="button" style="width: 100%">
+            Request this slot
+          </button>
+          <p class="cal-agent">
+            <span class="av">HK</span>
+            Hosted by
+            <b style="color: var(--ink); font-weight: 600">Hana K.</b>, verified
+            agent · usually replies within an hour
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================== why split -->
+    <section class="sect">
+      <div class="wrap split">
+        <div class="split-media">
+          <img
+            src="../../../../Images/web/10.jpg"
+            alt="Minimal cubic residence at dusk with warm interior light behind full-height glazing."
+            loading="lazy"
+          />
+          <div class="split-stat">
+            <b class="num">EGP 60,185 / m²</b>
+            <span>the number every listing carries</span>
+          </div>
+        </div>
+        <div>
+          <h2 style="font-size: clamp(1.85rem, 3.2vw, 2.6rem)">
+            Priced in metrics, not adjectives.
+          </h2>
+          <div class="checks">
+            <div class="check">
+              <div class="check-ico">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4>Every listing is moderated</h4>
+                <p>
+                  Nothing reaches the index before an admin has reviewed it and
+                  the agent's identity is verified.
+                </p>
+              </div>
+            </div>
+            <div class="check">
+              <div class="check-ico">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4>Comparable by square metre</h4>
+                <p>
+                  Area and price per m² are structured fields, so a Sahel
+                  penthouse and a Zayed duplex sit on one scale.
+                </p>
+              </div>
+            </div>
+            <div class="check">
+              <div class="check-ico">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4>The negotiation is on the record</h4>
+                <p>
+                  Offers, counters and acceptances are logged with timestamps,
+                  so nothing rests on a disputed phone call.
+                </p>
+              </div>
+            </div>
+            <div class="check">
+              <div class="check-ico">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4>The deposit is confirmed by the bank, not the browser</h4>
+                <p>
+                  A reservation is only reserved once the payment provider
+                  confirms it. No optimistic states.
+                </p>
+              </div>
+            </div>
+          </div>
+          <a class="btn btn-primary" href="#">See how a purchase works</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== ai -->
+    <section class="sect ai">
+      <div class="wrap">
+        <div class="ai-grid">
+          <div>
+            <h2>Ask for the home. Not the filter combination.</h2>
+            <p class="lead">
+              Settly's assistant reads a sentence the way a good broker would,
+              then searches the same verified index the filters use, then shows
+              you which part of your request each result answered.
+            </p>
+            <a class="btn btn-accent" href="#">Try the assistant</a>
+            <div class="ai-note">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="9.5" />
+                <path d="M12 16v-5" />
+                <path d="M12 8h.01" />
+              </svg>
+              <span
+                >The assistant reads listings and public knowledge only. It
+                never sees your messages, offers or payments, and it never acts
+                on your behalf: anything that changes your account comes back to
+                you to confirm.</span
+              >
+            </div>
+          </div>
+
+          <div class="chat">
+            <div class="chat-head">
+              <span class="dot"></span> Settly assistant
+            </div>
+            <div class="bubble bubble-you">
+              4-bedroom villa with a private pool in New Cairo, ready this year,
+              under 35M.
+            </div>
+            <div class="bubble bubble-ai">
+              Three listings match all four conditions. Two more match
+              everything except handover; those deliver in Q2 next year.
+            </div>
+            <div class="ai-results">
+              <div class="ai-res">
+                <img
+                  src="../../../../Images/web/11.jpg"
+                  alt=""
+                  loading="lazy"
+                />
+                <div>
+                  <b>Lake View Signature Villa</b
+                  ><span>Golden Square · 540 m² · 32.5M</span>
+                </div>
+                <span class="pct">4 / 4</span>
+              </div>
+              <div class="ai-res">
+                <img src="../../../../Images/web/9.jpg" alt="" loading="lazy" />
+                <div>
+                  <b>Courtyard Townhouse</b
+                  ><span>Villette · 285 m² · 21.4M</span>
+                </div>
+                <span class="pct">4 / 4</span>
+              </div>
+              <div class="ai-res">
+                <img src="../../../../Images/web/4.jpg" alt="" loading="lazy" />
+                <div>
+                  <b>Palm Court Residence</b
+                  ><span>Mivida · 470 m² · 29.8M</span>
+                </div>
+                <span class="pct">3 / 4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== mobile -->
+    <section class="sect">
+      <div class="wrap mob-grid">
+        <div class="mob-media">
+          <img
+            src="../../../../Images/web/phone.jpg"
+            alt="A hand holding a phone showing the Settly property search."
+            loading="lazy"
+          />
+        </div>
+        <div>
+          <h2 style="font-size: clamp(1.85rem, 3.2vw, 2.6rem)">
+            The whole of Settly, in one hand.
+          </h2>
+          <p
+            style="
+              font-size: 1.06rem;
+              color: var(--ink-2);
+              line-height: 1.68;
+              margin-top: 1rem;
+              max-width: 48ch;
+            "
+          >
+            Settly is one responsive site, not a stripped-down mobile companion.
+            Every search, every viewing and every offer works the same on a
+            phone as it does on a desktop.
+          </p>
+          <div class="mob-list">
+            <div class="mob-item">
+              <div class="mob-ico">
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+                  <circle cx="12" cy="10" r="2.4" />
+                </svg>
+              </div>
+              <div>
+                <h4>The map works on a phone</h4>
+                <p>
+                  Pan, draw and filter with your thumb, not a desktop-only
+                  control squeezed onto a small screen.
+                </p>
+              </div>
+            </div>
+            <div class="mob-item">
+              <div class="mob-ico">
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M18 8a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 14 18 8Z"
+                  />
+                  <path d="M10.5 19a2 2 0 0 0 3 0" />
+                </svg>
+              </div>
+              <div>
+                <h4>Alerts reach you first</h4>
+                <p>
+                  A saved search that matches a new listing notifies you
+                  wherever you are.
+                </p>
+              </div>
+            </div>
+            <div class="mob-item">
+              <div class="mob-ico">
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 15a3 3 0 0 1-3 3H8l-4 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4>Answer an offer from anywhere</h4>
+                <p>
+                  Counters and acceptances are time-sensitive. Handle them from
+                  the queue at the bank.
+                </p>
+              </div>
+            </div>
+          </div>
+          <span class="mob-note">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="9.5" />
+              <path d="M12 16v-5" />
+              <path d="M12 8h.01" />
+            </svg>
+            Responsive web. Native apps are not in the v1 scope.
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== agents -->
+    <section class="agents-fullwidth" id="agents">
+      <div class="agents-panoramic">
+        <div class="agents-col-copy">
+          <div class="agents-copy-inner">
+            <h2 class="agents-title">Listing on Settly, for independent agents.</h2>
+            <p class="agents-desc">
+              Publish verified listings, take qualified leads, run viewings and offers from one structured pipeline, and see how your units perform against the market. Verification is free.
+            </p>
+
+            <div class="agents-pillars">
+              <div class="agent-pillar">
+                <div class="pillar-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                </div>
+                <div class="pillar-text">
+                  <b>0% Listing Fee</b>
+                  <span>Direct verified inventory integration with zero upfront cost</span>
+                </div>
+              </div>
+
+              <div class="agent-pillar">
+                <div class="pillar-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </div>
+                <div class="pillar-text">
+                  <b>48-Hour Field Audit</b>
+                  <span>Official title deed, CAD floorplan & drone verification</span>
+                </div>
+              </div>
+
+              <div class="agent-pillar">
+                <div class="pillar-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div class="pillar-text">
+                  <b>Pre-Qualified Ingestion</b>
+                  <span>High-intent buyers with verified budgets synced to WhatsApp</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="agents-btns">
+              <a class="btn btn-accent" href="#">
+                Apply as an agent
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </a>
+              <a class="btn btn-ghost-light" href="#">See the agent tools</a>
+            </div>
+
+            <div class="agents-guarantee">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              <span>Verified broker protection · Direct buyer connection · Zero commission cuts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="agents-col-media">
+          <img
+            class="agents-bg-img"
+            src="../../../../Images/web/7.jpg"
+            alt="Modern residential exterior with a paved approach and mature planting."
+            loading="lazy"
+          />
+          <div class="agents-media-scrim"></div>
+
+          <!-- Live Agent Pipeline Cockpit -->
+          <div class="agent-cockpit-card" id="agentCockpitCard">
+            <div class="cockpit-header">
+              <div class="cockpit-status">
+                <span class="cockpit-pulse"></span>
+                <span>LIVE PIPELINE · CAIRO</span>
+              </div>
+              <span class="cockpit-timestamp num">SYNCED · 14:02</span>
+            </div>
+
+            <div class="cockpit-lead-item">
+              <div class="cockpit-lead-avatar">TE</div>
+              <div class="cockpit-lead-info">
+                <div class="cockpit-lead-name">
+                  <b>Dr. Tarek El-Mansy</b>
+                  <span class="cockpit-tag-verified">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    EGP 40M+
+                  </span>
+                </div>
+                <p class="cockpit-lead-sub">Lake View Signature Villa · 540 m²</p>
+              </div>
+              <div class="cockpit-lead-action">
+                <span class="cockpit-badge-state" id="cockpitLeadState">Confirmed</span>
+              </div>
+            </div>
+
+            <div class="cockpit-viewing-slot">
+              <div class="cockpit-slot-time">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                <span class="num">Tomorrow, 4:30 PM</span>
+              </div>
+              <span class="cockpit-slot-type">Private Escorted Viewing</span>
+            </div>
+
+            <div class="cockpit-benchmark">
+              <div class="cockpit-bench-head">
+                <span>BENCHMARK · GOLDEN SQUARE</span>
+                <span class="cockpit-bench-adv num">+7.2% Advantage</span>
+              </div>
+              <div class="cockpit-bench-bars">
+                <div class="bench-row">
+                  <span class="bench-label">Your listing</span>
+                  <div class="bench-track">
+                    <div class="bench-fill your-unit" style="width: 78%"></div>
+                  </div>
+                  <span class="bench-val num">60.2k/m²</span>
+                </div>
+                <div class="bench-row">
+                  <span class="bench-label">District avg</span>
+                  <div class="bench-track">
+                    <div class="bench-fill district-avg" style="width: 84%"></div>
+                  </div>
+                  <span class="bench-val num">64.7k/m²</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="cockpit-footer">
+              <div class="cockpit-metric">
+                <b class="num">14 days</b>
+                <span>avg. to offer</span>
+              </div>
+              <div class="cockpit-divider"></div>
+              <div class="cockpit-metric">
+                <b class="num">0%</b>
+                <span>listing fee</span>
+              </div>
+              <div class="cockpit-divider"></div>
+              <button type="button" class="cockpit-test-btn" id="agentSimulateBtn" aria-label="Simulate receiving a pre-qualified lead">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                <span>Simulate ping</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ insights -->
+    <section class="sect" id="insights">
+      <div class="wrap">
+        <div class="shead shead-row" style="max-width: none">
+          <div style="max-width: 52ch">
+            <h2>Market insights</h2>
+            <p>
+              Plain-language guides to buying in Egypt: what the terms mean and
+              what the numbers do.
+            </p>
+          </div>
+          <div class="insights-header-meta">
+            <span class="spread-hint-badge">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m15 15 6 6m-6-6v4.8m0-4.8h4.8" />
+                <path d="M9 19.8V15m0 0H4.2M9 15l-6 6" />
+                <path d="M15 4.2V9m0 0h4.8M15 9l6-6" />
+                <path d="M9 4.2V9m0 0H4.2M9 9 3 3" />
+              </svg>
+              Hover deck to spread
+            </span>
+            <a class="slink" href="#">
+              All articles
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14" />
+                <path d="m13 6 6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="card-spread-stage">
+          <div class="card-spread-deck">
+            <!-- Card 1: Buying guide -->
+            <a href="#" class="card-spread-card">
+              <div class="card-spread-media">
+                <span class="card-cat-badge">Buying guide</span>
+                <img
+                  src="../../../../Images/web/1.jpg"
+                  alt="Residential exterior with landscaped garden."
+                  loading="lazy"
+                />
+              </div>
+              <div class="card-spread-body">
+                <div>
+                  <h3>Reading a payment plan before you sign it</h3>
+                  <p>
+                    Down payment, instalment length, maintenance deposit and
+                    delivery penalty: the four numbers that decide what a unit
+                    really costs.
+                  </p>
+                </div>
+                <div class="card-spread-footer">
+                  <span>8 min read</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+            <!-- Card 2: Market -->
+            <a href="#" class="card-spread-card">
+              <div class="card-spread-media">
+                <span class="card-cat-badge">Market</span>
+                <img
+                  src="../../../../Images/web/3.jpg"
+                  alt="Landscaped courtyard with seating and mature planting."
+                  loading="lazy"
+                />
+              </div>
+              <div class="card-spread-body">
+                <div>
+                  <h3>Why price per square metre beats sticker price</h3>
+                  <p>
+                    Two villas at the same headline figure can differ by a third
+                    once you divide by built area. Here's how to run the
+                    comparison.
+                  </p>
+                </div>
+                <div class="card-spread-footer">
+                  <span>6 min read</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+            <!-- Card 3: Areas (Center Anchor) -->
+            <a href="#" class="card-spread-card">
+              <div class="card-spread-media">
+                <span class="card-cat-badge">Areas</span>
+                <img
+                  src="../../../../Images/web/6.jpg"
+                  alt="Contemporary house exterior at golden hour."
+                  loading="lazy"
+                />
+              </div>
+              <div class="card-spread-body">
+                <div>
+                  <h3>New Cairo, Zayed or Sahel: what you're choosing</h3>
+                  <p>
+                    Commute, delivery timelines and resale behave differently in
+                    each region. A side-by-side breakdown for first-time buyers.
+                  </p>
+                </div>
+                <div class="card-spread-footer">
+                  <span>11 min read</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+            <!-- Card 4: Finishing -->
+            <a href="#" class="card-spread-card">
+              <div class="card-spread-media">
+                <span class="card-cat-badge">Finishing</span>
+                <img
+                  src="../../../../Images/web/8.jpg"
+                  alt="Luxury contemporary interior with marble and wood finishes."
+                  loading="lazy"
+                />
+              </div>
+              <div class="card-spread-body">
+                <div>
+                  <h3>Core & shell vs fully finished: true finishing costs</h3>
+                  <p>
+                    Why semi-finished units often add 35% to your total cash
+                    outlay before handover, and how to verify contractor bids.
+                  </p>
+                </div>
+                <div class="card-spread-footer">
+                  <span>7 min read</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+            <!-- Card 5: Legal & Resale -->
+            <a href="#" class="card-spread-card">
+              <div class="card-spread-media">
+                <span class="card-cat-badge">Legal & Resale</span>
+                <img
+                  src="../../../../Images/web/10.jpg"
+                  alt="Architectural villa exterior with geometric lines."
+                  loading="lazy"
+                />
+              </div>
+              <div class="card-spread-body">
+                <div>
+                  <h3>Primary vs resale: developer transfer fees & taxes</h3>
+                  <p>
+                    Masareef tanozoul, real estate disposal tax, and maintenance
+                    deposits explained in plain numbers before negotiation.
+                  </p>
+                </div>
+                <div class="card-spread-footer">
+                  <span>9 min read</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== alerts -->
+    <section class="sect alerts">
+      <div class="wrap alerts-grid">
+        <div>
+          <h2>Let the next one find you.</h2>
+          <p>
+            Save a search and Settly tells you when a listing matching it goes
+            live, before it reaches the general feed.
+          </p>
+        </div>
+        <div>
+          <form class="alert-form" onsubmit="return false;">
+            <label
+              for="em"
+              class="visually-hidden"
+              style="
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                overflow: hidden;
+                clip: rect(0 0 0 0);
+              "
+              >Email address</label
+            >
+            <input
+              id="em"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+            <button class="btn btn-primary" type="submit">Create alert</button>
+          </form>
+          <p class="alert-fine">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="4" y="10" width="16" height="10" rx="2.5" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+            Match alerts only. Unsubscribe in one click.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+        <!-- Unified Master 4-Column Luxury Footer -->
+    <footer class="settly-master-footer">
+      <div class="settly-footer-shell">
+        <div class="settly-footer-grid">
+          <!-- Col 1: Brand Authority & Escrow -->
+          <div class="settly-ftr-brand">
+            <a href="./index.html" class="brand" style="margin-bottom: 1.25rem;">
+              <img src="../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" class="ftr-logo-plate" />
+              <span style="color: #fff;">Settly</span>
+            </a>
+            <p class="settly-ftr-desc">
+              Settly is Egypt's institutional luxury real estate exchange. Curating verified prime residential and commercial assets with Central Bank of Egypt statutory escrow protection across Greater Cairo and the Mediterranean Coast.
+            </p>
+            <div class="settly-trust-badges">
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Central Bank of Egypt Escrow Audited (Law 27/2020)</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Tier-1 Licensed Master Developer Exchange</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                <span>100% Freehold Foreign Ownership Guarantee</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Investment Corridors -->
+          <div class="settly-ftr-col">
+            <h4>Prime Corridors</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./area-detail.html">Golden Square (New Cairo)</a></li>
+              <li><a href="./search.html?corridor=sahel">Ras El Hekma (North Coast)</a></li>
+              <li><a href="./search.html?corridor=zayed">New Zayed (Karmell & Rivers)</a></li>
+              <li><a href="./search.html?corridor=gouna">El Gouna Waterfront Estates</a></li>
+              <li><a href="./search.html?corridor=sidiheneish">Sidi Heneish Azure Bay</a></li>
+              <li><a href="./areas.html">All 8 Corridors & GIS Radar →</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Institutional Intelligence -->
+          <div class="settly-ftr-col">
+            <h4>Intelligence & Tools</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./market-insights.html">Macro Intelligence (Q1 2026)</a></li>
+              <li><a href="./market-insights.html#yieldArbitrage">Yield Arbitrage Terminal</a></li>
+              <li><a href="./market-insights.html#developerLeague">Developer Punctuality Table</a></li>
+              <li><a href="./compare.html">Compare 4 Residences Side-by-Side</a></li>
+              <li><a href="./search.html">Cadastral Registry Search</a></li>
+              <li><a href="./agents.html">Certified Agent Directory</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Private Client Advisory & Desk -->
+          <div class="settly-ftr-col">
+            <h4>Private Client Desk</h4>
+            <div class="settly-ftr-advisory">
+              <p>
+                Confidential acquisition support for family offices, institutional funds, and international diaspora capital.
+              </p>
+              <a href="https://wa.me/201000000000" target="_blank" class="btn-ftr-concierge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                <span>WhatsApp Private Desk</span>
+              </a>
+              <div class="settly-ftr-hours">
+                Daily 09:00 — 21:00 CLT · Cairo / Dubai / London
+              </div>
+
+              <!-- Social Media Strip (Instagram, LinkedIn, Facebook, X) -->
+              <div class="settly-socials-block">
+                <span class="settly-socials-label">Connect with Settly:</span>
+                <div class="settly-socials-strip">
+                  <a href="https://instagram.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Instagram" title="Instagram">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on LinkedIn" title="LinkedIn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Facebook" title="Facebook">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                  </a>
+                  <a href="https://x.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on X" title="X (Twitter)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="settly-footer-bottom">
+          <div class="settly-ftr-legal">
+            © 2026 Settly Real Estate Technologies Inc. Central Bank of Egypt Law 27/2020 Compliant. All transactions escrow-verified.
+          </div>
+          <div class="settly-ftr-socials">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Exchange</a>
+            <a href="#escrow">Escrow Security</a>
+            <a href="./market-insights.html">Advisory Dossiers</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // search console tabs
+      const tabs = [...document.querySelectorAll(".tab")];
+      tabs.forEach((t) =>
+        t.addEventListener("click", () => {
+          tabs.forEach((x) => x.setAttribute("aria-selected", String(x === t)));
+        }),
+      );
+      // viewing scheduler: day + slot selection
+      const days = [...document.querySelectorAll(".cal-d:not(.off)")];
+      const label = document.querySelector(".cal-lab");
+      days.forEach((d) =>
+        d.addEventListener("click", () => {
+          days.forEach((x) => {
+            x.classList.remove("sel");
+            x.removeAttribute("aria-pressed");
+          });
+          d.classList.add("sel");
+          d.setAttribute("aria-pressed", "true");
+          const dow = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ];
+          const date = new Date(2026, 2, Number(d.textContent));
+          label.textContent = `${dow[date.getDay()]} ${d.textContent} March · available slots`;
+        }),
+      );
+      const slots = [...document.querySelectorAll(".slot")];
+      slots.forEach((s) =>
+        s.addEventListener("click", () => {
+          if (s.disabled) return;
+          slots.forEach((x) => {
+            x.classList.remove("on");
+            x.removeAttribute("aria-pressed");
+          });
+          s.classList.add("on");
+          s.setAttribute("aria-pressed", "true");
+        }),
+      );
+
+      // Map interactive inspection: bi-directional sync, smooth cross-fading, auto-flip, and filter tags
+      const hits = [...document.querySelectorAll(".map-hit")];
+      const pins = [...document.querySelectorAll(".pin")];
+      const pop = document.getElementById("mapInspectCard");
+      const popClose = document.getElementById("mapPopClose");
+      const filterBtns = [...document.querySelectorAll("#mapRailFilters button")];
+      const mapCountEl = document.querySelector(".map-rail .map-count b");
+
+      let currentMapIndex = 0;
+      let fadeTimeout = null;
+
+      function activateProperty(index, userClickedPin = false) {
+        if (index < 0 || index >= hits.length) return;
+        currentMapIndex = index;
+        const hit = hits[index];
+        const pin = pins[index];
+        if (!hit || !pin || !pop) return;
+
+        // 1. Highlight hit in rail
+        hits.forEach((h, i) => h.classList.toggle("on", i === index));
+
+        // 2. Highlight pin on map
+        pins.forEach((p, i) => p.classList.toggle("on", i === index));
+
+        // 3. Scroll hit into view if pin was clicked
+        if (userClickedPin) {
+          hit.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+
+        // 4. Ensure card is visible
+        pop.style.display = "block";
+
+        // 5. Cross-fade smooth transition
+        pop.classList.add("fading");
+        if (fadeTimeout) clearTimeout(fadeTimeout);
+
+        fadeTimeout = setTimeout(() => {
+          // Glide coordinates
+          pop.style.insetInlineStart = pin.style.insetInlineStart;
+          pop.style.insetBlockStart = pin.style.insetBlockStart;
+
+          // Auto-flip if near top edge
+          const shouldFlip = pin.getAttribute("data-flip") === "true";
+          pop.classList.toggle("flip-down", shouldFlip);
+
+          // Update contents
+          const hitImg = hit.querySelector("img");
+          const hitTitle = hit.querySelector("b");
+          const hitSpecs = hit.querySelector("span");
+          const dev = hit.getAttribute("data-dev") || "Developer";
+          const price = hit.getAttribute("data-price") || ("EGP " + pin.textContent.trim());
+          const sqm = hit.getAttribute("data-sqm") || "";
+
+          const devBadge = document.getElementById("mapPopDev");
+          const popImg = document.getElementById("mapPopImg");
+          const popTitle = document.getElementById("mapPopTitle");
+          const popSpecs = document.getElementById("mapPopSpecs");
+          const popPrice = document.getElementById("mapPopPrice");
+
+          if (devBadge) devBadge.textContent = dev;
+          if (popImg && hitImg) {
+            popImg.src = hitImg.src;
+            popImg.alt = hitTitle ? hitTitle.textContent : "";
+          }
+          if (popTitle && hitTitle) popTitle.textContent = hitTitle.textContent;
+          if (popSpecs && hitSpecs) {
+            popSpecs.textContent = sqm ? `${hitSpecs.textContent} · ${sqm}` : hitSpecs.textContent;
+          }
+          if (popPrice) popPrice.textContent = price;
+
+          // End fade
+          pop.classList.remove("fading");
+        }, 110);
+      }
+
+      // Hit item click
+      hits.forEach((hit, i) => {
+        hit.addEventListener("click", () => activateProperty(i, false));
+      });
+
+      // Pin marker click
+      pins.forEach((pin, i) => {
+        pin.addEventListener("click", (e) => {
+          e.stopPropagation();
+          activateProperty(i, true);
+        });
+      });
+
+      // Dismiss inspect card
+      if (popClose && pop) {
+        popClose.addEventListener("click", (e) => {
+          e.stopPropagation();
+          pop.style.display = "none";
+        });
+      }
+
+      // Filter chips in left rail
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("on"));
+          btn.classList.add("on");
+          const tag = btn.getAttribute("data-tag");
+
+          let visibleCount = 0;
+          let firstVisibleIndex = -1;
+
+          hits.forEach((hit, i) => {
+            const hitTags = (hit.getAttribute("data-tag") || "").split(" ");
+            const matches = tag === "all" || hitTags.includes(tag);
+            hit.style.display = matches ? "flex" : "none";
+            if (pins[i]) {
+              pins[i].style.display = matches ? "block" : "none";
+            }
+            if (matches) {
+              visibleCount++;
+              if (firstVisibleIndex === -1) firstVisibleIndex = i;
+            }
+          });
+
+          if (mapCountEl) {
+            mapCountEl.textContent = `${visibleCount} units`;
+          }
+
+          // If current selection is hidden, select first visible
+          const currentHit = hits[currentMapIndex];
+          if (currentHit && currentHit.style.display === "none" && firstVisibleIndex !== -1) {
+            activateProperty(firstVisibleIndex, false);
+          }
+        });
+      });
+
+      // language toggle mirrors the whole document — RTL is a direction, not a stylesheet
+      const langs = [...document.querySelectorAll(".lang button")];
+      langs.forEach((b) =>
+        b.addEventListener("click", () => {
+          langs.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+          const ar = b.textContent.trim() === "ع";
+          document.documentElement.dir = ar ? "rtl" : "ltr";
+          document.documentElement.style.setProperty(
+            "--dir-mult",
+            ar ? "-1" : "1",
+          );
+          const hint = document.querySelector(".spread-hint-badge");
+          if (hint) {
+            hint.lastChild.textContent = ar
+              ? " مرر المؤشر لفرد البطاقات"
+              : " Hover deck to spread";
+          }
+        }),
+      );
+
+      // card spread deck mobile touch support
+      const spreadDeck = document.querySelector(".card-spread-deck");
+      if (spreadDeck) {
+        const spreadCards = spreadDeck.querySelectorAll(".card-spread-card");
+        spreadCards.forEach((card) => {
+          card.addEventListener("click", (e) => {
+            if (window.innerWidth <= 980) {
+              card.scrollIntoView({
+                behavior: "smooth",
+                inline: "center",
+                block: "nearest",
+              });
+            }
+          });
+        });
+      }
+
+      // parametric console chips interaction
+      const paramChips = document.querySelectorAll(".param-chip");
+      const paramTally = document.getElementById("paramTallyCount");
+      if (paramChips.length && paramTally) {
+        paramChips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            chip.classList.toggle("active");
+            // update check icon inside chip if active
+            const hasCheck = chip.querySelector("svg");
+            if (chip.classList.contains("active") && !hasCheck) {
+              const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+              svg.setAttribute("viewBox", "0 0 24 24");
+              svg.setAttribute("fill", "none");
+              svg.setAttribute("stroke", "currentColor");
+              svg.setAttribute("stroke-width", "3");
+              svg.setAttribute("stroke-linecap", "round");
+              svg.innerHTML = '<path d="M20 6 9 17l-5-5"/>';
+              chip.prepend(svg);
+            } else if (!chip.classList.contains("active") && hasCheck) {
+              hasCheck.remove();
+            }
+            // calculate active count dynamically
+            const activeChips = [...paramChips].filter(c => c.classList.contains("active"));
+            let count = 64;
+            if (activeChips.length === 1) count = 184;
+            else if (activeChips.length === 2) count = 142;
+            else if (activeChips.length === 3) count = 96;
+            else if (activeChips.length === 4) count = 48;
+            paramTally.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> ${count} verified units`;
+          });
+        });
+      }
+
+      // radar map pins interaction
+      const radarPins = document.querySelectorAll(".radar-pin");
+      radarPins.forEach((pin) => {
+        pin.addEventListener("mouseenter", () => {
+          radarPins.forEach(p => p.classList.remove("active"));
+          pin.classList.add("active");
+        });
+      });
+
+      // agent cockpit simulate ping interaction
+      const agentSimBtn = document.getElementById("agentSimulateBtn");
+      const cockpitState = document.getElementById("cockpitLeadState");
+      const cockpitCard = document.getElementById("agentCockpitCard");
+      if (agentSimBtn && cockpitState) {
+        let simTimeout = null;
+        agentSimBtn.addEventListener("click", () => {
+          if (simTimeout) clearTimeout(simTimeout);
+          agentSimBtn.classList.add("active");
+          agentSimBtn.innerHTML = `
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Lead Synced!</span>
+          `;
+          cockpitState.textContent = "WhatsApp Pinged";
+          cockpitState.classList.add("pinged");
+          if (cockpitCard) {
+            cockpitCard.style.boxShadow = "0 30px 75px -10px rgba(198, 151, 73, 0.4), 0 0 0 2px rgba(198, 151, 73, 0.5)";
+          }
+          simTimeout = setTimeout(() => {
+            agentSimBtn.classList.remove("active");
+            agentSimBtn.innerHTML = `
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span>Simulate ping</span>
+            `;
+            cockpitState.textContent = "Confirmed";
+            cockpitState.classList.remove("pinged");
+            if (cockpitCard) {
+              cockpitCard.style.boxShadow = "";
+            }
+          }, 2800);
+        });
+      }
+    </script>
+  </body>
+</html>

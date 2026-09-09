@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:\\Users\\Mohand\\AppData\\Local\\Temp\\claude\\C--Users-Mohand-Documents-GitHub-Settly\\b40dcdcb-9a5b-4621-b4a7-22e0c658fa6a\\scratchpad\\serve.js",
+        "C:\\Users\\Mohand\\Documents\\GitHub\\Settly",
+        "4321"
+      ],
+      "port": 4321
+    }
+  ]
+}

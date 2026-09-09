@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700&amp;family=Public+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"olive-sage": "#3D5A4C", "surface-container": "#efeeeb", "ink-muted": "#64748B", "error-container": "#ffdad6", "on-primary": "#ffffff", "glass-fill": "rgba(255, 255, 255, 0.65)", "sand-dune": "#E8E3D9", "terracotta-earth": "#C2634B", "on-tertiary-fixed-variant": "#304d3f", error: "#991B1B", "on-tertiary-fixed": "#032015", "nile-indigo-accent": "#162032", "surface-dim": "#dbdad7", "inverse-primary": "#bac5ee", "tertiary-container": "#133024", "on-error": "#ffffff", surface: "#faf9f6", "secondary-fixed-dim": "#f1be6c", secondary: "#7d570b", "on-primary-fixed": "#0d1a39", "nile-deep-slate": "#0F172A", "primary-fixed": "#dae2ff", "on-surface": "#1b1c1a", "on-tertiary-container": "#7a9989", "on-primary-container": "#8691b7", "surface-bright": "#faf9f6", "warning-amber": "#B45309", "surface-container-high": "#e9e8e5", tertiary: "#001b10", primary: "#081534", "on-secondary": "#ffffff", "outline-variant": "#c6c6cf", "surface-tint": "#525d80", "secondary-fixed": "#ffdeae", "on-surface-variant": "#45464e", "ink-secondary": "#475569", "ink-primary": "#0F172A", "canvas-bone": "#F4F1EC", "surface-container-highest": "#e3e2df", "on-secondary-fixed": "#281900", "glass-border": "rgba(255, 255, 255, 0.80)", background: "#faf9f6", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#3a4667", "border-subtle": "rgba(15, 23, 42, 0.08)", "surface-container-low": "#f4f3f0", "surface-variant": "#e3e2df", "on-tertiary": "#ffffff", "primary-fixed-dim": "#bac5ee", "on-secondary-container": "#785205", "border-medium": "rgba(15, 23, 42, 0.16)", "inverse-surface": "#2f312f", "on-error-container": "#93000a", "primary-container": "#1e2a4a", "tertiary-fixed": "#c9ead8", "on-secondary-fixed-variant": "#604100", "on-background": "#1b1c1a", "success-leaf": "#2D6A4F", "inverse-on-surface": "#f2f1ee", outline: "#76777f", "desert-linen": "#FAF9F7", "secondary-container": "#fec976", "error-crimson": "#991B1B", "tertiary-fixed-dim": "#aecebc", "brass-600": "#AE8033", "navy-900": "#131D36", warning: "#B45309", "brass-200": "#E7D3AB", line: "rgba(30, 42, 74, 0.10)", sage: "#3D5A4C", "brass-050": "#F6EEDE", "sage-bg": "#EAF0EC", "navy-700": "#2B3A61", "ink-2": "#4C5878", white: "#FFFFFF", canvas: "#F7F6F3", "navy-800": "#1E2A4A", ink: "#16203A", "line-2": "rgba(30, 42, 74, 0.18)", "navy-600": "#3D4E7A", brass: "#C69749", "canvas-2": "#EFEDE6", "ink-3": "#646D88"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, spacing: {"layout-margin-sm": "1rem", "space-8": "2rem", "layout-gutter-sm": "1rem", "layout-margin-md": "2rem", "layout-margin-lg": "3.5rem", "space-1": "0.25rem", "space-24": "6rem", "space-16": "4rem", "space-6": "1.5rem", "space-5": "1.25rem", "space-12": "3rem", "space-20": "5rem", "space-3": "0.75rem", "space-2": "0.5rem", "space-4": "1rem", "layout-gutter-lg": "2rem", "layout-gutter-md": "1.5rem", "space-10": "2.5rem", wrapper: "1320px", section: "clamp(4rem, 8vw, 7.5rem)", gutter: "clamp(1rem, 4vw, 3.5rem)"}, fontFamily: {"label-sm": ["IBM Plex Sans"], "headline-lg": ["Plus Jakarta Sans"], "label-md": ["IBM Plex Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-display": ["Plus Jakarta Sans"], "headline-display-mobile": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "caption-num": ["IBM Plex Sans"], "headline-md": ["Plus Jakarta Sans"], "mono-meta": ["JetBrains Mono"], "display-lg": ["Spectral"], "display-md": ["Spectral"], "display-xl": ["Spectral"], "title-lg": ["Spectral"], "mono-label": ["JetBrains Mono"], "mono-value": ["JetBrains Mono"], "title-ui": ["Plus Jakarta Sans"]}, fontSize: {"label-sm": ["12px", {lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500"}], "headline-lg": ["32px", {lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "600"}], "label-md": ["14px", {lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600"}], "body-lg": ["17px", {lineHeight: "28px", fontWeight: "400"}], "headline-display": ["56px", {lineHeight: "64px", letterSpacing: "-0.03em", fontWeight: "600"}], "headline-display-mobile": ["36px", {lineHeight: "44px", letterSpacing: "-0.025em", fontWeight: "600"}], "body-md": ["15px", {lineHeight: "24px", fontWeight: "400"}], "headline-sm": ["20px", {lineHeight: "28px", letterSpacing: "-0.005em", fontWeight: "600"}], "body-sm": ["13.5px", {lineHeight: "20px", fontWeight: "400"}], "headline-lg-mobile": ["26px", {lineHeight: "34px", letterSpacing: "-0.015em", fontWeight: "600"}], "caption-num": ["11px", {lineHeight: "14px", letterSpacing: "0.06em", fontWeight: "500"}], "headline-md": ["24px", {lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600"}], "mono-meta": ["12px", {lineHeight: "17px", fontWeight: "500"}], "display-lg": ["43px", {lineHeight: "49px", letterSpacing: "-0.012em", fontWeight: "600"}], "display-md": ["32px", {lineHeight: "37px", letterSpacing: "-0.012em", fontWeight: "600"}], "display-xl": ["70px", {lineHeight: "74px", letterSpacing: "-0.021em", fontWeight: "700"}], "title-lg": ["21px", {lineHeight: "27px", letterSpacing: "-0.012em", fontWeight: "600"}], "mono-label": ["11.5px", {lineHeight: "16px", letterSpacing: "0.062em", fontWeight: "600"}], "mono-value": ["18.5px", {lineHeight: "24px", letterSpacing: "-0.02em", fontWeight: "700"}], "title-ui": ["16px", {lineHeight: "20px", letterSpacing: "-0.015em", fontWeight: "700"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col selection:bg-sand-dune selection:text-nile-deep-slate"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl border-b border-border-subtle"><div class="h-20 max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg flex items-center justify-between gap-space-4"><div class="flex items-center gap-space-8"><a class="flex items-center gap-space-3 group focus:outline-none" data-path="buy" href="#"><img alt="Settly Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XaOnE8uYWYhrj1qX0cdi4_etrBomgq-XjkQkhORysUXZlICb1UQwu321YuLfUKdDyKppPLGf-a3aMsDupsrHCcS8AZ3xuKrj-beGrfAknv-uoQEuvmGEFltjaeKCxKzbomPTMidzOtCRnNfxCsMKX-4AxtVBpLkC6bcrFGHF-ZPPP8rpe11Pe9EdbpxDRn5f67X6eG8n7GhTB7T8gPS2RhPIY5dMFCNPOvmWgiYUx0Mdr-Qlq4gLo3pi8"/><span class="font-headline-sm text-headline-sm text-nile-deep-slate tracking-tight font-bold">Settly</span></a><nav class="hidden md:flex items-center gap-space-6" data-active-classes="text-nile-deep-slate font-semibold"><a aria-current="page" class="transition-colors py-space-2 text-nile-deep-slate font-semibold" data-path="buy" href="#">Buy</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-2" data-path="areas" href="#">Areas</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-2" data-path="agents" href="#">Agents</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-2" data-path="insights" href="#">Insights</a></nav></div><div class="flex items-center gap-space-4"><div class="inline-flex items-center p-space-1 bg-surface-container-low rounded-full border border-border-subtle"><button class="px-space-2 py-0.5 rounded-full font-caption-num text-caption-num bg-surface-container-lowest text-nile-deep-slate font-semibold shadow-sm" type="button">EN</button><button class="px-space-2 py-0.5 rounded-full font-caption-num text-caption-num text-ink-muted hover:text-on-surface transition-colors font-medium" type="button">AR</button></div><a class="hidden sm:inline-block font-label-md text-label-md text-on-surface-variant hover:text-on-surface px-space-3 py-space-2 transition-colors" data-path="sign-in" href="#">Sign in</a><a class="inline-flex items-center justify-center font-label-md text-label-md text-on-primary bg-olive-sage hover:bg-olive-sage/90 px-space-5 py-space-2 rounded-lg transition-colors shadow-sm" data-path="get-started" href="#">Get started</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 flex-1 bg-background"><div class="flex flex-col w-full" dir="rtl" style="font-family: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;">
+<!-- Hero Section (قسم الواجهة الرئيسية) -->
+<section class="relative w-full overflow-hidden bg-desert-linen pt-space-8 pb-space-16 md:pb-space-24">
+<!-- Atmospheric Ambient Background Light Gradients -->
+<div class="absolute top-0 right-0 w-[550px] h-[550px] bg-olive-sage/5 rounded-full blur-3xl pointer-events-none -mr-32 -mt-32"></div>
+<div class="absolute top-1/2 left-0 w-[420px] h-[420px] bg-terracotta-earth/5 rounded-full blur-3xl pointer-events-none -ml-24"></div>
+<div class="max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg relative z-10">
+<!-- Top Badging & Headline Stack -->
+<div class="max-w-4xl mx-auto text-center flex flex-col items-center mb-space-8">
+<div class="inline-flex items-center gap-space-2 px-space-4 py-space-1 rounded-full bg-surface-container-high text-olive-sage shadow-sm mb-space-5">
+<span class="w-2 h-2 rounded-full bg-olive-sage animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide">المنصة العقارية الذكية الأولى في مصر</span>
+<span class="material-symbols-outlined text-[16px] text-olive-sage">verified</span>
+</div>
+<h1 class="font-headline-display text-headline-display-mobile md:text-headline-display text-nile-deep-slate font-bold tracking-tight mb-space-4 leading-tight text-center">
+          ابحث عن منزلك القادم في مصر.. <br class="hidden sm:inline"/>
+<span class="text-terracotta-earth">بدقة وسرعة وشفافية مطلقة</span>
+</h1>
+<p class="font-body-lg text-body-lg text-ink-secondary max-w-2xl text-center leading-relaxed">
+          مجموعة منتقاة بعناية من الفيلات والوحدات الفاخرة والدوبلكس في التجمع الخامس، والشيخ زايد، والساحل الشمالي، مع تقييمات سعرية معتمدة ومؤشرات سعر المتر.
+        </p>
+</div>
+<!-- Advanced Search Console Box (Elevated Glass Substrate) -->
+<div class="max-w-5xl mx-auto rounded-xl bg-surface-container-lowest shadow-xl p-space-4 md:p-space-6 relative">
+<!-- Tabs Group -->
+<div class="flex items-center gap-space-2 mb-space-5 overflow-x-auto pb-space-2 md:pb-0 scrollbar-none">
+<button class="px-space-5 py-space-2 rounded-lg font-label-md text-label-md font-semibold bg-nile-deep-slate text-desert-linen shadow-sm transition-all flex items-center gap-space-2" type="button">
+<span class="material-symbols-outlined text-[18px]">home</span>
+<span>شراء</span>
+</button>
+<button class="px-space-5 py-space-2 rounded-lg font-label-md text-label-md font-medium text-ink-secondary hover:bg-surface-container transition-all flex items-center gap-space-2" type="button">
+<span class="material-symbols-outlined text-[18px]">key</span>
+<span>إيجار</span>
+</button>
+<button class="px-space-5 py-space-2 rounded-lg font-label-md text-label-md font-medium text-ink-secondary hover:bg-surface-container transition-all flex items-center gap-space-2" type="button">
+<span class="material-symbols-outlined text-[18px]">domain_add</span>
+<span>مشروعات جديدة</span>
+</button>
+</div>
+<!-- Filter Inputs Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-3 mb-space-4">
+<!-- Search Field (Full Text Query) -->
+<div class="md:col-span-12 lg:col-span-5 flex flex-col gap-space-1">
+<label class="font-caption-num text-caption-num text-ink-muted flex items-center gap-space-1">
+<span class="material-symbols-outlined text-[14px]">search</span>
+              الكلمة الدلالية أو المشروع
+            </label>
+<div class="relative">
+<input class="w-full h-11 pr-space-3 pl-space-8 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-ink-muted focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="ابحث بالكمبوند، المطور، أو المنطقة (مثل: بالم هيلز، سوديك، مراسي...)" type="text"/>
+<span class="material-symbols-outlined absolute left-space-3 top-1/2 -translate-y-1/2 text-ink-muted text-[18px]">location_searching</span>
+</div>
+</div>
+<!-- Location Selector -->
+<div class="md:col-span-4 lg:col-span-3 flex flex-col gap-space-1">
+<label class="font-caption-num text-caption-num text-ink-muted flex items-center gap-space-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+              المنطقة
+            </label>
+<select class="w-full h-11 px-space-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest transition-all appearance-none cursor-pointer">
+<option>جميع المناطق</option>
+<option>التجمع الخامس والقاهرة الجديدة</option>
+<option>الشيخ زايد و٦ أكتوبر</option>
+<option>الساحل الشمالي (سيدي عبد الرحمن ورأس الحكمة)</option>
+<option>العاصمة الإدارية الجديدة</option>
+</select>
+</div>
+<!-- Price Range Filter -->
+<div class="md:col-span-4 lg:col-span-2 flex flex-col gap-space-1">
+<label class="font-caption-num text-caption-num text-ink-muted flex items-center gap-space-1">
+<span class="material-symbols-outlined text-[14px]">payments</span>
+              نطاق السعر (ج.م)
+            </label>
+<select class="w-full h-11 px-space-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest transition-all appearance-none cursor-pointer">
+<option>أي سعر (جنيه مصري)</option>
+<option>٥ - ١٥ مليون ج.م</option>
+<option>١٥ - ٣٥ مليون ج.م</option>
+<option>+٣٥ مليون ج.م</option>
+</select>
+</div>
+<!-- Property Type Filter -->
+<div class="md:col-span-4 lg:col-span-2 flex flex-col gap-space-1">
+<label class="font-caption-num text-caption-num text-ink-muted flex items-center gap-space-1">
+<span class="material-symbols-outlined text-[14px]">apartment</span>
+              نوع العقار
+            </label>
+<select class="w-full h-11 px-space-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest transition-all appearance-none cursor-pointer">
+<option>فيلات، دوبلكس وبنتهاوس</option>
+<option>فيلات مستقلة فقط</option>
+<option>تاون هاوس وتوين هاوس</option>
+<option>دوبلكس مع حديقة</option>
+<option>بنتهاوس مع روف</option>
+</select>
+</div>
+</div>
+<!-- Action Row & Trending Keywords -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-4 pt-space-3">
+<div class="flex items-center flex-wrap gap-space-2 text-ink-secondary">
+<span class="font-caption-num text-caption-num font-semibold text-nile-deep-slate flex items-center gap-space-1">
+<span class="material-symbols-outlined text-terracotta-earth text-[16px]">local_fire_department</span>
+              الأكثر بحثاً:
+            </span>
+<button class="font-caption-num text-caption-num hover:text-terracotta-earth transition-colors bg-surface-container px-space-2 py-0.5 rounded" type="button">بالم هيلز التجمع</button>
+<span class="text-ink-muted text-[10px]">•</span>
+<button class="font-caption-num text-caption-num hover:text-terracotta-earth transition-colors bg-surface-container px-space-2 py-0.5 rounded" type="button">مراسي الساحل</button>
+<span class="text-ink-muted text-[10px]">•</span>
+<button class="font-caption-num text-caption-num hover:text-terracotta-earth transition-colors bg-surface-container px-space-2 py-0.5 rounded" type="button">فيليت سوديك</button>
+<span class="text-ink-muted text-[10px]">•</span>
+<button class="font-caption-num text-caption-num hover:text-terracotta-earth transition-colors bg-surface-container px-space-2 py-0.5 rounded" type="button">أبراج زيد الشيخ زايد</button>
+</div>
+<button class="w-full sm:w-auto px-space-8 py-space-3 rounded-lg font-label-md text-label-md font-semibold text-on-primary bg-olive-sage hover:bg-olive-sage/90 shadow-md flex items-center justify-center gap-space-2 transition-all" type="button">
+<span>بحث عن العقارات</span>
+<span class="material-symbols-outlined text-[18px]">arrow_left_alt</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Three Ways to Search Section (ثلاث طرق مبتكرة للبحث) -->
+<section class="w-full py-space-16 bg-surface-container-lowest">
+<div class="max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg">
+<div class="max-w-2xl text-right mb-space-12">
+<div class="inline-flex items-center gap-space-2 text-olive-sage font-label-sm text-label-sm font-semibold uppercase tracking-wider mb-space-2">
+<span class="w-1.5 h-1.5 rounded-full bg-olive-sage"></span>
+<span>تقنيات بحث متطورة</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-nile-deep-slate font-bold mb-space-3">
+          تجربة بحث مصممة وفق أسلوب تفكيرك
+        </h2>
+<p class="font-body-md text-body-md text-ink-secondary leading-relaxed">
+          اختر أسلوب البحث الذي يناسبك، بدءاً من الفلاتر الدقيقة ومروراً بالخريطة التفاعلية وحتى الوصف بالذكاء الاصطناعي.
+        </p>
+</div>
+<!-- Bento Grid of 3 Methods -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-6">
+<!-- Card 1: Precise Filtering -->
+<div class="bg-surface-container-low rounded-xl p-space-6 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="flex items-center justify-between mb-space-5">
+<div class="w-12 h-12 rounded-lg bg-olive-sage/10 text-olive-sage flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">tune</span>
+</div>
+<span class="px-space-3 py-1 rounded-full bg-surface-container-lowest font-caption-num text-caption-num font-semibold text-olive-sage shadow-sm">
+                +٤٠ معيار دقيق
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              التصفية بالمعايير الدقيقة
+            </h3>
+<p class="font-body-md text-body-md text-ink-secondary leading-relaxed mb-space-6">
+              حدد موعد الاستلام، ومصداقية المطور، وخطط سداد تمتد حتى ١٠ سنوات، ومتوسط سعر المتر في كل قطاع.
+            </p>
+</div>
+<div class="pt-space-4 bg-surface-container-lowest/80 rounded-lg p-space-4 space-y-space-2">
+<div class="flex items-center justify-between font-caption-num text-caption-num text-ink-muted">
+<span>خطة السداد</span>
+<span class="font-semibold text-nile-deep-slate">أقساط حتى ١٠ سنوات</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-olive-sage h-full w-4/5 rounded-full"></div>
+</div>
+<div class="flex items-center justify-between font-caption-num text-caption-num text-ink-muted pt-1">
+<span>نسبة الإنجاز الإنشائي</span>
+<span class="font-semibold text-success-leaf">+٧٥٪ معتمد</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Interactive Smart Map -->
+<div class="bg-surface-container-low rounded-xl p-space-6 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="flex items-center justify-between mb-space-5">
+<div class="w-12 h-12 rounded-lg bg-terracotta-earth/10 text-terracotta-earth flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">map</span>
+</div>
+<span class="px-space-3 py-1 rounded-full bg-surface-container-lowest font-caption-num text-caption-num font-semibold text-terracotta-earth shadow-sm">
+                بيانات جغرافية متقدمة
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              الاستكشاف عبر الخريطة الذكية
+            </h3>
+<p class="font-body-md text-body-md text-ink-secondary leading-relaxed mb-space-6">
+              تصفح أحياء القاهرة والساحل مع مؤشرات أوقات الوصول والمدارس المحيطة والبنية التحتية عبر MapLibre.
+            </p>
+</div>
+<!-- Map Preview Container -->
+<div class="w-full h-28 rounded-lg bg-cover bg-center shadow-inner relative overflow-hidden flex items-end p-space-2" data-location="New Cairo, Egypt" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDYsQwhvhFuafTAw2eh5zmyAqfI3VvQ_9NdJBcysZjjbQs1Oc6PyDEZ6yrnhbJ40Y1CIsqTvhZyQ-Qxm1xgDQc_iR3P8YQAED8hvquLbLbe6Gwi1QDMqMt96PqgMM2IaINDcUt6dv4qJYMTJ_VsmEEBXS26mIOIJhC5FxorxzGjqTqLj_QILzzKzinQBl81PrWc-F_6A8fEzg92kTwj3epiC1_2GpzoHfS3nUDoB6pYwfZBHTdUgxi8')">
+<div class="bg-surface-container-lowest/90 backdrop-blur-md px-space-3 py-1 rounded font-caption-num text-caption-num text-nile-deep-slate font-semibold flex items-center gap-space-1 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-terracotta-earth"></span>
+<span>خريطة المحاور والتجمعات الحيوية</span>
+</div>
+</div>
+</div>
+<!-- Card 3: AI Natural Language Matcher -->
+<div class="bg-surface-container-low rounded-xl p-space-6 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="flex items-center justify-between mb-space-5">
+<div class="w-12 h-12 rounded-lg bg-nile-deep-slate/10 text-nile-deep-slate flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">auto_awesome</span>
+</div>
+<span class="px-space-3 py-1 rounded-full bg-surface-container-lowest font-caption-num text-caption-num font-semibold text-nile-deep-slate shadow-sm">
+                مطابقة ذكية فورية
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              الوصف بالذكاء الاصطناعي
+            </h3>
+<p class="font-body-md text-body-md text-ink-secondary leading-relaxed mb-space-6">
+              اكتب مواصفات بيتك بلغتك العادية: "فيلا مستقلة ٤ غرف في التجمع الخامس بحمام سباحة وأقساط على ٧ سنوات".
+            </p>
+</div>
+<!-- AI Prompt Micro Mockup -->
+<div class="bg-surface-container-lowest rounded-lg p-space-3 text-right">
+<div class="font-caption-num text-caption-num text-ink-muted mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-olive-sage">psychology</span>
+              مثال للبحث المباشر:
+            </div>
+<p class="font-body-sm text-body-sm text-nile-deep-slate font-medium bg-sand-dune/30 p-2 rounded">
+              "فيلا ريسيل استلام سنتين بماونتن فيو التجمع الخامس بمقدم ٢٠٪"
+            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Property Listings Section (وحدات مميزة منتقاة) -->
+<section class="w-full py-space-16 md:py-space-20 bg-background">
+<div class="max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg">
+<!-- Section Header with Direct Link -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-4 mb-space-10">
+<div>
+<div class="inline-flex items-center gap-space-2 text-terracotta-earth font-label-sm text-label-sm font-semibold uppercase tracking-wider mb-space-2">
+<span class="w-1.5 h-1.5 rounded-full bg-terracotta-earth"></span>
+<span>محفظة الوحدات الموثقة</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-nile-deep-slate font-bold">
+            أحدث الوحدات السكنية المختارة
+          </h2>
+</div>
+<a class="inline-flex items-center gap-space-2 font-label-md text-label-md font-semibold text-nile-deep-slate hover:text-terracotta-earth transition-colors w-fit" data-path="buy" href="#">
+<span>عرض جميع الوحدات (١,٤٢٠ عقار)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_left_alt</span>
+</a>
+</div>
+<!-- Property Grid (3 Architectural Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-8">
+<!-- Card 1: Villa Lake View Signature -->
+<div class="group rounded-xl bg-surface-container-lowest overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Luxury modern architectural villa in Lake View New Cairo Egypt at twilight, illuminated infinity pool, double-height glass facade, lush landscaping, warm ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApfxhVm8AnmY_B9Agi5ZKgh9siGyWQTVlF3m-YkmA4KbiMib6u_Z1a_VrzB28STGM6NVkehkj61n3bsdpxlLe-l_AHZrk70GyKosLG6Ni1EP4gLmuHu3JSgIeOLPAdIO2RZRS2sumIbaoQphe8oM7hukDAyuRHG3Sid4MjMrAd1Fo3WYEtvwRkffSY9j_BHsn9R8YhuBSukleThhUiK85skaA29u3V-RbB4Chgl2_CUuCrCIGJWSa5"/>
+<div class="absolute top-space-3 right-space-3 flex flex-wrap gap-space-2">
+<span class="px-space-3 py-1 rounded-full bg-nile-deep-slate/85 backdrop-blur-md font-caption-num text-caption-num font-semibold text-on-primary">
+                فيلا مستقلة
+              </span>
+<span class="px-space-3 py-1 rounded-full bg-success-leaf text-on-primary font-caption-num text-caption-num font-semibold">
+                استلام فوري
+              </span>
+</div>
+<div class="absolute bottom-space-3 right-space-3 left-space-3 flex items-center justify-between text-on-primary text-[12px] bg-nile-deep-slate/60 backdrop-blur-sm px-space-3 py-1.5 rounded-lg">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+                سند ملكية مدقق
+              </span>
+<span>بالم هيلز للتعمير</span>
+</div>
+</div>
+<div class="p-space-6 flex flex-col flex-1 justify-between text-right">
+<div>
+<div class="flex items-center gap-space-1 text-ink-muted font-body-sm text-body-sm mb-space-1">
+<span class="material-symbols-outlined text-[16px] text-terracotta-earth">pin_drop</span>
+<span>المربع الذهبي، التجمع الخامس</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-3">
+                فيلا ليك فيو سيجنتشر
+              </h3>
+<!-- Specifications Strip -->
+<div class="flex items-center flex-wrap gap-y-space-2 gap-x-space-4 font-caption-num text-caption-num text-ink-secondary py-space-3 border-y border-border-subtle mb-space-4">
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">bed</span>
+                  ٥ غرف
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">shower</span>
+                  ٦ حمامات
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">square_foot</span>
+                  ٥٤٠ م²
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">pool</span>
+                  حمام سباحة خاص
+                </span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-2">
+<div>
+<span class="font-caption-num text-caption-num text-ink-muted block">السعر الإجمالي</span>
+<span class="font-headline-md text-headline-md text-terracotta-earth font-bold">
+                  ٣٢,٥٠٠,٠٠٠ <span class="text-body-sm font-medium">ج.م</span>
+</span>
+</div>
+<button class="w-10 h-10 rounded-lg bg-surface-container hover:bg-olive-sage hover:text-on-primary text-nile-deep-slate flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_left_alt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Karmell Duplex Sky Terrace -->
+<div class="group rounded-xl bg-surface-container-lowest overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img alt="دوبلكس تراس سكاي لاين كارميل الشيخ زايد" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpxOLPL5L6rytPMU3HkAwOVe91VmwQNrBJtAZEhjkFCsbDVCTPu70KruY4lXWqxYOPrRobEgFY6p7Dty9FN3o_PtsRcs0dxkdX0_61Ek3Y5U8p3Wd65wj54DWEnEmxO5NILBmVGq4Pfm6gOzKJ1mbHmJ7CeAbDPXRAzsEJ1Vlb3ee5U7aMio1HyJfG1XcQOv-6SOJsW0jmUX5D-OF7YzoTQDWS0SWK2Toe7vW86u81P1UZKXoYDl3h"/>
+<div class="absolute top-space-3 right-space-3 flex flex-wrap gap-space-2">
+<span class="px-space-3 py-1 rounded-full bg-nile-deep-slate/85 backdrop-blur-md font-caption-num text-caption-num font-semibold text-on-primary">
+                دوبلكس فاخر
+              </span>
+<span class="px-space-3 py-1 rounded-full bg-sand-dune text-nile-deep-slate font-caption-num text-caption-num font-semibold">
+                تقسيط ٨ سنوات
+              </span>
+</div>
+<div class="absolute bottom-space-3 right-space-3 left-space-3 flex items-center justify-between text-on-primary text-[12px] bg-nile-deep-slate/60 backdrop-blur-sm px-space-3 py-1.5 rounded-lg">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+                عقد مباشر من المطور
+              </span>
+<span>سوديك للتعمير</span>
+</div>
+</div>
+<div class="p-space-6 flex flex-col flex-1 justify-between text-right">
+<div>
+<div class="flex items-center gap-space-1 text-ink-muted font-body-sm text-body-sm mb-space-1">
+<span class="material-symbols-outlined text-[16px] text-terracotta-earth">pin_drop</span>
+<span>كارميل، الشيخ زايد</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-3">
+                دوبلكس تراس سكاي لاين
+              </h3>
+<!-- Specifications Strip -->
+<div class="flex items-center flex-wrap gap-y-space-2 gap-x-space-4 font-caption-num text-caption-num text-ink-secondary py-space-3 border-y border-border-subtle mb-space-4">
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">bed</span>
+                  ٤ غرف
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">shower</span>
+                  ٤ حمامات
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">square_foot</span>
+                  ٣٢٠ م²
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">deck</span>
+                  روف خاص
+                </span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-2">
+<div>
+<span class="font-caption-num text-caption-num text-ink-muted block">السعر الإجمالي</span>
+<span class="font-headline-md text-headline-md text-terracotta-earth font-bold">
+                  ١٨,٩٠٠,٠٠٠ <span class="text-body-sm font-medium">ج.م</span>
+</span>
+</div>
+<button class="w-10 h-10 rounded-lg bg-surface-container hover:bg-olive-sage hover:text-on-primary text-nile-deep-slate flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_left_alt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Azure Horizon Penthouse Sahel -->
+<div class="group rounded-xl bg-surface-container-lowest overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img alt="بنتهاوس أزور هورايزون سيدي عبد الرحمن الساحل الشمالي" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyXdQuNv-Tggc1hnQTHOcm_SujSkmpF7qAXHn0CHY1a0dt27f8YVkk8puRTDVNsflbCu-Px697iSsGiqy82t_DpVhyziMxf3NGIfxTT-7_p8gPbS7RRr9S6u_LeoWXXiVTa_yK8aofspyfuA3Rl7Y2YJB23YNkJxE7dapuTYwT6cdyUvznvcL6WmO9_j1wWd8LUDlYTrbEueW1esn5_ePlNfpIY3fPnlKAwnPnpCtVU5UzX7aDSiSc"/>
+<div class="absolute top-space-3 right-space-3 flex flex-wrap gap-space-2">
+<span class="px-space-3 py-1 rounded-full bg-nile-deep-slate/85 backdrop-blur-md font-caption-num text-caption-num font-semibold text-on-primary">
+                بنتهاوس بانورامي
+              </span>
+<span class="px-space-3 py-1 rounded-full bg-olive-sage text-on-primary font-caption-num text-caption-num font-semibold">
+                تشطيب كامل فاخر
+              </span>
+</div>
+<div class="absolute bottom-space-3 right-space-3 left-space-3 flex items-center justify-between text-on-primary text-[12px] bg-nile-deep-slate/60 backdrop-blur-sm px-space-3 py-1.5 rounded-lg">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+                صف أول على اللاجون
+              </span>
+<span>إعمار مصر</span>
+</div>
+</div>
+<div class="p-space-6 flex flex-col flex-1 justify-between text-right">
+<div>
+<div class="flex items-center gap-space-1 text-ink-muted font-body-sm text-body-sm mb-space-1">
+<span class="material-symbols-outlined text-[16px] text-terracotta-earth">pin_drop</span>
+<span>سيدي عبد الرحمن، الساحل الشمالي</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-3">
+                بنتهاوس أزور هورايزون
+              </h3>
+<!-- Specifications Strip -->
+<div class="flex items-center flex-wrap gap-y-space-2 gap-x-space-4 font-caption-num text-caption-num text-ink-secondary py-space-3 border-y border-border-subtle mb-space-4">
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">bed</span>
+                  ٤ غرف
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">shower</span>
+                  ٥ حمامات
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">square_foot</span>
+                  ٤١٠ م²
+                </span>
+<span class="text-border-medium">•</span>
+<span class="flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px] text-olive-sage">water</span>
+                  إطلالة بحر كاملة
+                </span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-2">
+<div>
+<span class="font-caption-num text-caption-num text-ink-muted block">السعر الإجمالي</span>
+<span class="font-headline-md text-headline-md text-terracotta-earth font-bold">
+                  ٤٤,٠٠٠,٠٠٠ <span class="text-body-sm font-medium">ج.م</span>
+</span>
+</div>
+<button class="w-10 h-10 rounded-lg bg-surface-container hover:bg-olive-sage hover:text-on-primary text-nile-deep-slate flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_left_alt</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Strip (شريط إحصائيات المنصة) -->
+<section class="w-full py-space-16 bg-canvas-bone">
+<div class="max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-6">
+<!-- Stat 1 -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md p-space-6 rounded-xl shadow-sm text-right flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-olive-sage/10 text-olive-sage flex items-center justify-center mb-space-4">
+<span class="material-symbols-outlined text-[22px]">domain_verification</span>
+</div>
+<div class="font-headline-display text-headline-lg md:text-headline-display font-bold text-nile-deep-slate mb-space-2">
+              +١٤,٨٠٠
+            </div>
+<h4 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              وحدة معتمدة
+            </h4>
+</div>
+<p class="font-body-sm text-body-sm text-ink-secondary leading-relaxed">
+            فحص وتوثيق لكافة سندات الملكية ونسب التنفيذ بدقة متناهية.
+          </p>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md p-space-6 rounded-xl shadow-sm text-right flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-terracotta-earth/10 text-terracotta-earth flex items-center justify-center mb-space-4">
+<span class="material-symbols-outlined text-[22px]">query_stats</span>
+</div>
+<div class="font-headline-display text-headline-lg md:text-headline-display font-bold text-nile-deep-slate mb-space-2">
+              +٤٢ مليار
+            </div>
+<h4 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              ج.م قيمة العمليات
+            </h4>
+</div>
+<p class="font-body-sm text-body-sm text-ink-secondary leading-relaxed">
+            إجمالي حجم الصفقات المنفذة والموثقة قانونياً عبر المنصة.
+          </p>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md p-space-6 rounded-xl shadow-sm text-right flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-nile-deep-slate/10 text-nile-deep-slate flex items-center justify-center mb-space-4">
+<span class="material-symbols-outlined text-[22px]">corporate_fare</span>
+</div>
+<div class="font-headline-display text-headline-lg md:text-headline-display font-bold text-nile-deep-slate mb-space-2">
+              +١٨٠
+            </div>
+<h4 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              مطور عقاري رئيسي
+            </h4>
+</div>
+<p class="font-body-sm text-body-sm text-ink-secondary leading-relaxed">
+            ربط تقني مباشر مع كبرى شركات التطوير وإدارة الأصول في مصر.
+          </p>
+</div>
+<!-- Stat 4 -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md p-space-6 rounded-xl shadow-sm text-right flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-olive-sage/10 text-olive-sage flex items-center justify-center mb-space-4">
+<span class="material-symbols-outlined text-[22px]">speed</span>
+</div>
+<div class="font-headline-display text-headline-lg md:text-headline-display font-bold text-nile-deep-slate mb-space-2">
+              ١٤ يوماً
+            </div>
+<h4 class="font-headline-sm text-headline-sm text-nile-deep-slate font-bold mb-space-2">
+              متوسط المطابقة
+            </h4>
+</div>
+<p class="font-body-sm text-body-sm text-ink-secondary leading-relaxed">
+            من البحث الأولي وحتى تأكيد المعاينة الرسمية وإنهاء التعاقد.
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Agent CTA Band (بانر انضمام الوسطاء والاستشاريين) -->
+<section class="w-full py-space-16 md:py-space-24 bg-surface-container-lowest">
+<div class="max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg">
+<!-- Premium Dark Slate Container with Refined Depth -->
+<div class="relative rounded-2xl bg-nile-deep-slate text-on-primary overflow-hidden shadow-2xl p-space-8 md:p-space-16">
+<!-- Ambient Atmospheric Highlights inside Dark Card -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-olive-sage/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-80 h-80 bg-terracotta-earth/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 max-w-3xl text-right">
+<div class="inline-flex items-center gap-space-2 px-space-3 py-1 rounded-full bg-on-primary/10 text-sand-dune font-label-sm text-label-sm font-semibold mb-space-4">
+<span class="material-symbols-outlined text-[16px] text-terracotta-earth">workspace_premium</span>
+<span>للوسطاء والمستشارين العقاريين المعتمدين</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-desert-linen mb-space-4 leading-tight">
+            طور أعمال وساطتك العقارية مع منظومة ستلي الذكية
+          </h2>
+<p class="font-body-lg text-body-lg text-sand-dune/80 leading-relaxed mb-space-8 max-w-2xl">
+            احصل على مخزون وحدات موثق، وشبكات وساطة مشتركة، وحاسبات أقساط ذكية، وعملاء جادين في مصر والخليج العربي.
+          </p>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-4 mb-space-8">
+<button class="px-space-6 py-space-3 rounded-lg font-label-md text-label-md font-semibold bg-terracotta-earth text-on-primary hover:bg-terracotta-earth/90 shadow-lg flex items-center justify-center gap-space-2 transition-all" type="button">
+<span>انضم إلى ستلي كوسيط معتمد</span>
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+<button class="px-space-6 py-space-3 rounded-lg font-label-md text-label-md font-semibold bg-on-primary/10 hover:bg-on-primary/20 text-desert-linen flex items-center justify-center gap-space-2 transition-all" type="button">
+<span>استكشف أدوات الوسطاء</span>
+<span class="material-symbols-outlined text-[18px]">arrow_left_alt</span>
+</button>
+</div>
+<div class="flex items-center gap-space-3 pt-space-4 border-t border-on-primary/15">
+<div class="flex -space-x-2 overflow-hidden flex-row-reverse">
+<div class="inline-block h-8 w-8 rounded-full ring-2 ring-nile-deep-slate bg-olive-sage flex items-center justify-center text-[12px] font-bold">س</div>
+<div class="inline-block h-8 w-8 rounded-full ring-2 ring-nile-deep-slate bg-terracotta-earth flex items-center justify-center text-[12px] font-bold">م</div>
+<div class="inline-block h-8 w-8 rounded-full ring-2 ring-nile-deep-slate bg-sand-dune text-nile-deep-slate flex items-center justify-center text-[12px] font-bold">ع</div>
+</div>
+<span class="font-caption-num text-caption-num text-sand-dune/90 font-medium">
+              أكثر من ٨٥٠ وسيط عقاري معتمد انضموا إلينا في ٢٠٢٤
+            </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-canvas-bone border-t border-border-subtle mt-auto"><div class="max-w-[1440px] mx-auto px-layout-margin-sm md:px-layout-margin-md lg:px-layout-margin-lg pt-space-16 pb-space-12"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-10 mb-space-12"><div class="lg:col-span-2 flex flex-col pr-space-6"><div class="flex items-center gap-space-3 mb-space-4"><span class="font-headline-md text-headline-md text-nile-deep-slate font-bold tracking-tight">Settly</span></div><p class="font-body-md text-body-md text-ink-secondary max-w-sm mb-space-6 leading-relaxed">An institutional-grade bilingual property intelligence advisory for residential and commercial assets across Egypt.</p><div class="inline-flex items-center gap-space-2 py-space-1 px-space-3 rounded-full bg-surface-container border border-border-subtle w-fit"><span class="w-2 h-2 rounded-full bg-success-leaf"></span><span class="font-caption-num text-caption-num text-ink-primary font-semibold">EGP (Egyptian Pound)</span><span class="font-caption-num text-caption-num text-ink-muted">| Central Bank Realtime Index</span></div></div><div><h4 class="font-label-md text-label-md text-nile-deep-slate mb-space-4 tracking-wider uppercase">Explore</h4><ul class="space-y-space-3"><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="areas" href="#">New Cairo (Fifth Settlement)</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="areas" href="#">Sheikh Zayed &amp; October</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="areas" href="#">North Coast (Sahel)</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="areas" href="#">New Administrative Capital</a></li></ul></div><div><h4 class="font-label-md text-label-md text-nile-deep-slate mb-space-4 tracking-wider uppercase">Platform</h4><ul class="space-y-space-3"><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="buy" href="#">Curated Listings</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="agents" href="#">Licensed Broker Network</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="insights" href="#">Market Analytics</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="get-started" href="#">Institutional Inquiries</a></li></ul></div><div><h4 class="font-label-md text-label-md text-nile-deep-slate mb-space-4 tracking-wider uppercase">Corporate &amp; Legal</h4><ul class="space-y-space-3"><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="terms" href="#">Terms of Service</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="privacy-policy" href="#">Privacy &amp; Data Protocol</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="regulatory" href="#">FRA Real Estate Compliances</a></li><li class="font-body-sm text-body-sm"><a class="text-ink-secondary hover:text-nile-deep-slate transition-colors" data-path="contact" href="#">Contact Bureau</a></li></ul></div></div><div class="pt-space-8 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-space-4"><p class="font-caption-num text-caption-num text-ink-muted">© 2025 Settly Technologies LLC. All rights reserved. Licensed real estate brokerage &amp; analytical platform.</p><div class="flex items-center gap-space-6"><span class="font-caption-num text-caption-num text-ink-muted">Cairo • Dubai • London</span><span class="font-caption-num text-caption-num text-ink-muted">Bilingual Core (EN/AR)</span></div></div></div></footer></body></html>

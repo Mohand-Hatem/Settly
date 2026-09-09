@@ -47,7 +47,14 @@ the first migration, 3 before the first endpoint, 1 before CI is wired. These ar
 or documentation reads — schedule them at the start of the vertical-slice phase, not as
 architecture work.
 
-## 6. Related documents
+## 6. Step-level detail
+
+Step-by-step breakdown of every phase above — verification spikes, scaffolding, and the ordered
+task list for the vertical slice — lives in `IMPLEMENTATION_PLAN.md`. This document stays the
+phase-order source of truth; that one is the execution checklist.
+
+## 7. Related documents
 
 `../product/OVERVIEW.md` for scope boundaries · `../DECISIONS.md` for the full pending-
-verification tracker · every `architecture/` document for what each phase builds against.
+verification tracker · `IMPLEMENTATION_PLAN.md` for step-level execution detail · every
+`architecture/` document for what each phase builds against.

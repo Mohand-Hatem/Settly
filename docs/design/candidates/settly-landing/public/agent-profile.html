@@ -1,0 +1,1936 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Karim El-Sayed — Senior Private Client Advisor | Settly Egypt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Settly Shared Design System -->
+    <link rel="stylesheet" href="../shared/style.css" />
+    <link rel="stylesheet" href="../shared/master-nav-footer.css" />
+    <style>
+      /* ============================================================================
+         SETTLY — SCREEN 09: AGENT PUBLIC PROFILE (CERTIFIED FIDUCIARY DOSSIER)
+         Strictly adheres to /impeccable craft floor:
+         - Deep Navy (#131D36, #1E2A4A), Settly Brass (#C69749, #AE8033), Bone Canvas (#F7F6F3), Sage (#3D5A4C)
+         - Spectral Serif for luxury broadsheet typography; JetBrains Mono for measured values
+         - Single elevation declaration (hairline border OR subtle shadow, zero colored halos)
+         - Zero kickers, zero gradient text, zero nested cards
+         ========================================================================= */
+
+      :root {
+        --serif-head: "Spectral", Georgia, serif;
+        --sans-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+        --mono-val: "JetBrains Mono", ui-monospace, monospace;
+
+        --navy-950: #0B111F;
+        --navy-900: #131D36;
+        --navy-800: #1E2A4A;
+        --navy-700: #2B3A61;
+        --brass: #C69749;
+        --brass-600: #AE8033;
+        --brass-200: #E7D3AB;
+        --brass-050: #F6EEDE;
+        --canvas: #F7F6F3;
+        --canvas-2: #EDE9DF;
+        --ink-1: #16203A;
+        --ink-2: #4C5878;
+        --ink-3: #646D88;
+        --line: rgba(30, 42, 74, 0.1);
+        --line-2: rgba(30, 42, 74, 0.18);
+        --sage: #3D5A4C;
+        --sage-bg: rgba(61, 90, 76, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--navy-900);
+        font-family: var(--sans-ui);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      ::selection {
+        background: var(--brass-200);
+        color: var(--navy-950);
+      }
+
+      /* ============================================================================
+         1. SUB-HEADER BREADCRUMB & QUICK SWITCHER STRIP
+         ========================================================================= */
+      .profile-sub-strip {
+        background: #FFFFFF;
+        border-bottom: 1px solid var(--line);
+        padding-block: 0.85rem;
+      }
+
+      .profile-sub-inner {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .profile-breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono-val);
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+
+      .profile-breadcrumbs a {
+        color: var(--ink-2);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .profile-breadcrumbs a:hover {
+        color: var(--navy-900);
+      }
+
+      .profile-breadcrumbs .sep {
+        color: var(--line-2);
+      }
+
+      .profile-breadcrumbs .current {
+        color: var(--navy-900);
+        font-weight: 700;
+      }
+
+      .advisor-switcher-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .advisor-switcher-label {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+      }
+
+      .advisor-switcher-select {
+        height: 34px;
+        padding-inline: 10px 26px;
+        background: var(--canvas) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+
+      /* ============================================================================
+         2. EXECUTIVE DOSSIER HEADER STAGE
+         ========================================================================= */
+      .dossier-hero {
+        background: #FFFFFF;
+        border-bottom: 1px solid var(--line);
+        padding-block: clamp(2.5rem, 5vw, 4rem);
+      }
+
+      .dossier-hero-inner {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+      }
+
+      .dossier-card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: clamp(1.75rem, 3.5vw, 3rem);
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+      }
+
+      /* Advisor Portrait Box */
+      .dossier-avatar-box {
+        position: relative;
+        width: 170px;
+        height: 210px;
+        background: var(--canvas-2);
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        flex-shrink: 0;
+      }
+
+      .dossier-avatar-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+      }
+
+      .dossier-badge-verified {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(19, 29, 54, 0.9);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #FFFFFF;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .dossier-badge-verified svg {
+        color: var(--sage);
+      }
+
+      .dossier-license-tag {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(19, 29, 54, 0.9);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #FFFFFF;
+        font-family: var(--mono-val);
+        font-size: 9.5px;
+        padding: 3px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      /* Advisor Header Meta */
+      .dossier-meta {
+        flex: 1;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .dossier-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+
+      .dossier-name {
+        font-family: var(--serif-head);
+        font-size: clamp(2rem, 3.5vw, 2.75rem);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+        color: var(--navy-900);
+        margin: 0;
+      }
+
+      .dossier-rating-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-family: var(--mono-val);
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+
+      .dossier-rating-chip svg {
+        color: var(--brass);
+      }
+
+      .dossier-role-line {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--brass-600);
+        margin-bottom: 4px;
+      }
+
+      .dossier-desk-line {
+        font-size: 13.5px;
+        color: var(--ink-2);
+        margin-bottom: 1.25rem;
+      }
+
+      .dossier-pills-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 1.75rem;
+      }
+
+      .dossier-pill {
+        padding: 5px 12px;
+        border-radius: 9999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        background: var(--canvas);
+        color: var(--ink-2);
+        border: 1px solid var(--line);
+      }
+
+      .dossier-pill.dev-accredited {
+        background: var(--brass-050);
+        color: var(--brass-600);
+        border-color: rgba(198, 151, 73, 0.35);
+      }
+
+      .dossier-cta-cluster {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn-dossier-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: var(--navy-900);
+        color: #FFFFFF;
+        font-size: 13.5px;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-dossier-primary:hover {
+        background: var(--brass);
+        color: #241A06;
+      }
+
+      .btn-dossier-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        background: #FFFFFF;
+        color: var(--navy-900);
+        font-size: 13.5px;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        border: 1px solid var(--line-2);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-dossier-secondary:hover {
+        background: var(--canvas);
+        border-color: var(--navy-800);
+      }
+
+      /* Audited Telemetry Bar */
+      .dossier-telemetry-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.25rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .dossier-metric-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .dossier-metric-val {
+        font-family: var(--mono-val);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.02em;
+      }
+
+      .dossier-metric-lbl {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-3);
+      }
+
+      /* ============================================================================
+         3. MAIN 2-COLUMN WORKSPACE (68% Content / 32% Sticky Console)
+         ========================================================================= */
+      .dossier-workspace {
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 3.5rem);
+        padding-block: 3rem 6rem;
+        width: 100%;
+      }
+
+      .dossier-grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 2.75rem;
+        align-items: start;
+      }
+
+      /* Left Column Content */
+      .dossier-main-col {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        min-width: 0;
+      }
+
+      .dossier-section-block {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .dossier-section-block h2 {
+        font-family: var(--serif-head);
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        color: var(--navy-900);
+        margin: 0;
+      }
+
+      .dossier-section-block p {
+        font-size: 14.5px;
+        line-height: 1.68;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      /* Executive Bio Pillars */
+      .bio-pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .bio-pillar-card {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .bio-pillar-card h3 {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--brass-600);
+        margin: 0;
+      }
+
+      .bio-pillar-card p {
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--ink-1);
+        margin: 0;
+      }
+
+      /* Active Exclusive Portfolio Cards */
+      .portfolio-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .portfolio-card {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .portfolio-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--line-2);
+        box-shadow: 0 12px 24px -12px var(--line-2);
+      }
+
+      .portfolio-img-box {
+        position: relative;
+        width: 100%;
+        height: 190px;
+        background: var(--canvas-2);
+        overflow: hidden;
+      }
+
+      .portfolio-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .portfolio-card:hover .portfolio-img-box img {
+        transform: scale(1.05);
+      }
+
+      .portfolio-price-chip {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(19, 29, 54, 0.9);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #FFFFFF;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .portfolio-details {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .portfolio-loc {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .portfolio-title {
+        font-family: var(--serif-head);
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin: 0 0 8px;
+        line-height: 1.25;
+      }
+
+      .portfolio-specs-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        color: var(--ink-2);
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        margin-top: auto;
+      }
+
+      /* Audited Historical Transaction Ledger */
+      .history-table-wrap {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+
+      .history-table th {
+        background: var(--canvas);
+        padding: 12px 16px;
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-2);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .history-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        font-size: 13px;
+        vertical-align: middle;
+      }
+
+      .history-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .history-table tr:hover td {
+        background: rgba(247, 246, 243, 0.5);
+      }
+
+      .table-mono {
+        font-family: var(--mono-val);
+        font-weight: 700;
+        color: var(--navy-900);
+      }
+
+      .status-pill-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border-radius: 9999px;
+        font-family: var(--mono-val);
+        font-size: 10px;
+        font-weight: 700;
+        background: var(--sage-bg);
+        color: var(--sage);
+      }
+
+      /* Client Testimonials */
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+      }
+
+      .testimonial-card {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .testimonial-quote {
+        font-family: var(--serif-head);
+        font-style: italic;
+        font-size: 14.5px;
+        line-height: 1.58;
+        color: var(--navy-900);
+        margin: 0;
+      }
+
+      .testimonial-client {
+        display: flex;
+        flex-direction: column;
+        margin-top: auto;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+      }
+
+      .client-name {
+        font-weight: 700;
+        font-size: 12.5px;
+        color: var(--navy-900);
+      }
+
+      .client-meta {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+
+      /* ============================================================================
+         4. RIGHT COLUMN: STICKY ADVISORY CONSOLE
+         ========================================================================= */
+      .dossier-console {
+        position: sticky;
+        top: 90px;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 8px 24px -12px rgba(19, 29, 54, 0.14);
+        overflow: hidden;
+      }
+
+      .console-hdr {
+        padding: 1.35rem 1.5rem;
+        background: var(--canvas);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .console-hdr h3 {
+        font-family: var(--serif-head);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin: 0;
+      }
+
+      .console-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--sage);
+      }
+
+      .console-status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--sage);
+      }
+
+      .console-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      /* WhatsApp Quick Action Button */
+      .btn-console-whatsapp {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 16px;
+        background: var(--sage);
+        color: #FFFFFF;
+        font-size: 13.5px;
+        font-weight: 700;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+      }
+
+      .btn-console-whatsapp:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+      }
+
+      .console-divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono-val);
+        font-size: 10px;
+        text-transform: uppercase;
+        color: var(--ink-3);
+      }
+
+      .console-divider::before, .console-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+
+      /* Scheduler Widget */
+      .scheduler-title {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--navy-900);
+        margin-bottom: 8px;
+      }
+
+      .scheduler-days {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .scheduler-day-btn {
+        padding: 8px 4px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        text-align: center;
+        color: var(--ink-2);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        transition: all 0.15s ease;
+      }
+
+      .scheduler-day-btn:hover {
+        border-color: var(--brass);
+      }
+
+      .scheduler-day-btn.active {
+        background: var(--navy-900);
+        color: #FFFFFF;
+        border-color: var(--navy-900);
+      }
+
+      .scheduler-day-btn strong {
+        font-size: 13px;
+      }
+
+      .scheduler-slots {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 1.25rem;
+      }
+
+      .scheduler-slot-btn {
+        padding: 8px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s ease;
+      }
+
+      .scheduler-slot-btn:hover {
+        border-color: var(--brass);
+      }
+
+      .scheduler-slot-btn.active {
+        background: var(--brass);
+        color: #241A06;
+        border-color: var(--brass);
+      }
+
+      /* Console Form Controls */
+      .console-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .console-form-group label {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--navy-900);
+      }
+
+      .console-input, .console-select {
+        width: 100%;
+        padding: 9px 12px;
+        background: var(--canvas);
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 13px;
+        color: var(--navy-900);
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+
+      .console-input:focus, .console-select:focus {
+        border-color: var(--navy-800);
+        background: #FFFFFF;
+      }
+
+      .btn-console-submit {
+        width: 100%;
+        padding: 11px;
+        background: var(--navy-900);
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #FFFFFF;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        margin-top: 4px;
+      }
+
+      .btn-console-submit:hover {
+        background: var(--brass);
+        color: #241A06;
+      }
+
+      .console-legal-seal {
+        padding: 12px 14px;
+        background: var(--canvas);
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-family: var(--mono-val);
+        font-size: 10px;
+        color: var(--ink-3);
+        line-height: 1.4;
+      }
+
+      .console-legal-seal svg {
+        color: var(--brass-600);
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* ============================================================================
+         5. MODAL STYLES (REPRESENTATION MANDATE)
+         ========================================================================= */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(19, 29, 54, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal-card {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 540px;
+        box-shadow: 0 2px 4px rgba(19, 29, 54, 0.05), 0 24px 48px -20px rgba(19, 29, 54, 0.24);
+        overflow: hidden;
+      }
+
+      .modal-header {
+        padding: 1.5rem 1.75rem 1.25rem;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+
+      .modal-header h3 {
+        font-family: var(--serif-head);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin: 0 0 4px;
+      }
+
+      .modal-header p {
+        font-size: 13px;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      .modal-close-btn {
+        background: none;
+        border: none;
+        color: var(--ink-3);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+      }
+
+      .modal-close-btn:hover {
+        color: var(--navy-900);
+      }
+
+      .modal-body {
+        padding: 1.5rem 1.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.15rem;
+      }
+
+      .modal-footer {
+        padding: 1.25rem 1.75rem;
+        background: var(--canvas);
+        border-top: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-success-state {
+        display: none;
+        text-align: center;
+        padding: 2.5rem 1.75rem;
+      }
+
+      .modal-success-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--sage-bg);
+        color: var(--sage);
+        display: grid;
+        place-items: center;
+        margin: 0 auto 1.25rem;
+      }
+
+      /* Responsive Rules */
+      @media (max-width: 1080px) {
+        .dossier-grid-layout {
+          grid-template-columns: 1fr;
+        }
+        .dossier-console {
+          position: static;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dossier-telemetry-bar {
+          grid-template-columns: 1fr 1fr;
+        }
+        .portfolio-cards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 580px) {
+        .dossier-card-top {
+          flex-direction: column;
+        }
+        .dossier-telemetry-bar {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. Settly Global Master Navigation -->
+    <header class="settly-master-header">
+      <div class="settly-nav-shell">
+        <a href="./index.html" class="brand">
+          <img src="../../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" />
+          <span>Settly</span>
+        </a>
+
+        <nav class="settly-main-nav">
+          <a href="./search.html" class="settly-nav-link">Buy</a>
+          <a href="./areas.html" class="settly-nav-link">Districts</a>
+          <a href="./compare.html" class="settly-nav-link">Compare</a>
+          <a href="./market-insights.html" class="settly-nav-link">Market Insights</a>
+          <a href="./agents.html" class="settly-nav-link active">Agents</a>
+        </nav>
+
+        <div class="settly-header-actions">
+          <div class="settly-fx-pill" title="Central Bank of Egypt Sovereign Exchange Rate">
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
+          </div>
+          <a href="../auth/login.html" class="btn-settly-signin">Sign in</a>
+          <a href="../auth/register.html" class="btn-settly-getstarted">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. Breadcrumb & Advisor Quick Switcher Strip -->
+    <div class="profile-sub-strip">
+      <div class="profile-sub-inner">
+        <div class="profile-breadcrumbs">
+          <a href="./index.html">Settly</a>
+          <span class="sep">/</span>
+          <a href="./agents.html">Certified Advisors</a>
+          <span class="sep">/</span>
+          <span class="current" id="crumbAdvisorName">Karim El-Sayed</span>
+        </div>
+
+        <div class="advisor-switcher-wrap">
+          <span class="advisor-switcher-label">View Dossier:</span>
+          <select id="advisorSwitcher" class="advisor-switcher-select" aria-label="Switch Advisor Dossier">
+            <option value="karim-el-sayed" selected>Karim El-Sayed (New Cairo · Villas)</option>
+            <option value="laila-mansour">Laila Mansour (Sheikh Zayed · Penthouses)</option>
+            <option value="tarek-hegazy">Tarek Hegazy (Ras El Hekma · Coastal)</option>
+            <option value="nouran-fahmy">Nouran Fahmy (North Coast · Townhouses)</option>
+            <option value="omar-abdel-rahman">Omar Abdel-Rahman (New Cairo · Commercial)</option>
+            <option value="dina-sherif">Dina Sherif (Katameya · Boutique Estates)</option>
+            <option value="youssef-zaki">Youssef Zaki (Red Sea · El Gouna)</option>
+            <option value="farida-el-gammal">Farida El-Gammal (West Cairo · Diaspora Desk)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Executive Dossier Header Stage -->
+    <section class="dossier-hero">
+      <div class="dossier-hero-inner">
+        <div class="dossier-card-top">
+          <div class="dossier-avatar-box">
+            <img id="advImage" src="../../../../../Images/web/1.jpg" alt="Advisor portrait" />
+            <div class="dossier-badge-verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Settly Verified
+            </div>
+            <div class="dossier-license-tag" id="advLicense">FRA-EG #8841-B</div>
+          </div>
+
+          <div class="dossier-meta">
+            <div class="dossier-title-row">
+              <h1 class="dossier-name" id="advName">Karim El-Sayed</h1>
+              <div class="dossier-rating-chip">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span id="advRating">4.98</span>
+                <span style="font-size: 11px; opacity: 0.7;">(<span id="advReviewCount">62</span> reviews)</span>
+              </div>
+            </div>
+
+            <div class="dossier-role-line" id="advRole">Senior Private Client Advisor</div>
+            <div class="dossier-desk-line" id="advDesk">Sovereign Advisory Group · Golden Square &amp; New Cairo</div>
+
+            <div class="dossier-pills-row" id="advPills">
+              <span class="dossier-pill dev-accredited">Palm Hills Certified Partner</span>
+              <span class="dossier-pill dev-accredited">Emaar Platinum Desk</span>
+              <span class="dossier-pill">Golden Square Specialist</span>
+              <span class="dossier-pill">100% Freehold Escrow</span>
+            </div>
+
+            <div class="dossier-cta-cluster">
+              <a href="https://wa.me/201000000000" target="_blank" class="btn-dossier-primary" id="advWhatsAppBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                </svg>
+                WhatsApp Direct Desk
+              </a>
+              <button type="button" class="btn-dossier-secondary" id="btnOpenBriefingModal">
+                Schedule Advisory Briefing
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dossier-telemetry-bar">
+          <div class="dossier-metric-item">
+            <div class="dossier-metric-val" id="advVol">EGP 2.45B</div>
+            <div class="dossier-metric-lbl">Audited Lifetime Volume</div>
+          </div>
+          <div class="dossier-metric-item">
+            <div class="dossier-metric-val" id="advDeals">48 Deals</div>
+            <div class="dossier-metric-lbl">Closed Title Settlements</div>
+          </div>
+          <div class="dossier-metric-item">
+            <div class="dossier-metric-val" id="advActive">14 Active</div>
+            <div class="dossier-metric-lbl">Exclusive Listings</div>
+          </div>
+          <div class="dossier-metric-item">
+            <div class="dossier-metric-val" id="advResponse">11 Mins</div>
+            <div class="dossier-metric-lbl">Median Response SLA</div>
+          </div>
+          <div class="dossier-metric-item">
+            <div class="dossier-metric-val">100% CBE</div>
+            <div class="dossier-metric-lbl">Escrow Law 27/2020</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Main 2-Column Workspace -->
+    <main class="dossier-workspace">
+      <div class="dossier-grid-layout">
+        <!-- Left Column (68% Content) -->
+        <div class="dossier-main-col">
+          <!-- Executive Biography & Fiduciary Mandate -->
+          <section class="dossier-section-block">
+            <h2>Executive Biography &amp; Investment Thesis</h2>
+            <p id="advBioText">
+              With over 12 years of specialized luxury brokerage leadership across New Cairo and Golden Square,
+              Karim represents institutional family offices, private equity executives, and international diaspora buyers.
+              Operating exclusively under audited fiduciary contracts, every transaction is backed by Central Bank of Egypt Law 27/2020
+              statutory escrow protection and cadastral title authentication.
+            </p>
+
+            <div class="bio-pillars-grid">
+              <div class="bio-pillar-card">
+                <h3>Corridor Focus</h3>
+                <p id="advPillarTerritory">Golden Square, New Cairo &amp; Katameya Heights prime residential belts.</p>
+              </div>
+              <div class="bio-pillar-card">
+                <h3>Direct Allocation Rights</h3>
+                <p id="advPillarAllocations">Official developer API tie-in for Palm Hills, Emaar Misr, and SODIC releases.</p>
+              </div>
+              <div class="bio-pillar-card">
+                <h3>Confidentiality SLA</h3>
+                <p>Strict non-disclosure agreements (NDAs) and private off-market registry access for HNW acquisitions.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Active Exclusive Portfolio -->
+          <section class="dossier-section-block">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <h2>Active Exclusive Portfolio (<span id="portfolioCount">4</span>)</h2>
+              <span style="font-family: var(--mono-val); font-size: 11.5px; color: var(--ink-3);">
+                Audited Handover Timelines
+              </span>
+            </div>
+
+            <div class="portfolio-cards-grid" id="portfolioGrid">
+              <!-- Property 1 -->
+              <a href="./property-detail.html" class="portfolio-card">
+                <div class="portfolio-img-box">
+                  <img src="../../../../../Images/web/hero.jpg" alt="Lake View Signature Villa" loading="lazy" />
+                  <div class="portfolio-price-chip">EGP 34,500,000</div>
+                </div>
+                <div class="portfolio-details">
+                  <div class="portfolio-loc">Golden Square · Lake View</div>
+                  <h3 class="portfolio-title">Lake View Signature Standalone Villa</h3>
+                  <div class="portfolio-specs-row">
+                    <span>540 m²</span>
+                    <span>·</span>
+                    <span>5 Beds</span>
+                    <span>·</span>
+                    <span>6 Baths</span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Property 2 -->
+              <a href="./property-detail.html" class="portfolio-card">
+                <div class="portfolio-img-box">
+                  <img src="../../../../../Images/web/8.jpg" alt="Mivida Crescent Standalone" loading="lazy" />
+                  <div class="portfolio-price-chip">EGP 42,000,000</div>
+                </div>
+                <div class="portfolio-details">
+                  <div class="portfolio-loc">Golden Square · Mivida</div>
+                  <h3 class="portfolio-title">Mivida Crescent Prime Garden Estate</h3>
+                  <div class="portfolio-specs-row">
+                    <span>620 m²</span>
+                    <span>·</span>
+                    <span>6 Beds</span>
+                    <span>·</span>
+                    <span>7 Baths</span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Property 3 -->
+              <a href="./property-detail.html" class="portfolio-card">
+                <div class="portfolio-img-box">
+                  <img src="../../../../../Images/web/9.jpg" alt="Katameya Dunes Horizon Villa" loading="lazy" />
+                  <div class="portfolio-price-chip">EGP 29,800,000</div>
+                </div>
+                <div class="portfolio-details">
+                  <div class="portfolio-loc">New Cairo · Katameya Dunes</div>
+                  <h3 class="portfolio-title">Katameya Dunes Horizon Fairway Villa</h3>
+                  <div class="portfolio-specs-row">
+                    <span>480 m²</span>
+                    <span>·</span>
+                    <span>4 Beds</span>
+                    <span>·</span>
+                    <span>5 Baths</span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Property 4 -->
+              <a href="./property-detail.html" class="portfolio-card">
+                <div class="portfolio-img-box">
+                  <img src="../../../../../Images/web/10.jpg" alt="Palm Hills Bamboo Residence" loading="lazy" />
+                  <div class="portfolio-price-chip">EGP 22,400,000</div>
+                </div>
+                <div class="portfolio-details">
+                  <div class="portfolio-loc">New Cairo · Palm Hills</div>
+                  <h3 class="portfolio-title">Palm Hills Bamboo Botanical Twin Villa</h3>
+                  <div class="portfolio-specs-row">
+                    <span>385 m²</span>
+                    <span>·</span>
+                    <span>4 Beds</span>
+                    <span>·</span>
+                    <span>4 Baths</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </section>
+
+          <!-- Audited Historical Transaction Ledger -->
+          <section class="dossier-section-block">
+            <h2>Recent Audited Settlements Ledger</h2>
+            <div class="history-table-wrap">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Asset Class</th>
+                    <th>Compound / Corridor</th>
+                    <th>Audited Settlement</th>
+                    <th>Period</th>
+                    <th>Escrow Rail</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <tr>
+                    <td><strong>Lake View Standalone Villa</strong></td>
+                    <td>Golden Square, New Cairo</td>
+                    <td><span class="table-mono">EGP 32,500,000</span></td>
+                    <td><span class="table-mono">Q4 2025</span></td>
+                    <td><span class="status-pill-verified">✓ CBE Law 27 Escrow</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Katameya Dunes Fairway Villa</strong></td>
+                    <td>Fifth Settlement, New Cairo</td>
+                    <td><span class="table-mono">EGP 28,200,000</span></td>
+                    <td><span class="table-mono">Q3 2025</span></td>
+                    <td><span class="status-pill-verified">✓ CBE Law 27 Escrow</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Mivida Park Residence</strong></td>
+                    <td>Golden Square, New Cairo</td>
+                    <td><span class="table-mono">EGP 41,000,000</span></td>
+                    <td><span class="table-mono">Q2 2025</span></td>
+                    <td><span class="status-pill-verified">✓ CBE Law 27 Escrow</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Villette Sky Villa Duplex</strong></td>
+                    <td>South 90th, New Cairo</td>
+                    <td><span class="table-mono">EGP 24,900,000</span></td>
+                    <td><span class="table-mono">Q1 2025</span></td>
+                    <td><span class="status-pill-verified">✓ CBE Law 27 Escrow</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Verified Client Testimonials -->
+          <section class="dossier-section-block">
+            <h2>Fiduciary Client Endorsements</h2>
+            <div class="testimonials-grid" id="testimonialsGrid">
+              <div class="testimonial-card">
+                <p class="testimonial-quote">
+                  "Karim secured our off-market acquisition in Lake View with total discretion. His direct access to Palm Hills title deeds and escrow legal team eliminated every friction point."
+                </p>
+                <div class="testimonial-client">
+                  <span class="client-name">Hisham El-Gammal</span>
+                  <span class="client-meta">Managing Partner, Delta Capital Private Office</span>
+                </div>
+              </div>
+
+              <div class="testimonial-card">
+                <p class="testimonial-quote">
+                  "As an overseas investor in London, Settly's verified data and Karim's 10-minute response SLA made the AED-to-EGP repatriation and handover completely transparent."
+                </p>
+                <div class="testimonial-client">
+                  <span class="client-name">Dr. Sherif Allam</span>
+                  <span class="client-meta">Private Diaspora Investor · London / Cairo</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column (32% Sticky Action Console) -->
+        <aside class="dossier-console">
+          <div class="console-hdr">
+            <h3>Advisory Console</h3>
+            <div class="console-status-pill">
+              <span class="console-status-dot"></span>
+              Active Now
+            </div>
+          </div>
+
+          <div class="console-body">
+            <a href="https://wa.me/201000000000" target="_blank" class="btn-console-whatsapp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+              </svg>
+              Direct WhatsApp Dispatch
+            </a>
+
+            <div class="console-divider">Or Book Advisory Session</div>
+
+            <!-- Viewing & Briefing Scheduler -->
+            <div>
+              <div class="scheduler-title">Select Date (Cairo CLT)</div>
+              <div class="scheduler-days" id="schedulerDays">
+                <button type="button" class="scheduler-day-btn active">
+                  <span>Wed</span>
+                  <strong>11</strong>
+                </button>
+                <button type="button" class="scheduler-day-btn">
+                  <span>Thu</span>
+                  <strong>12</strong>
+                </button>
+                <button type="button" class="scheduler-day-btn">
+                  <span>Fri</span>
+                  <strong>13</strong>
+                </button>
+                <button type="button" class="scheduler-day-btn">
+                  <span>Sat</span>
+                  <strong>14</strong>
+                </button>
+                <button type="button" class="scheduler-day-btn">
+                  <span>Sun</span>
+                  <strong>15</strong>
+                </button>
+              </div>
+
+              <div class="scheduler-title">Available Time Slot</div>
+              <div class="scheduler-slots" id="schedulerSlots">
+                <button type="button" class="scheduler-slot-btn active">10:30 AM</button>
+                <button type="button" class="scheduler-slot-btn">01:00 PM</button>
+                <button type="button" class="scheduler-slot-btn">04:30 PM</button>
+                <button type="button" class="scheduler-slot-btn">07:00 PM</button>
+              </div>
+            </div>
+
+            <!-- Mandate Submission Form -->
+            <form id="consoleMandateForm">
+              <div class="console-form-group" style="margin-bottom: 10px;">
+                <label for="cInvestorName">Investor / Principal Name</label>
+                <input type="text" id="cInvestorName" class="console-input" placeholder="e.g. Tarek Mansour" required />
+              </div>
+
+              <div class="console-form-group" style="margin-bottom: 10px;">
+                <label for="cInvestorContact">WhatsApp or Email</label>
+                <input type="text" id="cInvestorContact" class="console-input" placeholder="+20 100 000 0000" required />
+              </div>
+
+              <div class="console-form-group" style="margin-bottom: 10px;">
+                <label for="cInvestorBudget">Acquisition Budget Bracket</label>
+                <select id="cInvestorBudget" class="console-select" required>
+                  <option value="20-50">EGP 20M — 50M</option>
+                  <option value="50-100" selected>EGP 50M — 100M</option>
+                  <option value="100-250">EGP 100M — 250M</option>
+                  <option value="250+">EGP 250M+ (Portfolio)</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn-console-submit" id="btnSubmitMandate">
+                Confirm Confidential Briefing
+              </button>
+            </form>
+
+            <div class="console-legal-seal">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+              </svg>
+              <span>Central Bank of Egypt Law 27/2020 Compliant. All transactions and client communications protected by non-disclosure agreements.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- 5. Interactive Representation Mandate Modal -->
+    <div class="modal-backdrop" id="briefingModal" role="dialog" aria-modal="true" aria-labelledby="modalBriefingTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 id="modalBriefingTitle">Schedule Private Advisory Briefing</h3>
+            <p>Confidential consultation with <strong id="modalAdvNameTarget">Karim El-Sayed</strong></p>
+          </div>
+          <button type="button" class="modal-close-btn" id="closeBriefingModal" aria-label="Close modal">&times;</button>
+        </div>
+
+        <form id="modalBriefingForm">
+          <div class="modal-body" id="modalFormContent">
+            <div class="console-form-group">
+              <label for="mName">Investor / Principal Name</label>
+              <input type="text" id="mName" class="console-input" placeholder="e.g. Laila Farid" required />
+            </div>
+
+            <div class="console-form-group">
+              <label for="mContact">Email or WhatsApp Number</label>
+              <input type="text" id="mContact" class="console-input" placeholder="+20 100 000 0000 or email@domain.com" required />
+            </div>
+
+            <div class="console-form-group">
+              <label for="mFormat">Meeting Modality</label>
+              <select id="mFormat" class="console-select">
+                <option value="onsite">Private On-Site Residence Viewing</option>
+                <option value="lounge">Settly Private Lounge (Katameya)</option>
+                <option value="zoom">Encrypted Zoom Video Briefing</option>
+              </select>
+            </div>
+
+            <div class="console-form-group">
+              <label for="mNotes">Confidential Acquisition Parameters (Optional)</label>
+              <textarea id="mNotes" class="console-input" rows="2" placeholder="Specific developer preference, plot size, or handover target..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer" id="modalFormActions">
+            <button type="button" class="btn-dossier-secondary" id="btnCancelBriefing">Cancel</button>
+            <button type="submit" class="btn-dossier-primary">Confirm Briefing</button>
+          </div>
+
+          <div class="modal-success-state" id="modalSuccessState">
+            <div class="modal-success-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h3 style="font-family: var(--serif-head); font-size: 22px; margin: 0 0 8px; color: var(--navy-900);">
+              Briefing Scheduled
+            </h3>
+            <p style="font-size: 13.5px; color: var(--ink-2); line-height: 1.5; margin: 0 0 1.5rem;">
+              Your confidential session has been reserved. An encrypted calendar invite and advisor WhatsApp briefing dossier will arrive within 11 minutes.
+            </p>
+            <button type="button" class="btn-dossier-primary" id="btnCloseSuccess" style="margin: 0 auto; display: inline-flex;">
+              Done
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 6. Settly Master Luxury Footer -->
+    <footer class="settly-master-footer">
+      <div class="settly-footer-shell">
+        <div class="settly-footer-grid">
+          <!-- Col 1: Brand Authority & Escrow -->
+          <div class="settly-ftr-brand">
+            <a href="./index.html" class="brand" style="margin-bottom: 1.25rem;">
+              <img src="../../../../../Images/web/logo.png" alt="Settly Logo" width="38" height="38" class="ftr-logo-plate" />
+              <span style="color: #fff;">Settly</span>
+            </a>
+            <p class="settly-ftr-mission">
+              Egypt's premier sovereign real estate exchange and spatial intelligence terminal.
+              Institutional acquisition workflows, verified cadastral titles, and audited escrow security.
+            </p>
+            <div class="settly-trust-badges">
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+                <span>Central Bank of Egypt Law 27/2020 Compliant</span>
+              </div>
+              <div class="settly-trust-badge-row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+                </svg>
+                <span>100% Freehold Foreign Ownership Guarantee</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Investment Corridors -->
+          <div class="settly-ftr-col">
+            <h4>Prime Corridors</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./area-detail.html">Golden Square (New Cairo)</a></li>
+              <li><a href="./search.html?corridor=sahel">Ras El Hekma (North Coast)</a></li>
+              <li><a href="./search.html?corridor=zayed">New Zayed (Karmell & Rivers)</a></li>
+              <li><a href="./search.html?corridor=gouna">El Gouna Waterfront Estates</a></li>
+              <li><a href="./search.html?corridor=sidiheneish">Sidi Heneish Azure Bay</a></li>
+              <li><a href="./areas.html">All 8 Corridors & GIS Radar &rarr;</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Institutional Intelligence -->
+          <div class="settly-ftr-col">
+            <h4>Intelligence & Tools</h4>
+            <ul class="settly-ftr-links">
+              <li><a href="./market-insights.html">Macro Intelligence (Q1 2026)</a></li>
+              <li><a href="./market-insights.html#yieldArbitrage">Yield Arbitrage Terminal</a></li>
+              <li><a href="./market-insights.html#developerLeague">Developer Punctuality Table</a></li>
+              <li><a href="./compare.html">Compare 4 Residences Side-by-Side</a></li>
+              <li><a href="./search.html">Cadastral Registry Search</a></li>
+              <li><a href="./agents.html">Certified Agent Directory</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Private Client Advisory & Desk -->
+          <div class="settly-ftr-col">
+            <h4>Private Client Desk</h4>
+            <div class="settly-ftr-advisory">
+              <p>
+                Confidential acquisition support for family offices, institutional funds, and international diaspora capital.
+              </p>
+              <a href="https://wa.me/201000000000" target="_blank" class="btn-ftr-concierge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                </svg>
+                <span>WhatsApp Private Desk</span>
+              </a>
+              <div class="settly-ftr-hours">
+                Daily 09:00 — 21:00 CLT · Cairo / Dubai / London
+              </div>
+
+              <!-- Social Media Strip (Instagram, LinkedIn, Facebook, X) -->
+              <div class="settly-socials-block">
+                <span class="settly-socials-label">Connect with Settly:</span>
+                <div class="settly-socials-strip">
+                  <a href="https://instagram.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Instagram" title="Instagram">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                    </svg>
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on LinkedIn" title="LinkedIn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                      <rect width="4" height="12" x="2" y="9"/>
+                      <circle cx="4" cy="4" r="2"/>
+                    </svg>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on Facebook" title="Facebook">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                    </svg>
+                  </a>
+                  <a href="https://x.com" target="_blank" rel="noopener" class="settly-social-icon" aria-label="Settly on X" title="X (Twitter)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settly-footer-bottom">
+          <div class="settly-ftr-legal">
+            &copy; 2026 Settly Real Estate Technologies Inc. Central Bank of Egypt Law 27/2020 Compliant. All transactions escrow-verified.
+          </div>
+          <div class="settly-ftr-socials">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Exchange</a>
+            <a href="#escrow">Escrow Security</a>
+            <a href="./market-insights.html">Advisory Dossiers</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 7. Dynamic Data Hydration Script -->
+    <script>
+      (function() {
+        const ADVISORS_DB = {
+          "karim-el-sayed": {
+            name: "Karim El-Sayed",
+            role: "Senior Private Client Advisor",
+            desk: "Sovereign Advisory Group · Golden Square & New Cairo",
+            license: "FRA-EG #8841-B",
+            image: "../../../../../Images/web/1.jpg",
+            rating: "4.98",
+            reviews: "62",
+            vol: "EGP 2.45B",
+            deals: "48 Deals",
+            activeCount: "14 Active",
+            response: "11 Mins",
+            pills: ["Palm Hills Certified Partner", "Emaar Platinum Desk", "Golden Square Specialist", "100% Freehold Escrow"],
+            bio: "With over 12 years of specialized luxury brokerage leadership across New Cairo and Golden Square, Karim represents institutional family offices, private equity executives, and international diaspora buyers. Operating exclusively under audited fiduciary contracts, every transaction is backed by Central Bank of Egypt Law 27/2020 statutory escrow protection and cadastral title authentication.",
+            territoryPillar: "Golden Square, New Cairo & Katameya Heights prime residential belts.",
+            allocationsPillar: "Official developer API tie-in for Palm Hills, Emaar Misr, and SODIC releases."
+          },
+          "laila-mansour": {
+            name: "Laila Mansour",
+            role: "Managing Director",
+            desk: "Mansour Private Office · Sheikh Zayed & West Cairo",
+            license: "FRA-EG #9204-A",
+            image: "../../../../../Images/web/2.jpg",
+            rating: "5.00",
+            reviews: "84",
+            vol: "EGP 3.10B",
+            deals: "61 Deals",
+            activeCount: "19 Active",
+            response: "9 Mins",
+            pills: ["SODIC Signature Partner", "Ora Elite Desk", "New Zayed Master Specialist", "Ultra HNW Desk"],
+            bio: "Directing West Cairo's premier private brokerage desk, Laila curates signature standalones and branded penthouses in New Zayed, Karmell, and Rivers. Renowned for institutional financial structuring and confidentiality agreements, she manages portfolio mandates for top Egyptian and GCC industrial families.",
+            territoryPillar: "Sheikh Zayed, New Zayed (Karmell & Rivers) & Beverly Hills corridors.",
+            allocationsPillar: "Priority allocation rights with SODIC, Ora Developers, and Dorra Group."
+          },
+          "tarek-hegazy": {
+            name: "Tarek Hegazy",
+            role: "Principal Partner",
+            desk: "Nile & Coast Capital · Ras El Hekma & North Coast",
+            license: "FRA-EG #7719-C",
+            image: "../../../../../Images/web/3.jpg",
+            rating: "4.95",
+            reviews: "49",
+            vol: "EGP 2.80B",
+            deals: "42 Deals",
+            activeCount: "11 Active",
+            response: "15 Mins",
+            pills: ["Emaar Misr Prime", "TMG Coastal Desk", "Ras El Hekma Specialist", "Beachfront Estates"],
+            bio: "Tarek leads coastal strategic acquisitions with a specific focus on the multi-billion-dollar Ras El Hekma megaproject and Mediterranean shoreline estates. He advises multinational consortia and high-net-worth individuals on premier prime beach frontage and long-term land appreciation.",
+            territoryPillar: "Ras El Hekma, Sidi Heneish, and Mediterranean coastal enclaves.",
+            allocationsPillar: "Direct allocations with Emaar Misr (Marassi/Soul) and Talaat Moustafa Group."
+          },
+          "nouran-fahmy": {
+            name: "Nouran Fahmy",
+            role: "Coastal Acquisitions Director",
+            desk: "Coastline & Shore Advisory · Sahel & Mediterranean",
+            license: "FRA-EG #6532-D",
+            image: "../../../../../Images/web/4.jpg",
+            rating: "4.97",
+            reviews: "53",
+            vol: "EGP 1.95B",
+            deals: "37 Deals",
+            activeCount: "8 Active",
+            response: "12 Mins",
+            pills: ["Palm Hills Hacienda", "Mountain View Premier", "Sidi Heneish Specialist", "Resale Desk"],
+            bio: "Nouran specializes in rare, prime-location coastal villas and turnkey waterfront chalets across Hacienda and Mountain View developments. Her desk provides full-lifecycle property management and high-yield seasonal rental advisory for European and Gulf diaspora owners.",
+            territoryPillar: "Hacienda Bay/White/Waters, Sidi Heneish & Ras El Hekma.",
+            allocationsPillar: "Direct developer rights with Palm Hills Coastal and Mountain View."
+          },
+          "omar-abdel-rahman": {
+            name: "Omar Abdel-Rahman",
+            role: "Commercial & Flagship Advisor",
+            desk: "Apex Real Estate Partners · New Cairo",
+            license: "FRA-EG #5410-E",
+            image: "../../../../../Images/web/5.jpg",
+            rating: "4.92",
+            reviews: "41",
+            vol: "EGP 2.15B",
+            deals: "50 Deals",
+            activeCount: "16 Active",
+            response: "18 Mins",
+            pills: ["Marakez Flagship Partner", "Palm Hills Partner", "Commercial Hubs", "Corporate HQ"],
+            bio: "Omar is Settly's lead corporate and retail advisory specialist, facilitating headquarters acquisitions and flagship commercial spaces along South and North 90th Street. His clients include multinational logistics operators, tech enterprises, and regional investment funds.",
+            territoryPillar: "North & South 90th Street, Golden Square commercial strip & New Capital.",
+            allocationsPillar: "Flagship agreements with Marakez, Palm Hills Commercial, and Waterway Developments."
+          },
+          "dina-sherif": {
+            name: "Dina Sherif",
+            role: "Heritage & Boutique Estates Specialist",
+            desk: "Katameya Private Desk · New Cairo",
+            license: "FRA-EG #4892-F",
+            image: "../../../../../Images/web/6.jpg",
+            rating: "4.99",
+            reviews: "38",
+            vol: "EGP 1.70B",
+            deals: "29 Deals",
+            activeCount: "7 Active",
+            response: "14 Mins",
+            pills: ["Katameya Heights Partner", "SODIC Signature", "Boutique Estates", "Off-Market Desk"],
+            bio: "Dina represents heritage properties and signature golf residences in Katameya Heights and Katameya Dunes. Renowned for total confidentiality and off-market mandate negotiation, she works directly with private family principals seeking bespoke architectural legacy estates.",
+            territoryPillar: "Katameya Heights, Katameya Dunes & Zamalek private listings.",
+            allocationsPillar: "Exclusive representation rights within Katameya's gated golf enclaves."
+          },
+          "youssef-zaki": {
+            name: "Youssef Zaki",
+            role: "Senior Coastal Broker",
+            desk: "Red Sea Marine Estates · El Gouna & Somabay",
+            license: "FRA-EG #3981-G",
+            image: "../../../../../Images/web/7.jpg",
+            rating: "4.94",
+            reviews: "35",
+            vol: "EGP 1.45B",
+            deals: "33 Deals",
+            activeCount: "9 Active",
+            response: "16 Mins",
+            pills: ["Orascom Development Partner", "Somabay Coastal", "El Gouna Marina", "Yachting Estates"],
+            bio: "Operating out of Abu Tig Marina in El Gouna, Youssef is the go-to advisor for luxury lagoon estates, golf villas, and private boat mooring residences along Egypt's Red Sea coast. He frequently facilitates euro-denominated purchases and tax residency certificates.",
+            territoryPillar: "El Gouna, Somabay & Sahl Hasheesh coastal strips.",
+            allocationsPillar: "Direct accredited broker status with Orascom Development Egypt."
+          },
+          "farida-el-gammal": {
+            name: "Farida El-Gammal",
+            role: "Head of Foreign National Advisory",
+            desk: "Settly Institutional Desk · West Cairo",
+            license: "FRA-EG #2105-H",
+            image: "../../../../../Images/web/phone.jpg",
+            rating: "5.00",
+            reviews: "92",
+            vol: "EGP 2.65B",
+            deals: "56 Deals",
+            activeCount: "15 Active",
+            response: "8 Mins",
+            pills: ["Palm Hills Certified", "Ora Elite Desk", "Diaspora Specialist", "Cross-Border Escrow"],
+            bio: "Leading Settly's dedicated Cross-Border & Foreign National desk, Farida assists international purchasers, embassy diplomats, and diaspora families with Egypt's legal freehold property laws, statutory escrow protections, and remote title authentication.",
+            territoryPillar: "Greater Cairo & Coastal prime developments for international buyers.",
+            allocationsPillar: "Direct executive desk with Egypt's top 5 institutional developers."
+          }
+        };
+
+        // DOM elements
+        const switcher = document.getElementById('advisorSwitcher');
+        const crumbName = document.getElementById('crumbAdvisorName');
+        const advName = document.getElementById('advName');
+        const advRole = document.getElementById('advRole');
+        const advDesk = document.getElementById('advDesk');
+        const advLicense = document.getElementById('advLicense');
+        const advImage = document.getElementById('advImage');
+        const advRating = document.getElementById('advRating');
+        const advReviewCount = document.getElementById('advReviewCount');
+        const advVol = document.getElementById('advVol');
+        const advDeals = document.getElementById('advDeals');
+        const advActive = document.getElementById('advActive');
+        const advResponse = document.getElementById('advResponse');
+        const advPills = document.getElementById('advPills');
+        const advBioText = document.getElementById('advBioText');
+        const advPillarTerritory = document.getElementById('advPillarTerritory');
+        const advPillarAllocations = document.getElementById('advPillarAllocations');
+        const modalAdvNameTarget = document.getElementById('modalAdvNameTarget');
+
+        function loadAdvisor(id) {
+          const data = ADVISORS_DB[id] || ADVISORS_DB["karim-el-sayed"];
+
+          document.title = `${data.name} — ${data.role} | Settly Egypt`;
+          crumbName.textContent = data.name;
+          advName.textContent = data.name;
+          advRole.textContent = data.role;
+          advDesk.textContent = data.desk;
+          advLicense.textContent = data.license;
+          advImage.src = data.image;
+          advImage.alt = `${data.name} portrait`;
+          advRating.textContent = data.rating;
+          advReviewCount.textContent = data.reviews;
+          advVol.textContent = data.vol;
+          advDeals.textContent = data.deals;
+          advActive.textContent = data.activeCount;
+          advResponse.textContent = data.response;
+          advBioText.textContent = data.bio;
+          advPillarTerritory.textContent = data.territoryPillar;
+          advPillarAllocations.textContent = data.allocationsPillar;
+          modalAdvNameTarget.textContent = data.name;
+
+          // Render pills
+          advPills.innerHTML = '';
+          data.pills.forEach((pillText, idx) => {
+            const span = document.createElement('span');
+            span.className = idx < 2 ? 'dossier-pill dev-accredited' : 'dossier-pill';
+            span.textContent = pillText;
+            advPills.appendChild(span);
+          });
+
+          switcher.value = id in ADVISORS_DB ? id : "karim-el-sayed";
+        }
+
+        // Initialize from URL search query parameter e.g. ?id=laila-mansour
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialId = urlParams.get('id') || 'karim-el-sayed';
+        loadAdvisor(initialId);
+
+        // Switcher dropdown change
+        switcher.addEventListener('change', (e) => {
+          const selectedId = e.target.value;
+          loadAdvisor(selectedId);
+          if (history.pushState) {
+            const newUrl = `${window.location.pathname}?id=${selectedId}`;
+            history.pushState({ id: selectedId }, '', newUrl);
+          }
+        });
+
+        // Interactive Scheduler Days
+        const dayButtons = document.querySelectorAll('.scheduler-day-btn');
+        dayButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            dayButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+        });
+
+        // Interactive Scheduler Slots
+        const slotButtons = document.querySelectorAll('.scheduler-slot-btn');
+        slotButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            slotButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+        });
+
+        // Modal Functionality
+        const briefingModal = document.getElementById('briefingModal');
+        const btnOpenBriefingModal = document.getElementById('btnOpenBriefingModal');
+        const closeBriefingModal = document.getElementById('closeBriefingModal');
+        const btnCancelBriefing = document.getElementById('btnCancelBriefing');
+        const modalBriefingForm = document.getElementById('modalBriefingForm');
+        const modalFormContent = document.getElementById('modalFormContent');
+        const modalFormActions = document.getElementById('modalFormActions');
+        const modalSuccessState = document.getElementById('modalSuccessState');
+        const btnCloseSuccess = document.getElementById('btnCloseSuccess');
+
+        function openModal() {
+          modalFormContent.style.display = 'flex';
+          modalFormActions.style.display = 'flex';
+          modalSuccessState.style.display = 'none';
+          briefingModal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+          briefingModal.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+
+        btnOpenBriefingModal.addEventListener('click', openModal);
+        closeBriefingModal.addEventListener('click', closeModal);
+        btnCancelBriefing.addEventListener('click', closeModal);
+        btnCloseSuccess.addEventListener('click', closeModal);
+
+        briefingModal.addEventListener('click', (e) => {
+          if (e.target === briefingModal) closeModal();
+        });
+
+        modalBriefingForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          modalFormContent.style.display = 'none';
+          modalFormActions.style.display = 'none';
+          modalSuccessState.style.display = 'block';
+        });
+
+        // Console Quick Mandate Form
+        const consoleForm = document.getElementById('consoleMandateForm');
+        consoleForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          alert(`Confidential briefing request dispatched to ${advName.textContent}. You will receive WhatsApp confirmation within ${advResponse.textContent}.`);
+        });
+
+        // Keyboard escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && briefingModal.classList.contains('open')) {
+            closeModal();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

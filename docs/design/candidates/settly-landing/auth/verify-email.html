@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Authorization Token · Settly Sovereign Real Estate Exchange</title>
+
+    <!-- Google Fonts: Spectral (Editorial Serif), Plus Jakarta Sans (Clean UI), JetBrains Mono (Telemetry) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ==========================================================================
+         DESIGN SYSTEM TOKENS — SETTLY LUXURY FIDUCIARY PORTAL
+         ========================================================================== */
+      :root {
+        --navy-950: #0D1426;
+        --navy-900: #131D36;
+        --navy-800: #1E2A4A;
+        --navy-700: #2B3A60;
+        --navy-600: #3E4F7A;
+        --brass: #C69749;
+        --brass-light: #DFB772;
+        --brass-600: #AE8033;
+        --brass-wash: #F6EEDE;
+        --canvas: #F7F6F3;
+        --canvas-2: #EDE9DF;
+        --ink-1: #131D36;
+        --ink-2: #4A5268;
+        --ink-3: #757E95;
+        --line: rgba(30, 42, 74, 0.10);
+        --line-2: rgba(30, 42, 74, 0.18);
+        --sage: #3D5A4C;
+        --sage-light: #EBF2EE;
+        --error: #A82020;
+        --error-light: #FDF2F2;
+
+        --serif-lux: 'Spectral', Georgia, serif;
+        --sans-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        --mono-val: 'JetBrains Mono', monospace;
+      }
+
+      /* Reset & Global Box Sizing */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body {
+        height: 100%;
+        min-height: 100%;
+        background-color: var(--canvas);
+        color: var(--ink-1);
+        font-family: var(--sans-ui);
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
+
+      /* Selection & Scrollbar Styling */
+      ::selection {
+        background: rgba(198, 151, 73, 0.25);
+        color: var(--navy-900);
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--canvas-2);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--navy-700);
+        border-radius: 8px;
+      }
+
+      /* 50/50 Split Architectural Scrim Layout */
+      .auth-layout {
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
+        position: relative;
+      }
+
+      /* Left Pane: Architectural Scrim (Desktop 50%) */
+      .auth-brand-pane {
+        flex: 1;
+        position: relative;
+        background: var(--navy-950);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: clamp(2rem, 5vw, 4.5rem);
+      }
+
+      .auth-brand-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+
+      .auth-brand-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+        filter: brightness(0.78) contrast(1.08);
+      }
+
+      .auth-brand-scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(
+          110deg,
+          rgba(13, 20, 38, 0.95) 0%,
+          rgba(15, 23, 43, 0.88) 36%,
+          rgba(19, 29, 54, 0.58) 72%,
+          rgba(19, 29, 54, 0.28) 100%
+        );
+      }
+
+      .auth-brand-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+        max-width: 580px;
+      }
+
+      .auth-top-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .brand-link-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(255, 255, 255, 0.75);
+        text-decoration: none;
+        font-family: var(--sans-ui);
+        font-size: 13px;
+        font-weight: 500;
+        transition: color 0.15s ease, transform 0.15s ease;
+      }
+
+      .brand-link-back:hover {
+        color: #FFFFFF;
+        transform: translateX(-2px);
+      }
+
+      .auth-security-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 11px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(8px);
+        font-family: var(--mono-val);
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .auth-security-pill svg {
+        color: var(--brass);
+      }
+
+      .auth-editorial-block {
+        margin-block: auto;
+        padding-block: 2.5rem;
+      }
+
+      .editorial-kicker {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--brass-light);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .editorial-kicker::before {
+        content: "";
+        width: 18px;
+        height: 1px;
+        background: var(--brass);
+      }
+
+      .editorial-quote {
+        font-family: var(--serif-lux);
+        font-size: clamp(24px, 2.7vw, 32px);
+        font-weight: 600;
+        line-height: 1.35;
+        color: #FFFFFF;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.01em;
+      }
+
+      /* Fiduciary Trust Boundary Card */
+      .fiduciary-boundary-card {
+        background: rgba(19, 29, 54, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 1.35rem 1.5rem;
+        backdrop-filter: blur(12px);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .boundary-card-title {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--brass-light);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .boundary-rules-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        list-style: none;
+      }
+
+      .boundary-rule-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.85);
+        padding-block: 2px;
+      }
+
+      .rule-badge {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        background: rgba(61, 90, 76, 0.35);
+        border: 1px solid rgba(61, 90, 76, 0.6);
+        color: var(--sage-light);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        flex-shrink: 0;
+      }
+
+      .boundary-note {
+        font-size: 11.5px;
+        color: rgba(255, 255, 255, 0.55);
+        padding-top: 6px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      /* Telemetry Ribbon Bottom */
+      .auth-telemetry-ribbon {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .pillar-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .pillar-val {
+        font-family: var(--mono-val);
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #FFFFFF;
+      }
+
+      .pillar-lbl {
+        font-family: var(--mono-val);
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: rgba(255, 255, 255, 0.55);
+      }
+
+      /* Right Pane: Verification Console (Desktop 50%) */
+      .auth-form-pane {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(1.75rem, 4vw, 3.5rem);
+        background: var(--canvas);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 480px;
+        min-width: 0;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: clamp(1.75rem, 3.5vw, 2.5rem);
+        box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 12px 28px -12px var(--line-2);
+      }
+
+      .auth-card-header {
+        margin-bottom: 1.5rem;
+      }
+
+      .auth-logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+      }
+
+      .auth-logo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .auth-logo-img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+      }
+
+      .auth-logo-text {
+        font-family: var(--serif-lux);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: -0.01em;
+      }
+
+      .auth-security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 9px;
+        border-radius: 9999px;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--navy-900);
+      }
+
+      .auth-security-badge svg {
+        color: var(--sage);
+      }
+
+      .auth-card-title {
+        font-family: var(--serif-lux);
+        font-size: 26px;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.01em;
+      }
+
+      .auth-card-desc {
+        font-size: 13.5px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        margin-bottom: 0.75rem;
+      }
+
+      /* Recipient Email Address Pill Plate */
+      .email-dispatch-card {
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+      }
+
+      .dispatch-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .dispatch-left svg {
+        color: var(--brass-600);
+        flex-shrink: 0;
+      }
+
+      .dispatch-email-text {
+        font-family: var(--mono-val);
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--navy-900);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .btn-change-email {
+        background: transparent;
+        border: none;
+        color: var(--brass-600);
+        font-family: var(--sans-ui);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: underline;
+        flex-shrink: 0;
+        transition: color 0.15s ease;
+      }
+
+      .btn-change-email:hover {
+        color: var(--navy-900);
+      }
+
+      /* Quick-Fill Demo Bar */
+      .demo-fill-bar {
+        background: var(--brass-wash);
+        border: 1px dashed rgba(198, 151, 73, 0.45);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .demo-fill-label {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--navy-800);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .demo-fill-btns {
+        display: flex;
+        gap: 6px;
+      }
+
+      .btn-demo-quick {
+        background: #FFFFFF;
+        border: 1px solid rgba(198, 151, 73, 0.35);
+        border-radius: 8px;
+        padding: 4px 9px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy-900);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-demo-quick:hover {
+        background: var(--navy-900);
+        color: #FFFFFF;
+        border-color: var(--navy-900);
+      }
+
+      /* 6-Box Cryptographic Token Entry Grid */
+      .pin-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .pin-label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .pin-label {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-2);
+      }
+
+      .pin-security-hint {
+        font-family: var(--mono-val);
+        font-size: 10px;
+        color: var(--ink-3);
+      }
+
+      .pin-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+      }
+
+      .pin-box {
+        width: 100%;
+        height: 56px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.85);
+        text-align: center;
+        font-family: var(--mono-val);
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--navy-900);
+        outline: none;
+        transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        caret-color: var(--brass);
+      }
+
+      .pin-box:hover {
+        border-color: var(--navy-700);
+      }
+
+      .pin-box:focus {
+        border-color: var(--navy-900);
+        box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+        background: #FFFFFF;
+      }
+
+      .pin-box.filled {
+        background: var(--canvas);
+        border-color: var(--brass-600);
+      }
+
+      .pin-box.error {
+        border-color: var(--error);
+        background: var(--error-light);
+        color: var(--error);
+      }
+
+      .pin-error-msg {
+        font-size: 11.5px;
+        color: var(--error);
+        display: none;
+        margin-top: 6px;
+        font-weight: 500;
+      }
+
+      /* Cooldown Timer & Resend Strip */
+      .resend-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-block: 0.75rem 1.5rem;
+        font-size: 12.5px;
+        color: var(--ink-3);
+      }
+
+      .timer-display {
+        font-family: var(--mono-val);
+        font-weight: 600;
+        color: var(--navy-900);
+      }
+
+      .btn-resend-link {
+        background: none;
+        border: none;
+        color: var(--brass-600);
+        font-family: var(--sans-ui);
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.15s ease;
+      }
+
+      .btn-resend-link:hover:not(:disabled) {
+        color: var(--navy-900);
+      }
+
+      .btn-resend-link:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        text-decoration: none;
+      }
+
+      /* Primary Verification Action Button */
+      .btn-submit-verify {
+        height: 46px;
+        width: 100%;
+        background: var(--navy-800);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 1px 2px rgba(19, 29, 54, 0.08);
+      }
+
+      .btn-submit-verify:hover {
+        background: var(--navy-900);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px -2px rgba(19, 29, 54, 0.22);
+      }
+
+      .btn-submit-verify:active {
+        transform: translateY(0);
+      }
+
+      .btn-submit-verify.loading {
+        opacity: 0.85;
+        pointer-events: none;
+      }
+
+      .btn-spinner {
+        display: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #FFFFFF;
+        border-radius: 9999px;
+        animation: spin 0.7s linear infinite;
+      }
+
+      .btn-submit-verify.loading .btn-spinner {
+        display: inline-block;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Card Sub-Navigation & Trust Footers */
+      .auth-help-prompt {
+        margin-top: 1.5rem;
+        padding-top: 1.15rem;
+        border-top: 1px solid var(--line);
+        text-align: center;
+        font-size: 13px;
+        color: var(--ink-2);
+      }
+
+      .auth-help-prompt a {
+        color: var(--brass-600);
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .auth-help-prompt a:hover {
+        color: var(--navy-900);
+        text-decoration: underline;
+      }
+
+      .auth-card-footer {
+        margin-top: 1.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 11.5px;
+        color: var(--ink-3);
+        text-align: center;
+      }
+
+      .auth-card-footer svg {
+        color: var(--sage);
+        flex-shrink: 0;
+      }
+
+      /* Notification Toast */
+      .auth-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--navy-950);
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 8px 24px -6px var(--line-2);
+        z-index: 1000;
+        font-size: 13.5px;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+
+      .auth-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast-icon {
+        color: var(--brass);
+      }
+
+      /* Responsive Breakpoints */
+      @media (max-width: 960px) {
+        .auth-brand-pane {
+          display: none;
+        }
+
+        .auth-form-pane {
+          padding: 1.5rem 1rem;
+        }
+
+        .auth-card {
+          padding: 1.5rem 1.125rem;
+        }
+      }
+
+      @media (max-width: 580px) {
+        .auth-form-pane {
+          padding: 1rem 0.75rem;
+        }
+
+        .auth-card {
+          padding: 1.35rem 1rem;
+        }
+
+        .auth-card-title {
+          font-size: 22px;
+        }
+
+        .pin-grid {
+          gap: 6px;
+        }
+
+        .pin-box {
+          height: 48px;
+          font-size: 20px;
+        }
+
+        .demo-fill-bar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+        }
+
+        .demo-fill-btns {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+        }
+
+        .btn-demo-quick {
+          text-align: center;
+          padding: 6px 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-layout">
+      <!-- Left Pane: Architectural Scrim & Institutional Credentials (50%) -->
+      <div class="auth-brand-pane">
+        <div class="auth-brand-bg">
+          <img
+            src="../../../../../Images/web/2.jpg"
+            alt="Settly Prime Egyptian Architecture"
+          />
+        </div>
+        <div class="auth-brand-scrim"></div>
+
+        <div class="auth-brand-content">
+          <!-- Top Link -->
+          <div class="auth-top-nav">
+            <a href="../public/index.html" class="brand-link-back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Return to Public Exchange</span>
+            </a>
+
+            <div class="auth-security-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>TLS 1.3 · DECISION #38 TRUST GATE</span>
+            </div>
+          </div>
+
+          <!-- Editorial Scrim Statement & Boundary Card -->
+          <div class="auth-editorial-block">
+            <div class="editorial-kicker">Fiduciary Signatory Verification</div>
+            <h2 class="editorial-quote">
+              "Every financial commitment requires an authenticated signatory. Securing your sovereign access to Egypt's verified property ledger."
+            </h2>
+
+            <!-- Fiduciary Boundary Disclosure Card -->
+            <div class="fiduciary-boundary-card">
+              <div class="boundary-card-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>Statutory Verification Safeguards (AUTH §6)</span>
+              </div>
+              <ul class="boundary-rules-list">
+                <li class="boundary-rule-item">
+                  <span>V1: Schedule Private Residence Viewing</span>
+                  <span class="rule-badge">Guarded</span>
+                </li>
+                <li class="boundary-rule-item">
+                  <span>O1 / O3: Submit & Counter Legally Binding Offers</span>
+                  <span class="rule-badge">Guarded</span>
+                </li>
+                <li class="boundary-rule-item">
+                  <span>O5 / Y2: Central Bank Statutory Escrow Deposit</span>
+                  <span class="rule-badge">Guarded</span>
+                </li>
+              </ul>
+              <div class="boundary-note">
+                Unverified accounts retain unrestricted rights to browse, search, and save private collections.
+              </div>
+            </div>
+          </div>
+
+          <!-- Telemetry Ribbon Bottom -->
+          <div class="auth-telemetry-ribbon">
+            <div class="pillar-item">
+              <span class="pillar-val">Argon2id</span>
+              <span class="pillar-lbl">Hash Standard</span>
+            </div>
+            <div class="pillar-item">
+              <span class="pillar-val">Zero Phantoms</span>
+              <span class="pillar-lbl">Cadastral Audited</span>
+            </div>
+            <div class="pillar-item">
+              <span class="pillar-val">Law 27/2020</span>
+              <span class="pillar-lbl">CBE Escrow Rail</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Pane: Verification Console (50%) -->
+      <div class="auth-form-pane">
+        <div class="auth-card">
+          <!-- Card Header -->
+          <div class="auth-card-header">
+            <div class="auth-logo-row">
+              <a href="../public/index.html" class="auth-logo-link">
+                <img
+                  src="../../../../../Images/web/logo.png"
+                  alt="Settly Mark"
+                  class="auth-logo-img"
+                />
+                <span class="auth-logo-text">Settly</span>
+              </a>
+              <span class="auth-security-badge">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>Cryptographic Trust Gate</span>
+              </span>
+            </div>
+
+            <h1 class="auth-card-title">Verify your coordinates</h1>
+            <p class="auth-card-desc">
+              An authorization dispatch with a single-use verification token has been issued to your registered address:
+            </p>
+          </div>
+
+          <!-- Recipient Email Address Pill -->
+          <div class="email-dispatch-card">
+            <div class="dispatch-left">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <span class="dispatch-email-text" id="dispatchEmail">tarek.mansour@diaspora-capital.com</span>
+            </div>
+            <button type="button" class="btn-change-email" onclick="promptChangeEmail()">Change</button>
+          </div>
+
+          <!-- Demo Quick-Fill Bar -->
+          <div class="demo-fill-bar">
+            <span class="demo-fill-label">Test Access:</span>
+            <div class="demo-fill-btns">
+              <button
+                type="button"
+                class="btn-demo-quick"
+                onclick="fillDemoPin('849201')"
+              >
+                Autofill 849-201
+              </button>
+              <button
+                type="button"
+                class="btn-demo-quick"
+                onclick="simulateExpiredToken()"
+              >
+                Simulate Expired
+              </button>
+            </div>
+          </div>
+
+          <!-- 6-Box Cryptographic Token Form -->
+          <form id="verifyForm" onsubmit="handleVerifySubmit(event)">
+            <div class="pin-section">
+              <div class="pin-label-row">
+                <label class="pin-label" for="pin0">SECURITY VERIFICATION CODE</label>
+                <span class="pin-security-hint">6-DIGIT DISPATCH PIN</span>
+              </div>
+
+              <div class="pin-grid" id="pinGrid">
+                <input
+                  type="text"
+                  id="pin0"
+                  class="pin-box"
+                  maxlength="1"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  autocomplete="one-time-code"
+                  oninput="handlePinInput(this, 0)"
+                  onkeydown="handlePinKeydown(event, 0)"
+                  onpaste="handlePinPaste(event)"
+                  required
+                />
+                <input
+                  type="text"
+                  id="pin1"
+                  class="pin-box"
+                  maxlength="1"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="handlePinInput(this, 1)"
+                  onkeydown="handlePinKeydown(event, 1)"
+                  required
+                />
+                <input
+                  type="text"
+                  id="pin2"
+                  class="pin-box"
+                  maxlength="1"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="handlePinInput(this, 2)"
+                  onkeydown="handlePinKeydown(event, 2)"
+                  required
+                />
+                <input
+                  type="text"
+                  id="pin3"
+                  class="pin-box"
+                  maxlength="1"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="handlePinInput(this, 3)"
+                  onkeydown="handlePinKeydown(event, 3)"
+                  required
+                />
+                <input
+                  type="text"
+                  id="pin4"
+                  class="pin-box"
+                  maxlength="1"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="handlePinInput(this, 4)"
+                  onkeydown="handlePinKeydown(event, 4)"
+                  required
+                />
+                <input
+                  type="text"
+                  id="pin5"
+                  class="pin-box"
+                  maxlength="1"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  oninput="handlePinInput(this, 5)"
+                  onkeydown="handlePinKeydown(event, 5)"
+                  required
+                />
+              </div>
+
+              <span class="pin-error-msg" id="pinError">Invalid or expired cryptographic token. Please check code or request dispatch re-issuance.</span>
+            </div>
+
+            <!-- Resend Strip & Cooldown Countdown -->
+            <div class="resend-strip">
+              <span>Didn't receive code?</span>
+              <span id="cooldownWrap">
+                Resend in <span class="timer-display" id="timerCount">45s</span>
+              </span>
+              <button
+                type="button"
+                id="btnResend"
+                class="btn-resend-link"
+                style="display: none;"
+                onclick="handleResendCode()"
+              >
+                Resend authorization dispatch →
+              </button>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit-verify" id="btnSubmit">
+              <span class="btn-spinner"></span>
+              <span id="btnText">Confirm Authorization & Enter Portal →</span>
+            </button>
+          </form>
+
+          <!-- Navigation & Fiduciary Help Prompt -->
+          <div class="auth-help-prompt">
+            Wrong identity or need different credentials?
+            <a href="login.html">Sign in with different account →</a>
+          </div>
+
+          <!-- Escrow Trust Footer -->
+          <div class="auth-card-footer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Central Bank of Egypt Law 27/2020 Statutory Protection</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Toast Notification -->
+    <div class="auth-toast" id="authToast">
+      <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span id="toastMsg">Authorization verified.</span>
+    </div>
+
+    <script>
+      /* ==========================================================================
+         EMAIL VERIFICATION CONTROLLER (AUTH.md DECISION #38)
+         ========================================================================== */
+      let currentRole = 'buyer';
+      let currentEmail = 'tarek.mansour@diaspora-capital.com';
+      let cooldownSeconds = 45;
+      let cooldownInterval = null;
+
+      // Extract query parameters from registration/login redirect
+      window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const emailParam = params.get('email');
+        const roleParam = params.get('role');
+
+        if (emailParam) {
+          currentEmail = emailParam;
+        }
+        if (roleParam) {
+          currentRole = roleParam;
+        }
+
+        const emailEl = document.getElementById('dispatchEmail');
+        if (emailEl) {
+          emailEl.textContent = currentEmail;
+        }
+
+        startCooldown();
+        document.getElementById('pin0').focus();
+      });
+
+      // Pin Input Navigation Logic
+      function handlePinInput(el, index) {
+        // Enforce single digit numeric value
+        el.value = el.value.replace(/[^0-9]/g, '');
+
+        if (el.value.length > 0) {
+          el.classList.add('filled');
+          el.classList.remove('error');
+          document.getElementById('pinError').style.display = 'none';
+
+          if (index < 5) {
+            document.getElementById('pin' + (index + 1)).focus();
+          }
+        } else {
+          el.classList.remove('filled');
+        }
+
+        // Check if all 6 boxes are completed
+        checkAutoSubmit();
+      }
+
+      function handlePinKeydown(e, index) {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          const prev = document.getElementById('pin' + (index - 1));
+          if (prev) {
+            prev.focus();
+            prev.value = '';
+            prev.classList.remove('filled');
+          }
+        } else if (e.key === 'ArrowLeft' && index > 0) {
+          document.getElementById('pin' + (index - 1)).focus();
+        } else if (e.key === 'ArrowRight' && index < 5) {
+          document.getElementById('pin' + (index + 1)).focus();
+        }
+      }
+
+      function handlePinPaste(e) {
+        e.preventDefault();
+        const clipboardData = (e.clipboardData || window.clipboardData).getData('text');
+        const digits = clipboardData.replace(/[^0-9]/g, '').slice(0, 6);
+
+        if (!digits) return;
+
+        for (let i = 0; i < 6; i++) {
+          const box = document.getElementById('pin' + i);
+          if (box) {
+            if (i < digits.length) {
+              box.value = digits[i];
+              box.classList.add('filled');
+              box.classList.remove('error');
+            } else {
+              box.value = '';
+              box.classList.remove('filled');
+            }
+          }
+        }
+
+        document.getElementById('pinError').style.display = 'none';
+        const targetIndex = Math.min(digits.length, 5);
+        document.getElementById('pin' + targetIndex).focus();
+        checkAutoSubmit();
+      }
+
+      function checkAutoSubmit() {
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += document.getElementById('pin' + i).value;
+        }
+        if (code.length === 6) {
+          // Subtle delay for visual feedback before auto-submitting
+          setTimeout(() => {
+            document.getElementById('verifyForm').dispatchEvent(new Event('submit'));
+          }, 200);
+        }
+      }
+
+      // Demo Helpers
+      function fillDemoPin(code) {
+        for (let i = 0; i < 6; i++) {
+          const box = document.getElementById('pin' + i);
+          box.value = code[i] || '';
+          box.classList.add('filled');
+          box.classList.remove('error');
+        }
+        document.getElementById('pinError').style.display = 'none';
+        showToast('Valid demo token (849-201) injected.');
+      }
+
+      function simulateExpiredToken() {
+        for (let i = 0; i < 6; i++) {
+          const box = document.getElementById('pin' + i);
+          box.value = '0';
+          box.classList.add('filled');
+          box.classList.add('error');
+        }
+        const err = document.getElementById('pinError');
+        err.textContent = 'Cryptographic token expired (TTL exceeded 15 mins). Please request a re-dispatch.';
+        err.style.display = 'block';
+        showToast('Simulated expired token test.');
+      }
+
+      function promptChangeEmail() {
+        const newMail = prompt('Enter authorized email address:', currentEmail);
+        if (newMail && newMail.includes('@') && newMail.includes('.')) {
+          currentEmail = newMail.trim();
+          document.getElementById('dispatchEmail').textContent = currentEmail;
+          showToast('Updated coordinates. New token dispatched.');
+          cooldownSeconds = 45;
+          startCooldown();
+        }
+      }
+
+      // Cooldown Timer
+      function startCooldown() {
+        const wrap = document.getElementById('cooldownWrap');
+        const count = document.getElementById('timerCount');
+        const btn = document.getElementById('btnResend');
+
+        wrap.style.display = 'inline';
+        btn.style.display = 'none';
+        count.textContent = cooldownSeconds + 's';
+
+        if (cooldownInterval) clearInterval(cooldownInterval);
+
+        cooldownInterval = setInterval(() => {
+          cooldownSeconds--;
+          count.textContent = cooldownSeconds + 's';
+          if (cooldownSeconds <= 0) {
+            clearInterval(cooldownInterval);
+            wrap.style.display = 'none';
+            btn.style.display = 'inline';
+          }
+        }, 1000);
+      }
+
+      function handleResendCode() {
+        cooldownSeconds = 45;
+        startCooldown();
+        showToast('Fresh authorization dispatch transmitted to ' + currentEmail);
+      }
+
+      // Form Submission & Fiduciary Verification Handshake
+      function handleVerifySubmit(e) {
+        e.preventDefault();
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += document.getElementById('pin' + i).value;
+        }
+
+        const err = document.getElementById('pinError');
+
+        if (code.length < 6) {
+          err.textContent = 'Please enter the complete 6-digit verification code.';
+          err.style.display = 'block';
+          return;
+        }
+
+        // Simulating invalid code check (anything starting with 000 is rejected)
+        if (code === '000000') {
+          err.textContent = 'Cryptographic signature mismatch. Please re-enter or request new code.';
+          err.style.display = 'block';
+          for (let i = 0; i < 6; i++) {
+            document.getElementById('pin' + i).classList.add('error');
+          }
+          return;
+        }
+
+        err.style.display = 'none';
+
+        const btn = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        btn.classList.add('loading');
+        btnText.textContent = 'Validating Cryptographic Key...';
+
+        setTimeout(() => {
+          btn.classList.remove('loading');
+          btnText.textContent = 'Signatory Authenticated';
+          showToast('Fiduciary status confirmed. Unlocking verified terminal...');
+
+          setTimeout(() => {
+            if (currentRole === 'agent') {
+              window.location.href = '../agent-dashboard/overview.html?verified=true';
+            } else {
+              window.location.href = '../buyer-dashboard/overview.html?verified=true';
+            }
+          }, 1100);
+        }, 800);
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById('authToast');
+        const toastMsg = document.getElementById('toastMsg');
+        toastMsg.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3200);
+      }
+    </script>
+  </body>
+</html>

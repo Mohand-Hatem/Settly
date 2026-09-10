@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign In — Settly Private Client & Advisor Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================================
+         SETTLY — SCREEN 10: AUTH LOGIN (PRIVATE CLIENT & ADVISOR ACCESS PORTAL)
+         Strictly adheres to /impeccable standards:
+         - Deep Navy (#131D36, #1E2A4A, #0B111F), Settly Brass (#C69749), Bone Canvas (#F7F6F3), Sage (#3D5A4C)
+         - Spectral Serif for luxury broadsheet typography; JetBrains Mono for measured values
+         - Single elevation declaration (hairline border OR subtle shadow, never colored halos)
+         - Zero kickers, zero gradient text, zero nested cards
+         ========================================================================= */
+
+      :root {
+        --serif-head: "Spectral", Georgia, serif;
+        --sans-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+        --mono-val: "JetBrains Mono", ui-monospace, monospace;
+
+        --navy-950: #0B111F;
+        --navy-900: #131D36;
+        --navy-800: #1E2A4A;
+        --navy-700: #2B3A61;
+        --navy-600: #3D4E7A;
+        --brass: #C69749;
+        --brass-600: #AE8033;
+        --brass-200: #E7D3AB;
+        --brass-050: #F6EEDE;
+        --canvas: #F7F6F3;
+        --canvas-2: #EDE9DF;
+        --ink-1: #16203A;
+        --ink-2: #4C5878;
+        --ink-3: #646D88;
+        --line: rgba(30, 42, 74, 0.1);
+        --line-2: rgba(30, 42, 74, 0.18);
+        --sage: #3D5A4C;
+        --sage-bg: #EAF0EC;
+        --error: #991B1B;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--navy-900);
+        font-family: var(--sans-ui);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        overflow-x: hidden;
+      }
+
+      ::selection {
+        background: var(--brass-200);
+        color: var(--navy-950);
+      }
+
+      /* Split Layout Container */
+      .auth-layout {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* Left Pane: Architectural Scrim & Sovereign Telemetry (Desktop 50%) */
+      .auth-brand-pane {
+        flex: 1;
+        position: relative;
+        background: var(--navy-950);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: clamp(2.5rem, 5vw, 4.5rem);
+        overflow: hidden;
+        color: #FFFFFF;
+      }
+
+      .auth-brand-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+      }
+
+      .auth-brand-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.38;
+        filter: saturate(0.85);
+      }
+
+      .auth-brand-scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(
+          145deg,
+          rgba(11, 17, 31, 0.95) 0%,
+          rgba(19, 29, 54, 0.88) 55%,
+          rgba(30, 42, 74, 0.82) 100%
+        );
+      }
+
+      .auth-brand-content {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+        max-width: 580px;
+      }
+
+      .auth-top-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand-link-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: color 0.15s ease;
+      }
+
+      .brand-link-back:hover {
+        color: var(--brass-200);
+      }
+
+      .auth-brand-quote {
+        margin-block: auto;
+        padding-block: 3rem;
+      }
+
+      .auth-quote-tag {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--brass);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .auth-quote-tag::before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 1px;
+        background: var(--brass);
+      }
+
+      .auth-quote-text {
+        font-family: var(--serif-head);
+        font-size: clamp(24px, 2.6vw, 34px);
+        font-weight: 600;
+        line-height: 1.35;
+        letter-spacing: -0.012em;
+        color: #FFFFFF;
+        margin: 0 0 1.5rem 0;
+      }
+
+      .auth-quote-caption {
+        font-size: 14.5px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.72);
+        max-width: 480px;
+      }
+
+      .auth-pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .pillar-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .pillar-val {
+        font-family: var(--mono-val);
+        font-size: 14px;
+        font-weight: 700;
+        color: #FFFFFF;
+      }
+
+      .pillar-lbl {
+        font-family: var(--mono-val);
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: rgba(255, 255, 255, 0.55);
+      }
+
+      /* Right Pane: Fiduciary Access Form (Desktop 50%) */
+      .auth-form-pane {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(1.5rem, 4vw, 4rem);
+        background: var(--canvas);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 460px;
+        min-width: 0;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: clamp(1.5rem, 3.5vw, 2.5rem);
+        box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 12px 28px -12px var(--line-2);
+      }
+
+      .auth-card-header {
+        margin-bottom: 2rem;
+      }
+
+      .auth-logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.75rem;
+      }
+
+      .auth-logo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--navy-900);
+      }
+
+      .auth-logo-img {
+        height: 32px;
+        width: auto;
+        object-fit: contain;
+      }
+
+      .auth-logo-text {
+        font-family: var(--sans-ui);
+        font-weight: 800;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+        color: var(--navy-900);
+      }
+
+      .auth-security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: var(--sage-bg);
+        border-radius: 8px;
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--sage);
+        letter-spacing: 0.03em;
+      }
+
+      .auth-card-title {
+        font-family: var(--serif-head);
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.25;
+        letter-spacing: -0.012em;
+        color: var(--navy-950);
+        margin: 0 0 0.5rem 0;
+      }
+
+      .auth-card-desc {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+        margin: 0;
+      }
+
+      /* Role Selector Tabs */
+      .role-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--canvas);
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        margin-bottom: 1.75rem;
+        position: relative;
+      }
+
+      .role-tab-btn {
+        padding: 9px 12px;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-2);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .role-tab-btn:hover {
+        color: var(--navy-900);
+      }
+
+      .role-tab-btn.active {
+        background: #FFFFFF;
+        color: var(--navy-950);
+        box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+      }
+
+      /* Demo Quick-Fill Ribbon */
+      .demo-fill-bar {
+        background: var(--canvas-2);
+        border: 1px dashed var(--line-2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .demo-fill-label {
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-2);
+      }
+
+      .btn-demo-quick {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy-800);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-demo-quick:hover {
+        background: var(--brass-050);
+        border-color: var(--brass);
+        color: var(--brass-600);
+      }
+
+      .demo-fill-btns {
+        display: flex;
+        gap: 6px;
+      }
+
+      .badge-txt-short,
+      .role-txt-short,
+      .lbl-txt-short,
+      .forgot-txt-short,
+      .sso-txt-short {
+        display: none;
+      }
+
+      /* Form Fields */
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .form-label {
+        font-family: var(--mono-val);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-1);
+      }
+
+      .form-link-forgot {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--brass-600);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .form-link-forgot:hover {
+        color: var(--navy-900);
+        text-decoration: underline;
+      }
+
+      .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .form-input {
+        width: 100%;
+        height: 44px;
+        padding: 0 14px;
+        background: #FFFFFF;
+        border: 1px solid rgba(30, 42, 74, 0.18);
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 14px;
+        color: var(--navy-950);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        outline: none;
+      }
+
+      .form-input::placeholder {
+        color: var(--ink-3);
+      }
+
+      .form-input:focus {
+        border-color: var(--navy-800);
+        box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.09);
+      }
+
+      .input-with-action {
+        padding-right: 44px;
+      }
+
+      .btn-input-eye {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 44px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink-3);
+        transition: color 0.15s ease;
+      }
+
+      .btn-input-eye:hover {
+        color: var(--navy-900);
+      }
+
+      .field-error-msg {
+        font-size: 12px;
+        color: var(--error);
+        display: none;
+        margin-top: 2px;
+      }
+
+      .form-check-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: -2px;
+      }
+
+      .custom-checkbox {
+        width: 16px;
+        height: 16px;
+        border: 1px solid var(--line-2);
+        accent-color: var(--navy-800);
+        cursor: pointer;
+      }
+
+      .checkbox-label {
+        font-size: 13px;
+        color: var(--ink-2);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      /* Submit Button */
+      .btn-auth-submit {
+        height: 46px;
+        width: 100%;
+        background: var(--navy-900);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 8px;
+        font-family: var(--sans-ui);
+        font-size: 14.5px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.15s ease, transform 0.15s ease;
+        margin-top: 0.5rem;
+      }
+
+      .btn-auth-submit:hover {
+        background: var(--navy-800);
+        transform: translateY(-1px);
+      }
+
+      .btn-auth-submit:active {
+        transform: translateY(0);
+      }
+
+      .btn-auth-submit.loading {
+        opacity: 0.85;
+        pointer-events: none;
+      }
+
+      /* SSO Divider */
+      .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-block: 1.5rem 1.25rem;
+        font-family: var(--mono-val);
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-3);
+      }
+
+      .auth-divider::before,
+      .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+
+      /* SSO Button */
+      .btn-sso {
+        height: 44px;
+        width: 100%;
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--navy-900);
+        font-family: var(--sans-ui);
+        font-size: 13.5px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-sso:hover {
+        border-color: var(--navy-700);
+        background: var(--canvas);
+      }
+
+      /* Register Prompt */
+      .auth-register-prompt {
+        margin-top: 1.75rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+        text-align: center;
+        font-size: 13.5px;
+        color: var(--ink-2);
+      }
+
+      .auth-register-prompt a {
+        color: var(--brass-600);
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .auth-register-prompt a:hover {
+        color: var(--navy-900);
+        text-decoration: underline;
+      }
+
+      /* Legal & Escrow Sub-Footer */
+      .auth-card-footer {
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 11.5px;
+        color: var(--ink-3);
+        text-align: center;
+      }
+
+      .auth-card-footer svg {
+        color: var(--sage);
+        flex-shrink: 0;
+      }
+
+      /* Simulation Toast */
+      .auth-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--navy-950);
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 8px 24px -6px var(--line-2);
+        z-index: 1000;
+        font-size: 13.5px;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+
+      .auth-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast-icon {
+        color: var(--brass);
+      }
+
+      /* Responsive Collapse (<960px) */
+      @media (max-width: 960px) {
+        .auth-brand-pane {
+          display: none;
+        }
+
+        .auth-form-pane {
+          padding: 1.5rem 1rem;
+        }
+
+        .auth-card {
+          padding: 1.5rem 1.125rem;
+        }
+      }
+
+      @media (max-width: 580px) {
+        .auth-form-pane {
+          padding: 1rem 0.75rem;
+        }
+
+        .auth-card {
+          padding: 1.35rem 1rem;
+        }
+
+        .auth-card-title {
+          font-size: 23px;
+        }
+
+        .auth-security-badge {
+          padding: 3px 7px;
+          font-size: 10px;
+        }
+
+        .role-tab-btn {
+          padding: 8px 4px;
+          font-size: 12px;
+          gap: 4px;
+        }
+
+        .demo-fill-bar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+        }
+
+        .demo-fill-btns {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+        }
+
+        .btn-demo-quick {
+          text-align: center;
+          padding: 6px 4px;
+        }
+
+        .badge-txt-long,
+        .role-txt-long,
+        .lbl-txt-long,
+        .forgot-txt-long,
+        .sso-txt-long {
+          display: none;
+        }
+
+        .badge-txt-short,
+        .role-txt-short,
+        .lbl-txt-short,
+        .forgot-txt-short,
+        .sso-txt-short {
+          display: inline;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-layout">
+      <!-- Left Pane: Architectural Scrim & Institutional Credentials (50%) -->
+      <div class="auth-brand-pane">
+        <div class="auth-brand-bg">
+          <img
+            src="../../../../../Images/web/hero.jpg"
+            alt="Settly Luxury Architecture"
+          />
+        </div>
+        <div class="auth-brand-scrim"></div>
+
+        <div class="auth-brand-content">
+          <!-- Top Link -->
+          <div class="auth-top-nav">
+            <a href="../public/index.html" class="brand-link-back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Return to Public Exchange</span>
+            </a>
+
+            <span class="auth-security-badge" style="background: rgba(61, 90, 76, 0.35); color: #FFFFFF; border: 1px solid rgba(61, 90, 76, 0.5);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              TLS 1.3 256-BIT
+            </span>
+          </div>
+
+          <!-- Central Broadsheet Quote -->
+          <div class="auth-brand-quote">
+            <div class="auth-quote-tag">Sovereign Fiduciary Standard</div>
+            <h2 class="auth-quote-text">
+              "Every negotiation verified. Every title deed cadastral-audited. Every deposit held under Central Bank of Egypt statutory escrow."
+            </h2>
+            <p class="auth-quote-caption">
+              Settly provides institutional family offices, foreign investors, and accredited advisors with a verified acquisition terminal for Egypt's prime real estate.
+            </p>
+          </div>
+
+          <!-- Bottom Telemetry Ribbon -->
+          <div class="auth-pillars-grid">
+            <div class="pillar-item">
+              <span class="pillar-val">EGP 14.8B</span>
+              <span class="pillar-lbl">Audited Volume</span>
+            </div>
+            <div class="pillar-item">
+              <span class="pillar-val">Law 27/2020</span>
+              <span class="pillar-lbl">CBE Escrow Rail</span>
+            </div>
+            <div class="pillar-item">
+              <span class="pillar-val">100% FRA</span>
+              <span class="pillar-lbl">Licensed Brokers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Pane: Fiduciary Access Form (50%) -->
+      <div class="auth-form-pane">
+        <div class="auth-card">
+          <!-- Card Header -->
+          <div class="auth-card-header">
+            <div class="auth-logo-row">
+              <a href="../public/index.html" class="auth-logo-link">
+                <img
+                  src="../../../../../Images/web/logo.png"
+                  alt="Settly Mark"
+                  class="auth-logo-img"
+                />
+                <span class="auth-logo-text">Settly</span>
+              </a>
+              <span class="auth-security-badge">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="badge-txt-long">Verified Portal</span>
+                <span class="badge-txt-short">Verified</span>
+              </span>
+            </div>
+
+            <h1 class="auth-card-title">Sign in to your account</h1>
+            <p class="auth-card-desc">
+              Enter your authorized credentials to access confidential negotiations, active portfolios, and reservation escrows.
+            </p>
+          </div>
+
+          <!-- Role Selector Tabs -->
+          <div class="role-tabs" role="tablist" aria-label="Portal Access Role">
+            <button
+              type="button"
+              class="role-tab-btn active"
+              id="tabBuyer"
+              role="tab"
+              aria-selected="true"
+              onclick="setAuthRole('buyer')"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span class="role-txt-long">Private Client</span>
+              <span class="role-txt-short">Buyer</span>
+            </button>
+            <button
+              type="button"
+              class="role-tab-btn"
+              id="tabAgent"
+              role="tab"
+              aria-selected="false"
+              onclick="setAuthRole('agent')"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              <span class="role-txt-long">Certified Advisor</span>
+              <span class="role-txt-short">Advisor</span>
+            </button>
+          </div>
+
+          <!-- Quick-Fill Demo Bar -->
+          <div class="demo-fill-bar">
+            <span class="demo-fill-label">Test Access:</span>
+            <div class="demo-fill-btns">
+              <button
+                type="button"
+                class="btn-demo-quick"
+                onclick="fillDemoCredentials('tarek.mansour@diaspora-capital.com', 'ClientSecret#2026', 'buyer')"
+                title="Fill Buyer credentials"
+              >
+                Buyer Demo
+              </button>
+              <button
+                type="button"
+                class="btn-demo-quick"
+                onclick="fillDemoCredentials('karim.sayed@settly-advisors.eg', 'AdvisorSecret#2026', 'agent')"
+                title="Fill Advisor credentials"
+              >
+                Advisor Demo
+              </button>
+            </div>
+          </div>
+
+          <!-- Login Form -->
+          <form class="auth-form" id="loginForm" onsubmit="handleLoginSubmit(event)" novalidate>
+            <!-- Email -->
+            <div class="form-group">
+              <label for="emailInput" class="form-label" id="emailLabel">PORTAL EMAIL ADDRESS</label>
+              <div class="input-wrapper">
+                <input
+                  type="email"
+                  id="emailInput"
+                  class="form-input"
+                  placeholder="name@institution.com"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+              <span class="field-error-msg" id="emailError">Please enter a valid authorized email address.</span>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="passwordInput" class="form-label">
+                  <span class="lbl-txt-long">SECURITY CREDENTIAL</span>
+                  <span class="lbl-txt-short">CREDENTIAL</span>
+                </label>
+                <a href="forgot-password.html" class="form-link-forgot">
+                  <span class="forgot-txt-long">Forgot credential?</span>
+                  <span class="forgot-txt-short">Forgot?</span>
+                </a>
+              </div>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="passwordInput"
+                  class="form-input input-with-action"
+                  placeholder="••••••••••••"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="btn-input-eye"
+                  id="togglePasswordBtn"
+                  onclick="togglePasswordVisibility()"
+                  aria-label="Toggle password visibility"
+                >
+                  <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <span class="field-error-msg" id="passwordError">Please enter your portal password (minimum 8 characters).</span>
+            </div>
+
+            <!-- Remember Device -->
+            <div class="form-check-row">
+              <input type="checkbox" id="rememberDevice" class="custom-checkbox" checked />
+              <label for="rememberDevice" class="checkbox-label">
+                Remember this authorized device (30-day session cap)
+              </label>
+            </div>
+
+            <!-- Submit CTA -->
+            <button type="submit" class="btn-auth-submit" id="btnSubmit">
+              <span id="btnText">Enter Secure Portal</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="auth-divider">OR ACCESS VIA ENTERPRISE SSO</div>
+
+          <!-- SSO Google Button -->
+          <button type="button" class="btn-sso" onclick="handleSsoClick('Google Workspace')">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              />
+            </svg>
+            <span class="sso-txt-long">Continue with Google Corporate SSO</span>
+            <span class="sso-txt-short">Continue with Google SSO</span>
+          </button>
+
+          <!-- Register Prompt -->
+          <div class="auth-register-prompt">
+            <span>New to Settly? </span>
+            <a href="register.html">Create your confidential account →</a>
+          </div>
+
+          <!-- Escrow & Security Trustline -->
+          <div class="auth-card-footer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Central Bank of Egypt Law 27/2020 Escrow Protected</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div class="auth-toast" id="authToast">
+      <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span id="toastMsg">Authentication handshake complete.</span>
+    </div>
+
+    <script>
+      /* ==========================================================================
+         AUTH CLIENT CONTROLLER
+         ========================================================================== */
+      let currentRole = 'buyer';
+
+      function setAuthRole(role) {
+        currentRole = role;
+        const tabBuyer = document.getElementById('tabBuyer');
+        const tabAgent = document.getElementById('tabAgent');
+        const emailLabel = document.getElementById('emailLabel');
+        const emailInput = document.getElementById('emailInput');
+
+        if (role === 'buyer') {
+          tabBuyer.classList.add('active');
+          tabBuyer.setAttribute('aria-selected', 'true');
+          tabAgent.classList.remove('active');
+          tabAgent.setAttribute('aria-selected', 'false');
+          emailLabel.textContent = 'PORTAL EMAIL ADDRESS';
+          emailInput.placeholder = 'tarek@diaspora-capital.com';
+        } else {
+          tabAgent.classList.add('active');
+          tabAgent.setAttribute('aria-selected', 'true');
+          tabBuyer.classList.remove('active');
+          tabBuyer.setAttribute('aria-selected', 'false');
+          emailLabel.textContent = 'LICENSED ADVISOR EMAIL';
+          emailInput.placeholder = 'karim.sayed@settly-advisors.eg';
+        }
+      }
+
+      function fillDemoCredentials(email, password, role) {
+        setAuthRole(role);
+        document.getElementById('emailInput').value = email;
+        document.getElementById('passwordInput').value = password;
+        clearErrors();
+        showToast('Demo ' + (role === 'buyer' ? 'Buyer' : 'Advisor') + ' credentials populated.');
+      }
+
+      function togglePasswordVisibility() {
+        const passInput = document.getElementById('passwordInput');
+        const eyeIcon = document.getElementById('eyeIcon');
+        if (passInput.type === 'password') {
+          passInput.type = 'text';
+          eyeIcon.innerHTML = `
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          `;
+        } else {
+          passInput.type = 'password';
+          eyeIcon.innerHTML = `
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          `;
+        }
+      }
+
+      function clearErrors() {
+        document.getElementById('emailError').style.display = 'none';
+        document.getElementById('passwordError').style.display = 'none';
+        document.getElementById('emailInput').style.borderColor = '';
+        document.getElementById('passwordInput').style.borderColor = '';
+      }
+
+      function handleLoginSubmit(e) {
+        e.preventDefault();
+        clearErrors();
+
+        const email = document.getElementById('emailInput').value.trim();
+        const password = document.getElementById('passwordInput').value;
+        let valid = true;
+
+        if (!email || !email.includes('@') || !email.includes('.')) {
+          document.getElementById('emailError').style.display = 'block';
+          document.getElementById('emailInput').style.borderColor = 'var(--error)';
+          valid = false;
+        }
+
+        if (!password || password.length < 6) {
+          document.getElementById('passwordError').style.display = 'block';
+          document.getElementById('passwordInput').style.borderColor = 'var(--error)';
+          valid = false;
+        }
+
+        if (!valid) return;
+
+        // Simulate Authenticated Argon2id handshake
+        const btn = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        btn.classList.add('loading');
+        btnText.textContent = 'Authenticating TLS Handshake...';
+
+        setTimeout(() => {
+          btn.classList.remove('loading');
+          btnText.textContent = 'Handshake Verified';
+
+          if (currentRole === 'buyer') {
+            showToast('Welcome, Tarek. Routing to Private Buyer Portal...');
+            setTimeout(() => {
+              window.location.href = '../buyer-dashboard/overview.html';
+            }, 1000);
+          } else {
+            showToast('Welcome, Advisor Karim. Routing to Broker Desk...');
+            setTimeout(() => {
+              window.location.href = '../agent-dashboard/overview.html';
+            }, 1000);
+          }
+        }, 850);
+      }
+
+      function handleSsoClick(provider) {
+        showToast('Initiating encrypted SSO with ' + provider + '...');
+        setTimeout(() => {
+          showToast('SSO Token authenticated. Entering portal...');
+          setTimeout(() => {
+            window.location.href = currentRole === 'buyer' ? '../buyer-dashboard/overview.html' : '../agent-dashboard/overview.html';
+          }, 900);
+        }, 700);
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById('authToast');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3200);
+      }
+    </script>
+  </body>
+</html>

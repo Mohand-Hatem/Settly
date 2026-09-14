@@ -18,6 +18,10 @@ jobs:
     name: Backend CI (Lint, Typecheck, Boundaries, Healthcheck)
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+      DIRECT_URL: postgresql://settly:settly@localhost:5432/settly
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -42,7 +46,7 @@ jobs:
         run: npm --prefix backend ci
 
       - name: Generate Prisma Client
-        run: npx --prefix backend prisma generate
+        run: npx --prefix backend prisma generate --schema backend/prisma/schema.prisma
 
       - name: ESLint Check
         run: npm --prefix backend run lint
@@ -54,7 +58,7 @@ jobs:
         run: npm --prefix backend run test:boundaries
 
       - name: Apply Database Migrations
-        run: npx --prefix backend prisma migrate deploy
+        run: npx --prefix backend prisma migrate deploy --schema backend/prisma/schema.prisma
         env:
           DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
 

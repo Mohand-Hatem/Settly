@@ -19,8 +19,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      NODE_ENV: test
+      PORT: 4000
       DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
       DIRECT_URL: postgresql://settly:settly@localhost:5432/settly
+      REDIS_URL: redis://localhost:6379
+      BETTER_AUTH_SECRET: ci_test_auth_secret_minimum_32_characters_12345
+      BETTER_AUTH_URL: http://localhost:4000
+      FRONTEND_URL: http://localhost:3000
+      RESEND_API_KEY: re_ci_placeholder
+      CLOUDINARY_CLOUD_NAME: dmzcnnxzp
+      CLOUDINARY_API_KEY: 659475829112882
+      CLOUDINARY_API_SECRET: bZ8jb2AovpZlYgCds6DySzAly0E
 
     steps:
       - name: Checkout Code

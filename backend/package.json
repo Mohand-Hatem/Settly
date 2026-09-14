@@ -6,7 +6,8 @@
   "scripts": {
     "dev:api": "tsx watch src/settly-api.ts",
     "dev:worker": "tsx watch src/settly-worker.ts",
-    "build": "tsc",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && tsc",
     "start:api": "node dist/settly-api.js",
     "start:worker": "node dist/settly-worker.js",
     "lint": "eslint .",

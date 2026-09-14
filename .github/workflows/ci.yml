@@ -41,6 +41,9 @@ jobs:
       - name: Install Dependencies
         run: npm --prefix backend ci
 
+      - name: Generate Prisma Client
+        run: npx --prefix backend prisma generate
+
       - name: ESLint Check
         run: npm --prefix backend run lint
 
@@ -110,6 +113,21 @@ jobs:
           BETTER_AUTH_URL: http://localhost:4004
           FRONTEND_URL: http://localhost:3000
           RESEND_API_KEY: re_ci_placeholder
+
+      - name: Catalog Lifecycle Integration Tests
+        run: npm --prefix backend run test:catalog
+        env:
+          PORT: 4005
+          NODE_ENV: test
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+          REDIS_URL: redis://localhost:6379
+          BETTER_AUTH_SECRET: ci_test_auth_secret_minimum_32_characters_12345
+          BETTER_AUTH_URL: http://localhost:4005
+          FRONTEND_URL: http://localhost:3000
+          RESEND_API_KEY: re_ci_placeholder
+          CLOUDINARY_CLOUD_NAME: dmzcnnxzp
+          CLOUDINARY_API_KEY: 659475829112882
+          CLOUDINARY_API_SECRET: bZ8jb2AovpZlYgCds6DySzAly0E
 
       - name: Security Audit (Critical Only)
         run: npm --prefix backend audit --audit-level=critical

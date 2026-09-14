@@ -1,0 +1,3079 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Searches &amp; Market Radar · Settly Fiduciary Portal</title>
+  <meta name="description" content="Automated sovereign market radar for high-net-worth acquisitions. Monitored corridors, live price drop tracking, instant WhatsApp alerts, and background matching under Invariant I11.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-sm: 8px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+
+      --sidebar-width: 288px;
+      --header-height: 76px;
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: var(--canvas);
+      color: var(--ink);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      background-color: var(--canvas);
+      overflow-x: hidden;
+    }
+
+    /* Custom Selection */
+    ::selection {
+      background-color: var(--brass-200);
+      color: var(--navy-900);
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--canvas-2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--navy-700);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--navy-900);
+    }
+
+    /* Global Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--canvas);
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: var(--header-height);
+    }
+
+    .sidebar-brand {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s ease;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+    }
+
+    /* Mobile Backdrop Overlay */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Official Settly Main Logo Backing Plate */
+    .brand-plate {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.12);
+      flex-shrink: 0;
+    }
+
+    .brand-plate img {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-name {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-top: 2px;
+    }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .nav-group-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 12px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.72);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+    }
+
+    .nav-link.active {
+      background-color: rgba(198, 151, 73, 0.14);
+      color: var(--brass);
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--brass);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .nav-badge.sage {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* Private Advisor Desk Widget */
+    .sidebar-advisor {
+      margin-top: auto;
+      padding: 14px;
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .advisor-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--brass);
+      object-fit: cover;
+    }
+
+    .advisor-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .advisor-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .advisor-meta {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .advisor-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+      display: inline-block;
+    }
+
+    .advisor-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .btn-advisor-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-advisor-whatsapp {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+    }
+
+    .btn-advisor-whatsapp:hover {
+      background-color: rgba(61, 90, 76, 0.2);
+    }
+
+    .btn-advisor-call {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-advisor-call:hover {
+      background-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Main Content Wrapper */
+    .portal-main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Sticky Sovereign Header */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--navy-900);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      color: var(--ink-3);
+    }
+
+    .breadcrumb-sep {
+      color: var(--brass);
+    }
+
+    .breadcrumb-current {
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.15);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .telemetry-ticker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 6px 14px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ticker-live {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+      display: inline-block;
+    }
+
+    .ticker-val {
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .topbar-search-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .topbar-search-btn:hover {
+      border-color: var(--line-2);
+      color: var(--ink);
+    }
+
+    .kbd-shortcut {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      padding: 2px 5px;
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--ink-2);
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 8px;
+      border-left: 1px solid var(--line);
+    }
+
+    .user-avatar-sm {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background-color: var(--navy-800);
+      color: var(--brass);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--brass);
+    }
+
+    .user-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.2;
+    }
+
+    .user-tier {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: var(--brass-600);
+    }
+
+    /* Page Container */
+    .portal-content {
+      padding: 32px;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Command Header */
+    .command-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .command-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 780px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-800);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--navy-900);
+      border-color: var(--brass-600);
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      color: var(--white);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--ink);
+      border-color: var(--line-2);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--canvas);
+      border-color: var(--navy-700);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8125rem;
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    /* Telemetry KPI Metrics Strip */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .telemetry-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      position: relative;
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .telemetry-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .telemetry-icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .telemetry-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .telemetry-value {
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1;
+    }
+
+    .telemetry-unit {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--ink-3);
+    }
+
+    .telemetry-subtext {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Capacity Progress Bar for Invariant I11 */
+    .capacity-bar {
+      height: 6px;
+      background-color: var(--canvas-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 4px;
+      display: flex;
+    }
+
+    .capacity-fill {
+      height: 100%;
+      background-color: var(--brass);
+      border-radius: var(--radius-full);
+      transform-origin: left center;
+    }
+
+    /* Radars Filter Bar */
+    .radars-filter-bar {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .filter-pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .filter-pill:hover {
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+    }
+
+    .filter-pill.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+    }
+
+    .filter-search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      min-width: 240px;
+    }
+
+    .filter-search-input {
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      width: 100%;
+      outline: none;
+    }
+
+    .filter-search-input::placeholder {
+      color: var(--ink-3);
+    }
+
+    /* Radar Cards Grid */
+    .radar-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Individual Radar Control Plate */
+    .radar-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .radar-card:hover {
+      border-color: var(--brass-200);
+      box-shadow: 0 4px 12px rgba(19, 29, 54, 0.06);
+    }
+
+    .radar-card.paused {
+      background-color: #FAFAFA;
+      opacity: 0.78;
+    }
+
+    .radar-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .radar-main-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .radar-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .radar-title {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      text-decoration: none;
+    }
+
+    .radar-title:hover {
+      color: var(--brass-600);
+    }
+
+    .radar-status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.04em;
+    }
+
+    .radar-status-badge.active-status {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+    }
+
+    .radar-status-badge.paused-status {
+      background-color: var(--canvas-2);
+      color: var(--ink-3);
+      border: 1px solid var(--line);
+    }
+
+    .radar-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: currentColor;
+    }
+
+    .radar-corridor {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .radar-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Radar Parameter Pills */
+    .radar-specs-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      background-color: var(--canvas);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .spec-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      color: var(--ink);
+      background-color: var(--white);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .spec-pill-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .spec-pill-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    /* Price reduction alert banner within card */
+    .price-reduction-alert {
+      background-color: var(--brass-050);
+      border: 1px solid var(--brass-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.8125rem;
+      color: var(--ink);
+    }
+
+    .price-reduction-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .price-reduction-bold {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    /* Micro Ribbon of Property Matches */
+    .matches-ribbon-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .matches-ribbon-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+    }
+
+    .matches-count-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .matches-ribbon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    /* Single Matched Property Card (Aspect-Ratio 4 / 4.65 Framed) */
+    .matched-prop-card {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .matched-prop-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(19, 29, 54, 0.08);
+      border-color: var(--brass-200);
+    }
+
+    .prop-card-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background-color: var(--navy-900);
+      overflow: hidden;
+    }
+
+    .prop-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .matched-prop-card:hover .prop-card-img {
+      transform: scale(1.04);
+    }
+
+    .prop-tag-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(19, 29, 54, 0.85);
+      color: var(--white);
+      backdrop-filter: blur(4px);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .prop-tag-badge.badge-drop {
+      background-color: var(--warning);
+      color: var(--white);
+    }
+
+    .prop-card-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background-color: var(--white);
+    }
+
+    .prop-card-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .prop-card-location {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .prop-card-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid var(--line);
+    }
+
+    .prop-card-price {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .prop-card-original-price {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      text-decoration: line-through;
+    }
+
+    .prop-card-specs {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    /* Radar Card Footer Channels & Quick Actions */
+    .radar-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .radar-delivery-settings {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .delivery-channel-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .delivery-active-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--sage);
+    }
+
+    .radar-footer-ctas {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Recent Activity Feed Plate */
+    .activity-feed-section {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feed-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .feed-item {
+      display: flex;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .feed-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .feed-item:first-child {
+      padding-top: 0;
+    }
+
+    .feed-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feed-icon-wrap.price-drop {
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+    }
+
+    .feed-icon-wrap.new-match {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .feed-icon-wrap.frequency {
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+    }
+
+    .feed-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .feed-headline-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feed-headline {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .feed-time {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      white-space: nowrap;
+    }
+
+    .feed-desc {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* Statutory Escrow & Rule Footer */
+    .portal-regulatory-footer {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 12px;
+    }
+
+    .regulatory-text {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 800px;
+    }
+
+    .regulatory-heading {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--brass);
+    }
+
+    .regulatory-body {
+      font-size: 0.8125rem;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.5;
+    }
+
+    .regulatory-cta {
+      flex-shrink: 0;
+    }
+
+    /* Modal Backdrop & Container */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalEnter {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      background-color: var(--canvas-2);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .modal-subtitle {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-modal-close:hover {
+      background-color: rgba(30, 42, 74, 0.08);
+      color: var(--navy-900);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-input, .form-select {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      padding: 10px 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--brass-600);
+      background-color: var(--white);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .channel-checkboxes {
+      display: flex;
+      gap: 16px;
+      padding: 10px 14px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+
+    .channel-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background-color: var(--canvas-2);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-pill {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      animation: toastIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 1200px) {
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .matches-ribbon-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --sidebar-width: 0px;
+        --header-height: 64px;
+      }
+      .portal-sidebar {
+        transform: translateX(-100%);
+        width: 300px;
+        box-shadow: 4px 0 24px rgba(19, 29, 54, 0.35);
+      }
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .sidebar-close-btn {
+        display: flex;
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-nav-toggle {
+        display: inline-flex;
+      }
+      .mobile-brand-mark {
+        display: inline-flex;
+      }
+      .breadcrumbs {
+        display: none;
+      }
+      .portal-trust-chip {
+        display: none;
+      }
+      .topbar-search-btn {
+        display: none;
+      }
+      .user-tier {
+        display: none;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-content {
+        padding: 16px;
+        gap: 20px;
+      }
+      .command-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        padding-bottom: 18px;
+      }
+      .command-title {
+        font-size: 1.625rem;
+        line-height: 1.25;
+      }
+      .command-subtitle {
+        font-size: 0.8125rem;
+        line-height: 1.5;
+      }
+      .command-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .command-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .telemetry-ticker {
+        display: none;
+      }
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .telemetry-card {
+        padding: 14px 12px;
+        gap: 8px;
+      }
+      .telemetry-value {
+        font-size: 1.375rem;
+      }
+      .telemetry-subtext {
+        font-size: 0.6875rem;
+      }
+      .radars-filter-bar {
+        padding: 10px 14px;
+        gap: 10px;
+      }
+      .filter-pills {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .filter-search-box {
+        min-width: 100%;
+      }
+      .radar-card {
+        padding: 16px;
+        gap: 14px;
+      }
+      .radar-title {
+        font-size: 1.125rem;
+      }
+      .radar-top-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .price-reduction-alert {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .matches-ribbon-grid {
+        grid-template-columns: 1fr;
+      }
+      .radar-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .radar-footer-ctas {
+        width: 100%;
+        flex-direction: column;
+      }
+      .radar-footer-ctas .btn {
+        width: 100%;
+      }
+      .portal-regulatory-footer {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 14px;
+      }
+      .regulatory-cta .btn {
+        width: 100%;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Official Settly Main Logo Backing Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">BUYER PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Navigation Section -->
+        <div>
+          <div class="nav-group-label">My Portfolio</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="favorites.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span>Favorites &amp; Collections</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="saved-searches.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <span>Saved Searches</span>
+                <span class="nav-badge urgent">4</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-label">Activity &amp; Offers</div>
+          <ul class="nav-list">
+            <li>
+              <a href="viewings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>My Viewings</span>
+                <span class="nav-badge sage">1</span>
+              </a>
+            </li>
+            <li>
+              <a href="offers.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>My Offers</span>
+                <span class="nav-badge">2</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-label">Account &amp; Documents</div>
+          <ul class="nav-list">
+            <li>
+              <a href="documents.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span>My Documents</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="settings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Account Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Assigned Private Advisor Card -->
+        <div class="sidebar-advisor">
+          <div class="advisor-header">
+            <img src="../../../../../Images/web/phone.jpg" alt="Laila El-Gammal" class="advisor-avatar">
+            <div class="advisor-info">
+              <span class="advisor-name">Laila El-Gammal</span>
+              <span class="advisor-meta">
+                <span class="advisor-status-dot"></span>
+                Senior Property Advisor
+              </span>
+            </div>
+          </div>
+          <div class="advisor-actions">
+            <a href="https://wa.me/201000000000" target="_blank" rel="noopener" class="btn-advisor-action btn-advisor-whatsapp">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>VERIFIED LISTINGS &amp; SECURE DEPOSITS</div>
+        <div>LICENSED INDEPENDENT BROKERS</div>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      
+      <!-- Sticky Sovereign Header -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>PORTAL</span>
+            <span>/</span>
+            <span class="current">SAVED SEARCHES &amp; RADAR</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>ACTIVE RADAR MONITORS</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search All Real Estate (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="View Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="settings.html" class="user-profile-badge" title="Manage Account Profile">
+            <div class="user-avatar-initials">TM</div>
+            <div class="user-meta">
+              <span class="user-name">Tarek Mansour</span>
+              <span class="user-tier">Tier-1 HNWI Verified</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Page Body Content -->
+      <div class="portal-content">
+        
+        <!-- Command Header -->
+        <section class="command-header">
+          <div class="command-title-group">
+            <h1 class="command-title">Saved Searches &amp; Alerts</h1>
+            <p class="command-subtitle">
+              Automated search monitors tracking new listings, price drops, and verified properties across your preferred locations in Egypt.
+            </p>
+          </div>
+          <div class="command-actions">
+            <button class="btn btn-primary" id="btnCreateRadar">
+              <svg class="btn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Create Saved Search</span>
+            </button>
+            <a href="../public/search.html" class="btn btn-outline">
+              <svg class="btn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <span>Explore All (17)</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- Telemetry KPI Metrics Strip -->
+        <section class="telemetry-grid">
+          <!-- KPI 1: Capacity Limit -->
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Saved Searches Limit</span>
+              <div class="telemetry-icon-wrap">
+                <svg class="telemetry-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+            </div>
+            <div class="telemetry-value-row">
+              <span class="telemetry-value" id="capacityVal">4</span>
+              <span class="telemetry-unit">/ 25 Searches</span>
+            </div>
+            <div class="capacity-bar">
+              <div class="capacity-fill" style="width: 16%;"></div>
+            </div>
+            <span class="telemetry-subtext">21 search slots available</span>
+          </div>
+
+          <!-- KPI 2: Total Active Matches -->
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Matching Properties</span>
+              <div class="telemetry-icon-wrap">
+                <svg class="telemetry-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              </div>
+            </div>
+            <div class="telemetry-value-row">
+              <span class="telemetry-value">17</span>
+              <span class="telemetry-unit">Verified Properties</span>
+            </div>
+            <span class="telemetry-subtext">Across your 4 active saved searches</span>
+          </div>
+
+          <!-- KPI 3: New Arrivals (Last 7 Days) -->
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">New This Week</span>
+              <div class="telemetry-icon-wrap">
+                <svg class="telemetry-icon" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              </div>
+            </div>
+            <div class="telemetry-value-row">
+              <span class="telemetry-value">3</span>
+              <span class="telemetry-unit">New Listings</span>
+            </div>
+            <span class="telemetry-subtext">Added within the last 48 hours</span>
+          </div>
+
+          <!-- KPI 4: Price Drop Tracking -->
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Price Drop Alert</span>
+              <div class="telemetry-icon-wrap">
+                <svg class="telemetry-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+            </div>
+            <div class="telemetry-value-row">
+              <span class="telemetry-value">-2.5M</span>
+              <span class="telemetry-unit">EGP Reduction</span>
+            </div>
+            <span class="telemetry-subtext">Marassi Marina Penthouse</span>
+          </div>
+        </section>
+
+        <!-- Searches Filter & Control Bar -->
+        <section class="radars-filter-bar">
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All Searches (4)</button>
+            <button class="filter-pill" data-filter="active">Active (3)</button>
+            <button class="filter-pill" data-filter="price-drop">Has Price Drops (1)</button>
+            <button class="filter-pill" data-filter="paused">Paused (1)</button>
+          </div>
+          <div class="filter-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="radarSearchInput" class="filter-search-input" placeholder="Filter radars by corridor or title...">
+          </div>
+        </section>
+
+        <!-- Radar Cards List (4 Rich Plates) -->
+        <section class="radar-cards-list" id="radarCardsContainer">
+
+          <!-- Radar Card 1: Golden Square Villas -->
+          <article class="radar-card" data-id="radar-1" data-status="active">
+            <div class="radar-card-top">
+              <div class="radar-main-info">
+                <div class="radar-title-row">
+                  <h2 class="radar-title">Golden Square Standalone Villas (EGP 35M–50M)</h2>
+                  <span class="radar-status-badge active-status">
+                    <span class="radar-status-dot"></span>
+                    ACTIVE RADAR
+                  </span>
+                </div>
+                <div class="radar-corridor">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>New Cairo · Golden Square (Mivida, Katameya Dunes, Villette)</span>
+                </div>
+              </div>
+              <div class="radar-top-actions">
+                <button class="btn btn-outline btn-sm toggle-pause-btn" data-radar-id="radar-1">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                  <span>Pause</span>
+                </button>
+                <button class="btn btn-outline btn-sm edit-radar-btn" data-radar-id="radar-1">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit</span>
+                </button>
+                <button class="btn btn-outline btn-sm delete-radar-btn" data-radar-id="radar-1" aria-label="Delete Radar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Parameters Strip -->
+            <div class="radar-specs-strip">
+              <div class="spec-pill">
+                <span class="spec-pill-label">Type:</span>
+                <span class="spec-pill-val">Standalone Villa</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Budget:</span>
+                <span class="spec-pill-val">EGP 35,000,000 – 50,000,000</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Min BUA:</span>
+                <span class="spec-pill-val">420 m²</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Bedrooms:</span>
+                <span class="spec-pill-val">4+ Beds</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Features:</span>
+                <span class="spec-pill-val">Private Pool · Lake / Green View</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Terms:</span>
+                <span class="spec-pill-val">Cash / Up to 5-Yr Plan</span>
+              </div>
+            </div>
+
+            <!-- Matches Micro Ribbon -->
+            <div class="matches-ribbon-container">
+              <div class="matches-ribbon-header">
+                <span class="matches-count-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>8 Verified Matches Available (2 Added This Week)</span>
+                </span>
+                <a href="../public/search.html" class="spec-pill-val" style="color: var(--brass-600); text-decoration: none; font-size: 0.75rem;">View Full 8 Results →</a>
+              </div>
+
+              <div class="matches-ribbon-grid">
+                <!-- Unit 1 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/1.jpg" alt="Katameya Dunes Signature Lake Villa" class="prop-card-img">
+                    <span class="prop-tag-badge">NEW ARRIVAL</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Katameya Dunes Signature Lake Villa</h3>
+                    <span class="prop-card-location">New Cairo · Golf Course First Line</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 44,500,000</span>
+                      <span class="prop-card-specs">520 m² · 5 Beds</span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Unit 2 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/2.jpg" alt="Mivida Crescent Standalone" class="prop-card-img">
+                    <span class="prop-tag-badge">VERIFIED SELLER</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Mivida Crescent Standalone Residence</h3>
+                    <span class="prop-card-location">New Cairo · Emaar Community</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 38,200,000</span>
+                      <span class="prop-card-specs">460 m² · 4 Beds</span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Unit 3 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/3.jpg" alt="Villette Sky Garden Villa" class="prop-card-img">
+                    <span class="prop-tag-badge">MOVE-IN READY</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Villette Sky Garden Residence</h3>
+                    <span class="prop-card-location">New Cairo · Sodic Masterplan</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 36,000,000</span>
+                      <span class="prop-card-specs">440 m² · 4 Beds</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Footer: Delivery Channels & Actions -->
+            <div class="radar-card-footer">
+              <div class="radar-delivery-settings">
+                <span class="delivery-channel-chip">
+                  <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Instant WhatsApp (+20 100 ••• ••••)</span>
+                </span>
+                <span class="delivery-channel-chip">
+                  <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Instant Email Digest</span>
+                </span>
+              </div>
+              <div class="radar-footer-ctas">
+                <a href="../public/search.html" class="btn btn-outline btn-sm">Inspect All 8 Listings</a>
+                <button class="btn btn-primary btn-sm" onclick="triggerAdvisorShare('Golden Square Radar')">Forward to Laila</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Radar Card 2: Marassi & Ras El Hekma Prime Beachfronts (With Rule P6 Price Drop) -->
+          <article class="radar-card" data-id="radar-2" data-status="active" data-has-drop="true">
+            <div class="radar-card-top">
+              <div class="radar-main-info">
+                <div class="radar-title-row">
+                  <h2 class="radar-title">Marassi &amp; Ras El Hekma Prime Beachfronts</h2>
+                  <span class="radar-status-badge active-status">
+                    <span class="radar-status-dot"></span>
+                    ACTIVE RADAR
+                  </span>
+                </div>
+                <div class="radar-corridor">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>North Coast (Sidi Abd El Rahman &amp; Ras El Hekma Prime Shoreline)</span>
+                </div>
+              </div>
+              <div class="radar-top-actions">
+                <button class="btn btn-outline btn-sm toggle-pause-btn" data-radar-id="radar-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                  <span>Pause</span>
+                </button>
+                <button class="btn btn-outline btn-sm edit-radar-btn" data-radar-id="radar-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit</span>
+                </button>
+                <button class="btn btn-outline btn-sm delete-radar-btn" data-radar-id="radar-2" aria-label="Delete Radar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Verified Rule P6 Price Reduction Alert Bar -->
+            <div class="price-reduction-alert">
+              <div class="price-reduction-text">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <span><strong>PRICE REDUCTION VERIFIED:</strong> Marassi Marina Penthouse dropped by <span class="price-reduction-bold">-EGP 2,500,000 (-5.0%)</span> on September 10, verified by listing agent.</span>
+              </div>
+              <a href="../public/property-detail.html" class="btn btn-brass btn-sm">Inspect Reduction</a>
+            </div>
+
+            <!-- Parameters Strip -->
+            <div class="radar-specs-strip">
+              <div class="spec-pill">
+                <span class="spec-pill-label">Type:</span>
+                <span class="spec-pill-val">Beachfront Villa / Penthouse</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Budget:</span>
+                <span class="spec-pill-val">EGP 45,000,000 – 75,000,000</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">View:</span>
+                <span class="spec-pill-val">Direct Sea / Lagoon Front</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Min BUA:</span>
+                <span class="spec-pill-val">280 m²</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Delivery:</span>
+                <span class="spec-pill-val">Immediate / Summer 2026</span>
+              </div>
+            </div>
+
+            <!-- Matches Micro Ribbon -->
+            <div class="matches-ribbon-container">
+              <div class="matches-ribbon-header">
+                <span class="matches-count-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>5 Verified Matches Available (1 Price Reduction Detected)</span>
+                </span>
+                <a href="../public/search.html" class="spec-pill-val" style="color: var(--brass-600); text-decoration: none; font-size: 0.75rem;">View Full 5 Results →</a>
+              </div>
+
+              <div class="matches-ribbon-grid">
+                <!-- Unit 1 with price drop -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/4.jpg" alt="Marassi Marina Penthouse" class="prop-card-img">
+                    <span class="prop-tag-badge badge-drop">-2.5M PRICE DROP</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Marassi Marina Penthouse &amp; Terrace</h3>
+                    <span class="prop-card-location">North Coast · Sidi Abd El Rahman</span>
+                    <div class="prop-card-price-row">
+                      <div>
+                        <span class="prop-card-price">EGP 47,500,000</span>
+                        <span class="prop-card-original-price">50.0M</span>
+                      </div>
+                      <span class="prop-card-specs">310 m² · 4 Beds</span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Unit 2 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/5.jpg" alt="SilverSands Prime Beachfront Villa" class="prop-card-img">
+                    <span class="prop-tag-badge">OFF-MARKET</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">SilverSands Prime Seafront Standalone</h3>
+                    <span class="prop-card-location">North Coast · Ora Developers</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 68,000,000</span>
+                      <span class="prop-card-specs">480 m² · 5 Beds</span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Unit 3 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/6.jpg" alt="Cali Coast Lagoon Villa" class="prop-card-img">
+                    <span class="prop-tag-badge">VERIFIED ESCROW</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Cali Coast Lagoon Residence</h3>
+                    <span class="prop-card-location">North Coast · Ras El Hekma Corridor</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 42,000,000</span>
+                      <span class="prop-card-specs">340 m² · 4 Beds</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Footer: Delivery Channels & Actions -->
+            <div class="radar-card-footer">
+              <div class="radar-delivery-settings">
+                <span class="delivery-channel-chip">
+                  <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Instant WhatsApp Alert (+20 100 ••• ••••)</span>
+                </span>
+                <span class="delivery-channel-chip">
+                  <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>SMS Push Notification</span>
+                </span>
+              </div>
+              <div class="radar-footer-ctas">
+                <a href="../public/search.html" class="btn btn-outline btn-sm">Inspect All 5 Listings</a>
+                <button class="btn btn-primary btn-sm" onclick="triggerAdvisorShare('North Coast Radar')">Request Day Tour</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Radar Card 3: West Cairo Signature Golf Views -->
+          <article class="radar-card" data-id="radar-3" data-status="active">
+            <div class="radar-card-top">
+              <div class="radar-main-info">
+                <div class="radar-title-row">
+                  <h2 class="radar-title">West Cairo Signature Golf Views</h2>
+                  <span class="radar-status-badge active-status">
+                    <span class="radar-status-dot"></span>
+                    ACTIVE RADAR
+                  </span>
+                </div>
+                <div class="radar-corridor">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>6th of October &amp; New Zayed (Palm Hills Golf Views, Karmell)</span>
+                </div>
+              </div>
+              <div class="radar-top-actions">
+                <button class="btn btn-outline btn-sm toggle-pause-btn" data-radar-id="radar-3">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                  <span>Pause</span>
+                </button>
+                <button class="btn btn-outline btn-sm edit-radar-btn" data-radar-id="radar-3">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit</span>
+                </button>
+                <button class="btn btn-outline btn-sm delete-radar-btn" data-radar-id="radar-3" aria-label="Delete Radar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Parameters Strip -->
+            <div class="radar-specs-strip">
+              <div class="spec-pill">
+                <span class="spec-pill-label">Type:</span>
+                <span class="spec-pill-val">Townhouse / Standalone</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Budget:</span>
+                <span class="spec-pill-val">EGP 22,000,000 – 34,000,000</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Min BUA:</span>
+                <span class="spec-pill-val">310 m²</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Course:</span>
+                <span class="spec-pill-val">Direct Fairway / Lake View</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Origin:</span>
+                <span class="spec-pill-val">Developer Primary &amp; Verified Resale</span>
+              </div>
+            </div>
+
+            <!-- Matches Micro Ribbon -->
+            <div class="matches-ribbon-container">
+              <div class="matches-ribbon-header">
+                <span class="matches-count-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>3 Verified Matches Available</span>
+                </span>
+                <a href="../public/search.html" class="spec-pill-val" style="color: var(--brass-600); text-decoration: none; font-size: 0.75rem;">View Full 3 Results →</a>
+              </div>
+
+              <div class="matches-ribbon-grid">
+                <!-- Unit 1 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/7.jpg" alt="Palm Hills Golf Residence" class="prop-card-img">
+                    <span class="prop-tag-badge">FAIRWAY FRONT</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Palm Hills Golf Residence Phase II</h3>
+                    <span class="prop-card-location">West Cairo · October Hills</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 31,000,000</span>
+                      <span class="prop-card-specs">380 m² · 4 Beds</span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Unit 2 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/8.jpg" alt="Karmell Voya Villa" class="prop-card-img">
+                    <span class="prop-tag-badge">NEW LAUNCH</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Karmell Voya Modern Villa</h3>
+                    <span class="prop-card-location">West Cairo · New Zayed Axis</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 26,500,000</span>
+                      <span class="prop-card-specs">315 m² · 3 Beds</span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Unit 3 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/9.jpg" alt="Allegria Signature Compound" class="prop-card-img">
+                    <span class="prop-tag-badge">SOLAR INTEGRATED</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Allegria Signature Golf View</h3>
+                    <span class="prop-card-location">West Cairo · Greg Norman Course</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 33,500,000</span>
+                      <span class="prop-card-specs">410 m² · 4 Beds</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Footer: Delivery Channels & Actions -->
+            <div class="radar-card-footer">
+              <div class="radar-delivery-settings">
+                <span class="delivery-channel-chip">
+                  <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Daily Morning Digest (09:00 CLT)</span>
+                </span>
+                <span class="delivery-channel-chip">
+                  <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Email: t.mansour@investments.eg</span>
+                </span>
+              </div>
+              <div class="radar-footer-ctas">
+                <a href="../public/search.html" class="btn btn-outline btn-sm">Inspect All 3 Listings</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Radar Card 4: New Capital Trophy Assets (Currently Paused) -->
+          <article class="radar-card paused" data-id="radar-4" data-status="paused">
+            <div class="radar-card-top">
+              <div class="radar-main-info">
+                <div class="radar-title-row">
+                  <h2 class="radar-title">New Administrative Capital Trophy Assets</h2>
+                  <span class="radar-status-badge paused-status">
+                    <span class="radar-status-dot"></span>
+                    PAUSED
+                  </span>
+                </div>
+                <div class="radar-corridor">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>New Administrative Capital · Diplomatic Quarter &amp; Central Business District</span>
+                </div>
+              </div>
+              <div class="radar-top-actions">
+                <button class="btn btn-brass btn-sm toggle-pause-btn" data-radar-id="radar-4">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  <span>Resume</span>
+                </button>
+                <button class="btn btn-outline btn-sm edit-radar-btn" data-radar-id="radar-4">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit</span>
+                </button>
+                <button class="btn btn-outline btn-sm delete-radar-btn" data-radar-id="radar-4" aria-label="Delete Radar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Parameters Strip -->
+            <div class="radar-specs-strip">
+              <div class="spec-pill">
+                <span class="spec-pill-label">Type:</span>
+                <span class="spec-pill-val">Commercial / Trophy Office / Penthouse</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Budget:</span>
+                <span class="spec-pill-val">EGP 28,000,000 – 45,000,000</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Yield Target:</span>
+                <span class="spec-pill-val">9.5% Net Contracted</span>
+              </div>
+              <div class="spec-pill">
+                <span class="spec-pill-label">Tenant:</span>
+                <span class="spec-pill-val">Multinational Covenant</span>
+              </div>
+            </div>
+
+            <!-- Matches Micro Ribbon -->
+            <div class="matches-ribbon-container">
+              <div class="matches-ribbon-header">
+                <span class="matches-count-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>1 Verified Match Available</span>
+                </span>
+                <a href="../public/search.html" class="spec-pill-val" style="color: var(--brass-600); text-decoration: none; font-size: 0.75rem;">View Match →</a>
+              </div>
+
+              <div class="matches-ribbon-grid" style="grid-template-columns: minmax(280px, 360px);">
+                <!-- Unit 1 -->
+                <a href="../public/property-detail.html" class="matched-prop-card">
+                  <div class="prop-card-media">
+                    <img src="../../../../../Images/web/10.jpg" alt="Iconic Tower Diplomatic Skyline Suite" class="prop-card-img">
+                    <span class="prop-tag-badge">TROPHY ASSET</span>
+                  </div>
+                  <div class="prop-card-body">
+                    <h3 class="prop-card-title">Iconic Tower Diplomatic Skyline Suite</h3>
+                    <span class="prop-card-location">New Administrative Capital · CBD</span>
+                    <div class="prop-card-price-row">
+                      <span class="prop-card-price">EGP 33,800,000</span>
+                      <span class="prop-card-specs">260 m² · Commercial</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Footer: Delivery Channels & Actions -->
+            <div class="radar-card-footer">
+              <div class="radar-delivery-settings">
+                <span class="delivery-channel-chip">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  <span>Alerts paused by user on Sept 08</span>
+                </span>
+              </div>
+              <div class="radar-footer-ctas">
+                <button class="btn btn-brass btn-sm toggle-pause-btn" data-radar-id="radar-4">Resume Weekly Radar</button>
+              </div>
+            </div>
+          </article>
+
+        </section>
+
+        <!-- Recent Radar Match Activity Feed -->
+        <section class="activity-feed-section">
+          <div class="feed-header">
+            <h2 class="feed-title">Recent Radar Intelligence Log (Last 48 Hours)</h2>
+            <span class="telemetry-unit">Automated matching cadence: Every 15 minutes</span>
+          </div>
+
+          <div class="feed-list">
+            <!-- Event 1: Price Reduction -->
+            <div class="feed-item">
+              <div class="feed-icon-wrap price-drop">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <div class="feed-content">
+                <div class="feed-headline-row">
+                  <h3 class="feed-headline">Verified Price Drop: Marassi Marina Penthouse (-EGP 2,500,000)</h3>
+                  <span class="feed-time">Today · 07:15 CLT</span>
+                </div>
+                <p class="feed-desc">
+                  Radar #2 triggered an instant priority alert. The seller re-calibrated the listing price from EGP 50.0M to EGP 47.5M following seller price update. Instant WhatsApp sent to your verified device.
+                </p>
+              </div>
+            </div>
+
+            <!-- Event 2: New Listing Match -->
+            <div class="feed-item">
+              <div class="feed-icon-wrap new-match">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="feed-content">
+                <div class="feed-headline-row">
+                  <h3 class="feed-headline">New Primary Listing Match: Katameya Dunes Signature Lake Villa</h3>
+                  <span class="feed-time">Yesterday · 18:40 CLT</span>
+                </div>
+                <p class="feed-desc">
+                  Radar #1 captured a new off-market submission (520 m² BUA, EGP 44,500,000). Automated two-tier title audit passed with 100% clean title escrow clearance.
+                </p>
+              </div>
+            </div>
+
+            <!-- Event 3: Daily Digest Delivery -->
+            <div class="feed-item">
+              <div class="feed-icon-wrap frequency">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </div>
+              <div class="feed-content">
+                <div class="feed-headline-row">
+                  <h3 class="feed-headline">Daily Market Digest Dispatched: West Cairo Golf Residences</h3>
+                  <span class="feed-time">Yesterday · 09:00 CLT</span>
+                </div>
+                <p class="feed-desc">
+                  Curated executive summary dispatched to t.mansour@investments.eg with 3 active candidates and comparative m² rate benchmarks.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settly Buyer Protection & Reservation Guarantee -->
+        <footer class="portal-regulatory-footer">
+          <div class="regulatory-text">
+            <h3 class="regulatory-heading">Verified Listings &amp; Secure Reservations</h3>
+            <p class="regulatory-body">
+              All properties on Settly are verified for accurate details, confirmed pricing, and direct agent representation. Reservation deposits are capped at 50,000 EGP (or 5% of property price) and protected by our unconditional 48-hour cancellation refund policy.
+            </p>
+          </div>
+          <div class="regulatory-cta">
+            <a href="../public/index.html" class="btn btn-brass btn-sm">Learn How Settly Works</a>
+          </div>
+        </footer>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Saved Search Modal -->
+  <div class="modal-backdrop" id="createRadarModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2 class="modal-title">Create Saved Search</h2>
+          <span class="modal-subtitle">Slot 5 of 25 Available</span>
+        </div>
+        <button class="btn-modal-close" id="btnCloseCreateModal" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="createRadarForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="radarName">
+              <span>Radar Identifier / Title</span>
+              <span style="font-size: 0.6875rem; color: var(--ink-3);">Required</span>
+            </label>
+            <input type="text" id="radarName" class="form-input" placeholder="e.g. Somabay Lagoon Penthouses (EGP 25M–40M)" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="radarCorridor">Target Investment Corridor</label>
+              <select id="radarCorridor" class="form-select">
+                <option value="New Cairo · Golden Square">New Cairo · Golden Square</option>
+                <option value="North Coast · Sahel &amp; Ras El Hekma">North Coast · Sahel &amp; Ras El Hekma</option>
+                <option value="West Cairo · Zayed &amp; October">West Cairo · Zayed &amp; October</option>
+                <option value="New Administrative Capital">New Administrative Capital</option>
+                <option value="Red Sea · El Gouna &amp; Somabay">Red Sea · El Gouna &amp; Somabay</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="propertyType">Property Typology</label>
+              <select id="propertyType" class="form-select">
+                <option value="Standalone Villa">Standalone Villa</option>
+                <option value="Beachfront Residence">Beachfront Residence</option>
+                <option value="Sky Penthouse">Sky Penthouse</option>
+                <option value="Commercial / Trophy Suite">Commercial / Trophy Suite</option>
+                <option value="Twinhouse / Townhouse">Twinhouse / Townhouse</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="budgetMin">Min Budget (EGP)</label>
+              <input type="text" id="budgetMin" class="form-input" placeholder="20,000,000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="budgetMax">Max Budget (EGP)</label>
+              <input type="text" id="budgetMax" class="form-input" placeholder="60,000,000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="minBua">Minimum BUA (m²)</label>
+              <input type="number" id="minBua" class="form-input" placeholder="300">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="alertFrequency">Dispatch Cadence</label>
+              <select id="alertFrequency" class="form-select">
+                <option value="instant">Instant Priority (New matches &amp; price drops)</option>
+                <option value="daily">Daily Morning Digest (09:00 CLT)</option>
+                <option value="weekly">Weekly Strategic Summary (Sunday 10:00 CLT)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Delivery Channels</label>
+            <div class="channel-checkboxes">
+              <label class="channel-label">
+                <input type="checkbox" id="chanWhatsApp" checked>
+                <span>WhatsApp (+20 100 ••• ••••)</span>
+              </label>
+              <label class="channel-label">
+                <input type="checkbox" id="chanEmail" checked>
+                <span>Email (Verified Address)</span>
+              </label>
+              <label class="channel-label">
+                <input type="checkbox" id="chanSms">
+                <span>SMS Priority</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="btnCancelCreateModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save &amp; Arm Radar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Script logic -->
+  <script>
+    // Live Cairo Clock
+    function updateCairoClock() {
+      try {
+        const now = new Date();
+        const options = {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        };
+        const formatter = new Intl.DateTimeFormat('en-GB', options);
+        const timeStr = formatter.format(now);
+        const clockEl = document.getElementById('cairoTime');
+        if (clockEl) {
+          clockEl.textContent = timeStr + ' CLT';
+        }
+      } catch (e) {
+        // Fallback
+      }
+    }
+    setInterval(updateCairoClock, 1000);
+    updateCairoClock();
+
+    // Toast Generator
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast-pill';
+      toast.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C69749" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    // Advisor Share Trigger
+    function triggerAdvisorShare(radarName) {
+      showToast(`Dossier for "${radarName}" forwarded to Senior Advisor Laila El-Gammal.`);
+    }
+
+    // Modal Control: Create Radar
+    const createModal = document.getElementById('createRadarModal');
+    const btnCreate = document.getElementById('btnCreateRadar');
+    const btnCloseModal = document.getElementById('btnCloseCreateModal');
+    const btnCancelModal = document.getElementById('btnCancelCreateModal');
+    const createForm = document.getElementById('createRadarForm');
+
+    function openModal() {
+      createModal.classList.add('open');
+    }
+
+    function closeModal() {
+      createModal.classList.remove('open');
+    }
+
+    if (btnCreate) btnCreate.addEventListener('click', openModal);
+    if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
+    if (btnCancelModal) btnCancelModal.addEventListener('click', closeModal);
+
+    // Form Submit Handler
+    if (createForm) {
+      createForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('radarName').value;
+        const corridor = document.getElementById('radarCorridor').value;
+        const type = document.getElementById('propertyType').value;
+        const minB = document.getElementById('budgetMin').value || '25,000,000';
+        const maxB = document.getElementById('budgetMax').value || '50,000,000';
+        
+        // Add new radar card dynamically
+        const newCard = document.createElement('article');
+        newCard.className = 'radar-card';
+        newCard.dataset.id = 'radar-' + Date.now();
+        newCard.dataset.status = 'active';
+        newCard.innerHTML = `
+          <div class="radar-card-top">
+            <div class="radar-main-info">
+              <div class="radar-title-row">
+                <h2 class="radar-title">${name}</h2>
+                <span class="radar-status-badge active-status">
+                  <span class="radar-status-dot"></span>
+                  ACTIVE RADAR
+                </span>
+              </div>
+              <div class="radar-corridor">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>${corridor}</span>
+              </div>
+            </div>
+            <div class="radar-top-actions">
+              <button class="btn btn-outline btn-sm toggle-pause-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                <span>Pause</span>
+              </button>
+              <button class="btn btn-outline btn-sm edit-radar-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <span>Edit</span>
+              </button>
+              <button class="btn btn-outline btn-sm delete-radar-btn" aria-label="Delete Radar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="radar-specs-strip">
+            <div class="spec-pill">
+              <span class="spec-pill-label">Type:</span>
+              <span class="spec-pill-val">${type}</span>
+            </div>
+            <div class="spec-pill">
+              <span class="spec-pill-label">Budget:</span>
+              <span class="spec-pill-val">EGP ${minB} – ${maxB}</span>
+            </div>
+            <div class="spec-pill">
+              <span class="spec-pill-label">Status:</span>
+              <span class="spec-pill-val">Scanning Central Database</span>
+            </div>
+          </div>
+          <div class="radar-card-footer">
+            <div class="radar-delivery-settings">
+              <span class="delivery-channel-chip">
+                <svg class="delivery-active-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Armed · Scanning off-market inventory</span>
+              </span>
+            </div>
+            <div class="radar-footer-ctas">
+              <a href="../public/search.html" class="btn btn-outline btn-sm">Explore Corridor Listings</a>
+            </div>
+          </div>
+        `;
+
+        const container = document.getElementById('radarCardsContainer');
+        container.insertBefore(newCard, container.firstChild);
+        
+        // Update capacity
+        const capEl = document.getElementById('capacityVal');
+        if (capEl) {
+          capEl.textContent = '5';
+        }
+
+        closeModal();
+        createForm.reset();
+        showToast(`Radar "${name}" successfully armed under Invariant I11.`);
+        bindCardActions(newCard);
+      });
+    }
+
+    // Toggle Pause/Resume & Delete Actions
+    function bindCardActions(card) {
+      const pauseBtn = card.querySelector('.toggle-pause-btn');
+      const deleteBtn = card.querySelector('.delete-radar-btn');
+      const editBtn = card.querySelector('.edit-radar-btn');
+
+      if (pauseBtn) {
+        pauseBtn.addEventListener('click', function() {
+          const isPaused = card.classList.contains('paused');
+          if (isPaused) {
+            card.classList.remove('paused');
+            card.dataset.status = 'active';
+            const badge = card.querySelector('.radar-status-badge');
+            if (badge) {
+              badge.className = 'radar-status-badge active-status';
+              badge.innerHTML = '<span class="radar-status-dot"></span>ACTIVE RADAR';
+            }
+            pauseBtn.innerHTML = `
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              <span>Pause</span>
+            `;
+            pauseBtn.className = 'btn btn-outline btn-sm toggle-pause-btn';
+            showToast('Radar scanning resumed.');
+          } else {
+            card.classList.add('paused');
+            card.dataset.status = 'paused';
+            const badge = card.querySelector('.radar-status-badge');
+            if (badge) {
+              badge.className = 'radar-status-badge paused-status';
+              badge.innerHTML = '<span class="radar-status-dot"></span>PAUSED';
+            }
+            pauseBtn.innerHTML = `
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>Resume</span>
+            `;
+            pauseBtn.className = 'btn btn-brass btn-sm toggle-pause-btn';
+            showToast('Radar scanning paused.');
+          }
+        });
+      }
+
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+          if (confirm('Are you sure you want to deactivate and remove this radar?')) {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.98)';
+            card.style.transition = 'all 0.25s ease';
+            setTimeout(() => {
+              card.remove();
+              showToast('Radar removed from monitored capacity.');
+            }, 250);
+          }
+        });
+      }
+
+      if (editBtn) {
+        editBtn.addEventListener('click', function() {
+          openModal();
+          const title = card.querySelector('.radar-title').textContent;
+          document.getElementById('radarName').value = title;
+        });
+      }
+    }
+
+    document.querySelectorAll('.radar-card').forEach(bindCardActions);
+
+    // Filter Pills
+    const filterPills = document.querySelectorAll('.filter-pill');
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', function() {
+        filterPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const filter = pill.dataset.filter;
+
+        document.querySelectorAll('.radar-card').forEach(card => {
+          if (filter === 'all') {
+            card.style.display = 'flex';
+          } else if (filter === 'active') {
+            card.style.display = card.dataset.status === 'active' ? 'flex' : 'none';
+          } else if (filter === 'paused') {
+            card.style.display = card.dataset.status === 'paused' ? 'flex' : 'none';
+          } else if (filter === 'price-drop') {
+            card.style.display = card.dataset.hasDrop === 'true' ? 'flex' : 'none';
+          }
+        });
+      });
+    });
+
+    // Text Search Filter
+    const searchInput = document.getElementById('radarSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        const query = searchInput.value.toLowerCase().trim();
+        document.querySelectorAll('.radar-card').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          if (text.includes(query)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // Mobile Sidebar Drawer Management
+    const mobileToggle = document.getElementById('mobileNavToggle');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebar = document.getElementById('portalSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openSidebar() {
+      if (sidebar) sidebar.classList.add('mobile-open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      if (sidebar) sidebar.classList.remove('mobile-open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileToggle) mobileToggle.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Close on navigation click on mobile
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) closeSidebar();
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeSidebar();
+        closeModal();
+      }
+    });
+
+    // Keyboard shortcut ⌘K
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Moderation Queue · Settly Central Oversight</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --error-bg: #FEE2E2;
+      --warning: #B45309;
+      --warning-bg: #FEF3C7;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 290px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Admin Fixed Sidebar Navigation */
+    .admin-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav-container {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0 12px 8px 12px;
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.18);
+      border: 1px solid rgba(198, 151, 73, 0.4);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.alert {
+      background-color: var(--error);
+      color: var(--white);
+    }
+
+    .nav-badge.live {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* Sidebar Footer User Card */
+    .sidebar-user-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--brass);
+      border: 1px solid var(--brass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .admin-meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-role {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass-200);
+    }
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .breadcrumb-trail .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--sage);
+      border-radius: 50%;
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .live-clock-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    .live-clock-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--brass);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Portal Content Viewport */
+    .portal-content {
+      padding: 32px;
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Hero Header */
+    .view-hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .view-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .view-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .view-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      max-width: 760px;
+    }
+
+    .view-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass-600);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--brass-600);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--ink-3);
+    }
+
+    /* 4-Metric Executive Telemetry Ribbon */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .telemetry-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .telemetry-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .telemetry-badge.badge-sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .telemetry-badge.badge-alert {
+      background-color: var(--error-bg);
+      color: var(--error);
+    }
+
+    .telemetry-metric-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .telemetry-val {
+      font-family: var(--font-display);
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .telemetry-unit {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .telemetry-desc {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      line-height: 1.35;
+    }
+
+    /* Queue Filter & Triage Bar */
+    .triage-toolbar {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .triage-tab-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .triage-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background-color: var(--canvas);
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .triage-tab-btn:hover {
+      border-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    .triage-tab-btn.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    .triage-search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .triage-search-input {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px 8px 36px;
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      outline: none;
+      min-width: 300px;
+      transition: all 0.15s ease;
+    }
+
+    .triage-search-input:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 12px;
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+
+    /* Main Moderation Layout: Master Table (Left) + Detail Dossier (Right) */
+    .moderation-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    /* Queue Table Container */
+    .queue-table-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .queue-table-header-row {
+      padding: 14px 20px;
+      background-color: var(--canvas-2);
+      border-bottom: 1px solid var(--line-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .batch-selection-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Queue Row Items */
+    .queue-list-body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .queue-item-row {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 28px 74px 1fr 130px 130px;
+      gap: 16px;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .queue-item-row:hover {
+      background-color: rgba(198, 151, 73, 0.04);
+    }
+
+    .queue-item-row.is-selected {
+      background-color: #FAF8F4;
+      outline: 2px solid var(--brass);
+      outline-offset: -2px;
+    }
+
+    .queue-checkbox {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brass);
+    }
+
+    .queue-thumb-box {
+      width: 74px;
+      height: 56px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background-color: var(--navy-900);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .queue-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .queue-main-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .queue-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .queue-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .queue-id-pill {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      background-color: var(--brass-050);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .queue-sub-info {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .queue-agent-strip {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .queue-agent-mono {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--brass);
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .queue-valuation-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .queue-price {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .queue-price-m2 {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .queue-status-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .badge-review {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-review.pending {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .badge-review.conflict {
+      background-color: var(--error-bg);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.3);
+    }
+
+    .badge-review.clarification {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .queue-time-ago {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-3);
+    }
+
+    /* Inspection Dossier & Verification Console (Right Rail) */
+    .dossier-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(19, 29, 54, 0.05);
+      position: sticky;
+      top: calc(var(--header-height) + 24px);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .dossier-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dossier-heading {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .dossier-status-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    /* Dossier Property Hero Preview */
+    .dossier-hero-box {
+      display: flex;
+      gap: 14px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .dossier-thumb {
+      width: 86px;
+      height: 86px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .dossier-prop-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .dossier-prop-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.25;
+    }
+
+    .dossier-prop-compound {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .dossier-prop-price {
+      font-family: var(--font-mono);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      margin-top: 3px;
+    }
+
+    /* Fiduciary Title Deed Validation Box */
+    .deed-audit-box {
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border: 1px solid rgba(198, 151, 73, 0.4);
+      position: relative;
+    }
+
+    .deed-audit-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brass), var(--sage), var(--brass));
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .deed-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .deed-box-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--brass);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .deed-match-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    .deed-specs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 10px;
+    }
+
+    .deed-spec-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .deed-spec-k {
+      color: var(--brass-200);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+    }
+
+    .deed-spec-v {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .btn-deed-modal {
+      padding: 7px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-deed-modal:hover {
+      background: rgba(198, 151, 73, 0.25);
+      border-color: var(--brass);
+    }
+
+    /* Collision Engine Alert Card */
+    .collision-alert-card {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .collision-alert-card.conflict-active {
+      background-color: var(--error-bg);
+      border-color: rgba(153, 27, 27, 0.4);
+    }
+
+    .collision-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .collision-alert-card.conflict-active .collision-header {
+      color: var(--error);
+    }
+
+    .collision-desc {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    .collision-alert-card.conflict-active .collision-desc {
+      color: var(--error);
+      font-weight: 500;
+    }
+
+    /* Review Decision Actions */
+    .dossier-actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 6px;
+    }
+
+    .btn-approve-publish {
+      padding: 12px;
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass-600);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(198, 151, 73, 0.25);
+    }
+
+    .btn-approve-publish:hover {
+      background-color: var(--brass-600);
+      transform: translateY(-1px);
+    }
+
+    .btn-request-info {
+      padding: 10px;
+      background-color: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-request-info:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--ink-3);
+    }
+
+    .btn-reject-listing {
+      padding: 10px;
+      background-color: var(--white);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-reject-listing:hover {
+      background-color: var(--error-bg);
+      border-color: var(--error);
+    }
+
+    /* Legal Deed Modal Dialog */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(19, 29, 54, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.3);
+      border: 2px solid var(--brass);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFade {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--brass);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--brass-200);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .modal-close-btn:hover {
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .deed-certificate-canvas {
+      background-color: var(--canvas);
+      border: 2px dashed var(--line-2);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      position: relative;
+    }
+
+    .cert-stamp {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      width: 80px;
+      height: 80px;
+      border: 2px solid var(--sage);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.5625rem;
+      color: var(--sage);
+      transform: rotate(-15deg);
+      text-transform: uppercase;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    /* Rejection Reason Modal Dialog */
+    .rejection-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .reason-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      background-color: var(--canvas);
+      outline: none;
+    }
+
+    .reason-textarea {
+      width: 100%;
+      height: 90px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      outline: none;
+      resize: vertical;
+    }
+
+    /* Toast Notification */
+    .toast-shelf {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid var(--brass);
+      pointer-events: auto;
+      animation: slideToast 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideToast {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Mobile Responsive Adaptation */
+    @media (max-width: 1280px) {
+      .moderation-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .dossier-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-trust-chip {
+        display: none;
+      }
+      .breadcrumb-trail span:first-child, .breadcrumb-trail span:nth-child(2) {
+        display: none;
+      }
+      .live-clock-pill span:last-child {
+        display: none;
+      }
+      .view-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+      .view-actions button {
+        width: 100%;
+        justify-content: center;
+      }
+      .queue-item-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .queue-valuation-col, .queue-status-col {
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- Admin Fixed Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">SOVEREIGN ADMIN</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Oversight &amp; Operations</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="moderation.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Moderation Queue</span>
+                <span class="nav-badge" id="sidebarQueueCount">7</span>
+              </a>
+            </li>
+            <li>
+              <a href="agent-verification.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11l-3 3-2-2"></path></svg>
+                <span>Agent Verification</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Intelligence &amp; Governance</div>
+          <ul class="nav-list">
+            <li>
+              <a href="reports.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Platform Reports</span>
+              </a>
+            </li>
+            <li>
+              <a href="audit-log.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <span>Audit Log</span>
+                <span class="nav-badge live">Live</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Cross-Portal Access</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../agent-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Agent Desk</span>
+              </a>
+            </li>
+            <li>
+              <a href="../buyer-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Buyer Portal</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/index.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Market</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer User Card -->
+      <div class="sidebar-user-footer">
+        <div class="admin-profile-card">
+          <div class="admin-avatar">TH</div>
+          <div class="admin-meta">
+            <span class="admin-name">Tamer Hegazy</span>
+            <span class="admin-role">Chief Registrar #SR-001</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      <!-- Top Sticky Bar -->
+      <header class="portal-topbar">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuTrigger" aria-label="Open navigation menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="breadcrumb-trail">
+            <span>SETTLY OVERSIGHT</span>
+            <span>/</span>
+            <span class="current">MODERATION QUEUE</span>
+          </div>
+          <span class="portal-trust-chip">
+            <span class="trust-dot"></span>
+            Fiduciary Verification Desk
+          </span>
+        </div>
+
+        <div class="header-end">
+          <div class="live-clock-pill">
+            <div class="live-clock-dot"></div>
+            <span id="cairoClock">16:30:00 CLT</span>
+            <span>· Africa/Cairo</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Portal Content -->
+      <div class="portal-content">
+        <!-- Hero Header -->
+        <div class="view-hero">
+          <div class="view-title-group">
+            <h1 class="view-title">Listing Moderation &amp; Deed Verification</h1>
+            <p class="view-subtitle">Reviewing 7 luxury mandate submissions across Greater Cairo and North Coast. All listings require verified developer ownership assignment and zero exclusive mandate collisions.</p>
+          </div>
+          <div class="view-actions">
+            <button class="btn-secondary" onclick="exportQueueLog()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export Triage Report</span>
+            </button>
+            <button class="btn-primary" onclick="batchApproveSelected()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Batch Approve Verified (2)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Metric Executive Telemetry Ribbon -->
+        <div class="telemetry-grid">
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Queue Depth</span>
+              <span class="telemetry-badge">Active</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-val" id="metricQueueCount">7</span>
+              <span class="telemetry-unit">Pending</span>
+            </div>
+            <p class="telemetry-desc">Average fiduciary review turnaround: 14 minutes per submission.</p>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Flagged Conflicts</span>
+              <span class="telemetry-badge badge-alert">2 Collisions</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-val" style="color: var(--error);">2</span>
+              <span class="telemetry-unit">Urgent</span>
+            </div>
+            <p class="telemetry-desc">Plot collision on Marassi Marina &amp; price anomaly on Katameya Dunes.</p>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Deed Verification Rate</span>
+              <span class="telemetry-badge badge-sage">High Integrity</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-val">94.2%</span>
+            </div>
+            <p class="telemetry-desc">Developer contracts authenticated via direct cadastral verification.</p>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">24h Throughput</span>
+              <span class="telemetry-badge">Today</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-val">28</span>
+              <span class="telemetry-unit">Reviewed</span>
+            </div>
+            <p class="telemetry-desc">24 mandates approved and published to live market, 4 rejected.</p>
+          </div>
+        </div>
+
+        <!-- Triage Toolbar & Filter Chips -->
+        <div class="triage-toolbar">
+          <div class="triage-tab-group">
+            <button class="triage-tab-btn active" data-tab="all" onclick="filterTab('all', this)">All Pending (7)</button>
+            <button class="triage-tab-btn" data-tab="conflict" onclick="filterTab('conflict', this)">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background-color: var(--error);"></span>
+              Flagged Conflicts (2)
+            </button>
+            <button class="triage-tab-btn" data-tab="New Mandate" onclick="filterTab('New Mandate', this)">New Submissions (3)</button>
+            <button class="triage-tab-btn" data-tab="clarification" onclick="filterTab('clarification', this)">Clarifications (1)</button>
+          </div>
+
+          <div class="triage-search-box">
+            <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="queueSearchInput" class="triage-search-input" placeholder="Search by mandate ID, compound, agent..." oninput="searchQueue()">
+          </div>
+        </div>
+
+        <!-- Master-Detail Workspace -->
+        <div class="moderation-workspace-grid">
+          
+          <!-- LEFT: Queue Table List -->
+          <div class="queue-table-card">
+            <div class="queue-table-header-row">
+              <div class="batch-selection-pill">
+                <input type="checkbox" id="selectAllCheckbox" class="queue-checkbox" onchange="toggleSelectAll(this)" aria-label="Select all listings">
+                <span>Select All</span>
+              </div>
+              <span>Mandate Details &amp; Valuation</span>
+              <span>Deed &amp; Status</span>
+            </div>
+
+            <div class="queue-list-body" id="queueListBody">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- RIGHT: Inspection Dossier & Verification Console -->
+          <aside class="dossier-card" id="dossierCard">
+            <div class="dossier-topbar">
+              <span class="dossier-heading">Verification Dossier</span>
+              <span class="dossier-status-pill" id="dossierStatusPill">PENDING AUDIT</span>
+            </div>
+
+            <!-- Property Hero Plate -->
+            <div class="dossier-hero-box">
+              <img id="dossierThumb" src="../../../../../Images/web/1.jpg" alt="Property thumbnail" class="dossier-thumb">
+              <div class="dossier-prop-info">
+                <h3 class="dossier-prop-title" id="dossierPropTitle">The Sky Palace</h3>
+                <span class="dossier-prop-compound" id="dossierPropCompound">Katameya Heights Golf &amp; Tennis</span>
+                <span class="dossier-prop-price" id="dossierPropPrice">68,000,000 EGP</span>
+              </div>
+            </div>
+
+            <!-- Fiduciary Title Deed Validation Box -->
+            <div class="deed-audit-box">
+              <div class="deed-top-row">
+                <span class="deed-box-label">Title Deed Authenticity</span>
+                <span class="deed-match-badge" id="deedMatchBadge">VERIFIED</span>
+              </div>
+
+              <div class="deed-specs-list">
+                <div class="deed-spec-item">
+                  <span class="deed-spec-k">Cadastral Ref</span>
+                  <span class="deed-spec-v" id="deedRefVal">CAD-KH-2026-8812</span>
+                </div>
+                <div class="deed-spec-item">
+                  <span class="deed-spec-k">Registered Owner</span>
+                  <span class="deed-spec-v" id="deedOwnerVal">Dr. Tarek Mansour</span>
+                </div>
+                <div class="deed-spec-item">
+                  <span class="deed-spec-k">Submitting Agent</span>
+                  <span class="deed-spec-v" id="deedAgentVal">Eng. Karim El-Sayed (#EG-8841-B)</span>
+                </div>
+                <div class="deed-spec-item">
+                  <span class="deed-spec-k">Media Audit</span>
+                  <span class="deed-spec-v" id="deedMediaVal">16 Photos · Watermark Clean</span>
+                </div>
+              </div>
+
+              <button class="btn-deed-modal" onclick="openDeedModal()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Inspect Developer Deed Certificate</span>
+              </button>
+            </div>
+
+            <!-- Collision Alert Card -->
+            <div class="collision-alert-card" id="collisionCard">
+              <div class="collision-header">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span id="collisionTitle">Duplicate Collision Status</span>
+              </div>
+              <p class="collision-desc" id="collisionDesc">Zero plot collisions detected across Greater Cairo registry.</p>
+            </div>
+
+            <!-- Review Action Decision Console -->
+            <div class="dossier-actions-group">
+              <button class="btn-approve-publish" onclick="approveCurrentListing()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Approve &amp; Publish to Market</span>
+              </button>
+              <button class="btn-request-info" onclick="openClarificationPrompt()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Request Document Clarification</span>
+              </button>
+              <button class="btn-reject-listing" onclick="openRejectModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                <span>Reject Submission</span>
+              </button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Inspect Deed Modal Dialog -->
+  <div class="modal-backdrop" id="deedModal" onclick="closeDeedModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Developer Ownership Deed Certificate</h3>
+        <button class="modal-close-btn" onclick="closeDeedModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="deed-certificate-canvas">
+          <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--line-2); padding-bottom: 8px;">
+            <strong style="color: var(--navy-900);">EGYPTIAN LAND &amp; DEVELOPER REGISTRY</strong>
+            <span style="color: var(--brass-600);" id="modalCertDeedRef">CAD-KH-2026-8812</span>
+          </div>
+          <p>This certifies that the represented real estate asset: <strong id="modalCertPropTitle">The Sky Palace</strong> located within <strong id="modalCertCompound">Katameya Heights</strong> has been authenticated with developer master records.</p>
+          <p>Registered Primary Owner: <strong id="modalCertOwner">Dr. Tarek Mansour</strong></p>
+          <p>Authorized Broker Mandate: <strong id="modalCertAgent">Eng. Karim El-Sayed (#EG-8841-B)</strong></p>
+          <p>Cadastral Specifications: Built Area 750 m² · Freehold Title Validated · Clean of Prior Encumbrances</p>
+          <div class="cert-stamp">
+            VERIFIED<br>SETTLY<br>REGISTRY
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:12px;">
+          <button class="btn-secondary" onclick="closeDeedModal()">Close Inspection</button>
+          <button class="btn-primary" onclick="showToast('Deed certified &amp; archived in compliance audit vault'); closeDeedModal();">Certify Deed Document</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rejection Modal Dialog -->
+  <div class="modal-backdrop" id="rejectModal" onclick="closeRejectModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header" style="background-color: var(--error);">
+        <h3 class="modal-title" style="color: var(--white);">Reject Submission · Compliance Notice</h3>
+        <button class="modal-close-btn" onclick="closeRejectModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="rejection-form">
+          <label class="form-label">Select Primary Rejection Reason</label>
+          <select class="reason-select" id="rejectReasonSelect">
+            <option value="deed">Unverified Developer Deed / Ownership Inconsistency</option>
+            <option value="collision">Exclusive Mandate Collision (Duplicate Claim on Unit)</option>
+            <option value="price">Valuation Anomaly / Unsubstantiated Price Shift</option>
+            <option value="media">Watermarked or Sub-Standard Visual Media</option>
+          </select>
+          <label class="form-label">Registrar Explanation (Sent to Broker)</label>
+          <textarea class="reason-textarea" id="rejectNotesText" placeholder="State specific remediation requirements for resubmission..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top: 8px;">
+          <button class="btn-secondary" onclick="closeRejectModal()">Cancel</button>
+          <button class="btn-primary" style="background-color: var(--error); border-color: var(--error);" onclick="confirmReject()">Confirm Rejection</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Toast Container -->
+  <div class="toast-shelf" id="toastContainer"></div>
+
+  <script>
+    const SUBMISSIONS = [
+  {
+    "id": "SET-KD-4029",
+    "title": "The Sky Palace, Katameya Heights",
+    "compound": "Katameya Heights Golf & Tennis",
+    "compoundShort": "Katameya Heights",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "agent": "Eng. Karim El-Sayed",
+    "agency": "Sotheby's Egypt Desk",
+    "license": "#EG-8841-B",
+    "agentInitials": "KS",
+    "priceEgp": 68000000,
+    "builtArea": 750,
+    "plotArea": 1200,
+    "pricePerM2": 90666,
+    "type": "New Mandate",
+    "deedRef": "CAD-KH-2026-8812",
+    "deedStatus": "Verified",
+    "deedStatusLabel": "100% Match (Developer Deed)",
+    "ownerName": "Dr. Tarek Mansour",
+    "mediaCount": 16,
+    "watermarkAudit": "Clean (0 Flags)",
+    "floorplanAttached": true,
+    "collisionStatus": "Clean",
+    "collisionMessage": "Zero plot collisions detected across Greater Cairo registry.",
+    "benchmark": "+3.8% vs Corridor Benchmark",
+    "benchmarkStatus": "normal",
+    "timeAgo": "14 mins ago",
+    "status": "pending",
+    "flagged": false,
+    "image": "../../../../../Images/web/1.jpg"
+  },
+  {
+    "id": "SET-MR-9044",
+    "title": "Waterfront Horizon Villa, Marassi",
+    "compound": "Marassi Marina by Emaar",
+    "compoundShort": "Marassi Marina",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "agent": "Tarek Shalaby",
+    "agency": "Coast & Capital Partners",
+    "license": "#EG-6712-C",
+    "agentInitials": "TS",
+    "priceEgp": 85000000,
+    "builtArea": 640,
+    "plotArea": 950,
+    "pricePerM2": 132812,
+    "type": "Exclusive Mandate",
+    "deedRef": "CAD-MR-2026-9044",
+    "deedStatus": "Collision Flagged",
+    "deedStatusLabel": "Duplicate Claim Detected",
+    "ownerName": "Hassan Rasheed Group",
+    "mediaCount": 12,
+    "watermarkAudit": "Clean",
+    "floorplanAttached": true,
+    "collisionStatus": "Conflict",
+    "collisionMessage": "CRITICAL: Mandate collision with SET-MR-5102 on Plot 14, Pier 3. Another broker claimed exclusivity yesterday.",
+    "benchmark": "+12.4% vs Marassi Average",
+    "benchmarkStatus": "warning",
+    "timeAgo": "28 mins ago",
+    "status": "conflict",
+    "flagged": true,
+    "image": "../../../../../Images/web/2.jpg"
+  },
+  {
+    "id": "SET-PH-3391",
+    "title": "Signature Fairway Villa, Palm Hills",
+    "compound": "Palm Hills Golf Views",
+    "compoundShort": "Palm Hills",
+    "corridor": "6th of October \u00b7 West Cairo",
+    "agent": "Mona Mansour",
+    "agency": "Premier Luxury Brokerage",
+    "license": "#EG-4109-A",
+    "agentInitials": "MM",
+    "priceEgp": 42500000,
+    "builtArea": 520,
+    "plotArea": 780,
+    "pricePerM2": 81730,
+    "type": "Re-submission",
+    "deedRef": "CAD-PH-2026-3391",
+    "deedStatus": "Under Review",
+    "deedStatusLabel": "Awaiting Developer Stamp",
+    "ownerName": "Eng. Hisham El-Gazzar",
+    "mediaCount": 14,
+    "watermarkAudit": "Clean",
+    "floorplanAttached": true,
+    "collisionStatus": "Clean",
+    "collisionMessage": "Zero plot collisions. Awaiting official developer maintenance clearance certificate.",
+    "benchmark": "-1.2% within October Baseline",
+    "benchmarkStatus": "normal",
+    "timeAgo": "42 mins ago",
+    "status": "clarification",
+    "flagged": false,
+    "image": "../../../../../Images/web/3.jpg"
+  },
+  {
+    "id": "SET-MV-5120",
+    "title": "Crescent Lake Mansion, Mivida",
+    "compound": "Mivida by Emaar Misr",
+    "compoundShort": "Mivida Crescent",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "agent": "Eng. Karim El-Sayed",
+    "agency": "Sotheby's Egypt Desk",
+    "license": "#EG-8841-B",
+    "agentInitials": "KS",
+    "priceEgp": 54000000,
+    "builtArea": 580,
+    "plotArea": 820,
+    "pricePerM2": 93103,
+    "type": "New Mandate",
+    "deedRef": "CAD-MV-2026-5120",
+    "deedStatus": "Verified",
+    "deedStatusLabel": "100% Match (Developer Allocation)",
+    "ownerName": "Dr. Sherif Zahran",
+    "mediaCount": 18,
+    "watermarkAudit": "Clean (0 Flags)",
+    "floorplanAttached": true,
+    "collisionStatus": "Clean",
+    "collisionMessage": "Zero collisions. Developer assignment deed validated with Emaar Central Registry.",
+    "benchmark": "+1.8% vs Golden Square Standard",
+    "benchmarkStatus": "normal",
+    "timeAgo": "1 hour ago",
+    "status": "pending",
+    "flagged": false,
+    "image": "../../../../../Images/web/5.jpg"
+  },
+  {
+    "id": "SET-AL-1149",
+    "title": "Sky Penthouse Triplex, Allegria",
+    "compound": "Allegria by SODIC",
+    "compoundShort": "Allegria SODIC",
+    "corridor": "Sheikh Zayed \u00b7 West Cairo",
+    "agent": "Youssef Fahmy",
+    "agency": "Fahmy Private Advisory",
+    "license": "#EG-9902-D",
+    "agentInitials": "YF",
+    "priceEgp": 31000000,
+    "builtArea": 410,
+    "plotArea": 410,
+    "pricePerM2": 75609,
+    "type": "New Mandate",
+    "deedRef": "CAD-AL-2026-1149",
+    "deedStatus": "Verified",
+    "deedStatusLabel": "Validated with SODIC Registry",
+    "ownerName": "General Omar Khattab",
+    "mediaCount": 11,
+    "watermarkAudit": "Clean",
+    "floorplanAttached": true,
+    "collisionStatus": "Clean",
+    "collisionMessage": "Zero plot collisions. Penthouse allocation contract authenticated.",
+    "benchmark": "-2.4% Competitive Valuation",
+    "benchmarkStatus": "normal",
+    "timeAgo": "2 hours ago",
+    "status": "pending",
+    "flagged": false,
+    "image": "../../../../../Images/web/4.jpg"
+  },
+  {
+    "id": "SET-HB-7788",
+    "title": "Mediterranean Beachfront Villa, Hacienda",
+    "compound": "Hacienda Bay by Palm Hills",
+    "compoundShort": "Hacienda Bay",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "agent": "Dina El-Alfy",
+    "agency": "Sahel Premier Real Estate",
+    "license": "#EG-3321-B",
+    "agentInitials": "DA",
+    "priceEgp": 62000000,
+    "builtArea": 480,
+    "plotArea": 720,
+    "pricePerM2": 129166,
+    "type": "Re-submitted Media",
+    "deedRef": "CAD-HB-2026-7788",
+    "deedStatus": "Verified",
+    "deedStatusLabel": "Validated",
+    "ownerName": "Amr & Noha Sawiris Holding",
+    "mediaCount": 20,
+    "watermarkAudit": "Clean (Watermark Removed)",
+    "floorplanAttached": true,
+    "collisionStatus": "Clean",
+    "collisionMessage": "Zero collisions. Agency watermark removed from photos.",
+    "benchmark": "+4.0% Prime Shoreline Benchmark",
+    "benchmarkStatus": "normal",
+    "timeAgo": "3 hours ago",
+    "status": "pending",
+    "flagged": false,
+    "image": "../../../../../Images/web/6.jpg"
+  },
+  {
+    "id": "SET-KD-4401",
+    "title": "Golf Panorama Villa, Katameya Dunes",
+    "compound": "Katameya Dunes Golf & Rock",
+    "compoundShort": "Katameya Dunes",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "agent": "Ahmed Radwan",
+    "agency": "Cairo Prime Partners",
+    "license": "#EG-7714-A",
+    "agentInitials": "AR",
+    "priceEgp": 49500000,
+    "builtArea": 540,
+    "plotArea": 900,
+    "pricePerM2": 91666,
+    "type": "Price Variance",
+    "deedRef": "CAD-KD-2026-4401",
+    "deedStatus": "Under Review",
+    "deedStatusLabel": "Price Anomaly Flagged",
+    "ownerName": "Dr. Walid Seif",
+    "mediaCount": 15,
+    "watermarkAudit": "Clean",
+    "floorplanAttached": true,
+    "collisionStatus": "Price Alert",
+    "collisionMessage": "WARNING: Price changed from 60M to 49.5M (17.5% drop) in 24 hours without seller price reduction addendum.",
+    "benchmark": "-11.2% Sudden Deviation",
+    "benchmarkStatus": "warning",
+    "timeAgo": "3 hours ago",
+    "status": "flagged",
+    "flagged": true,
+    "image": "../../../../../Images/web/7.jpg"
+  }
+];
+
+    let activeSubmissions = [...SUBMISSIONS];
+    let currentSelectedId = 'SET-KD-4029';
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderQueue(activeSubmissions);
+      selectSubmission(currentSelectedId);
+    });
+
+    // Render Queue Table
+    function renderQueue(items) {
+      const container = document.getElementById('queueListBody');
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 48px 24px; text-align: center; color: var(--ink-3);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 12px; color: var(--sage);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <p style="font-weight: 600; color: var(--navy-900);">Queue Clean · No submissions matching filter</p>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach(item => {
+        const row = document.createElement('div');
+        row.className = `queue-item-row ${item.id === currentSelectedId ? 'is-selected' : ''}`;
+        row.setAttribute('data-id', item.id);
+        row.onclick = (e) => {
+          if (e.target.classList.contains('queue-checkbox')) return;
+          selectSubmission(item.id);
+        };
+
+        let statusBadgeClass = 'pending';
+        let statusText = 'Pending Review';
+        if (item.status === 'conflict') {
+          statusBadgeClass = 'conflict';
+          statusText = 'Collision Conflict';
+        } else if (item.status === 'clarification') {
+          statusBadgeClass = 'clarification';
+          statusText = 'Clarification Req';
+        } else if (item.flagged) {
+          statusBadgeClass = 'conflict';
+          statusText = 'Price Flagged';
+        }
+
+        row.innerHTML = `
+          <div>
+            <input type="checkbox" class="queue-checkbox" data-id="${item.id}" onclick="event.stopPropagation()">
+          </div>
+          <div class="queue-thumb-box">
+            <img src="${item.image}" alt="${item.title}" loading="lazy">
+          </div>
+          <div class="queue-main-meta">
+            <div class="queue-title-row">
+              <span class="queue-id-pill">${item.id}</span>
+              <h4 class="queue-title">${item.title}</h4>
+            </div>
+            <div class="queue-sub-info">
+              <span>${item.compoundShort}</span>
+              <span>·</span>
+              <span>${item.corridor}</span>
+            </div>
+            <div class="queue-agent-strip">
+              <span class="queue-agent-mono">${item.agentInitials}</span>
+              <span>${item.agent} (${item.agency})</span>
+            </div>
+          </div>
+          <div class="queue-valuation-col">
+            <span class="queue-price">${(item.priceEgp / 1000000).toFixed(1)}M EGP</span>
+            <span class="queue-price-m2">${item.pricePerM2.toLocaleString()} EGP/m²</span>
+          </div>
+          <div class="queue-status-col">
+            <span class="badge-review ${statusBadgeClass}">${statusText}</span>
+            <span class="queue-time-ago">${item.timeAgo}</span>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    // Select submission and update right dossier
+    function selectSubmission(id) {
+      currentSelectedId = id;
+      const item = activeSubmissions.find(s => s.id === id);
+      if (!item) return;
+
+      document.querySelectorAll('.queue-item-row').forEach(r => {
+        if (r.getAttribute('data-id') === id) {
+          r.classList.add('is-selected');
+        } else {
+          r.classList.remove('is-selected');
+        }
+      });
+
+      // Update Dossier View
+      document.getElementById('dossierThumb').src = item.image;
+      document.getElementById('dossierPropTitle').textContent = item.title;
+      document.getElementById('dossierPropCompound').textContent = `${item.compound} · ${item.builtArea} m²`;
+      document.getElementById('dossierPropPrice').textContent = `${item.priceEgp.toLocaleString()} EGP`;
+
+      document.getElementById('deedRefVal').textContent = item.deedRef;
+      document.getElementById('deedOwnerVal').textContent = item.ownerName;
+      document.getElementById('deedAgentVal').textContent = `${item.agent} (${item.license})`;
+      document.getElementById('deedMediaVal').textContent = `${item.mediaCount} Photos · ${item.watermarkAudit}`;
+
+      const matchBadge = document.getElementById('deedMatchBadge');
+      matchBadge.textContent = item.deedStatus.toUpperCase();
+      if (item.deedStatus === 'Verified') {
+        matchBadge.style.backgroundColor = 'var(--sage)';
+      } else {
+        matchBadge.style.backgroundColor = 'var(--error)';
+      }
+
+      // Collision card
+      const collisionCard = document.getElementById('collisionCard');
+      const colTitle = document.getElementById('collisionTitle');
+      const colDesc = document.getElementById('collisionDesc');
+
+      colDesc.textContent = item.collisionMessage;
+      if (item.collisionStatus === 'Conflict' || item.flagged) {
+        collisionCard.classList.add('conflict-active');
+        colTitle.textContent = item.collisionStatus === 'Conflict' ? 'CRITICAL MANDATE COLLISION' : 'PRICE VARIANCE ALERT';
+      } else {
+        collisionCard.classList.remove('conflict-active');
+        colTitle.textContent = 'Duplicate Collision Status';
+      }
+
+      // Update Modal
+      document.getElementById('modalCertDeedRef').textContent = item.deedRef;
+      document.getElementById('modalCertPropTitle').textContent = item.title;
+      document.getElementById('modalCertCompound').textContent = item.compound;
+      document.getElementById('modalCertOwner').textContent = item.ownerName;
+      document.getElementById('modalCertAgent').textContent = `${item.agent} (${item.license})`;
+    }
+
+    // Filtering Tabs
+    function filterTab(tab, btn) {
+      currentFilter = tab;
+      document.querySelectorAll('.triage-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (tab === 'all') {
+        renderQueue(activeSubmissions);
+      } else if (tab === 'conflict') {
+        renderQueue(activeSubmissions.filter(s => s.flagged || s.status === 'conflict'));
+      } else if (tab === 'clarification') {
+        renderQueue(activeSubmissions.filter(s => s.status === 'clarification'));
+      } else {
+        renderQueue(activeSubmissions.filter(s => s.type === tab));
+      }
+    }
+
+    // Search Queue
+    function searchQueue() {
+      const q = document.getElementById('triageSearchInput').value.toLowerCase();
+      const filtered = activeSubmissions.filter(s => 
+        s.id.toLowerCase().includes(q) ||
+        s.title.toLowerCase().includes(q) ||
+        s.compound.toLowerCase().includes(q) ||
+        s.agent.toLowerCase().includes(q) ||
+        s.deedRef.toLowerCase().includes(q)
+      );
+      renderQueue(filtered);
+    }
+
+    // Approve Current Listing
+    function approveCurrentListing() {
+      const item = activeSubmissions.find(s => s.id === currentSelectedId);
+      if (!item) return;
+
+      showToast(`Mandate ${item.id} (${item.title}) approved and published to live market`);
+
+      // Remove from pending active list
+      activeSubmissions = activeSubmissions.filter(s => s.id !== currentSelectedId);
+      document.getElementById('metricQueueCount').textContent = activeSubmissions.length;
+      document.getElementById('sidebarQueueCount').textContent = activeSubmissions.length;
+
+      if (activeSubmissions.length > 0) {
+        currentSelectedId = activeSubmissions[0].id;
+        renderQueue(activeSubmissions);
+        selectSubmission(currentSelectedId);
+      } else {
+        renderQueue([]);
+      }
+    }
+
+    // Batch Approve
+    function batchApproveSelected() {
+      const verifiedItems = activeSubmissions.filter(s => s.deedStatus === 'Verified' && !s.flagged);
+      const count = verifiedItems.length;
+      if (count === 0) {
+        showToast('No unflagged verified listings eligible for batch approval');
+        return;
+      }
+
+      activeSubmissions = activeSubmissions.filter(s => s.flagged || s.deedStatus !== 'Verified');
+      document.getElementById('metricQueueCount').textContent = activeSubmissions.length;
+      document.getElementById('sidebarQueueCount').textContent = activeSubmissions.length;
+
+      showToast(`Batch approved ${count} verified mandate listings to live market`);
+      renderQueue(activeSubmissions);
+      if (activeSubmissions.length > 0) selectSubmission(activeSubmissions[0].id);
+    }
+
+    // Rejection Modal
+    function openRejectModal() {
+      document.getElementById('rejectModal').style.display = 'flex';
+    }
+
+    function closeRejectModal() {
+      document.getElementById('rejectModal').style.display = 'none';
+    }
+
+    function confirmReject() {
+      const reason = document.getElementById('rejectReasonSelect').value;
+      showToast(`Submission ${currentSelectedId} rejected under reason: ${reason}. Notice dispatched to broker.`);
+      closeRejectModal();
+
+      activeSubmissions = activeSubmissions.filter(s => s.id !== currentSelectedId);
+      document.getElementById('metricQueueCount').textContent = activeSubmissions.length;
+      document.getElementById('sidebarQueueCount').textContent = activeSubmissions.length;
+
+      if (activeSubmissions.length > 0) {
+        currentSelectedId = activeSubmissions[0].id;
+        renderQueue(activeSubmissions);
+        selectSubmission(currentSelectedId);
+      } else {
+        renderQueue([]);
+      }
+    }
+
+    // Clarification Prompt
+    function openClarificationPrompt() {
+      showToast(`Clarification request dispatched to submitting broker for ${currentSelectedId}`);
+    }
+
+    // Deed Modal
+    function openDeedModal() {
+      document.getElementById('deedModal').style.display = 'flex';
+    }
+
+    function closeDeedModal(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close-btn')) return;
+      document.getElementById('deedModal').style.display = 'none';
+    }
+
+    // Select All
+    function toggleSelectAll(checkbox) {
+      const checks = document.querySelectorAll('.queue-checkbox');
+      checks.forEach(c => c.checked = checkbox.checked);
+      showToast(`${checkbox.checked ? 'Selected all' : 'Deselected all'} queue items`);
+    }
+
+    // Export Log
+    function exportQueueLog() {
+      showToast('Generating Compliance Triage Audit PDF...');
+      setTimeout(() => {
+        showToast('Settly-Moderation-Queue-2026-09-13.pdf downloaded');
+      }, 1000);
+    }
+
+    // Toast Function
+    function showToast(msg) {
+      const shelf = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brass);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>${msg}</span>
+      `;
+      shelf.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3200);
+    }
+
+    // Live Clock
+    function updateClock() {
+      const el = document.getElementById('cairoClock');
+      if (!el) return;
+      const now = new Date();
+      const options = { timeZone: 'Africa/Cairo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      el.textContent = `${now.toLocaleTimeString('en-GB', options)} CLT`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Mobile Sidebar Drawer
+    const mobileTrigger = document.getElementById('mobileMenuTrigger');
+    const sidebar = document.getElementById('adminSidebar');
+    if (mobileTrigger && sidebar) {
+      mobileTrigger.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+    }
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+</body>
+</html>

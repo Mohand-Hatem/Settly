@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Verify Authorization Token · Settly Sovereign Real Estate Exchange</title>
+    <title>Verify Email · Settly Real Estate</title>
 
     <!-- Google Fonts: Spectral (Editorial Serif), Plus Jakarta Sans (Clean UI), JetBrains Mono (Telemetry) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -792,7 +792,7 @@
         }
       }
     </style>
-  </head>
+</head>
   <body>
     <div class="auth-layout">
       <!-- Left Pane: Architectural Scrim & Institutional Credentials (50%) -->
@@ -827,9 +827,9 @@
 
           <!-- Editorial Scrim Statement & Boundary Card -->
           <div class="auth-editorial-block">
-            <div class="editorial-kicker">Fiduciary Signatory Verification</div>
+            <div class="editorial-kicker">Account Verification</div>
             <h2 class="editorial-quote">
-              "Every financial commitment requires an authenticated signatory. Securing your sovereign access to Egypt's verified property ledger."
+              "Every account is verified to ensure authentic interactions between buyers, sellers, and licensed advisors."
             </h2>
 
             <!-- Fiduciary Boundary Disclosure Card -->
@@ -838,7 +838,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
-                <span>Statutory Verification Safeguards (AUTH §6)</span>
+                <span>Account Verification Safeguards</span>
               </div>
               <ul class="boundary-rules-list">
                 <li class="boundary-rule-item">
@@ -850,7 +850,7 @@
                   <span class="rule-badge">Guarded</span>
                 </li>
                 <li class="boundary-rule-item">
-                  <span>O5 / Y2: Central Bank Statutory Escrow Deposit</span>
+                  <span>Secure Reservation Deposits &amp; Refunds</span>
                   <span class="rule-badge">Guarded</span>
                 </li>
               </ul>
@@ -868,11 +868,11 @@
             </div>
             <div class="pillar-item">
               <span class="pillar-val">Zero Phantoms</span>
-              <span class="pillar-lbl">Cadastral Audited</span>
+              <span class="pillar-lbl">Verified Deeds</span>
             </div>
             <div class="pillar-item">
-              <span class="pillar-val">Law 27/2020</span>
-              <span class="pillar-lbl">CBE Escrow Rail</span>
+              <span class="pillar-val">48-Hour</span>
+              <span class="pillar-lbl">Refund Window</span>
             </div>
           </div>
         </div>
@@ -913,7 +913,7 @@
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
-              <span class="dispatch-email-text" id="dispatchEmail">tarek.mansour@diaspora-capital.com</span>
+              <span class="dispatch-email-text" id="dispatchEmail">tarek.mansour@settly.com</span>
             </div>
             <button type="button" class="btn-change-email" onclick="promptChangeEmail()">Change</button>
           </div>
@@ -1056,7 +1056,7 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            <span>Central Bank of Egypt Law 27/2020 Statutory Protection</span>
+            <span>Verified Account &amp; Data Protection</span>
           </div>
         </div>
       </div>
@@ -1076,7 +1076,7 @@
          EMAIL VERIFICATION CONTROLLER (AUTH.md DECISION #38)
          ========================================================================== */
       let currentRole = 'buyer';
-      let currentEmail = 'tarek.mansour@diaspora-capital.com';
+      let currentEmail = 'tarek.mansour@settly.com';
       let cooldownSeconds = 45;
       let cooldownInterval = null;
 
@@ -1279,7 +1279,7 @@
         setTimeout(() => {
           btn.classList.remove('loading');
           btnText.textContent = 'Signatory Authenticated';
-          showToast('Fiduciary status confirmed. Unlocking verified terminal...');
+          showToast('Email verified successfully! Unlocking your portal...');
 
           setTimeout(() => {
             if (currentRole === 'agent') {
@@ -1301,5 +1301,5 @@
         }, 3200);
       }
     </script>
-  </body>
+</body>
 </html>

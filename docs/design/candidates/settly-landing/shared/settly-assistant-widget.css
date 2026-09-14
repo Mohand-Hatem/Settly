@@ -1,0 +1,1171 @@
+/* ============================================================================
+   SETTLY — GLOBAL AI ASSISTANT WIDGET & NAVIGATION INTEGRATION
+   Tokens strictly adhere to Settly Design Directive:
+     Navy (#131D36, #1E2A4A), Brass (#C69749, #AE8033), Bone Canvas (#F7F6F3, #EDE9DF), Sage (#3D5A4C).
+   ========================================================================= */
+
+/* ----------------------------------------------------------------------------
+   1. NAVBAR AI ASSISTANT EXECUTIVE BUTTON (Public Screens Header Actions)
+   ------------------------------------------------------------------------- */
+.settly-header-ai-btn,
+.settly-nav-ai-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(198, 151, 73, 0.12);
+  border: 1px solid rgba(198, 151, 73, 0.40);
+  color: var(--settly-navy-900, #131D36);
+  text-decoration: none;
+  font-family: var(--settly-sans, 'Plus Jakarta Sans', system-ui, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.settly-header-ai-btn:hover,
+.settly-nav-ai-tab:hover {
+  background: rgba(198, 151, 73, 0.22);
+  border-color: var(--settly-brass, #C69749);
+  color: var(--settly-navy-900, #131D36);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(198, 151, 73, 0.18);
+}
+
+.settly-master-header.header-dark .settly-header-ai-btn,
+.settly-master-header.header-dark .settly-nav-ai-tab {
+  background: rgba(198, 151, 73, 0.16);
+  border-color: rgba(198, 151, 73, 0.45);
+  color: #FFFFFF;
+}
+
+.settly-master-header.header-dark .settly-header-ai-btn:hover,
+.settly-master-header.header-dark .settly-nav-ai-tab:hover {
+  background: rgba(198, 151, 73, 0.28);
+  border-color: var(--settly-brass, #C69749);
+  color: #FFFFFF;
+}
+
+/* Settly Official Logo Backing Plate for Header Button */
+.header-ai-logo-plate,
+.nav-ai-logo-plate {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(198, 151, 73, 0.30);
+  flex-shrink: 0;
+}
+
+.header-ai-logo-img,
+.nav-ai-logo-img {
+  width: 15px;
+  height: auto;
+  max-height: 15px;
+  display: block;
+  object-fit: contain;
+}
+
+.header-ai-label,
+.nav-ai-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.header-ai-pulse-dot,
+.nav-ai-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #25D366;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.header-ai-pulse-dot::after,
+.nav-ai-pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid #25D366;
+  opacity: 0.75;
+  animation: navDotPulse 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes navDotPulse {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+
+/* ----------------------------------------------------------------------------
+   2. SIDEBAR AI ASSISTANT LINK (Dashboard Screens)
+   ------------------------------------------------------------------------- */
+.nav-link.nav-link-ai {
+  background: rgba(198, 151, 73, 0.08);
+  border: 1px solid rgba(198, 151, 73, 0.28);
+  color: var(--brass, #C69749) !important;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.nav-link.nav-link-ai:hover {
+  background: rgba(198, 151, 73, 0.16) !important;
+  border-color: var(--brass, #C69749) !important;
+  color: var(--white, #FFFFFF) !important;
+}
+
+.nav-link.nav-link-ai.active {
+  background-color: rgba(198, 151, 73, 0.22) !important;
+  border-color: var(--brass, #C69749) !important;
+  box-shadow: inset 3px 0 0 var(--brass, #C69749) !important;
+}
+
+/* Settly Official Logo Backing Plate for Sidebar Link */
+.sidebar-ai-logo-plate {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20);
+  border: 1px solid rgba(198, 151, 73, 0.35);
+  flex-shrink: 0;
+}
+
+.sidebar-ai-logo-img {
+  width: 15px;
+  height: auto;
+  max-height: 15px;
+  display: block;
+  object-fit: contain;
+}
+
+.sidebar-ai-pill {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: rgba(198, 151, 73, 0.18);
+  color: var(--brass, #C69749);
+  border: 1px solid rgba(198, 151, 73, 0.35);
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sidebar-ai-pill .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #25D366;
+  position: relative;
+}
+
+.sidebar-ai-pill .pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid #25D366;
+  animation: sidebarDotPulse 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes sidebarDotPulse {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+
+/* ----------------------------------------------------------------------------
+   3. PERSISTENT FLOATING TRIGGER (FAB)
+   ------------------------------------------------------------------------- */
+.settly-ai-trigger-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 58px;
+  height: 58px;
+  border-radius: 9999px;
+  background-color: #131D36;
+  border: 2px solid #C69749;
+  color: #C69749;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  z-index: 999;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, background-color 0.2s;
+  outline: none;
+}
+
+.settly-ai-trigger-fab:hover {
+  transform: scale(1.08) translateY(-2px);
+  background-color: #1E2A4A;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.fab-pulse-halo {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid #C69749;
+  opacity: 0;
+  animation: fabPulse 2.8s infinite;
+  pointer-events: none;
+}
+
+@keyframes fabPulse {
+  0% { transform: scale(1); opacity: 0.65; }
+  60% { transform: scale(1.32); opacity: 0; }
+  100% { transform: scale(1.32); opacity: 0; }
+}
+
+.fab-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Settly Official Logo Backing Plate for FAB */
+.fab-logo-plate {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border: 1.5px solid #C69749;
+  overflow: hidden;
+  padding: 3px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.settly-ai-trigger-fab:hover .fab-logo-plate {
+  transform: scale(1.05);
+}
+
+.fab-logo-img {
+  width: 24px;
+  height: auto;
+  max-height: 24px;
+  object-fit: contain;
+  display: block;
+}
+
+.fab-live-indicator {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background-color: #25D366;
+  border: 2px solid #131D36;
+}
+
+.fab-tooltip {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background-color: #131D36;
+  color: #FFFFFF;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(198, 151, 73, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.settly-ai-trigger-fab:hover .fab-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+
+/* ----------------------------------------------------------------------------
+   4. DIMMED BACKDROP & SLIDING OVERLAY DRAWER
+   ------------------------------------------------------------------------- */
+.settly-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(19, 29, 54, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1050;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.settly-overlay-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settly-assistant-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 440px;
+  max-width: 100vw;
+  background-color: #F7F6F3;
+  z-index: 1100;
+  box-shadow: -8px 0 36px rgba(0, 0, 0, 0.20);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 1px solid rgba(30, 42, 74, 0.18);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: #16203A;
+}
+
+.settly-assistant-overlay.open {
+  transform: translateX(0);
+}
+
+/* Header */
+.settly-assistant-overlay .overlay-header {
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #131D36 0%, #1E2A4A 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(198, 151, 73, 0.25);
+  flex-shrink: 0;
+}
+
+.settly-assistant-overlay .overlay-hdr-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settly-assistant-overlay .overlay-hdr-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #C69749;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C69749;
+  flex-shrink: 0;
+  padding: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.20);
+}
+
+.settly-assistant-overlay .hdr-badge-logo {
+  width: 22px;
+  height: auto;
+  max-height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+.settly-assistant-overlay .hdr-assistant-title {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.settly-assistant-overlay .hdr-assistant-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  color: #C69749;
+}
+
+.settly-assistant-overlay .hdr-assistant-sub .dot-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #25D366;
+}
+
+.settly-assistant-overlay .overlay-hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.settly-assistant-overlay .overlay-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.settly-assistant-overlay .overlay-icon-btn:hover {
+  background-color: rgba(198, 151, 73, 0.25);
+  border-color: #C69749;
+  color: #C69749;
+}
+
+/* Prominent Standalone Link Banner */
+.overlay-full-page-banner {
+  padding: 8px 16px;
+  background: linear-gradient(90deg, #FAF5EB 0%, #EDE9DF 100%);
+  border-bottom: 1px solid rgba(198, 151, 73, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #131D36;
+  flex-shrink: 0;
+}
+
+.overlay-full-page-banner span {
+  font-weight: 600;
+}
+
+.overlay-full-page-banner a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #AE8033;
+  font-weight: 700;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  transition: color 0.15s;
+}
+
+.overlay-full-page-banner a:hover {
+  color: #131D36;
+  text-decoration: underline;
+}
+
+/* Mode Switcher Bar */
+.settly-assistant-overlay .overlay-modes-bar {
+  padding: 8px 16px;
+  background-color: #EDE9DF;
+  border-bottom: 1px solid rgba(30, 42, 74, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.settly-assistant-overlay .overlay-pill-group {
+  display: inline-flex;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(30, 42, 74, 0.18);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.settly-assistant-overlay .overlay-pill-btn {
+  padding: 4px 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border: none;
+  background: none;
+  color: #4C5878;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settly-assistant-overlay .overlay-pill-btn.active {
+  background-color: #131D36;
+  color: #C69749;
+}
+
+.settly-assistant-overlay .overlay-context-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  color: #646D88;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+/* Scrollable Body */
+.settly-assistant-overlay .overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Chat Messages */
+.ovl-msg-row {
+  display: flex;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.ovl-msg-row.user {
+  justify-content: flex-end;
+}
+
+.ovl-user-bubble {
+  background-color: #131D36;
+  color: #FFFFFF;
+  border-radius: 0.5625rem 0.5625rem 8px 0.5625rem;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  max-width: 84%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ovl-assistant-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.ovl-msg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ovl-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background-color: #131D36;
+  border: 1px solid #C69749;
+  color: #C69749;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ovl-meta-author {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #131D36;
+}
+
+.ovl-verified-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  color: #3D5A4C;
+  background-color: #EAF0EC;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.ovl-meta-time {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  color: #646D88;
+}
+
+.ovl-assistant-bubble {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(30, 42, 74, 0.10);
+  border-radius: 8px 0.5625rem 0.5625rem 0.5625rem;
+  padding: 12px 14px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #16203A;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Citations */
+.ovl-citation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #EDE9DF;
+  color: #131D36;
+  border: 1px solid rgba(30, 42, 74, 0.18);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, background-color 0.15s;
+  vertical-align: middle;
+}
+
+.ovl-citation-chip:hover {
+  background-color: #FAF5EB;
+  border-color: #C69749;
+  color: #131D36;
+}
+
+/* Confirmable Action Card */
+.ovl-confirmable-card {
+  background-color: #FFFFFF;
+  border: 1.5px solid #C69749;
+  border-radius: 0.5625rem;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.ovl-action-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ovl-action-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #AE8033;
+  letter-spacing: 0.06em;
+}
+
+.ovl-action-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  background-color: #FAF5EB;
+  color: #AE8033;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.ovl-action-title {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #131D36;
+  line-height: 1.3;
+}
+
+.ovl-action-desc {
+  font-size: 0.75rem;
+  color: #4C5878;
+  line-height: 1.45;
+}
+
+.ovl-action-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  background-color: #F7F6F3;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(30, 42, 74, 0.10);
+}
+
+.ovl-action-specs .spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ovl-action-specs .lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5625rem;
+  color: #646D88;
+}
+
+.ovl-action-specs .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #131D36;
+}
+
+.ovl-action-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-ovl-secondary {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(30, 42, 74, 0.18);
+  background-color: #FFFFFF;
+  color: #4C5878;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.btn-ovl-secondary:hover {
+  background-color: #EDE9DF;
+  color: #131D36;
+}
+
+.btn-ovl-primary {
+  flex: 1.4;
+  padding: 8px 12px;
+  border: none;
+  background-color: #C69749;
+  color: #131D36;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.15s;
+}
+
+.btn-ovl-primary:hover {
+  background-color: #AE8033;
+  color: #FFFFFF;
+}
+
+/* Shortlist Agent View */
+.overlay-agent-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ovl-agent-banner {
+  background: linear-gradient(135deg, #131D36 0%, #1E2A4A 100%);
+  border-radius: 0.5625rem;
+  padding: 14px;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #C69749;
+}
+
+.ovl-agent-banner .agent-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #C69749;
+  letter-spacing: 0.08em;
+}
+
+.ovl-agent-banner .agent-title {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ovl-agent-banner .agent-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  color: #EAF0EC;
+}
+
+.ovl-plan-card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(30, 42, 74, 0.10);
+  border-radius: 0.5625rem;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-card-hdr {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #646D88;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.plan-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plan-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+}
+
+.plan-step .step-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background-color: #EAF0EC;
+  color: #3D5A4C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plan-step .step-txt {
+  flex: 1;
+  color: #16203A;
+}
+
+.plan-step .step-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  color: #AE8033;
+  font-weight: 600;
+}
+
+.ovl-mini-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ovl-mini-card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(30, 42, 74, 0.10);
+  border-radius: 0.5625rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ovl-mini-card:hover {
+  border-color: #C69749;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.ovl-mini-card .mini-img-wrap {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+  background-color: #131D36;
+}
+
+.ovl-mini-card .mini-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ovl-mini-card .mini-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(19, 29, 54, 0.85);
+  color: #C69749;
+  border: 1px solid #C69749;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+}
+
+.ovl-mini-card .mini-info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ovl-mini-card .mini-loc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #AE8033;
+  text-transform: uppercase;
+}
+
+.ovl-mini-card .mini-name {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #131D36;
+}
+
+.ovl-mini-card .mini-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #131D36;
+}
+
+.ovl-mini-card .mini-specs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  color: #4C5878;
+  margin-bottom: 6px;
+}
+
+.btn-mini-request {
+  padding: 7px 12px;
+  background-color: #1E2A4A;
+  color: #FFFFFF;
+  border: 1px solid #C69749;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-mini-request:hover {
+  background-color: #C69749;
+  color: #131D36;
+}
+
+/* Bottom Composer */
+.settly-assistant-overlay .overlay-composer {
+  padding: 12px 14px;
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(30, 42, 74, 0.10);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.ovl-composer-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #F7F6F3;
+  border: 1px solid rgba(30, 42, 74, 0.18);
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+.ovl-composer-row:focus-within {
+  border-color: #C69749;
+}
+
+.ovl-composer-input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8125rem;
+  color: #16203A;
+}
+
+.composer-icon-btn {
+  background: none;
+  border: none;
+  color: #646D88;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.composer-icon-btn:hover {
+  color: #131D36;
+}
+
+.ovl-btn-send {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: #1E2A4A;
+  color: #FFFFFF;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.ovl-btn-send:hover {
+  background-color: #AE8033;
+}
+
+.ovl-composer-disclaimer {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5625rem;
+  color: #646D88;
+}
+
+/* Toast */
+.ovl-toast {
+  position: fixed;
+  bottom: 96px;
+  right: 28px;
+  background-color: #131D36;
+  color: #FFFFFF;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #C69749;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 1200;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.ovl-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ----------------------------------------------------------------------------
+   5. ARABIC RTL MIRRORED OVERRIDES
+   ------------------------------------------------------------------------- */
+html[dir="rtl"] .settly-ai-trigger-fab,
+[dir="rtl"] .settly-ai-trigger-fab {
+  right: auto !important;
+  left: 28px !important;
+}
+
+html[dir="rtl"] .settly-ai-trigger-fab .fab-live-indicator,
+[dir="rtl"] .settly-ai-trigger-fab .fab-live-indicator {
+  right: auto !important;
+  left: -2px !important;
+}
+
+html[dir="rtl"] .settly-ai-trigger-fab .fab-tooltip,
+[dir="rtl"] .settly-ai-trigger-fab .fab-tooltip {
+  right: auto !important;
+  left: calc(100% + 14px) !important;
+  transform: translateY(-50%) translateX(-6px) !important;
+}
+
+html[dir="rtl"] .settly-ai-trigger-fab:hover .fab-tooltip,
+[dir="rtl"] .settly-ai-trigger-fab:hover .fab-tooltip {
+  transform: translateY(-50%) translateX(0) !important;
+}
+
+html[dir="rtl"] .settly-assistant-overlay,
+[dir="rtl"] .settly-assistant-overlay {
+  right: auto !important;
+  left: 0 !important;
+  transform: translateX(-100%) !important;
+  border-left: none !important;
+  border-right: 1px solid rgba(30, 42, 74, 0.18) !important;
+  box-shadow: 8px 0 36px rgba(0, 0, 0, 0.20) !important;
+}
+
+html[dir="rtl"] .settly-assistant-overlay.open,
+[dir="rtl"] .settly-assistant-overlay.open {
+  transform: translateX(0) !important;
+}
+
+html[dir="rtl"] .ovl-msg-row.user,
+[dir="rtl"] .ovl-msg-row.user {
+  justify-content: flex-start !important;
+}
+
+html[dir="rtl"] .ovl-user-bubble,
+[dir="rtl"] .ovl-user-bubble {
+  border-radius: 0.5625rem 0.5625rem 0.5625rem 8px !important;
+}
+
+html[dir="rtl"] .ovl-assistant-bubble,
+[dir="rtl"] .ovl-assistant-bubble {
+  border-radius: 0.5625rem 8px 0.5625rem 0.5625rem !important;
+}
+
+html[dir="rtl"] .ovl-btn-send svg,
+[dir="rtl"] .ovl-btn-send svg {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .ovl-toast,
+[dir="rtl"] .ovl-toast {
+  right: auto !important;
+  left: 28px !important;
+}
+
+html[dir="rtl"] .sidebar-ai-pill,
+[dir="rtl"] .sidebar-ai-pill {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}

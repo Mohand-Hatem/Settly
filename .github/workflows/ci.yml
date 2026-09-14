@@ -1,0 +1,155 @@
+name: Settly CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend CI (Lint, Typecheck, Boundaries, Healthcheck)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Start PostgreSQL & Redis Services
+        run: |
+          docker compose up -d postgres redis
+          echo "Waiting for PostgreSQL service to be ready..."
+          until docker compose exec -T postgres pg_isready -U settly -d settly; do
+            sleep 2
+          done
+          echo "PostgreSQL is ready."
+
+      - name: Install Dependencies
+        run: npm --prefix backend ci
+
+      - name: ESLint Check
+        run: npm --prefix backend run lint
+
+      - name: TypeScript Strict Compilation
+        run: npm --prefix backend run build
+
+      - name: Architectural Boundary Lint Test
+        run: npm --prefix backend run test:boundaries
+
+      - name: Apply Database Migrations
+        run: npx --prefix backend prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+
+      - name: Verify Database Constraints & Invariants
+        run: npm --prefix backend run test:db
+        env:
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+
+      - name: OpenAPI Drift Gate
+        run: npm --prefix backend run check:openapi-drift
+
+      - name: Healthcheck Verification Test
+        run: npm --prefix backend run test:health
+        env:
+          PORT: 4000
+          NODE_ENV: test
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+          REDIS_URL: redis://localhost:6379
+          BETTER_AUTH_SECRET: ci_test_auth_secret_minimum_32_characters_12345
+          BETTER_AUTH_URL: http://localhost:4000
+          FRONTEND_URL: http://localhost:3000
+          RESEND_API_KEY: re_ci_placeholder
+
+      - name: Endpoint & RFC 9457 Integration Tests
+        run: npm --prefix backend run test:endpoints
+        env:
+          PORT: 4002
+          NODE_ENV: test
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+          REDIS_URL: redis://localhost:6379
+          BETTER_AUTH_SECRET: ci_test_auth_secret_minimum_32_characters_12345
+          BETTER_AUTH_URL: http://localhost:4002
+          FRONTEND_URL: http://localhost:3000
+          RESEND_API_KEY: re_ci_placeholder
+
+      - name: Auth & RBAC Integration Tests
+        run: npm --prefix backend run test:auth
+        env:
+          PORT: 4003
+          NODE_ENV: test
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+          REDIS_URL: redis://localhost:6379
+          BETTER_AUTH_SECRET: ci_test_auth_secret_minimum_32_characters_12345
+          BETTER_AUTH_URL: http://localhost:4003
+          FRONTEND_URL: http://localhost:3000
+          RESEND_API_KEY: re_ci_placeholder
+
+      - name: Agent Verification & Device Integration Tests
+        run: npm --prefix backend run test:agent-verification
+        env:
+          PORT: 4004
+          NODE_ENV: test
+          DATABASE_URL: postgresql://settly:settly@localhost:5432/settly
+          REDIS_URL: redis://localhost:6379
+          BETTER_AUTH_SECRET: ci_test_auth_secret_minimum_32_characters_12345
+          BETTER_AUTH_URL: http://localhost:4004
+          FRONTEND_URL: http://localhost:3000
+          RESEND_API_KEY: re_ci_placeholder
+
+      - name: Security Audit (Critical Only)
+        run: npm --prefix backend audit --audit-level=critical
+
+  frontend:
+    name: Frontend CI (Lint, Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm --prefix frontend ci
+
+      - name: Next.js ESLint Check
+        run: npm --prefix frontend run lint
+
+      - name: Next.js Production Build
+        run: npm --prefix frontend run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:4000
+          NEXT_PUBLIC_WS_URL: ws://localhost:4000/ws/chat
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_MAPTILER_KEY: ci_placeholder
+
+      - name: Security Audit (Critical Only)
+        run: npm --prefix frontend audit --audit-level=critical
+
+  ci-status:
+    name: All CI Gates Passed
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm Status
+        run: echo "✅ All gates green."

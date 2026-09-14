@@ -1,0 +1,41 @@
+services:
+  postgres:
+    container_name: settly-postgres
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: settly
+      POSTGRES_PASSWORD: settly
+      POSTGRES_DB: settly
+    volumes:
+      - settly_pgdata:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U settly -d settly"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: settly-redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - settly_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  settly_pgdata:
+    name: settly_pgdata
+  settly_redisdata:
+    name: settly_redisdata

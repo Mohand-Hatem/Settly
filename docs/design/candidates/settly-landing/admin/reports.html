@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Analytics & Governance Reports · Settly Central Oversight</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --error-bg: #FEE2E2;
+      --warning: #B45309;
+      --warning-bg: #FEF3C7;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 290px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Admin Fixed Sidebar Navigation */
+    .admin-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav-container {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0 12px 8px 12px;
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.18);
+      border: 1px solid rgba(198, 151, 73, 0.4);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.live {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    .sidebar-user-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--brass);
+      border: 1px solid var(--brass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .admin-meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-role {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass-200);
+    }
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .breadcrumb-trail .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+      box-shadow: 0 0 0 2px rgba(61, 90, 76, 0.2);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .system-clock {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      background-color: var(--canvas);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .quick-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .btn-secondary {
+      background-color: var(--canvas-2);
+      color: var(--ink);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-secondary:hover {
+      background-color: #EDEAE1;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-800);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-900);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+    }
+
+    /* Portal Container */
+    .portal-content {
+      padding: 28px 32px 48px 32px;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Executive Top Hero */
+    .hero-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero-heading {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .hero-sub {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      margin-top: 4px;
+    }
+
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audit-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--navy-800);
+    }
+
+    /* 4-Metric Executive Ribbon */
+    .metrics-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: transparent;
+    }
+
+    .metric-card.accent-navy::after { background: var(--navy-800); }
+    .metric-card.accent-brass::after { background: var(--brass); }
+    .metric-card.accent-sage::after { background: var(--sage); }
+    .metric-card.accent-error::after { background: var(--error); }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .metric-number {
+      font-family: var(--font-mono);
+      font-size: 2.125rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .metric-delta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .metric-delta.positive {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .metric-delta.neutral {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .metric-footer {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    /* Interactive Filter Controls Bar */
+    .controls-toolbar {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      flex-wrap: wrap;
+    }
+
+    .timeframe-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--canvas);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .time-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: none;
+      border: none;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .time-tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .time-tab-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .toolbar-select-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Main Analytics Charts Section */
+    .analytics-grid-two {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .chart-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .chart-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .chart-sub {
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+    }
+
+    .chart-telemetry-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      color: var(--navy-900);
+    }
+
+    /* Interactive SVG Bar & Area Chart Container */
+    .svg-chart-wrap {
+      width: 100%;
+      height: 260px;
+      position: relative;
+    }
+
+    .svg-chart-wrap svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .chart-bar-group {
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .chart-bar-group:hover rect.bar-primary {
+      fill: var(--brass);
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    /* Donut Chart Presentation */
+    .donut-layout {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 8px;
+    }
+
+    .donut-svg-container {
+      width: 180px;
+      height: 180px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .donut-center-telemetry {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-center-num {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .donut-center-sub {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .legend-item:hover {
+      background-color: var(--canvas-2);
+    }
+
+    .legend-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      margin-left: 8px;
+      margin-right: auto;
+    }
+
+    .legend-share {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-800);
+    }
+
+    /* Developer Delivery & Compliance Table Section */
+    .section-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 28px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .section-header-bar {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      background-color: var(--canvas);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .dev-table-wrap {
+      overflow-x: auto;
+    }
+
+    .dev-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .dev-table th {
+      background-color: #FAFAFA;
+      padding: 12px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      vertical-align: middle;
+    }
+
+    .dev-table tr:hover td {
+      background-color: #FAF9F6;
+    }
+
+    .dev-badge-plate {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dev-logo-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-900);
+      color: var(--brass-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 1px solid var(--brass);
+    }
+
+    .dev-name-stack {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dev-brand-name {
+      font-weight: 700;
+      color: var(--navy-900);
+      font-size: 0.875rem;
+    }
+
+    .dev-brand-corridor {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+    }
+
+    /* Governance Reports Download Archive */
+    .gov-reports-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 24px;
+    }
+
+    .gov-card {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.15s ease;
+    }
+
+    .gov-card:hover {
+      border-color: var(--brass);
+      background-color: var(--white);
+      box-shadow: 0 4px 12px rgba(19, 29, 54, 0.06);
+    }
+
+    .gov-category-tag {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .gov-title {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.3;
+    }
+
+    .gov-summary {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .gov-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .gov-download-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-800);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .gov-download-btn:hover {
+      background-color: var(--navy-900);
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brass);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+    }
+
+    .toast-pill.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1200px) {
+      .analytics-grid-two {
+        grid-template-columns: 1fr;
+      }
+      .gov-reports-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .metrics-ribbon {
+        grid-template-columns: 1fr;
+      }
+      .controls-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Canonical Admin Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">SOVEREIGN ADMIN</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Oversight &amp; Operations</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="moderation.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Moderation Queue</span>
+                <span class="nav-badge" id="sidebarQueueCount">7</span>
+              </a>
+            </li>
+            <li>
+              <a href="agent-verification.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11l-3 3-2-2"></path></svg>
+                <span>Agent Verification</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Intelligence &amp; Governance</div>
+          <ul class="nav-list">
+            <li>
+              <a href="reports.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Platform Reports</span>
+              </a>
+            </li>
+            <li>
+              <a href="audit-log.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <span>Audit Log</span>
+                <span class="nav-badge live">Live</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Cross-Portal Access</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../agent-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Agent Desk</span>
+              </a>
+            </li>
+            <li>
+              <a href="../buyer-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Buyer Portal</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/index.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Market</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer User Card -->
+      <div class="sidebar-user-footer">
+        <div class="admin-profile-card">
+          <div class="admin-avatar">TH</div>
+          <div class="admin-meta">
+            <span class="admin-name">Tamer Hegazy</span>
+            <span class="admin-role">Chief Registrar #SR-001</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Analytics Workspace -->
+    <main class="portal-main">
+      
+      <!-- Top Sticky Navigation Bar -->
+      <header class="portal-topbar">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Open Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="breadcrumb-trail">
+            <span>Governance</span>
+            <span>/</span>
+            <span>Macro Intelligence</span>
+            <span>/</span>
+            <span class="current">Platform Reports</span>
+          </div>
+          <div class="portal-trust-chip">
+            <span class="trust-dot"></span>
+            <span>Telemetry: Live Q3 2026</span>
+          </div>
+        </div>
+
+        <div class="header-end">
+          <div class="system-clock" id="systemClock">13 Sep 2026 · 14:30:12 EET</div>
+          <button class="quick-action-btn btn-secondary" onclick="exportCSVReport()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Export Raw Telemetry</span>
+          </button>
+          <button class="quick-action-btn btn-brass" onclick="downloadExecutivePDF()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Quarterly Dossier (PDF)</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Portal Content Body -->
+      <div class="portal-content">
+
+        <!-- Executive Hero -->
+        <div class="hero-banner">
+          <div>
+            <h1 class="hero-heading">Macro Intelligence & Governance</h1>
+            <p class="hero-sub">Corridor transaction velocity, platform GMV absorption, and ministerial title compliance audit</p>
+          </div>
+          <div class="hero-badges">
+            <div class="audit-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              <span>Settlement Horizon: 28 Days</span>
+            </div>
+            <div class="audit-chip" style="color: var(--sage); border-color: rgba(61,90,76,0.3);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>Audit Confidence: 99.8%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Metric Executive Ribbon -->
+        <div class="metrics-ribbon">
+          <div class="metric-card accent-navy">
+            <span class="metric-label">Platform Gross Transaction Volume</span>
+            <div class="metric-value-row">
+              <span class="metric-number">3.84B</span>
+              <span class="metric-delta positive">+18.4% YoY</span>
+            </div>
+            <span class="metric-footer">Egyptian Pounds settled across corridors</span>
+          </div>
+
+          <div class="metric-card accent-brass">
+            <span class="metric-label">Active Mandate Velocity</span>
+            <div class="metric-value-row">
+              <span class="metric-number">642</span>
+              <span class="metric-delta neutral">34d Median</span>
+            </div>
+            <span class="metric-footer">Verified exclusive compound listings</span>
+          </div>
+
+          <div class="metric-card accent-sage">
+            <span class="metric-label">Prime Corridor Absorption</span>
+            <div class="metric-value-row">
+              <span class="metric-number">92.4%</span>
+              <span class="metric-delta positive">+4.2%</span>
+            </div>
+            <span class="metric-footer">New Cairo & Zayed inventory clearance</span>
+          </div>
+
+          <div class="metric-card accent-error">
+            <span class="metric-label">Title Collision Clearance</span>
+            <div class="metric-value-row">
+              <span class="metric-number">99.7%</span>
+              <span class="metric-delta positive">0 Flags</span>
+            </div>
+            <span class="metric-footer">Zero duplicate cadastral plots tolerated</span>
+          </div>
+        </div>
+
+        <!-- Interactive Filter Controls Bar -->
+        <div class="controls-toolbar">
+          <div class="timeframe-tabs">
+            <button class="time-tab-btn active" onclick="switchTimeframe('q3', this)">Q3 2026 (Active)</button>
+            <button class="time-tab-btn" onclick="switchTimeframe('q2', this)">Q2 2026</button>
+            <button class="time-tab-btn" onclick="switchTimeframe('q1', this)">Q1 2026</button>
+            <button class="time-tab-btn" onclick="switchTimeframe('fy25', this)">FY2025 Full</button>
+          </div>
+
+          <div class="toolbar-select-group">
+            <select class="filter-select" id="corridorSelect" onchange="handleCorridorFilter(this.value)">
+              <option value="all">All Corridors (Greater Cairo & Coast)</option>
+              <option value="new-cairo">New Cairo · Golden Square & South 90</option>
+              <option value="zayed">Sheikh Zayed & 6th of October</option>
+              <option value="coast">North Coast · Ras El Hekma & Sidi Abd El Rahman</option>
+            </select>
+
+            <select class="filter-select" id="metricTypeSelect" onchange="handleMetricType(this.value)">
+              <option value="volume">GTV Volume (EGP)</option>
+              <option value="units">Transactions Count (Units)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Main Analytics Charts Section -->
+        <div class="analytics-grid-two">
+          
+          <!-- Corridor Transaction Velocity Bar Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Corridor Capital Flow & Velocity</h3>
+                <p class="chart-sub">Gross settled volume distribution across prime Egyptian development zones</p>
+              </div>
+              <div class="chart-telemetry-badge" id="chartTotalBadge">Total: 3.84B EGP</div>
+            </div>
+
+            <div class="svg-chart-wrap" id="barChartContainer">
+              <div class="chart-tooltip" id="chartTooltip"></div>
+              <svg viewBox="0 0 700 240" preserveAspectRatio="none">
+                <!-- Grid Lines -->
+                <line x1="60" y1="30" x2="680" y2="30" stroke="rgba(30, 42, 74, 0.08)" stroke-dasharray="4"/>
+                <line x1="60" y1="80" x2="680" y2="80" stroke="rgba(30, 42, 74, 0.08)" stroke-dasharray="4"/>
+                <line x1="60" y1="130" x2="680" y2="130" stroke="rgba(30, 42, 74, 0.08)" stroke-dasharray="4"/>
+                <line x1="60" y1="180" x2="680" y2="180" stroke="rgba(30, 42, 74, 0.08)" stroke-dasharray="4"/>
+                <line x1="60" y1="210" x2="680" y2="210" stroke="rgba(30, 42, 74, 0.16)"/>
+
+                <!-- Axis Labels -->
+                <text x="50" y="34" font-family="JetBrains Mono" font-size="10" fill="#646D88" text-anchor="end">2.0B</text>
+                <text x="50" y="84" font-family="JetBrains Mono" font-size="10" fill="#646D88" text-anchor="end">1.5B</text>
+                <text x="50" y="134" font-family="JetBrains Mono" font-size="10" fill="#646D88" text-anchor="end">1.0B</text>
+                <text x="50" y="184" font-family="JetBrains Mono" font-size="10" fill="#646D88" text-anchor="end">0.5B</text>
+                <text x="50" y="214" font-family="JetBrains Mono" font-size="10" fill="#646D88" text-anchor="end">0.0</text>
+
+                <!-- Corridor 1: New Cairo (1.68B) -->
+                <g class="chart-bar-group" onmouseenter="showTooltip(event, 'New Cairo · Golden Square: 1.68B EGP (43.7%)')" onmouseleave="hideTooltip()">
+                  <rect class="bar-primary" x="110" y="42" width="60" height="168" rx="4" fill="#1E2A4A"/>
+                  <text x="140" y="228" font-family="Plus Jakarta Sans" font-size="11" font-weight="600" fill="#16203A" text-anchor="middle">New Cairo</text>
+                  <text x="140" y="34" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#C69749" text-anchor="middle">1.68B</text>
+                </g>
+
+                <!-- Corridor 2: Sheikh Zayed (1.12B) -->
+                <g class="chart-bar-group" onmouseenter="showTooltip(event, 'Sheikh Zayed & October: 1.12B EGP (29.2%)')" onmouseleave="hideTooltip()">
+                  <rect class="bar-primary" x="250" y="98" width="60" height="112" rx="4" fill="#2B3A61"/>
+                  <text x="280" y="228" font-family="Plus Jakarta Sans" font-size="11" font-weight="600" fill="#16203A" text-anchor="middle">Zayed / Oct</text>
+                  <text x="280" y="90" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#C69749" text-anchor="middle">1.12B</text>
+                </g>
+
+                <!-- Corridor 3: North Coast (780M) -->
+                <g class="chart-bar-group" onmouseenter="showTooltip(event, 'North Coast & Ras El Hekma: 780M EGP (20.3%)')" onmouseleave="hideTooltip()">
+                  <rect class="bar-primary" x="390" y="132" width="60" height="78" rx="4" fill="#3D5A4C"/>
+                  <text x="420" y="228" font-family="Plus Jakarta Sans" font-size="11" font-weight="600" fill="#16203A" text-anchor="middle">North Coast</text>
+                  <text x="420" y="124" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#3D5A4C" text-anchor="middle">780M</text>
+                </g>
+
+                <!-- Corridor 4: Mostakbal & Capital (260M) -->
+                <g class="chart-bar-group" onmouseenter="showTooltip(event, 'Mostakbal & R8 Capital: 260M EGP (6.8%)')" onmouseleave="hideTooltip()">
+                  <rect class="bar-primary" x="530" y="184" width="60" height="26" rx="4" fill="#C69749"/>
+                  <text x="560" y="228" font-family="Plus Jakarta Sans" font-size="11" font-weight="600" fill="#16203A" text-anchor="middle">Mostakbal</text>
+                  <text x="560" y="176" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#16203A" text-anchor="middle">260M</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Buyer Liquidity Origin Donut Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Buyer Liquidity Composition</h3>
+                <p class="chart-sub">Sovereign settlement currency & capital origin</p>
+              </div>
+            </div>
+
+            <div class="donut-layout">
+              <div class="donut-svg-container">
+                <svg viewBox="0 0 100 100">
+                  <!-- Segment 1: Local Domestic (62%) -> 62% of 251.2 = 155.7, offset 0 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#1E2A4A" stroke-width="14" stroke-dasharray="155.7 251.2" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+                  
+                  <!-- Segment 2: GCC / Expatriate Remittance (24%) -> 60.3, offset -155.7 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#C69749" stroke-width="14" stroke-dasharray="60.3 251.2" stroke-dashoffset="-155.7" transform="rotate(-90 50 50)"/>
+                  
+                  <!-- Segment 3: Foreign Direct Escrow (14%) -> 35.2, offset -216.0 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#3D5A4C" stroke-width="14" stroke-dasharray="35.2 251.2" stroke-dashoffset="-216.0" transform="rotate(-90 50 50)"/>
+                </svg>
+
+                <div class="donut-center-telemetry">
+                  <span class="donut-center-num">3.84B</span>
+                  <span class="donut-center-sub">TOTAL ESCROW</span>
+                </div>
+              </div>
+
+              <div class="donut-legend">
+                <div class="legend-item" onmouseenter="highlightDonut('local')" onmouseleave="resetDonut()">
+                  <div class="legend-indicator" style="background-color: var(--navy-800);"></div>
+                  <span class="legend-name">Domestic Capital</span>
+                  <span class="legend-share">62% (2.38B)</span>
+                </div>
+
+                <div class="legend-item" onmouseenter="highlightDonut('gcc')" onmouseleave="resetDonut()">
+                  <div class="legend-indicator" style="background-color: var(--brass);"></div>
+                  <span class="legend-name">GCC & Expat Remittance</span>
+                  <span class="legend-share">24% (920M)</span>
+                </div>
+
+                <div class="legend-item" onmouseenter="highlightDonut('foreign')" onmouseleave="resetDonut()">
+                  <div class="legend-indicator" style="background-color: var(--sage);"></div>
+                  <span class="legend-name">Institutional Escrow</span>
+                  <span class="legend-share">14% (540M)</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size: 0.75rem; color: var(--ink-3); margin-top: 8px; border-top: 1px solid var(--line); padding-top: 10px;">
+              • 100% of transactions cleared via authenticated Egyptian bank escrow
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Master Developer Compliance & Delivery Rankings Section -->
+        <div class="section-card">
+          <div class="section-header-bar">
+            <div>
+              <h3 class="section-title">Developer Accreditation & Delivery Health Index</h3>
+              <p style="font-size: 0.8125rem; color: var(--ink-3);">Audited completion milestones, deed authentication latency, and zero-collision ratings</p>
+            </div>
+            <button class="quick-action-btn btn-secondary" onclick="exportDeveloperRankings()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Download Developer Registry</span>
+            </button>
+          </div>
+
+          <div class="dev-table-wrap">
+            <table class="dev-table">
+              <thead>
+                <tr>
+                  <th>Developer Institution</th>
+                  <th>Core Territory Corridors</th>
+                  <th>Active Projects</th>
+                  <th>Verified Units</th>
+                  <th>Delivery On-Time</th>
+                  <th>Title Latency</th>
+                  <th>Dispute Rate</th>
+                  <th>Cumulative GTV</th>
+                  <th>Status Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="dev-badge-plate">
+                      <div class="dev-logo-avatar">EM</div>
+                      <div class="dev-name-stack">
+                        <span class="dev-brand-name">Emaar Misr</span>
+                        <span class="dev-brand-corridor">Verified Developer Partner</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>New Cairo · North Coast · Sheikh Zayed</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700;">12 Developments</td>
+                  <td style="font-family: var(--font-mono);">184 Units</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage); font-weight: 700;">98.4%</td>
+                  <td style="font-family: var(--font-mono);">1.8 Days</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage);">0.0%</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">1.42B EGP</td>
+                  <td>
+                    <span class="rating-pill">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                      <span>AAA Sovereign Grade</span>
+                    </span>
+                  </td>
+                </tr>
+<tr>
+                  <td>
+                    <div class="dev-badge-plate">
+                      <div class="dev-logo-avatar">PHD</div>
+                      <div class="dev-name-stack">
+                        <span class="dev-brand-name">Palm Hills Developments</span>
+                        <span class="dev-brand-corridor">Verified Developer Partner</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>6th of October · New Cairo · Alexandria</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700;">16 Developments</td>
+                  <td style="font-family: var(--font-mono);">142 Units</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage); font-weight: 700;">96.8%</td>
+                  <td style="font-family: var(--font-mono);">2.4 Days</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage);">0.0%</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">1.15B EGP</td>
+                  <td>
+                    <span class="rating-pill">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                      <span>AAA Sovereign Grade</span>
+                    </span>
+                  </td>
+                </tr>
+<tr>
+                  <td>
+                    <div class="dev-badge-plate">
+                      <div class="dev-logo-avatar">SDC</div>
+                      <div class="dev-name-stack">
+                        <span class="dev-brand-name">SODIC</span>
+                        <span class="dev-brand-corridor">Verified Developer Partner</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Sheikh Zayed · New Cairo · North Coast</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700;">9 Developments</td>
+                  <td style="font-family: var(--font-mono);">118 Units</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage); font-weight: 700;">97.2%</td>
+                  <td style="font-family: var(--font-mono);">2.1 Days</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage);">0.0%</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">890M EGP</td>
+                  <td>
+                    <span class="rating-pill">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                      <span>AAA Sovereign Grade</span>
+                    </span>
+                  </td>
+                </tr>
+<tr>
+                  <td>
+                    <div class="dev-badge-plate">
+                      <div class="dev-logo-avatar">TMG</div>
+                      <div class="dev-name-stack">
+                        <span class="dev-brand-name">Talaat Moustafa Group (TMG)</span>
+                        <span class="dev-brand-corridor">Verified Developer Partner</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Madinaty · Al Rehab · South Med</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700;">6 Developments</td>
+                  <td style="font-family: var(--font-mono);">96 Units</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage); font-weight: 700;">99.1%</td>
+                  <td style="font-family: var(--font-mono);">1.4 Days</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage);">0.0%</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">760M EGP</td>
+                  <td>
+                    <span class="rating-pill">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                      <span>AAA Sovereign Grade</span>
+                    </span>
+                  </td>
+                </tr>
+<tr>
+                  <td>
+                    <div class="dev-badge-plate">
+                      <div class="dev-logo-avatar">ORA</div>
+                      <div class="dev-name-stack">
+                        <span class="dev-brand-name">Ora Developers</span>
+                        <span class="dev-brand-corridor">Verified Developer Partner</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Sheikh Zayed · New Cairo · North Coast</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700;">5 Developments</td>
+                  <td style="font-family: var(--font-mono);">74 Units</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage); font-weight: 700;">95.5%</td>
+                  <td style="font-family: var(--font-mono);">3.0 Days</td>
+                  <td style="font-family: var(--font-mono); color: var(--sage);">0.1%</td>
+                  <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">580M EGP</td>
+                  <td>
+                    <span class="rating-pill">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                      <span>AA+ High Standing</span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Ministerial & Sovereign Governance Reports Archive -->
+        <div class="section-card">
+          <div class="section-header-bar">
+            <div>
+              <h3 class="section-title">Official Governance & Audit Dossiers</h3>
+              <p style="font-size: 0.8125rem; color: var(--ink-3);">Quarterly macroeconomic audits published for Egyptian real estate market governance</p>
+            </div>
+          </div>
+
+          <div class="gov-reports-grid">
+            <div class="gov-card">
+              <span class="gov-category-tag">Price Telemetry & Indexation</span>
+              <h4 class="gov-title">Q3 2026 Greater Cairo Prime Residential Valuation Index</h4>
+              <p class="gov-summary">Full algorithmic audit of square-meter transaction velocity across New Cairo Golden Square, Sheikh Zayed Central, and Palm Hills.</p>
+              <div class="gov-meta-row">
+                <span>01 Sep 2026 · 4.8 MB · Notarized PDF</span>
+                <span style="font-size: 0.5625rem; color: var(--ink-3);">SHA256: 9e88a...4b01</span>
+              </div>
+              <button class="gov-download-btn" onclick="downloadReportDossier('GOV-REP-2026-Q3')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Download Authenticated PDF</span>
+              </button>
+            </div>
+<div class="gov-card">
+              <span class="gov-category-tag">Coastal Infrastructure</span>
+              <h4 class="gov-title">H1 2026 Ras El Hekma & North Coast Capital Flow Audit</h4>
+              <p class="gov-summary">Mandate-backed foreign direct investment (FDI) inflows, beachfront inventory absorption, and secondary escrow liquidity telemetry.</p>
+              <div class="gov-meta-row">
+                <span>15 Jul 2026 · 6.2 MB · Notarized PDF</span>
+                <span style="font-size: 0.5625rem; color: var(--ink-3);">SHA256: 7f12c...99a0</span>
+              </div>
+              <button class="gov-download-btn" onclick="downloadReportDossier('GOV-REP-2026-RH')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Download Authenticated PDF</span>
+              </button>
+            </div>
+<div class="gov-card">
+              <span class="gov-category-tag">Regulatory Governance</span>
+              <h4 class="gov-title">Settly Sovereign Escrow & Title Anti-Collision Annual Audit</h4>
+              <p class="gov-summary">Independent registrar review validating zero cadastral duplicate collisions across 1,850+ developer deed registrations.</p>
+              <div class="gov-meta-row">
+                <span>10 Jun 2026 · 3.4 MB · Notarized PDF</span>
+                <span style="font-size: 0.5625rem; color: var(--ink-3);">SHA256: 3c990...e12d</span>
+              </div>
+              <button class="gov-download-btn" onclick="downloadReportDossier('GOV-REP-2026-ESC')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Download Authenticated PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div class="toast-pill" id="toastPill">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span id="toastMessage">Report generated successfully</span>
+  </div>
+
+  <!-- JavaScript Client Logic -->
+  <script>
+    // Live Clock
+    function startLiveClock() {
+      setInterval(() => {
+        const now = new Date();
+        const str = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+          ' · ' + now.toLocaleTimeString('en-GB') + ' EET';
+        document.getElementById('systemClock').textContent = str;
+      }, 1000);
+    }
+
+    // Timeframe Switcher
+    function switchTimeframe(tf, btn) {
+      document.querySelectorAll('.time-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showToast(`Recalculating macro metrics for ${btn.textContent}...`);
+    }
+
+    // Filters
+    function handleCorridorFilter(val) {
+      showToast(`Filter applied: ${val === 'all' ? 'All Egyptian Corridors' : val}`);
+    }
+
+    function handleMetricType(val) {
+      showToast(`Switched visualization metric to ${val.toUpperCase()}`);
+    }
+
+    // Chart Tooltips
+    function showTooltip(e, text) {
+      const tip = document.getElementById('chartTooltip');
+      tip.textContent = text;
+      tip.style.left = (e.clientX - 260) + 'px';
+      tip.style.top = (e.clientY - 120) + 'px';
+      tip.style.opacity = '1';
+    }
+
+    function hideTooltip() {
+      const tip = document.getElementById('chartTooltip');
+      tip.style.opacity = '0';
+    }
+
+    function highlightDonut(segment) {
+      // Micro-interaction highlight
+    }
+
+    function resetDonut() {
+      // Reset
+    }
+
+    // Downloads & Exports
+    function exportCSVReport() {
+      showToast('Exporting macro telemetry dataset (CSV)...');
+    }
+
+    function downloadExecutivePDF() {
+      showToast('Compiling Settly Sovereign Q3 2026 Executive Macro Report (PDF)...');
+    }
+
+    function exportDeveloperRankings() {
+      showToast('Exporting Developer Delivery Health Registry (CSV)...');
+    }
+
+    function downloadReportDossier(id) {
+      showToast(`Downloading authenticated governance dossier ${id}...`);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastPill');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3500);
+    }
+
+    // Mobile Menu Toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('mobile-open');
+    });
+
+    window.addEventListener('DOMContentLoaded', startLiveClock);
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+</body>
+</html>

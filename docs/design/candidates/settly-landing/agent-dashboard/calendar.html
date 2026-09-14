@@ -1,0 +1,2832 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viewings Calendar · Settly Agent Desk</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+:root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+/* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.15);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background-color: var(--brass);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Advisor Profile Card in Sidebar */
+    .sidebar-advisor {
+      margin: 0 16px 16px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .advisor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brass);
+    }
+
+    .advisor-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .advisor-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .advisor-role {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .advisor-license {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-regulatory-box {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .breadcrumb-trail a {
+      color: var(--ink-3);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .breadcrumb-trail a:hover {
+      color: var(--brass);
+    }
+
+    .breadcrumb-trail .current {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .live-clock-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    .live-clock-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--brass);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .header-user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8125rem;
+      border: 1px solid var(--brass);
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .user-sub {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    /* Portal Content Viewport */
+    .portal-content {
+      padding: 32px;
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Page Hero Header */
+    .view-hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .view-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .view-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .view-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      max-width: 720px;
+    }
+
+    .view-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass-600);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--brass-600);
+      box-shadow: 0 4px 12px rgba(174, 128, 51, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--ink-3);
+    }
+
+    /* Metrics Strip */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .metric-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      position: relative;
+    }
+
+    .metric-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .metric-pill {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .metric-pill.success {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .metric-val {
+      font-family: var(--font-display);
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .metric-unit {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .metric-note {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      line-height: 1.35;
+    }
+
+    /* Calendar Control & Filtering Bar */
+    .calendar-control-bar {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cal-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .cal-nav-btns {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .cal-nav-btn {
+      padding: 6px 12px;
+      background: none;
+      border: none;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease;
+    }
+
+    .cal-nav-btn:hover {
+      background-color: var(--canvas-2);
+    }
+
+    .cal-nav-btn + .cal-nav-btn {
+      border-left: 1px solid var(--line);
+    }
+
+    .cal-nav-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .cal-mode-pills {
+      display: inline-flex;
+      background-color: var(--canvas-2);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .cal-mode-btn {
+      padding: 5px 14px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .cal-mode-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .compound-filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background-color: var(--canvas);
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    .filter-chip.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    /* Main Schedule Grid & Briefing Console Layout */
+    .viewings-main-layout {
+      display: grid;
+      grid-template-columns: 1fr 410px;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    /* 1. Week Executive Schedule View */
+    .week-schedule-board {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .days-columns-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+    }
+
+    .day-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .day-column-header {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .day-column-header.is-today {
+      background-color: rgba(198, 151, 73, 0.12);
+      border-color: var(--brass);
+    }
+
+    .day-name {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .day-number {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .day-tours-count {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: var(--brass-600);
+    }
+
+    .day-events-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 520px;
+    }
+
+    /* Executive Appointment Card */
+    .viewing-appointment-card {
+      background-color: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .viewing-appointment-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(19, 29, 54, 0.12);
+      border-color: var(--brass);
+    }
+
+    .viewing-appointment-card.is-active {
+      border: 2px solid var(--brass);
+      background-color: #FDFBF7;
+      box-shadow: 0 6px 20px rgba(198, 151, 73, 0.2);
+    }
+
+    .appt-time-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 0.6875rem;
+    }
+
+    .appt-time-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+
+    .appt-status-tag {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      padding: 1px 5px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      white-space: nowrap;
+    }
+
+    .appt-photo-box {
+      width: 100%;
+      height: 84px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+      background-color: var(--navy-900);
+    }
+
+    .appt-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .viewing-appointment-card:hover .appt-photo-box img {
+      transform: scale(1.05);
+    }
+
+    .appt-compound-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      background: rgba(19, 29, 54, 0.88);
+      backdrop-filter: blur(4px);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      padding: 1px 5px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      white-space: nowrap;
+      max-width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .appt-info-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .appt-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 30px;
+    }
+
+    .appt-price {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--brass-600);
+    }
+
+    .appt-buyer-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--line);
+    }
+
+    .appt-buyer-mono {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--white);
+      font-size: 0.5625rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .appt-buyer-text {
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .empty-day-slot {
+      border: 1px dashed var(--line-2);
+      border-radius: var(--radius-md);
+      padding: 24px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      background-color: rgba(247, 246, 243, 0.5);
+      flex: 1;
+      min-height: 180px;
+    }
+
+    .empty-day-text {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+    }
+
+    .btn-add-slot {
+      font-size: 0.6875rem;
+      padding: 4px 8px;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-add-slot:hover {
+      border-color: var(--brass);
+      color: var(--brass-600);
+      background-color: var(--white);
+    }
+
+    /* 2. Month Matrix View */
+    .month-matrix-board {
+      display: none;
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .month-matrix-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background-color: var(--canvas-2);
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .month-col-head {
+      padding: 12px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink-2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .month-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .matrix-cell {
+      min-height: 110px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background-color: var(--white);
+      transition: background-color 0.15s ease;
+    }
+
+    .matrix-cell:nth-child(7n) {
+      border-right: none;
+    }
+
+    .matrix-cell.other-month {
+      background-color: var(--canvas);
+      opacity: 0.5;
+    }
+
+    .matrix-cell-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .matrix-date-num {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .matrix-cell.has-tour {
+      background-color: #FAF9F6;
+    }
+
+    .matrix-tour-chip {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--brass);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: transform 0.15s ease;
+    }
+
+    .matrix-tour-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(19, 29, 54, 0.2);
+    }
+
+    .matrix-chip-time {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: var(--brass);
+    }
+
+    .matrix-chip-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 3. VIP Agenda / Concierge Itinerary View */
+    .vip-agenda-board {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .agenda-item-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 140px 100px 1fr auto;
+      gap: 20px;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .agenda-item-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--brass);
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.08);
+    }
+
+    .agenda-item-card.is-active {
+      border: 2px solid var(--brass);
+      background-color: #FDFBF7;
+    }
+
+    .agenda-time-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .agenda-date-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .agenda-time-slot {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--brass-600);
+    }
+
+    .agenda-photo-col {
+      width: 100px;
+      height: 70px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .agenda-photo-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .agenda-info-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .agenda-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .agenda-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .agenda-compound-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      padding: 2px 8px;
+      background-color: var(--canvas-2);
+      border-radius: var(--radius-full);
+      color: var(--ink-2);
+    }
+
+    .agenda-buyer-desc {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+    }
+
+    .agenda-action-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .agenda-price {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brass-600);
+    }
+
+    .btn-view-pass {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--brass);
+      cursor: pointer;
+    }
+
+    /* 4. Tour Briefing & Holographic Gate Pass Console (Right Rail) */
+    .briefing-console-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 1px 4px rgba(19, 29, 54, 0.05);
+      position: sticky;
+      top: calc(var(--header-height) + 24px);
+    }
+
+    .briefing-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .briefing-top-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .briefing-status-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .briefing-property-plate {
+      display: flex;
+      gap: 14px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .briefing-prop-img {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .briefing-prop-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .briefing-prop-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.25;
+    }
+
+    .briefing-prop-location {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .briefing-prop-price {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      margin-top: 3px;
+    }
+
+    .briefing-buyer-card {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .briefing-buyer-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .briefing-buyer-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--brass);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--brass);
+    }
+
+    .briefing-buyer-creds {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .briefing-buyer-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .briefing-buyer-tier {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    .briefing-buyer-notes {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+      background-color: var(--white);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    /* Holographic Security Gate Pass Plate */
+    .gate-pass-box {
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      border: 1px solid rgba(198, 151, 73, 0.4);
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.2);
+    }
+
+    .gate-pass-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brass), var(--sage), var(--brass));
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .gate-pass-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gate-pass-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--brass);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .gate-verified-pill {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      background-color: var(--sage);
+      color: var(--white);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .gate-pass-center-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+
+    .gate-pass-code-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .gate-pass-code-label {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .gate-pass-code {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+
+    /* Vector SVG QR Code Simulation */
+    .gate-qr-box {
+      width: 52px;
+      height: 52px;
+      background-color: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .gate-qr-box:hover {
+      transform: scale(1.08);
+    }
+
+    .gate-qr-box svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .gate-pass-specs {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.8);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 12px;
+    }
+
+    .gate-spec-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .gate-spec-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--brass-200);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .gate-spec-val {
+      font-size: 0.75rem;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .gate-pass-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-gate-action {
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-gate-action:hover {
+      background: rgba(198, 151, 73, 0.2);
+      border-color: var(--brass);
+      color: var(--brass-200);
+    }
+
+    /* Fullscreen High-Contrast Security Modal */
+    .gate-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(19, 29, 54, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .gate-modal-card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.3);
+      border: 2px solid var(--brass);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-gate-header {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--brass);
+    }
+
+    .modal-gate-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--brass-200);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.25rem;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .modal-close-btn:hover {
+      opacity: 1;
+    }
+
+    .modal-gate-body {
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      text-align: center;
+    }
+
+    .modal-large-qr {
+      width: 180px;
+      height: 180px;
+      background-color: var(--white);
+      border: 2px solid var(--navy-900);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      box-shadow: 0 4px 14px rgba(19, 29, 54, 0.1);
+    }
+
+    .modal-pin-large {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: var(--navy-900);
+      background-color: var(--canvas-2);
+      padding: 8px 24px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+    }
+
+    /* Toast Notification */
+    .toast-shelf {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brass);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Responsive Adaptation */
+    @media (max-width: 1280px) {
+      .viewings-main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .briefing-console-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      .portal-main {
+        margin-left: 0;
+      }
+
+      .mobile-menu-trigger {
+        display: block;
+      }
+
+      .metric-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .days-columns-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .day-events-slot {
+        min-height: auto;
+      }
+
+      .agenda-item-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .agenda-action-col {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .portal-content {
+        padding: 20px 16px;
+      }
+
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .portal-topbar {
+        padding: 0 16px;
+      }
+
+      .breadcrumb-trail a, .breadcrumb-trail span:not(.current) {
+        display: none;
+      }
+
+      .live-clock-pill span:last-child {
+        display: none;
+      }
+
+      .header-user-card .user-meta {
+        display: none;
+      }
+
+      .view-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .view-actions button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .calendar-control-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+<aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Agent Emblem Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads & Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics & Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Inventory & Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged-in Agent Profile Card -->
+      <div class="sidebar-advisor">
+        <div class="advisor-header">
+          <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+          <div class="advisor-meta">
+            <span class="advisor-name">Karim El-Sayed</span>
+            <span class="advisor-role">Senior Private Advisor</span>
+            <span class="advisor-license">License #EG-8841-B</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width: 100%; padding: 6px 12px; font-size: 0.75rem; justify-content: center; background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.15);" onclick="showToast('Agent desk status: Active & Verified')">
+          <span>Broker Desk Verified</span>
+        </button>
+      </div>
+
+      <!-- Legal & Trust Footer -->
+      <div class="sidebar-regulatory-box">
+        Verified Listings & Exclusive Mandates<br>
+        Licensed Independent Broker
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      <!-- Top Sticky Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">VIEWINGS CALENDAR</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>SCHEDULED VIP TOURS</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Active Leads &amp; Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Portal Content -->
+      <div class="portal-content">
+        <!-- Hero Header -->
+        <div class="view-hero">
+          <div class="view-title-group">
+            <h1 class="view-title">Private Viewings & Compound Tours</h1>
+            <p class="view-subtitle">4 scheduled VIP tours this week · Compound gate security clearance active for Katameya Dunes & Palm Hills</p>
+          </div>
+          <div class="view-actions">
+            <button class="btn-primary" onclick="showToast('Viewing booking request opened.')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Schedule VIP Viewing</span>
+            </button>
+            <button class="btn-secondary" onclick="showToast('iCal calendar feed synchronized.')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>Sync Calendar (iCal)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Top Metric Cards -->
+        <div class="metric-strip">
+          <div class="metric-card">
+            <div class="metric-card-top">
+              <span class="metric-label">Confirmed Tours</span>
+              <span class="metric-pill">This Week</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val">4</span>
+              <span class="metric-unit">Tours</span>
+            </div>
+            <p class="metric-note">189.2M EGP in represented luxury asset volume scheduled for physical inspection.</p>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-top">
+              <span class="metric-label">Security Clearance</span>
+              <span class="metric-pill success">100% Cleared</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val">4 / 4</span>
+            </div>
+            <p class="metric-note">Developer gate security passes validated with Katameya Dunes, Palm Hills, and Emaar.</p>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-top">
+              <span class="metric-label">Tour-to-Offer Pace</span>
+              <span class="metric-pill">Historical 52%</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val">52%</span>
+            </div>
+            <p class="metric-note">High conversion from accompanied private client inspections to formal written offers.</p>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-top">
+              <span class="metric-label">Concierge Escorts</span>
+              <span class="metric-pill">VIP Ready</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val">2</span>
+              <span class="metric-unit">Booked</span>
+            </div>
+            <p class="metric-note">Chauffeur pickups scheduled for offshore buyers arriving from London & Dubai.</p>
+          </div>
+        </div>
+
+        <!-- Calendar Control Bar -->
+        <div class="calendar-control-bar">
+          <div class="cal-nav-group">
+            <div class="cal-nav-btns">
+              <button class="cal-nav-btn" onclick="prevPeriod()" aria-label="Previous period">←</button>
+              <button class="cal-nav-btn" onclick="resetPeriod()">Today</button>
+              <button class="cal-nav-btn" onclick="nextPeriod()" aria-label="Next period">→</button>
+            </div>
+            <h2 class="cal-nav-title" id="calendarPeriodLabel">September 14 — 20, 2026</h2>
+            <div class="cal-mode-pills">
+              <button class="cal-mode-btn active" id="btnModeWeek" onclick="switchViewMode('week')">Week</button>
+              <button class="cal-mode-btn" id="btnModeMonth" onclick="switchViewMode('month')">Month</button>
+              <button class="cal-mode-btn" id="btnModeAgenda" onclick="switchViewMode('agenda')">Agenda</button>
+            </div>
+          </div>
+
+          <!-- Compound Filter Chips -->
+          <div class="compound-filters">
+            <button class="filter-chip active" data-filter="all" onclick="filterCompound('all', this)">All Compounds (4)</button>
+            <button class="filter-chip" data-filter="Katameya Dunes" onclick="filterCompound('Katameya Dunes', this)">Katameya Dunes</button>
+            <button class="filter-chip" data-filter="Palm Hills" onclick="filterCompound('Palm Hills', this)">Palm Hills</button>
+            <button class="filter-chip" data-filter="Mivida" onclick="filterCompound('Mivida', this)">Mivida</button>
+            <button class="filter-chip" data-filter="Marassi" onclick="filterCompound('Marassi', this)">Marassi</button>
+          </div>
+        </div>
+
+        <!-- Main Layout: Calendar Views (Left) + Briefing Console (Right) -->
+        <div class="viewings-main-layout">
+          
+          <!-- LEFT: The 3 Switchable Calendar Views -->
+          <div class="views-container">
+            
+            <!-- 1. WEEK SCHEDULE BOARD (DEFAULT) -->
+            <div class="week-schedule-board" id="weekScheduleBoard">
+              <div class="days-columns-grid">
+                
+                <!-- Sunday Sep 14 -->
+                <div class="day-column" data-day="0">
+                  <div class="day-column-header is-today">
+                    <span class="day-name">Sun</span>
+                    <span class="day-number">14</span>
+                    <span class="day-tours-count">1 Tour · Today</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="viewing-appointment-card is-active" data-id="TOUR-2026-4029" data-compound="Katameya Dunes" onclick="selectViewing('TOUR-2026-4029')">
+                      <div class="appt-time-row">
+                        <span class="appt-time-pill">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          16:30 CLT
+                        </span>
+                        <span class="appt-status-tag">Pass Active</span>
+                      </div>
+                      <div class="appt-photo-box">
+                        <img src="../../../../../Images/web/1.jpg" alt="The Grand Residence" loading="lazy">
+                        <span class="appt-compound-badge">Katameya Dunes</span>
+                      </div>
+                      <div class="appt-info-block">
+                        <h3 class="appt-title">The Grand Residence</h3>
+                        <span class="appt-price">44,500,000 EGP</span>
+                      </div>
+                      <div class="appt-buyer-strip">
+                        <div class="appt-buyer-mono">TM</div>
+                        <span class="appt-buyer-text">Dr. Tarek Mansour</span>
+                      </div>
+                    </div>
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">No More Slots</span>
+                      <button class="btn-add-slot" onclick="showToast('Requesting additional viewing slot')">+ Add Slot</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Monday Sep 15 -->
+                <div class="day-column" data-day="1">
+                  <div class="day-column-header">
+                    <span class="day-name">Mon</span>
+                    <span class="day-number">15</span>
+                    <span class="day-tours-count">1 Tour</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="viewing-appointment-card" data-id="TOUR-2026-8819" data-compound="Palm Hills" onclick="selectViewing('TOUR-2026-8819')">
+                      <div class="appt-time-row">
+                        <span class="appt-time-pill">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          11:00 CLT
+                        </span>
+                        <span class="appt-status-tag">Accompanied</span>
+                      </div>
+                      <div class="appt-photo-box">
+                        <img src="../../../../../Images/web/3.jpg" alt="Signature Villa V12" loading="lazy">
+                        <span class="appt-compound-badge">Palm Hills</span>
+                      </div>
+                      <div class="appt-info-block">
+                        <h3 class="appt-title">Signature Villa V12</h3>
+                        <span class="appt-price">38,200,000 EGP</span>
+                      </div>
+                      <div class="appt-buyer-strip">
+                        <div class="appt-buyer-mono">HG</div>
+                        <span class="appt-buyer-text">Eng. Hisham El-Gazzar</span>
+                      </div>
+                    </div>
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">Afternoon Free</span>
+                      <button class="btn-add-slot" onclick="showToast('Requesting slot on Mon 15')">+ Add Slot</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tuesday Sep 16 -->
+                <div class="day-column" data-day="2">
+                  <div class="day-column-header">
+                    <span class="day-name">Tue</span>
+                    <span class="day-number">16</span>
+                    <span class="day-tours-count">1 Tour</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="viewing-appointment-card" data-id="TOUR-2026-9014" data-compound="Mivida" onclick="selectViewing('TOUR-2026-9014')">
+                      <div class="appt-time-row">
+                        <span class="appt-time-pill">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          15:00 CLT
+                        </span>
+                        <span class="appt-status-tag">Cleared</span>
+                      </div>
+                      <div class="appt-photo-box">
+                        <img src="../../../../../Images/web/5.jpg" alt="Lakefront Palace" loading="lazy">
+                        <span class="appt-compound-badge">Mivida Crescent</span>
+                      </div>
+                      <div class="appt-info-block">
+                        <h3 class="appt-title">Lakefront Palace</h3>
+                        <span class="appt-price">52,000,000 EGP</span>
+                      </div>
+                      <div class="appt-buyer-strip">
+                        <div class="appt-buyer-mono">SZ</div>
+                        <span class="appt-buyer-text">Dr. Sherif Zahran</span>
+                      </div>
+                    </div>
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">Morning Free</span>
+                      <button class="btn-add-slot" onclick="showToast('Requesting slot on Tue 16')">+ Add Slot</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Wednesday Sep 17 -->
+                <div class="day-column" data-day="3">
+                  <div class="day-column-header">
+                    <span class="day-name">Wed</span>
+                    <span class="day-number">17</span>
+                    <span class="day-tours-count">Available</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">Mandate Review Day</span>
+                      <button class="btn-add-slot" onclick="showToast('Scheduling appointment for Wed Sep 17')">+ Schedule Tour</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Thursday Sep 18 -->
+                <div class="day-column" data-day="4">
+                  <div class="day-column-header">
+                    <span class="day-name">Thu</span>
+                    <span class="day-number">18</span>
+                    <span class="day-tours-count">1 Tour · Sahel</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="viewing-appointment-card" data-id="TOUR-2026-5102" data-compound="Marassi" onclick="selectViewing('TOUR-2026-5102')">
+                      <div class="appt-time-row">
+                        <span class="appt-time-pill">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          17:00 CLT
+                        </span>
+                        <span class="appt-status-tag">Marina Pass</span>
+                      </div>
+                      <div class="appt-photo-box">
+                        <img src="../../../../../Images/web/2.jpg" alt="Waterfront Penthouse" loading="lazy">
+                        <span class="appt-compound-badge">Marassi Marina</span>
+                      </div>
+                      <div class="appt-info-block">
+                        <h3 class="appt-title">Waterfront Penthouse</h3>
+                        <span class="appt-price">47,500,000 EGP</span>
+                      </div>
+                      <div class="appt-buyer-strip">
+                        <div class="appt-buyer-mono">LH</div>
+                        <span class="appt-buyer-text">Dr. Laila Hegazi</span>
+                      </div>
+                    </div>
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">Sahel Dispatch</span>
+                      <button class="btn-add-slot" onclick="showToast('Requesting Sahel slot')">+ Add Slot</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Friday Sep 19 -->
+                <div class="day-column" data-day="5">
+                  <div class="day-column-header">
+                    <span class="day-name">Fri</span>
+                    <span class="day-number">19</span>
+                    <span class="day-tours-count">Off-Desk</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">Weekend Reserve</span>
+                      <button class="btn-add-slot" onclick="showToast('Unlocking VIP weekend inspection')">+ Emergency Tour</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Saturday Sep 20 -->
+                <div class="day-column" data-day="6">
+                  <div class="day-column-header">
+                    <span class="day-name">Sat</span>
+                    <span class="day-number">20</span>
+                    <span class="day-tours-count">Open Slots</span>
+                  </div>
+                  <div class="day-events-slot">
+                    <div class="empty-day-slot">
+                      <span class="empty-day-text">4 Slots Available</span>
+                      <button class="btn-add-slot" onclick="showToast('Booking open Saturday slot')">+ Book Tour</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 2. MONTH MATRIX BOARD -->
+            <div class="month-matrix-board" id="monthMatrixBoard">
+              <div class="month-matrix-header">
+                <div class="month-col-head">Sun</div>
+                <div class="month-col-head">Mon</div>
+                <div class="month-col-head">Tue</div>
+                <div class="month-col-head">Wed</div>
+                <div class="month-col-head">Thu</div>
+                <div class="month-col-head">Fri</div>
+                <div class="month-col-head">Sat</div>
+              </div>
+              <div class="month-matrix-grid" id="monthMatrixGrid">
+                <!-- Dynamically filled via JS for Sep 2026 -->
+              </div>
+            </div>
+
+            <!-- 3. VIP AGENDA BOARD -->
+            <div class="vip-agenda-board" id="vipAgendaBoard">
+              <!-- Dynamically populated via JS -->
+            </div>
+
+          </div>
+
+          <!-- RIGHT: Interactive Tour Briefing & Holographic Gate Pass Console -->
+          <aside class="briefing-console-card" id="briefingConsole">
+            <div class="briefing-header">
+              <span class="briefing-top-title">VIP Tour Briefing</span>
+              <span class="briefing-status-pill" id="briefingStatusPill">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"></circle></svg>
+                <span id="briefingStatusText">Gate Pass Active</span>
+              </span>
+            </div>
+
+            <!-- Property Plate -->
+            <div class="briefing-property-plate">
+              <img id="briefingPropImg" src="../../../../../Images/web/1.jpg" alt="Property preview" class="briefing-prop-img">
+              <div class="briefing-prop-meta">
+                <h3 class="briefing-prop-title" id="briefingPropTitle">The Grand Residence</h3>
+                <span class="briefing-prop-location" id="briefingPropLocation">Katameya Dunes Golf & Rock · New Cairo</span>
+                <span class="briefing-prop-price" id="briefingPropPrice">44,500,000 EGP</span>
+              </div>
+            </div>
+
+            <!-- Buyer Dossier -->
+            <div class="briefing-buyer-card">
+              <div class="briefing-buyer-top">
+                <div class="briefing-buyer-avatar" id="briefingBuyerMono">TM</div>
+                <div class="briefing-buyer-creds">
+                  <span class="briefing-buyer-name" id="briefingBuyerName">Dr. Tarek Mansour</span>
+                  <span class="briefing-buyer-tier" id="briefingBuyerTier">Tier 1 Private Client · Verified</span>
+                </div>
+              </div>
+              <p class="briefing-buyer-notes" id="briefingBuyerNotes">
+                Buyer requesting twilight golf course view inspection and complete mechanical plant audit. Gate pass pre-approved with Katameya Dunes South Gate Security.
+              </p>
+            </div>
+
+            <!-- Holographic Gate Security Pass Plate -->
+            <div class="gate-pass-box">
+              <div class="gate-pass-top">
+                <span class="gate-pass-title" id="gatePassTitle">Katameya Dunes Gate Security</span>
+                <span class="gate-verified-pill">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  VERIFIED
+                </span>
+              </div>
+
+              <div class="gate-pass-center-row">
+                <div class="gate-pass-code-wrap">
+                  <span class="gate-pass-code-label">Resident Gate PIN</span>
+                  <span class="gate-pass-code" id="gatePassPin">KD-SEC-8891</span>
+                </div>
+                <div class="gate-qr-box" onclick="openGateModal()" title="Click to enlarge gate QR code">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#131D36" stroke-width="2.5">
+                    <rect x="2" y="2" width="7" height="7"></rect>
+                    <rect x="15" y="2" width="7" height="7"></rect>
+                    <rect x="2" y="15" width="7" height="7"></rect>
+                    <line x1="15" y1="15" x2="19" y2="15"></line>
+                    <line x1="15" y1="19" x2="15" y2="22"></line>
+                    <line x1="19" y1="19" x2="22" y2="19"></line>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="gate-pass-specs">
+                <div class="gate-spec-row">
+                  <span class="gate-spec-label">Entry Gate</span>
+                  <span class="gate-spec-val" id="gatePassAccess">South Executive Gate (Gate 3)</span>
+                </div>
+                <div class="gate-spec-row">
+                  <span class="gate-spec-label">Hotline</span>
+                  <span class="gate-spec-val" id="gatePassHotline">+20 2 2618 4000</span>
+                </div>
+                <div class="gate-spec-row">
+                  <span class="gate-spec-label">Chauffeur</span>
+                  <span class="gate-spec-val" id="gatePassChauffeur">Assigned (Mercedes S-Class · Airport Pickup)</span>
+                </div>
+              </div>
+
+              <div class="gate-pass-actions">
+                <button class="btn-gate-action" onclick="copyGateCode()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  <span>Copy PIN</span>
+                </button>
+                <button class="btn-gate-action" onclick="openGateModal()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+                  <span>Open Pass</span>
+                </button>
+              </div>
+            </div>
+
+          </aside>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Fullscreen Gate Pass Presentation Modal -->
+  <div class="gate-modal-backdrop" id="gateModal" onclick="closeGateModal(event)">
+    <div class="gate-modal-card" onclick="event.stopPropagation()">
+      <div class="modal-gate-header">
+        <h3 class="modal-gate-title" id="modalCompoundTitle">Compound Gate Clearance</h3>
+        <button class="modal-close-btn" onclick="closeGateModal()">&times;</button>
+      </div>
+      <div class="modal-gate-body">
+        <div class="modal-large-qr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131D36" stroke-width="2" style="width: 100%; height: 100%;">
+            <rect x="2" y="2" width="7" height="7"></rect>
+            <rect x="15" y="2" width="7" height="7"></rect>
+            <rect x="2" y="15" width="7" height="7"></rect>
+            <circle cx="5.5" cy="5.5" r="1.5" fill="#131D36"></circle>
+            <circle cx="18.5" cy="5.5" r="1.5" fill="#131D36"></circle>
+            <circle cx="5.5" cy="18.5" r="1.5" fill="#131D36"></circle>
+            <path d="M14 14h2v2h-2z" fill="#131D36"></path>
+            <path d="M18 14h3v2h-3z" fill="#131D36"></path>
+            <path d="M14 18h2v3h-2z" fill="#131D36"></path>
+            <path d="M18 18h3v3h-3z" fill="#131D36"></path>
+          </svg>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); text-transform: uppercase;">Compound Security Authorization PIN</span>
+          <div class="modal-pin-large" id="modalPinText">KD-SEC-8891</div>
+        </div>
+        <div style="font-size: 0.8125rem; color: var(--ink-2); line-height: 1.4;">
+          <p><strong id="modalUnitText">Villa 42, Rock Sector</strong> · Katameya Dunes</p>
+          <p>Advisor: <strong>Karim El-Sayed (#EG-8841-B)</strong></p>
+          <p style="color: var(--sage); font-weight: 700; margin-top: 6px;">Pre-approved by Central Compound Operations</p>
+        </div>
+        <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="showToast('Gate clearance confirmed with security outpost'); closeGateModal();">
+          Authorize Compound Entry
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Shelf -->
+  <div class="toast-shelf" id="toastContainer"></div>
+
+  <script>
+    const VIEWINGS = [
+  {
+    "id": "TOUR-2026-4029",
+    "title": "The Grand Residence",
+    "fullTitle": "The Grand Residence, Katameya Dunes",
+    "mandateId": "SET-KD-4029",
+    "compound": "Katameya Dunes Golf & Rock",
+    "compoundShort": "Katameya Dunes",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "date": "2026-09-14",
+    "dayName": "Sunday, Sep 14",
+    "dayShort": "Sun 14",
+    "dayIndex": 0,
+    "timeWindow": "16:30 \u2013 18:00 CLT",
+    "timeSlot": "16:30",
+    "buyerName": "Dr. Tarek Mansour",
+    "buyerTier": "Tier 1 Private Client",
+    "buyerAffiliation": "CIB Wealth \u00b7 Verified Liquidity",
+    "buyerPhone": "+20 100 443 8912",
+    "buyerEmail": "tmansour@mansour-medical.com",
+    "priceEgp": 44500000,
+    "status": "confirmed",
+    "statusLabel": "Gate Pass Active",
+    "gatePassCode": "KD-SEC-8891",
+    "gateAccess": "South Executive Gate (Gate 3)",
+    "securityHotline": "+20 2 2618 4000",
+    "chauffeur": "Assigned (Mercedes S-Class \u00b7 Airport Pickup)",
+    "advisorNotes": "Buyer requesting twilight golf course view inspection and complete mechanical plant audit. Gate pass pre-approved with Katameya Dunes South Gate Security.",
+    "specs": "6 Beds \u00b7 7 Baths \u00b7 520 m\u00b2 Built \u00b7 850 m\u00b2 Plot",
+    "unitNumber": "Villa 42, Rock Sector",
+    "image": "../../../../../Images/web/1.jpg"
+  },
+  {
+    "id": "TOUR-2026-8819",
+    "title": "Signature Villa V12",
+    "fullTitle": "Signature Villa V12, Palm Hills October",
+    "mandateId": "SET-PH-8819",
+    "compound": "Palm Hills Golf Views",
+    "compoundShort": "Palm Hills",
+    "corridor": "6th of October \u00b7 West Cairo",
+    "date": "2026-09-15",
+    "dayName": "Monday, Sep 15",
+    "dayShort": "Mon 15",
+    "dayIndex": 1,
+    "timeWindow": "11:00 \u2013 12:30 CLT",
+    "timeSlot": "11:00",
+    "buyerName": "Eng. Hisham El-Gazzar",
+    "buyerTier": "Expat HNW (Dubai / Cairo)",
+    "buyerAffiliation": "First Abu Dhabi Bank \u00b7 Verified",
+    "buyerPhone": "+971 50 289 1104",
+    "buyerEmail": "hisham.gazzar@gulfinfra.ae",
+    "priceEgp": 38200000,
+    "status": "confirmed",
+    "statusLabel": "Owner Accompanied",
+    "gatePassCode": "PH-SEC-4102",
+    "gateAccess": "North Residents Gate (Gate 2)",
+    "securityHotline": "+20 2 3855 9100",
+    "chauffeur": "Self-drive (Visitor Pass at Gate 2)",
+    "advisorNotes": "Reviewing core & shell redesign possibilities with buyer's architect. Seller's estate manager in attendance.",
+    "specs": "5 Beds \u00b7 6 Baths \u00b7 460 m\u00b2 Built \u00b7 720 m\u00b2 Plot",
+    "unitNumber": "Villa 12, Fairway View",
+    "image": "../../../../../Images/web/3.jpg"
+  },
+  {
+    "id": "TOUR-2026-9014",
+    "title": "Lakefront Palace",
+    "fullTitle": "Lakefront Palace, Mivida Crescent",
+    "mandateId": "SET-MV-9014",
+    "compound": "Mivida by Emaar Misr",
+    "compoundShort": "Mivida",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "date": "2026-09-16",
+    "dayName": "Tuesday, Sep 16",
+    "dayShort": "Tue 16",
+    "dayIndex": 2,
+    "timeWindow": "15:00 \u2013 16:30 CLT",
+    "timeSlot": "15:00",
+    "buyerName": "Dr. Sherif Zahran",
+    "buyerTier": "Tier 1 Private Client",
+    "buyerAffiliation": "HSBC Premier \u00b7 Cash Pre-approved",
+    "buyerPhone": "+20 111 908 6723",
+    "buyerEmail": "szahran@cairo-cardio.org",
+    "priceEgp": 52000000,
+    "status": "confirmed",
+    "statusLabel": "Security Cleared",
+    "gatePassCode": "MV-SEC-3320",
+    "gateAccess": "South 90th Main Entrance",
+    "securityHotline": "+20 2 2614 7700",
+    "chauffeur": "Direct Arrival with Family",
+    "advisorNotes": "Second walk-through specifically examining private lake frontage, basement theater, and landscape setback boundaries.",
+    "specs": "7 Beds \u00b7 8 Baths \u00b7 640 m\u00b2 Built \u00b7 1,100 m\u00b2 Plot",
+    "unitNumber": "Palace 8, Crescent Drive",
+    "image": "../../../../../Images/web/5.jpg"
+  },
+  {
+    "id": "TOUR-2026-5102",
+    "title": "Waterfront Penthouse",
+    "fullTitle": "Waterfront Penthouse, Marassi Marina",
+    "mandateId": "SET-MR-5102",
+    "compound": "Marassi Marina by Emaar",
+    "compoundShort": "Marassi",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "date": "2026-09-18",
+    "dayName": "Thursday, Sep 18",
+    "dayShort": "Thu 18",
+    "dayIndex": 4,
+    "timeWindow": "17:00 \u2013 18:30 CLT",
+    "timeSlot": "17:00",
+    "buyerName": "Dr. Laila Hegazi",
+    "buyerTier": "Expat HNW (London / Cairo)",
+    "buyerAffiliation": "Barclays Private Bank \u00b7 Wire Verified",
+    "buyerPhone": "+44 7700 900821",
+    "buyerEmail": "lhegazi@harley-consult.co.uk",
+    "priceEgp": 47500000,
+    "status": "confirmed",
+    "statusLabel": "Marina VIP Pass",
+    "gatePassCode": "MR-MAR-7719",
+    "gateAccess": "Marina Club VIP Barrier (Pier 4)",
+    "securityHotline": "+20 46 412 8000",
+    "chauffeur": "Assigned (Private Sahel Airport Shuttle)",
+    "advisorNotes": "Buyer flying in via Borg El Arab airport. Sunset penthouse inspection including private yacht berth validation.",
+    "specs": "4 Beds \u00b7 5 Baths \u00b7 380 m\u00b2 Built \u00b7 Private Marina Pier",
+    "unitNumber": "Penthouse 401, Marina Wharf",
+    "image": "../../../../../Images/web/2.jpg"
+  }
+];
+
+    let currentSelectedId = 'TOUR-2026-4029';
+    let currentFilter = 'all';
+    let currentMode = 'week';
+
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMonthMatrix();
+      renderAgenda();
+      selectViewing(currentSelectedId);
+    });
+
+    // View Mode Switcher
+    function switchViewMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.cal-mode-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const weekBoard = document.getElementById('weekScheduleBoard');
+      const monthBoard = document.getElementById('monthMatrixBoard');
+      const agendaBoard = document.getElementById('vipAgendaBoard');
+
+      weekBoard.style.display = 'none';
+      monthBoard.style.display = 'none';
+      agendaBoard.style.display = 'none';
+
+      if (mode === 'week') {
+        document.getElementById('btnModeWeek').classList.add('active');
+        weekBoard.style.display = 'flex';
+      } else if (mode === 'month') {
+        document.getElementById('btnModeMonth').classList.add('active');
+        monthBoard.style.display = 'block';
+      } else if (mode === 'agenda') {
+        document.getElementById('btnModeAgenda').classList.add('active');
+        agendaBoard.style.display = 'flex';
+      }
+    }
+
+    // Filter by Compound
+    function filterCompound(compound, btnEl) {
+      currentFilter = compound;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      btnEl.classList.add('active');
+
+      // Filter in Week View
+      document.querySelectorAll('.viewing-appointment-card').forEach(card => {
+        const itemCompound = card.getAttribute('data-compound');
+        if (compound === 'all' || itemCompound === compound) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Filter in Agenda View
+      document.querySelectorAll('.agenda-item-card').forEach(card => {
+        const itemCompound = card.getAttribute('data-compound');
+        if (compound === 'all' || itemCompound === compound) {
+          card.style.display = 'grid';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Select and inspect viewing
+    function selectViewing(id) {
+      currentSelectedId = id;
+      const viewing = VIEWINGS.find(v => v.id === id);
+      if (!viewing) return;
+
+      // Update active card states in week and agenda view
+      document.querySelectorAll('.viewing-appointment-card').forEach(card => {
+        if (card.getAttribute('data-id') === id) {
+          card.classList.add('is-active');
+        } else {
+          card.classList.remove('is-active');
+        }
+      });
+
+      document.querySelectorAll('.agenda-item-card').forEach(card => {
+        if (card.getAttribute('data-id') === id) {
+          card.classList.add('is-active');
+        } else {
+          card.classList.remove('is-active');
+        }
+      });
+
+      // Update Briefing Console Elements
+      document.getElementById('briefingPropImg').src = viewing.image;
+      document.getElementById('briefingPropTitle').textContent = viewing.title;
+      document.getElementById('briefingPropLocation').textContent = `${viewing.compound} · ${viewing.corridor}`;
+      document.getElementById('briefingPropPrice').textContent = `${viewing.priceEgp.toLocaleString()} EGP`;
+
+      document.getElementById('briefingBuyerName').textContent = viewing.buyerName;
+      document.getElementById('briefingBuyerTier').textContent = `${viewing.buyerTier} · ${viewing.buyerAffiliation}`;
+      document.getElementById('briefingBuyerNotes').textContent = viewing.advisorNotes;
+      
+      const cleanName = viewing.buyerName.replace(/^([A-Za-z]+\.)\s+/, '');
+      const initials = cleanName.split(' ').map(w => w[0]).filter(c => c).slice(0, 2).join('');
+      document.getElementById('briefingBuyerMono').textContent = initials;
+
+      // Gate Pass elements
+      document.getElementById('gatePassTitle').textContent = `${viewing.compoundShort} Gate Pass`;
+      document.getElementById('gatePassPin').textContent = viewing.gatePassCode;
+      document.getElementById('gatePassAccess').textContent = viewing.gateAccess;
+      document.getElementById('gatePassHotline').textContent = viewing.securityHotline;
+      document.getElementById('gatePassChauffeur').textContent = viewing.chauffeur;
+
+      // Modal elements
+      document.getElementById('modalCompoundTitle').textContent = `${viewing.compoundShort} Security Clearance`;
+      document.getElementById('modalPinText').textContent = viewing.gatePassCode;
+      document.getElementById('modalUnitText').textContent = viewing.unitNumber;
+    }
+
+    // Render Month View Matrix for Sep 2026
+    function renderMonthMatrix() {
+      const grid = document.getElementById('monthMatrixGrid');
+      grid.innerHTML = '';
+
+      // September 2026 starts on Tuesday (index 2), has 30 days
+      // Preceding days from August: 30, 31 (Sun, Mon)
+      const prevDays = [30, 31];
+      prevDays.forEach(d => {
+        const cell = document.createElement('div');
+        cell.className = 'matrix-cell other-month';
+        cell.innerHTML = `<span class="matrix-date-num">${d}</span>`;
+        grid.appendChild(cell);
+      });
+
+      // 1 to 30 Sep
+      for (let day = 1; day <= 30; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'matrix-cell';
+        
+        const dateStr = `2026-09-${day.toString().padStart(2, '0')}`;
+        const toursForDay = VIEWINGS.filter(v => v.date === dateStr);
+
+        let toursHtml = '';
+        if (toursForDay.length > 0) {
+          cell.classList.add('has-tour');
+          toursForDay.forEach(t => {
+            toursHtml += `
+              <div class="matrix-tour-chip" onclick="selectViewing('${t.id}')">
+                <span class="matrix-chip-time">${t.timeSlot} CLT</span>
+                <span class="matrix-chip-title">${t.title}</span>
+              </div>
+            `;
+          });
+        }
+
+        cell.innerHTML = `
+          <div class="matrix-cell-head">
+            <span class="matrix-date-num">${day}</span>
+            ${toursForDay.length ? '<span style="width: 6px; height: 6px; border-radius: 50%; background-color: var(--brass);"></span>' : ''}
+          </div>
+          ${toursHtml}
+        `;
+        grid.appendChild(cell);
+      }
+
+      // Trailing days from October: 1, 2, 3
+      for (let od = 1; od <= 3; od++) {
+        const cell = document.createElement('div');
+        cell.className = 'matrix-cell other-month';
+        cell.innerHTML = `<span class="matrix-date-num">${od}</span>`;
+        grid.appendChild(cell);
+      }
+    }
+
+    // Render Agenda View
+    function renderAgenda() {
+      const board = document.getElementById('vipAgendaBoard');
+      board.innerHTML = '';
+
+      VIEWINGS.forEach(v => {
+        const card = document.createElement('div');
+        card.className = `agenda-item-card ${v.id === currentSelectedId ? 'is-active' : ''}`;
+        card.setAttribute('data-id', v.id);
+        card.setAttribute('data-compound', v.compoundShort);
+        card.onclick = () => selectViewing(v.id);
+
+        card.innerHTML = `
+          <div class="agenda-time-col">
+            <span class="agenda-date-badge">${v.dayName}</span>
+            <span class="agenda-time-slot">${v.timeWindow}</span>
+          </div>
+          <div class="agenda-photo-col">
+            <img src="${v.image}" alt="${v.title}" loading="lazy">
+          </div>
+          <div class="agenda-info-col">
+            <div class="agenda-title-row">
+              <h3 class="agenda-title">${v.title}</h3>
+              <span class="agenda-compound-tag">${v.compoundShort}</span>
+            </div>
+            <p class="agenda-buyer-desc">Buyer: <strong>${v.buyerName}</strong> (${v.buyerTier})</p>
+            <p style="font-size: 0.75rem; color: var(--ink-3);">${v.advisorNotes}</p>
+          </div>
+          <div class="agenda-action-col">
+            <span class="agenda-price">${v.priceEgp.toLocaleString()} EGP</span>
+            <button class="btn-view-pass" onclick="event.stopPropagation(); selectViewing('${v.id}'); openGateModal();">
+              Show Gate Pass
+            </button>
+          </div>
+        `;
+        board.appendChild(card);
+      });
+    }
+
+    // Period Navigation
+    function prevPeriod() {
+      document.getElementById('calendarPeriodLabel').textContent = 'September 7 — 13, 2026';
+      showToast('Showing previous viewing itinerary');
+    }
+
+    function nextPeriod() {
+      document.getElementById('calendarPeriodLabel').textContent = 'September 21 — 27, 2026';
+      showToast('Showing next viewing itinerary');
+    }
+
+    function resetPeriod() {
+      document.getElementById('calendarPeriodLabel').textContent = 'September 14 — 20, 2026';
+      showToast('Returned to current week');
+    }
+
+    // Modal Control
+    function openGateModal() {
+      document.getElementById('gateModal').style.display = 'flex';
+    }
+
+    function closeGateModal(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close-btn')) return;
+      document.getElementById('gateModal').style.display = 'none';
+    }
+
+    // Copy Gate Pass PIN
+    function copyGateCode() {
+      const pin = document.getElementById('gatePassPin').textContent;
+      navigator.clipboard.writeText(pin).then(() => {
+        showToast(`Gate Pass PIN ${pin} copied to clipboard`);
+      }).catch(() => {
+        showToast(`Gate Pass PIN ${pin} copied`);
+      });
+    }
+
+    // Dynamic Toast
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brass);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>${msg}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3200);
+    }
+
+    // Cairo Live Clock
+    function updateClock() {
+      const el = document.getElementById('cairoClock');
+      if (!el) return;
+      const now = new Date();
+      const options = { timeZone: 'Africa/Cairo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      el.textContent = `${now.toLocaleTimeString('en-GB', options)} CLT`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Mobile Sidebar Drawer
+    const mobileTrigger = document.getElementById('mobileMenuTrigger');
+    const sidebar = document.getElementById('portalSidebar');
+    if (mobileTrigger && sidebar) {
+      mobileTrigger.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+    }
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

@@ -1,3 +1,5 @@
+@import url('./settly-assistant-widget.css');
+
 /* ============================================================================
    SETTLY — MASTER GLOBAL NAVIGATION & LUXURY FOOTER
    Simplified luxury design system for all Public screens (Screens 01–09).
@@ -50,13 +52,14 @@
 }
 
 .settly-nav-shell {
-  max-width: var(--max, 1320px);
+  max-width: var(--max, 1380px);
   margin-inline: auto;
-  padding-inline: var(--gut, clamp(1rem, 4vw, 3.5rem));
+  padding-inline: var(--gut, clamp(1rem, 2.5vw, 2.5rem));
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 74px;
+  gap: 16px;
   position: relative;
 }
 
@@ -105,17 +108,13 @@
   display: block;
 }
 
-/* Absolute Geometric Center Main Navigation */
+/* Primary Main Navigation (Fluid Center Flow — Zero Overlap) */
 .settly-main-nav {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(6px, 1.2vw, 14px);
-  margin: 0;
+  gap: clamp(4px, 1vw, 12px);
+  margin-inline: auto;
   z-index: 1;
 }
 
@@ -163,10 +162,16 @@
 .settly-header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-left: auto;
   flex-shrink: 0;
-  z-index: 2;
+  z-index: 10;
+}
+
+html[dir="rtl"] .settly-header-actions,
+[dir="rtl"] .settly-header-actions {
+  margin-left: 0;
+  margin-right: auto;
 }
 
 .settly-fx-pill {

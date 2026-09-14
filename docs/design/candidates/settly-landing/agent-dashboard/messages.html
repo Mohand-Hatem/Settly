@@ -1,0 +1,3052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Messages &amp; Enclave · Settly Agent Portal</title>
+  
+  <!-- Fonts & Design Tokens -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy-950: #0B1120;
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2C3B63;
+      --navy-600: #3E5080;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E6D2B5;
+      --brass-050: #FBF8F3;
+      --sage: #3D5A4C;
+      --sage-bg: #EBF2EE;
+      --sage-light: #F2F7F4;
+      --canvas: #F7F6F3;
+      --canvas-2: #EDE9DF;
+      --white: #FFFFFF;
+      --ink: #181D27;
+      --ink-2: #414651;
+      --ink-3: #717680;
+      --line: #E2DFD7;
+      --line-2: #CFCBC0;
+      --radius-sm: 8px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --sidebar-width: 288px;
+      --header-height: 72px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(19, 29, 54, 0.2);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--navy-900);
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--canvas);
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: var(--header-height);
+    }
+
+    .sidebar-brand {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .brand-plate {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.12);
+      flex-shrink: 0;
+    }
+
+    .brand-plate img {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-name {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-top: 2px;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-close-btn:hover { color: var(--white); }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active { display: block; opacity: 1; }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .nav-group-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 12px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.72);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+    }
+    .nav-link.active {
+      background-color: rgba(198, 151, 73, 0.14);
+      color: var(--brass);
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--brass);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.75;
+      flex-shrink: 0;
+      fill: none;
+      stroke: currentColor;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-950);
+      font-weight: 700;
+    }
+    .nav-badge.sage {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    .nav-link-ai {
+      background: linear-gradient(90deg, rgba(198, 151, 73, 0.12), rgba(61, 90, 76, 0.15));
+      border: 1px solid rgba(198, 151, 73, 0.28);
+      color: var(--white) !important;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar-ai-logo-plate {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-full);
+      background: var(--white);
+      border: 1.5px solid var(--brass);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(198, 151, 73, 0.35);
+    }
+    .sidebar-ai-logo-img {
+      width: 16px;
+      height: auto;
+      display: block;
+    }
+    .sidebar-ai-pill {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: rgba(37, 211, 102, 0.16);
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #38ef7d;
+    }
+    .pulse-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: var(--radius-full);
+      background-color: #25D366;
+      animation: pulse-green 1.8s infinite;
+    }
+    @keyframes pulse-green {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px #25D366; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    .sidebar-agent-card {
+      margin-top: auto;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .agent-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .agent-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--brass);
+      object-fit: cover;
+    }
+    .agent-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .agent-meta {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.5;
+    }
+
+    /* Main Container */
+    .portal-main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--canvas);
+    }
+
+    /* 2-Pane Terminal Layout */
+    .messages-terminal {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      background-color: var(--white);
+    }
+
+    /* Left Channels Directory */
+    .messages-channels-pane {
+      width: 380px;
+      background-color: var(--white);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100%;
+      transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      z-index: 5;
+    }
+
+    .messages-terminal.desks-collapsed .messages-channels-pane {
+      margin-left: -380px;
+    }
+
+    .channels-header {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-color: var(--white);
+      flex-shrink: 0;
+    }
+
+    .channels-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .channels-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .channels-heading {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.01em;
+    }
+
+    .channels-subheading {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-toggle-desks {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background-color: var(--canvas);
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-toggle-desks:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+      border-color: var(--line-2);
+    }
+
+    .btn-expand-desks {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-expand-desks:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--line-2);
+    }
+
+    .messages-terminal.desks-collapsed .btn-expand-desks {
+      display: inline-flex;
+    }
+
+    .expand-desks-badge {
+      font-size: 0.6875rem;
+      background-color: var(--brass);
+      color: var(--navy-900);
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+    }
+
+    .channels-search-bar {
+      position: relative;
+      width: 100%;
+    }
+
+    .channels-search-input {
+      width: 100%;
+      padding: 9px 12px 9px 36px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+      outline: none;
+    }
+    .channels-search-input:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .channels-search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      stroke: var(--ink-3);
+      stroke-width: 2;
+      fill: none;
+      pointer-events: none;
+    }
+
+    .channels-filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .channel-filter-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--canvas);
+      color: var(--ink-2);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .channel-filter-pill:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+    .channel-filter-pill.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    /* Channel List */
+    .channels-list {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+    }
+
+    .channel-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: background-color 0.15s ease, border-left-color 0.15s ease;
+      background-color: var(--white);
+      position: relative;
+    }
+    .channel-item:hover {
+      background-color: var(--canvas);
+    }
+    .channel-item.active {
+      background-color: var(--brass-050);
+      border-left: 3px solid var(--brass);
+    }
+
+    .channel-avatar-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .channel-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      border: 1.5px solid var(--line);
+    }
+    .channel-item.active .channel-avatar {
+      border-color: var(--brass);
+    }
+
+    .channel-presence-dot {
+      position: absolute;
+      bottom: 1px;
+      right: 1px;
+      width: 10px;
+      height: 10px;
+      border-radius: var(--radius-full);
+      background-color: #25D366;
+      border: 2px solid var(--white);
+    }
+    .channel-presence-dot.offline {
+      background-color: var(--ink-3);
+    }
+
+    .channel-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .channel-top-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .channel-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .channel-timestamp {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      flex-shrink: 0;
+    }
+
+    .channel-role-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .channel-role-tag {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      flex-shrink: 0;
+    }
+    .channel-role-tag.brass {
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+      border: 1px solid var(--brass-200);
+    }
+    .channel-role-tag.sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+    }
+
+    .channel-property-ref {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .channel-preview-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .channel-snippet {
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .channel-unread-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--brass);
+      color: var(--navy-900);
+      flex-shrink: 0;
+    }
+
+    /* Right Pane: Active Discussion Desk */
+    .messages-chat-pane {
+      flex: 1;
+      background-color: var(--canvas);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      min-width: 0;
+      position: relative;
+    }
+
+    /* Active Chat Header */
+    .chat-header {
+      padding: 14px 28px;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .chat-header-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .btn-back-channels {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-back-channels:hover {
+      background-color: var(--canvas);
+      color: var(--navy-900);
+    }
+
+    .chat-header-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .chat-header-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--brass);
+      object-fit: cover;
+    }
+
+    .chat-header-pulse {
+      position: absolute;
+      bottom: 1px;
+      right: 1px;
+      width: 11px;
+      height: 11px;
+      border-radius: var(--radius-full);
+      background-color: #25D366;
+      border: 2px solid var(--white);
+    }
+
+    .chat-header-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .chat-header-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-header-name {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .chat-header-accreditation {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+      border: 1px solid var(--brass-200);
+      white-space: nowrap;
+    }
+
+    .chat-header-status {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-header-security {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--sage);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chat-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-chat-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: var(--radius-sm);
+      font-size: 0.725rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-chat-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+    }
+    .btn-chat-primary:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-chat-secondary {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line);
+    }
+    .btn-chat-secondary:hover {
+      background-color: var(--canvas);
+      border-color: var(--line-2);
+    }
+
+    .btn-chat-brass {
+      background-color: var(--brass);
+      color: var(--navy-950);
+      border: 1px solid var(--brass-600);
+    }
+    .btn-chat-brass:hover {
+      background-color: var(--brass-600);
+      color: var(--white);
+    }
+
+    /* Pinned Property Context Bar */
+    .chat-context-bar {
+      padding: 10px 28px;
+      background-color: var(--canvas-2);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .context-property-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .context-thumb {
+      width: 58px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      border: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+
+    .context-details {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .context-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .context-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .context-status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--brass);
+      color: var(--navy-900);
+      white-space: nowrap;
+    }
+
+    .context-pricing {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .context-price-val {
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .context-deal-room-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--brass-600);
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid var(--brass-200);
+      border-radius: var(--radius-sm);
+      background-color: var(--white);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .context-deal-room-link:hover {
+      background-color: var(--brass-050);
+      border-color: var(--brass);
+    }
+
+    /* Scrollable Message Feed */
+    .chat-messages-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 0;
+      background-color: #FAF9F6;
+    }
+
+    /* Legal Notice Banner */
+    .chat-legal-banner {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      margin-bottom: 8px;
+    }
+
+    .legal-shield-icon {
+      width: 20px;
+      height: 20px;
+      stroke: var(--brass);
+      stroke-width: 2;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .legal-banner-text {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .legal-banner-highlight {
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    /* Date Separator */
+    .chat-date-separator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 8px 0;
+    }
+    .chat-date-separator::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: var(--line);
+    }
+    .chat-date-tag {
+      position: relative;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      padding: 3px 12px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--ink-2);
+      text-transform: uppercase;
+    }
+
+    /* Message Bubbles */
+    .message-row {
+      display: flex;
+      gap: 12px;
+      max-width: 82%;
+    }
+
+    .message-row.inbound {
+      align-self: flex-start;
+    }
+
+    .message-row.outbound {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      border: 1px solid var(--line);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .message-row.outbound .msg-avatar {
+      border-color: var(--brass);
+    }
+
+    .msg-bubble-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .msg-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .message-row.outbound .msg-meta-row {
+      justify-content: flex-end;
+    }
+
+    .msg-sender-name {
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+    .message-row.outbound .msg-sender-name {
+      color: var(--navy-900);
+    }
+
+    .msg-bubble {
+      padding: 14px 18px;
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      line-height: 1.55;
+      position: relative;
+      word-wrap: break-word;
+    }
+
+    .message-row.inbound .msg-bubble {
+      background-color: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-top-left-radius: 2px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .message-row.outbound .msg-bubble {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-800);
+      border-top-right-radius: 2px;
+      box-shadow: 0 2px 6px rgba(19, 29, 54, 0.12);
+    }
+
+    .message-row.outbound .msg-bubble p {
+      color: var(--white);
+    }
+
+    /* Embedded Document Card */
+    .msg-document-card {
+      margin-top: 10px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .message-row.outbound .msg-document-card {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .doc-card-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .doc-icon-plate {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background-color: var(--brass-050);
+      border: 1px solid var(--brass-200);
+      color: var(--brass-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .doc-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .message-row.outbound .doc-name {
+      color: var(--white);
+    }
+
+    .doc-specs {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+    .message-row.outbound .doc-specs {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .doc-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      text-decoration: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .doc-action-btn:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--line-2);
+    }
+
+    /* Gate Pass Card */
+    .gate-pass-card {
+      margin-top: 10px;
+      background: linear-gradient(135deg, rgba(61, 90, 76, 0.12), rgba(198, 151, 73, 0.12));
+      border: 1px solid rgba(61, 90, 76, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .message-row.outbound .gate-pass-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(198, 151, 73, 0.35);
+    }
+    .gate-pass-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .gate-pass-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .gate-pass-sub {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+    .typing-indicator.active {
+      display: inline-flex;
+    }
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--ink-3);
+      animation: typingBounce 1.2s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* Quick Action Prompts */
+    .quick-replies-container {
+      padding: 8px 28px 4px;
+      background-color: var(--canvas);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .quick-reply-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      color: var(--navy-900);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-sans);
+    }
+    .quick-reply-pill:hover {
+      background-color: var(--brass-050);
+      border-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Message Composer Area */
+    /* CRITICAL FIX: padding-right: 96px ensures Send Button and input NEVER collide with fixed AI assistant FAB */
+    .chat-composer-area {
+      padding: 12px 96px 16px 28px;
+      background-color: var(--white);
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .composer-input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .btn-attach-doc {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--canvas);
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-attach-doc:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+      border-color: var(--line-2);
+    }
+
+    .composer-textarea-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .composer-textarea {
+      width: 100%;
+      min-height: 42px;
+      max-height: 120px;
+      padding: 10px 14px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--ink);
+      resize: none;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .composer-textarea:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .btn-send-message {
+      height: 42px;
+      padding: 0 18px;
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-send-message:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .composer-footer-text {
+      flex-wrap: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-3);
+    }
+
+    .composer-security-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--sage);
+    }
+
+    /* Modal Windows */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.2);
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlideIn {
+      from { transform: scale(0.97); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--canvas);
+    }
+    .modal-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+    .modal-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+    .modal-close-btn:hover {
+      color: var(--navy-900);
+      background-color: var(--canvas-2);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modal-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      text-transform: uppercase;
+    }
+    .modal-input, .modal-select {
+      width: 100%;
+      padding: 9px 12px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--ink);
+      outline: none;
+    }
+    .modal-input:focus, .modal-select:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .modal-dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .dossier-item {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .dossier-lbl {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+    .dossier-val {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      background-color: var(--canvas);
+    }
+    .btn-modal-cancel {
+      padding: 8px 16px;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+    }
+    .btn-modal-submit {
+      padding: 8px 16px;
+      background-color: var(--navy-900);
+      border: 1px solid var(--navy-900);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-modal-submit:hover {
+      background-color: var(--navy-800);
+    }
+
+    /* Toast Notification Pill */
+    .toast-pill {
+      position: fixed;
+      bottom: 96px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background-color: var(--navy-950);
+      color: var(--white);
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 10px 25px rgba(11, 17, 32, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+    .toast-icon {
+      width: 16px;
+      height: 16px;
+      stroke: var(--brass);
+      stroke-width: 2.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-close-btn {
+        display: inline-flex;
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .messages-channels-pane {
+        width: 100%;
+      }
+      .messages-terminal.show-chat .messages-channels-pane {
+        display: none;
+      }
+      .messages-terminal:not(.show-chat) .messages-chat-pane {
+        display: none;
+      }
+      .btn-back-channels {
+        display: inline-flex;
+      }
+      .btn-toggle-desks, .btn-expand-desks {
+        display: none !important;
+      }
+      .chat-composer-area {
+        padding-right: 28px;
+      }
+    }
+  </style>
+
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Main Brand Logo -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Executive Desk -->
+        <div>
+          <div class="nav-group-label">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge urgent">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads &amp; Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge sage">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics &amp; Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Inventory & Public -->
+        <div>
+          <div class="nav-group-label">Inventory &amp; Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Broker Identification Plate -->
+        <div class="sidebar-agent-card">
+          <div class="agent-card-header">
+            <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="agent-avatar">
+            <div>
+              <div class="agent-name">Karim El-Sayed</div>
+              <div class="agent-meta">
+                <span class="pulse-dot"></span>
+                Senior Private Advisor
+              </div>
+            </div>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.6875rem; color: rgba(255, 255, 255, 0.65); display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.06); padding: 5px 8px; border-radius: var(--radius-sm);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Broker Desk Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>VERIFIED LISTINGS &amp; EXCLUSIVE MANDATES</div>
+        <div>LICENSED INDEPENDENT BROKER</div>
+      </div>
+    </aside>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      
+      <!-- Canonical Offers Standard Topbar -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">CLIENT CONVERSATIONS &amp; DESKS</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>ENCRYPTED CLIENT ENCLAVE</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search All Real Estate (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="View Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="overview.html" class="user-profile-badge" title="Broker Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Senior Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Institutional Messaging Terminal -->
+      <div class="messages-terminal" id="messagesTerminal">
+        
+        <!-- Left Pane: Client Desks Directory -->
+        <section class="messages-channels-pane" aria-label="Active Client Conversations">
+          <div class="channels-header">
+            <div class="channels-title-row">
+              <div class="channels-title-group">
+                <h1 class="channels-heading">Client Desks</h1>
+                <span class="channels-subheading">4 Active Discussions</span>
+              </div>
+              <button class="btn-toggle-desks" id="collapseDesksBtn" onclick="toggleDesksPane()" aria-label="Collapse channels panel" title="Collapse channels panel (Press [)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><polyline points="15 9 12 12 15 15"></polyline></svg>
+              </button>
+            </div>
+
+            <!-- Real-time Channel Search -->
+            <div class="channels-search-bar">
+              <svg class="channels-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="channelSearchInput" class="channels-search-input" placeholder="Search client name, mandate, compound..." oninput="filterChannelsByQuery(this.value)">
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="channels-filters">
+              <button class="channel-filter-pill active" onclick="filterChannels('all', this)">All (4)</button>
+              <button class="channel-filter-pill" onclick="filterChannels('buyers', this)">Active Buyers (2)</button>
+              <button class="channel-filter-pill" onclick="filterChannels('legal', this)">Legal &amp; Escrow (1)</button>
+              <button class="channel-filter-pill" onclick="filterChannels('developers', this)">Developers (1)</button>
+            </div>
+          </div>
+
+          <!-- Channel List -->
+          <ul class="channels-list" id="channelsList">
+            
+            <!-- Channel 1: Tarek Mansour (Active) -->
+            <li class="channel-item active" data-channel-id="tarek" data-category="buyers" data-search="Tarek Mansour Lake View Villa Palm Hills New Cairo Counter Offer" onclick="selectChannel('tarek')">
+              <div class="channel-avatar-wrapper">
+                <img src="../../../../../Images/web/hero.jpg" alt="Tarek Mansour" class="channel-avatar">
+                <span class="channel-presence-dot"></span>
+              </div>
+              <div class="channel-content">
+                <div class="channel-top-line">
+                  <span class="channel-name">Tarek Mansour</span>
+                  <span class="channel-timestamp">11:42 AM</span>
+                </div>
+                <div class="channel-role-row">
+                  <span class="channel-role-tag brass">BUYER · TIER-1</span>
+                  <span class="channel-property-ref">Lake View Villa · SET-9042</span>
+                </div>
+                <div class="channel-preview-row">
+                  <p class="channel-snippet">Can we structure the 8-year schedule with 10% down?</p>
+                  <span class="channel-unread-pill">2</span>
+                </div>
+              </div>
+            </li>
+
+            <!-- Channel 2: Dr. Sherif Youssef -->
+            <li class="channel-item" data-channel-id="sherif" data-category="legal" data-search="Dr. Sherif Youssef Marassi Waterfront Penthouse Cadastre Deed Escrow Audit" onclick="selectChannel('sherif')">
+              <div class="channel-avatar-wrapper">
+                <img src="../../../../../Images/web/4.jpg" alt="Dr. Sherif Youssef" class="channel-avatar">
+                <span class="channel-presence-dot"></span>
+              </div>
+              <div class="channel-content">
+                <div class="channel-top-line">
+                  <span class="channel-name">Dr. Sherif Youssef</span>
+                  <span class="channel-timestamp">Yesterday</span>
+                </div>
+                <div class="channel-role-row">
+                  <span class="channel-role-tag sage">LEGAL COUNSEL</span>
+                  <span class="channel-property-ref">Marassi Penthouse · Cadastre</span>
+                </div>
+                <div class="channel-preview-row">
+                  <p class="channel-snippet">Allocation deed registered at Notary Public. Escrow clear.</p>
+                  <span class="channel-unread-pill">1</span>
+                </div>
+              </div>
+            </li>
+
+            <!-- Channel 3: Farida Mansi -->
+            <li class="channel-item" data-channel-id="farida" data-category="buyers" data-search="Farida Mansi Ras El Hekma Beachfront Villa Coastal Tour Gate Pass" onclick="selectChannel('farida')">
+              <div class="channel-avatar-wrapper">
+                <img src="../../../../../Images/web/1.jpg" alt="Farida Mansi" class="channel-avatar">
+                <span class="channel-presence-dot"></span>
+              </div>
+              <div class="channel-content">
+                <div class="channel-top-line">
+                  <span class="channel-name">Farida Mansi</span>
+                  <span class="channel-timestamp">Sep 11</span>
+                </div>
+                <div class="channel-role-row">
+                  <span class="channel-role-tag brass">VIP INVESTOR</span>
+                  <span class="channel-property-ref">Ras El Hekma Villa</span>
+                </div>
+                <div class="channel-preview-row">
+                  <p class="channel-snippet">Compound gate clearance PIN received. See you Saturday 16:30.</p>
+                </div>
+              </div>
+            </li>
+
+            <!-- Channel 4: Eng. Mohamed Zaki -->
+            <li class="channel-item" data-channel-id="zaki" data-category="developers" data-search="Eng. Mohamed Zaki Katameya Dunes Grand Residence Sovereign SLA" onclick="selectChannel('zaki')">
+              <div class="channel-avatar-wrapper">
+                <img src="../../../../../Images/web/2.jpg" alt="Eng. Mohamed Zaki" class="channel-avatar">
+                <span class="channel-presence-dot offline"></span>
+              </div>
+              <div class="channel-content">
+                <div class="channel-top-line">
+                  <span class="channel-name">Eng. Mohamed Zaki</span>
+                  <span class="channel-timestamp">Sep 08</span>
+                </div>
+                <div class="channel-role-row">
+                  <span class="channel-role-tag">PORTFOLIO DIR</span>
+                  <span class="channel-property-ref">Katameya Dunes Grand Res.</span>
+                </div>
+                <div class="channel-preview-row">
+                  <p class="channel-snippet">Seller counter-offer term sheet ready for client sign-off.</p>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </section>
+
+        <!-- Right Pane: Active Encrypted Discussion Desk -->
+        <section class="messages-chat-pane" id="activeChatPane" aria-label="Active Encrypted Chat">
+          
+          <!-- Active Chat Header -->
+          <div class="chat-header">
+            <div class="chat-header-main">
+              <!-- Expand Desks Button (Desktop Collapsed State) -->
+              <button class="btn-expand-desks" id="expandDesksBtn" onclick="toggleDesksPane()" aria-label="Show Client Desks" title="Show channels directory (Press [)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                <span>Show Desks</span>
+                <span class="expand-desks-badge">4</span>
+              </button>
+
+              <!-- Mobile Back Button -->
+              <button class="btn-back-channels" id="backToChannelsBtn" onclick="closeChatMobile()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Channels
+              </button>
+
+              <div class="chat-header-avatar-wrap">
+                <img src="../../../../../Images/web/hero.jpg" alt="Tarek Mansour" class="chat-header-avatar" id="activeChatAvatar">
+                <span class="chat-header-pulse" id="activeChatPulse"></span>
+              </div>
+              <div class="chat-header-info">
+                <div class="chat-header-title-row">
+                  <h2 class="chat-header-name" id="activeChatName">Tarek Mansour</h2>
+                  <span class="chat-header-accreditation" id="activeChatAccreditation">Tier-1 HNWI Verified</span>
+                </div>
+                <div class="chat-header-status">
+                  <span id="activeChatSubtitle">Barclays POF Verified · CLT 08:00 - 22:00</span>
+                  <span>·</span>
+                  <span class="chat-header-security">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    SHA-256 E2EE ENCLAVE
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-header-actions">
+              <button class="btn-chat-action btn-chat-secondary" onclick="openDossierModal()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                Client Dossier
+              </button>
+              <button class="btn-chat-action btn-chat-secondary" onclick="openGatePassModal()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Gate Pass PIN
+              </button>
+              <a href="leads.html" class="btn-chat-action btn-chat-brass" id="dealRoomActionBtn">
+                <span>Counter-Offer &rarr;</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </a>
+              <a href="https://wa.me/201000000000" target="_blank" rel="noopener" class="btn-chat-action btn-chat-primary" title="Direct WhatsApp Concierge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Pinned Property Context Bar -->
+          <div class="chat-context-bar" id="chatContextBar">
+            <div class="context-property-card">
+              <img src="../../../../../Images/web/hero.jpg" alt="Lake View Signature Villa" class="context-thumb" id="contextThumb">
+              <div class="context-details">
+                <div class="context-title-row">
+                  <span class="context-title" id="contextTitle">Lake View Signature Villa — Palm Hills New Cairo</span>
+                  <span class="context-status-badge" id="contextStatusBadge">Active Negotiation (Counter-Offer)</span>
+                </div>
+                <div class="context-pricing" id="contextPricing">
+                  <span>List: <span class="context-price-val">EGP 34.0M</span></span>
+                  <span>·</span>
+                  <span>Buyer Bid: <span class="context-price-val">EGP 32.5M</span></span>
+                  <span>·</span>
+                  <span>Counter: <span class="context-price-val" style="color: var(--brass-600);">EGP 33.0M</span></span>
+                </div>
+              </div>
+            </div>
+            <a href="leads.html" class="context-deal-room-link" id="contextDealLink">
+              <span>View In Pipeline</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+
+          <!-- Scrollable Message Stream -->
+          <div class="chat-messages-scroll" id="chatMessagesScroll">
+            
+            <!-- Legal Security Notice -->
+            <div class="chat-legal-banner">
+              <svg class="legal-shield-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <div class="legal-banner-text">
+                <span class="legal-banner-highlight">CONFIDENTIAL BROKER ENCLAVE.</span>
+                All correspondence, security gate clearances, and financial term sheets are encrypted and logged under Egyptian Real Estate Law 114/1946.
+              </div>
+            </div>
+
+            <!-- Date Separator -->
+            <div class="chat-date-separator">
+              <span class="chat-date-tag">Today, 13 September 2026</span>
+            </div>
+
+            <!-- Dynamic Messages Stream Container -->
+            <div id="messagesFeedContainer" style="display: flex; flex-direction: column; gap: 20px;">
+              
+              <!-- Message 1: Inbound (Tarek Mansour) -->
+              <div class="message-row inbound">
+                <img src="../../../../../Images/web/hero.jpg" alt="Tarek Mansour" class="msg-avatar">
+                <div class="msg-bubble-group">
+                  <div class="msg-meta-row">
+                    <span class="msg-sender-name">Tarek Mansour</span>
+                    <span>11:32 AM</span>
+                  </div>
+                  <div class="msg-bubble">
+                    <p>Good morning Karim. We loved the Lake View villa yesterday. Before we proceed with the formal acquisition agreement, can we negotiate the maintenance deposit or request an 8-year installment schedule?</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message 2: Outbound (Karim El-Sayed) -->
+              <div class="message-row outbound">
+                <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="msg-avatar">
+                <div class="msg-bubble-group">
+                  <div class="msg-meta-row">
+                    <span>11:38 AM · Delivered ✓✓</span>
+                    <span class="msg-sender-name">Karim El-Sayed (You)</span>
+                  </div>
+                  <div class="msg-bubble">
+                    <p>Good morning Tarek. I spoke with Palm Hills Developments executive sales desk this morning. They agreed to structure the 8-year schedule with 10% down, provided the reservation deposit is locked today. I have attached the updated financial schedule term sheet below.</p>
+                    
+                    <!-- Document Attachment -->
+                    <div class="msg-document-card">
+                      <div class="doc-card-info">
+                        <div class="doc-icon-plate">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        </div>
+                        <div class="doc-meta">
+                          <span class="doc-name">Palm_Hills_LakeView_8Yr_PaymentSchedule_SET-9042.pdf</span>
+                          <span class="doc-specs">4.2 MB · Verified Financial Term Sheet · SHA-256 Validated</span>
+                        </div>
+                      </div>
+                      <button class="doc-action-btn" onclick="showToast('Downloading Financial Term Sheet...')">
+                        <span>Download</span>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message 3: Inbound (Tarek Mansour) -->
+              <div class="message-row inbound">
+                <img src="../../../../../Images/web/hero.jpg" alt="Tarek Mansour" class="msg-avatar">
+                <div class="msg-bubble-group">
+                  <div class="msg-meta-row">
+                    <span class="msg-sender-name">Tarek Mansour</span>
+                    <span>11:42 AM</span>
+                  </div>
+                  <div class="msg-bubble">
+                    <p>That's excellent news. What are the next steps to lock the 48-hour refundable reservation deposit?</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message 4: Outbound (Karim El-Sayed) -->
+              <div class="message-row outbound">
+                <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="msg-avatar">
+                <div class="msg-bubble-group">
+                  <div class="msg-meta-row">
+                    <span>11:45 AM · Delivered ✓✓</span>
+                    <span class="msg-sender-name">Karim El-Sayed (You)</span>
+                  </div>
+                  <div class="msg-bubble">
+                    <p>I have generated your Katameya Dunes West Gate security clearance pass for Saturday's contract signing. You can present this PIN directly at the guardhouse.</p>
+                    
+                    <!-- Gate Pass Card -->
+                    <div class="gate-pass-card">
+                      <div class="gate-pass-info">
+                        <div class="gate-pass-title">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                          <span>Compound Security Gate Clearance PIN #8821-KD</span>
+                        </div>
+                        <div class="gate-pass-sub">Katameya Dunes West Gate · Valid Sat 14 Sep, 16:30 CLT</div>
+                      </div>
+                      <button class="doc-action-btn" onclick="showToast('Security Pass PIN dispatched via SMS to client.')">SMS PIN</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Simulated Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+              <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3);" id="typingText">Tarek is typing</span>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+
+          </div>
+
+          <!-- Quick Action Prompts Bar -->
+          <div class="quick-replies-container">
+            <button class="quick-reply-pill" onclick="handleQuickPrompt('+ Attach Cadastre Deed PDF')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+              + Attach Cadastre Deed PDF
+            </button>
+            <button class="quick-reply-pill" onclick="openGatePassModal()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              + Send Gate Pass PIN
+            </button>
+            <button class="quick-reply-pill" onclick="handleQuickPrompt('+ Propose Saturday Tour Slot')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+              + Propose Saturday Tour Slot
+            </button>
+            <button class="quick-reply-pill" onclick="handleQuickPrompt('+ Counter-Offer Term Sheet')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              + Counter-Offer Term Sheet
+            </button>
+            <button class="quick-reply-pill" onclick="handleQuickPrompt('+ Request Barclays POF Update')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              + Request Barclays POF Update
+            </button>
+          </div>
+
+          <!-- Message Composer Area -->
+          <!-- Padded on right by 96px so floating assistant FAB never covers button or input -->
+          <div class="chat-composer-area">
+            <div class="composer-input-row">
+              <button class="btn-attach-doc" onclick="openShareDocModal()" aria-label="Attach document" title="Attach verified contract or deed">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+              </button>
+
+              <div class="composer-textarea-wrap">
+                <textarea id="chatInput" class="composer-textarea" placeholder="Type a confidential message or dispatch documents to client... (Enter to dispatch)" rows="1" onkeydown="handleInputKeyDown(event)"></textarea>
+              </div>
+
+              <button class="btn-send-message" id="sendMessageBtn" onclick="sendMessage()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                Send
+              </button>
+            </div>
+
+            <div class="composer-footer-text">
+              <span>Press Enter to send, Shift+Enter for newline · Press [ to toggle Desks sidebar</span>
+              <span class="composer-security-tag">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                256-bit Encrypted · Non-Repudiation Timestamps
+              </span>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal 1: Client Intelligence Dossier Modal -->
+  <div class="modal-backdrop" id="buyerDossierModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Client Intelligence Dossier</h3>
+          <span class="modal-subtitle">Verified Buyer Profile &amp; Asset Capacity</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeDossierModal()" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-dossier-grid">
+          <div class="dossier-item">
+            <span class="dossier-lbl">Client Full Name</span>
+            <span class="dossier-val" id="dossierName">Tarek Mansour</span>
+          </div>
+          <div class="dossier-item">
+            <span class="dossier-lbl">Verification Tier</span>
+            <span class="dossier-val" style="color: var(--brass-600);" id="dossierTier">Tier-1 HNWI Verified</span>
+          </div>
+          <div class="dossier-item">
+            <span class="dossier-lbl">Liquid Proof of Funds</span>
+            <span class="dossier-val" style="color: var(--sage);">$1.2M USD (Barclays Offshore)</span>
+          </div>
+          <div class="dossier-item">
+            <span class="dossier-lbl">EGP Solvency Benchmark</span>
+            <span class="dossier-val">EGP 58,620,000 Equiv.</span>
+          </div>
+          <div class="dossier-item">
+            <span class="dossier-lbl">Active Mandate</span>
+            <span class="dossier-val" id="dossierMandate">Lake View Villa (EGP 32.5M)</span>
+          </div>
+          <div class="dossier-item">
+            <span class="dossier-lbl">Target Move-In</span>
+            <span class="dossier-val">Q4 2026</span>
+          </div>
+          <div class="dossier-item" style="grid-column: span 2;">
+            <span class="dossier-lbl">Prior Acquisition History</span>
+            <span class="dossier-val" style="font-weight: 500; font-size: 0.75rem;">Palm Hills October (Purchased 2021) · Marassi Blanca Chalet (Purchased 2023). Clean notary audit record.</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="closeDossierModal()">Close</button>
+        <button class="btn-modal-submit" onclick="showToast('Exporting encrypted dossier PDF...'); closeDossierModal();">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export Dossier PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Compound Security Gate Pass Dispatch -->
+  <div class="modal-backdrop" id="gatePassModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Compound Security Gate Clearance</h3>
+          <span class="modal-subtitle">Generate Encrypted Access PIN &amp; Driver Pass</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeGatePassModal()" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">Select Compound Gate</label>
+          <select id="gateCompoundSelect" class="modal-select">
+            <option value="Katameya Dunes West Gate">Katameya Dunes — West Main Gate (Sheikh Zayed Axis)</option>
+            <option value="Lake View North Gate">Lake View New Cairo — North Executive Gate</option>
+            <option value="Marassi Marina Gate">Marassi Sidi Abdel Rahman — Marina Gate 2</option>
+            <option value="Palm Hills October Gate">Palm Hills October — Bamboo Gate</option>
+          </select>
+        </div>
+        <div class="modal-dossier-grid">
+          <div class="modal-form-group">
+            <label class="modal-label">Visitor / Client Name</label>
+            <input type="text" id="gateVisitorName" class="modal-input" value="Tarek Mansour">
+          </div>
+          <div class="modal-form-group">
+            <label class="modal-label">Vehicle License Plate</label>
+            <input type="text" id="gatePlateNumber" class="modal-input" value="Cairo · 892-س م ط">
+          </div>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label">Clearance Slot</label>
+          <input type="text" id="gateTimeSlot" class="modal-input" value="Saturday, 14 Sep 2026 · 16:30 CLT (Valid 4 Hours)">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="closeGatePassModal()">Cancel</button>
+        <button class="btn-modal-submit" onclick="submitGatePass()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Dispatch PIN to Client via SMS
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Share Document Modal -->
+  <div class="modal-backdrop" id="shareDocModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Dispatch Document to Client</h3>
+          <span class="modal-subtitle">Cryptographically Verified Real Estate Vault</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeShareDocModal()" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label">Select Verified Vault Document</label>
+          <select id="docVaultSelect" class="modal-select">
+            <option value="cadastre">Lake_View_Villa_Cadastre_Deed_Audit_SET9042.pdf (1.9 MB)</option>
+            <option value="termsheet">Palm_Hills_8Yr_Payment_Schedule_Official.pdf (4.2 MB)</option>
+            <option value="counter">Formal_Counter_Offer_Signed_Terms_EGP33M.pdf (850 KB)</option>
+            <option value="escrow">Barclays_Escrow_Reservation_Receipt_SET9042.pdf (410 KB)</option>
+          </select>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label">Or Upload Custom Document</label>
+          <div style="border: 2px dashed var(--line); border-radius: var(--radius-sm); padding: 20px; text-align: center; background-color: var(--canvas); cursor: pointer;" onclick="document.getElementById('fileUploadPicker').click()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="2" style="margin: 0 auto 6px; display: block;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--navy-900);">Click to browse files or drag &amp; drop</span>
+            <span style="font-size: 0.6875rem; color: var(--ink-3); display: block; margin-top: 2px;">PDF, PNG up to 25MB (Encrypted AES-256)</span>
+            <input type="file" id="fileUploadPicker" style="display: none;" onchange="handleFileSelected(event)">
+          </div>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label">Accompanying Note</label>
+          <input type="text" id="shareDocNoteInput" class="modal-input" placeholder="e.g. Please review this updated term sheet for our meeting...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="closeShareDocModal()">Cancel</button>
+        <button class="btn-modal-submit" onclick="submitShareDoc()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          Dispatch to Channel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div class="toast-pill" id="toastPill">
+    <svg class="toast-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toastMessage">Notification message</span>
+  </div>
+
+  <!-- Client-side Interactive Logic -->
+  <script>
+    // Live Africa/Cairo Clock Simulator
+    function updateCairoClock() {
+      const options = {
+        timeZone: 'Africa/Cairo',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      };
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', options) + ' CLT · Africa/Cairo';
+      const clockEl = document.getElementById('liveCairoClock');
+      if (clockEl) {
+        clockEl.textContent = timeStr;
+      }
+    }
+    setInterval(updateCairoClock, 1000);
+    updateCairoClock();
+
+    // Mobile Sidebar Drawer System
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('portalSidebar');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.add('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.remove('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openSidebar();
+      });
+    }
+
+    if (sidebarCloseBtn) {
+      sidebarCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeSidebar();
+      });
+    }
+
+    if (sidebarBackdrop) {
+      sidebarBackdrop.addEventListener('click', () => {
+        closeSidebar();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (sidebar && sidebar.classList.contains('open')) {
+          closeSidebar();
+        }
+        closeDossierModal();
+        closeGatePassModal();
+        closeShareDocModal();
+      }
+      if (e.key === '[' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+        toggleDesksPane();
+      }
+    });
+
+    // Toggle Encrypted Desks Channels Sidebar (Desktop Collapse/Expand)
+    function toggleDesksPane() {
+      const term = document.getElementById('messagesTerminal');
+      if (!term) return;
+      term.classList.toggle('desks-collapsed');
+      const isCollapsed = term.classList.contains('desks-collapsed');
+      showToast(isCollapsed ? 'Client Desks collapsed. Active chat expanded.' : 'Client Desks expanded.');
+    }
+
+    // Mobile Master-Detail Switcher
+    const terminal = document.getElementById('messagesTerminal');
+    function openChatMobile() {
+      if (terminal && window.innerWidth <= 900) {
+        terminal.classList.add('show-chat');
+      }
+    }
+    function closeChatMobile() {
+      if (terminal) {
+        terminal.classList.remove('show-chat');
+      }
+    }
+
+    // Toast Notification Generator
+    function showToast(msg) {
+      const toast = document.getElementById('toastPill');
+      const text = document.getElementById('toastMessage');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3400);
+    }
+
+    // Channel Filtering by Category
+    function filterChannels(category, btn) {
+      document.querySelectorAll('.channel-filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const items = document.querySelectorAll('.channel-item');
+      items.forEach(item => {
+        if (category === 'all') {
+          item.style.display = '';
+        } else {
+          const itemCat = item.getAttribute('data-category');
+          if (itemCat === category) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    // Filter Channels by Search Query
+    function filterChannelsByQuery(q) {
+      const query = q.toLowerCase().trim();
+      const items = document.querySelectorAll('.channel-item');
+      items.forEach(item => {
+        const searchData = (item.getAttribute('data-search') || '').toLowerCase();
+        if (!query || searchData.includes(query)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Channels Data Dictionary
+    const channelsData = {
+      tarek: {
+        name: "Tarek Mansour",
+        avatar: "../../../../../Images/web/hero.jpg",
+        accreditation: "Tier-1 HNWI Verified",
+        subtitle: "Barclays POF Verified · CLT 08:00 - 22:00",
+        thumb: "../../../../../Images/web/hero.jpg",
+        propertyTitle: "Lake View Signature Villa — Palm Hills New Cairo",
+        statusBadge: "Active Negotiation (Counter-Offer)",
+        pricing: `<span>List: <span class="context-price-val">EGP 34.0M</span></span><span>·</span><span>Buyer Bid: <span class="context-price-val">EGP 32.5M</span></span><span>·</span><span>Counter: <span class="context-price-val" style="color: var(--brass-600);">EGP 33.0M</span></span>`,
+        dealRoomLink: "leads.html",
+        dossierTier: "Tier-1 HNWI Verified",
+        dossierMandate: "Lake View Villa (EGP 32.5M)",
+        messages: [
+          {
+            type: "inbound",
+            sender: "Tarek Mansour",
+            time: "11:32 AM",
+            avatar: "../../../../../Images/web/hero.jpg",
+            text: "Good morning Karim. We loved the Lake View villa yesterday. Before we proceed with the formal acquisition agreement, can we negotiate the maintenance deposit or request an 8-year installment schedule?"
+          },
+          {
+            type: "outbound",
+            sender: "Karim El-Sayed (You)",
+            time: "11:38 AM · Delivered ✓✓",
+            avatar: "../../../../../Images/web/phone.jpg",
+            text: "Good morning Tarek. I spoke with Palm Hills Developments executive sales desk this morning. They agreed to structure the 8-year schedule with 10% down, provided the reservation deposit is locked today. I have attached the updated financial schedule term sheet below.",
+            doc: {
+              name: "Palm_Hills_LakeView_8Yr_PaymentSchedule_SET-9042.pdf",
+              specs: "4.2 MB · Verified Financial Term Sheet · SHA-256 Validated"
+            }
+          },
+          {
+            type: "inbound",
+            sender: "Tarek Mansour",
+            time: "11:42 AM",
+            avatar: "../../../../../Images/web/hero.jpg",
+            text: "That's excellent news. What are the next steps to lock the 48-hour refundable reservation deposit?"
+          },
+          {
+            type: "outbound",
+            sender: "Karim El-Sayed (You)",
+            time: "11:45 AM · Delivered ✓✓",
+            avatar: "../../../../../Images/web/phone.jpg",
+            text: "I have generated your Katameya Dunes West Gate security clearance pass for Saturday's contract signing. You can present this PIN directly at the guardhouse.",
+            gatePass: {
+              title: "Compound Security Gate Clearance PIN #8821-KD",
+              sub: "Katameya Dunes West Gate · Valid Sat 14 Sep, 16:30 CLT"
+            }
+          }
+        ]
+      },
+      sherif: {
+        name: "Dr. Sherif Youssef",
+        avatar: "../../../../../Images/web/4.jpg",
+        accreditation: "Settly Legal Counsel & Escrow Notary",
+        subtitle: "Mansour & Partners Legal Practice · Online",
+        thumb: "../../../../../Images/web/4.jpg",
+        propertyTitle: "Marassi Waterfront Penthouse — Sidi Abdel Rahman",
+        statusBadge: "Cadastre Deed Audit in Escrow",
+        pricing: `<span>Agreed Valuation: <span class="context-price-val">EGP 28.5M</span></span><span>·</span><span>Escrow Deposit: <span class="context-price-val" style="color: var(--sage);">EGP 2.85M Verified</span></span>`,
+        dealRoomLink: "leads.html",
+        dossierTier: "Senior Legal Counsel (Bar Assc #49102)",
+        dossierMandate: "Marassi Waterfront Penthouse",
+        messages: [
+          {
+            type: "inbound",
+            sender: "Dr. Sherif Youssef",
+            time: "Yesterday, 15:20 CLT",
+            avatar: "../../../../../Images/web/4.jpg",
+            text: "Karim, I reviewed the Emaar Misr allocation deed and the shoreline easement registry. Everything complies with Law 114/1946. We have the green light for formal closing on Tuesday."
+          },
+          {
+            type: "outbound",
+            sender: "Karim El-Sayed (You)",
+            time: "Yesterday, 16:05 CLT · Delivered ✓✓",
+            avatar: "../../../../../Images/web/phone.jpg",
+            text: "Excellent news Dr. Sherif. Did they confirm the conditional mooring rights transfer at Marassi Marina?",
+            doc: {
+              name: "Emaar_Marassi_Allocation_Deed_Audit_Signed.pdf",
+              specs: "3.1 MB · Certified Notary Copy"
+            }
+          },
+          {
+            type: "inbound",
+            sender: "Dr. Sherif Youssef",
+            time: "Yesterday, 16:40 CLT",
+            avatar: "../../../../../Images/web/4.jpg",
+            text: "Yes, fully confirmed. Clause 14 guarantees permanent yacht berth allocation under license #EMAAR-MOOR-2026."
+          }
+        ]
+      },
+      farida: {
+        name: "Farida Mansi",
+        avatar: "../../../../../Images/web/1.jpg",
+        accreditation: "VIP Coastal Investor",
+        subtitle: "Private Family Office · Available CLT 10:00 - 20:00",
+        thumb: "../../../../../Images/web/1.jpg",
+        propertyTitle: "Ras El Hekma Beachfront Villa — North Coast",
+        statusBadge: "Private Viewing Tour Scheduled",
+        pricing: `<span>Target Acquisition: <span class="context-price-val">EGP 58.0M</span></span><span>·</span><span>Down Payment: <span class="context-price-val">15% Allocation</span></span>`,
+        dealRoomLink: "calendar.html",
+        dossierTier: "VIP Investor (Ultra-HNWI)",
+        dossierMandate: "Ras El Hekma Beachfront Villa",
+        messages: [
+          {
+            type: "inbound",
+            sender: "Farida Mansi",
+            time: "Sep 11, 14:10 CLT",
+            avatar: "../../../../../Images/web/1.jpg",
+            text: "Hello Karim. My husband and I are flying in from London this Friday. Can we schedule an exclusive sunset viewing of the Ras El Hekma beachfront villa on Saturday afternoon?"
+          },
+          {
+            type: "outbound",
+            sender: "Karim El-Sayed (You)",
+            time: "Sep 11, 14:35 CLT · Delivered ✓✓",
+            avatar: "../../../../../Images/web/phone.jpg",
+            text: "Welcome back Farida! I have reserved Saturday 16:30 CLT exclusively for you. A private golf buggy and the project development director will accompany us. Gate clearance has been pre-authorized.",
+            gatePass: {
+              title: "Compound Security Gate Clearance PIN #4109-RH",
+              sub: "Ras El Hekma VIP Access Gate · Valid Sat 14 Sep, 16:00 CLT"
+            }
+          },
+          {
+            type: "inbound",
+            sender: "Farida Mansi",
+            time: "Sep 11, 15:02 CLT",
+            avatar: "../../../../../Images/web/1.jpg",
+            text: "Compound gate clearance PIN received. See you Saturday 16:30. Thank you for coordinating!"
+          }
+        ]
+      },
+      zaki: {
+        name: "Eng. Mohamed Zaki",
+        avatar: "../../../../../Images/web/2.jpg",
+        accreditation: "Sovereign Portfolio Director",
+        subtitle: "Gulf-Egypt Real Estate Fund · Offline (Seen 3h ago)",
+        thumb: "../../../../../Images/web/2.jpg",
+        propertyTitle: "Katameya Dunes Grand Residence — New Cairo",
+        statusBadge: "Counter-Offer 18h SLA Warning",
+        pricing: `<span>List: <span class="context-price-val">EGP 46.0M</span></span><span>·</span><span>Buyer Bid: <span class="context-price-val">EGP 44.5M</span></span><span>·</span><span>Target: <span class="context-price-val" style="color: var(--brass-600);">EGP 45.0M</span></span>`,
+        dealRoomLink: "leads.html",
+        dossierTier: "Institutional Fund Manager",
+        dossierMandate: "Katameya Dunes Grand Residence",
+        messages: [
+          {
+            type: "inbound",
+            sender: "Eng. Mohamed Zaki",
+            time: "Sep 08, 09:15 CLT",
+            avatar: "../../../../../Images/web/2.jpg",
+            text: "Karim, the fund investment committee reviewed the counter-proposal. We can accept EGP 45.0M net to seller, with standard 30-day closing. Term sheet draft ready."
+          },
+          {
+            type: "outbound",
+            sender: "Karim El-Sayed (You)",
+            time: "Sep 08, 10:20 CLT · Delivered ✓✓",
+            avatar: "../../../../../Images/web/phone.jpg",
+            text: "Understood Eng. Mohamed. I am briefing the seller today. The 18-hour retraction window expires tomorrow at 18:00 CLT.",
+            doc: {
+              name: "Katameya_Dunes_Fund_Counter_TermSheet_EGP45M.pdf",
+              specs: "1.4 MB · Certified Fund Mandate"
+            }
+          }
+        ]
+      }
+    };
+
+    let activeChannelKey = 'tarek';
+
+    // Switch Channel Handler
+    function selectChannel(channelKey) {
+      activeChannelKey = channelKey;
+      const data = channelsData[channelKey];
+      if (!data) return;
+
+      // Update Channel Items Active State
+      document.querySelectorAll('.channel-item').forEach(item => {
+        if (item.getAttribute('data-channel-id') === channelKey) {
+          item.classList.add('active');
+          const unread = item.querySelector('.channel-unread-pill');
+          if (unread) unread.style.display = 'none';
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      // Update Header
+      document.getElementById('activeChatAvatar').src = data.avatar;
+      document.getElementById('activeChatName').textContent = data.name;
+      document.getElementById('activeChatAccreditation').textContent = data.accreditation;
+      document.getElementById('activeChatSubtitle').textContent = data.subtitle;
+
+      // Update Pinned Context Bar
+      document.getElementById('contextThumb').src = data.thumb;
+      document.getElementById('contextTitle').textContent = data.propertyTitle;
+      document.getElementById('contextStatusBadge').textContent = data.statusBadge;
+      document.getElementById('contextPricing').innerHTML = data.pricing;
+      document.getElementById('contextDealLink').href = data.dealRoomLink;
+
+      // Update Dossier Info
+      document.getElementById('dossierName').textContent = data.name;
+      document.getElementById('dossierTier').textContent = data.dossierTier;
+      document.getElementById('dossierMandate').textContent = data.dossierMandate;
+      document.getElementById('gateVisitorName').value = data.name;
+
+      // Render Messages
+      renderMessagesFeed(data.messages);
+
+      // Mobile
+      openChatMobile();
+    }
+
+    // Render Messages Feed
+    function renderMessagesFeed(messages) {
+      const container = document.getElementById('messagesFeedContainer');
+      container.innerHTML = '';
+
+      messages.forEach(msg => {
+        const row = document.createElement('div');
+        row.className = `message-row ${msg.type}`;
+
+        let docHtml = '';
+        if (msg.doc) {
+          docHtml = `
+            <div class="msg-document-card">
+              <div class="doc-card-info">
+                <div class="doc-icon-plate">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div class="doc-meta">
+                  <span class="doc-name">${msg.doc.name}</span>
+                  <span class="doc-specs">${msg.doc.specs}</span>
+                </div>
+              </div>
+              <button class="doc-action-btn" onclick="showToast('Downloading document: ${msg.doc.name}...')">
+                <span>Download</span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </button>
+            </div>
+          `;
+        }
+
+        let gateHtml = '';
+        if (msg.gatePass) {
+          gateHtml = `
+            <div class="gate-pass-card">
+              <div class="gate-pass-info">
+                <div class="gate-pass-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  <span>${msg.gatePass.title}</span>
+                </div>
+                <div class="gate-pass-sub">${msg.gatePass.sub}</div>
+              </div>
+              <button class="doc-action-btn" onclick="showToast('Gate Clearance Pass PIN dispatched to client via SMS.')">SMS PIN</button>
+            </div>
+          `;
+        }
+
+        row.innerHTML = `
+          <img src="${msg.avatar}" alt="${msg.sender}" class="msg-avatar">
+          <div class="msg-bubble-group">
+            <div class="msg-meta-row">
+              ${msg.type === 'outbound' ? `<span>${msg.time}</span><span class="msg-sender-name">${msg.sender}</span>` : `<span class="msg-sender-name">${msg.sender}</span><span>${msg.time}</span>`}
+            </div>
+            <div class="msg-bubble">
+              <p>${msg.text}</p>
+              ${docHtml}
+              ${gateHtml}
+            </div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
+      const scrollEl = document.getElementById('chatMessagesScroll');
+      if (scrollEl) {
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+      }
+    }
+
+    // Send Outbound Message
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const currentData = channelsData[activeChannelKey];
+      if (!currentData) return;
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) + ' · Delivered ✓✓';
+
+      const newMsg = {
+        type: "outbound",
+        sender: "Karim El-Sayed (You)",
+        time: timeStr,
+        avatar: "../../../../../Images/web/phone.jpg",
+        text: text
+      };
+
+      currentData.messages.push(newMsg);
+      renderMessagesFeed(currentData.messages);
+      input.value = '';
+      input.style.height = 'auto';
+
+      showToast('Message dispatched with 256-bit TLS encryption.');
+
+      // Simulate Inbound Typing and Reply after 1.8s
+      const typing = document.getElementById('typingIndicator');
+      const typingText = document.getElementById('typingText');
+      if (typing && typingText) {
+        typingText.textContent = `${currentData.name} is typing`;
+        typing.classList.add('active');
+        scrollChatToBottom();
+
+        setTimeout(() => {
+          typing.classList.remove('active');
+          const replyMsg = {
+            type: "inbound",
+            sender: currentData.name,
+            time: "Just now",
+            avatar: currentData.avatar,
+            text: `Understood Karim. I have noted this and will review with our legal advisors immediately.`
+          };
+          currentData.messages.push(replyMsg);
+          renderMessagesFeed(currentData.messages);
+        }, 1800);
+      }
+    }
+
+    // Input Keydown Handler (Enter to send, Shift+Enter for newline)
+    function handleInputKeyDown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    // Handle Quick Action Pills
+    function handleQuickPrompt(action) {
+      const currentData = channelsData[activeChannelKey];
+      if (!currentData) return;
+
+      if (action.includes('Cadastre Deed')) {
+        currentData.messages.push({
+          type: "outbound",
+          sender: "Karim El-Sayed (You)",
+          time: "Just now · Delivered ✓✓",
+          avatar: "../../../../../Images/web/phone.jpg",
+          text: "I have attached the certified Cadastre Deed audit issued by the Egyptian Real Estate Notary Public for your records.",
+          doc: {
+            name: "Cadastre_Title_Deed_Certified_Audit_SET-9042.pdf",
+            specs: "2.4 MB · Notary Public Registered · SHA-256 Validated"
+          }
+        });
+        renderMessagesFeed(currentData.messages);
+        showToast('Cadastre Deed PDF dispatched to client.');
+      } else if (action.includes('Saturday Tour')) {
+        currentData.messages.push({
+          type: "outbound",
+          sender: "Karim El-Sayed (You)",
+          time: "Just now · Delivered ✓✓",
+          avatar: "../../../../../Images/web/phone.jpg",
+          text: "I have blocked Saturday afternoon at 16:30 CLT for our private compound walkthrough. Our driver and the developer's client executive will receive us at the VIP gate."
+        });
+        renderMessagesFeed(currentData.messages);
+        showToast('Viewing tour invitation dispatched.');
+      } else if (action.includes('Counter-Offer Term Sheet')) {
+        currentData.messages.push({
+          type: "outbound",
+          sender: "Karim El-Sayed (You)",
+          time: "Just now · Delivered ✓✓",
+          avatar: "../../../../../Images/web/phone.jpg",
+          text: "Attached is the formally executed Counter-Offer Term Sheet reflecting the agreed EGP 1,000,000 concession and 8-year staggered payment schedule.",
+          doc: {
+            name: "Executed_Counter_Offer_TermSheet_EGP33M.pdf",
+            specs: "1.1 MB · Dual-Signed Agreement"
+          }
+        });
+        renderMessagesFeed(currentData.messages);
+        showToast('Executed Term Sheet dispatched.');
+      } else if (action.includes('Barclays POF')) {
+        currentData.messages.push({
+          type: "outbound",
+          sender: "Karim El-Sayed (You)",
+          time: "Just now · Delivered ✓✓",
+          avatar: "../../../../../Images/web/phone.jpg",
+          text: "Kindly provide an updated Barclays offshore solvency statement so our escrow desk can lock the final allocation deed without delay."
+        });
+        renderMessagesFeed(currentData.messages);
+        showToast('Proof of Funds solvency update requested.');
+      }
+    }
+
+    // Modal Control Functions
+    function openDossierModal() {
+      document.getElementById('buyerDossierModal').classList.add('open');
+    }
+    function closeDossierModal() {
+      document.getElementById('buyerDossierModal').classList.remove('open');
+    }
+
+    function openGatePassModal() {
+      document.getElementById('gatePassModal').classList.add('open');
+    }
+    function closeGatePassModal() {
+      document.getElementById('gatePassModal').classList.remove('open');
+    }
+
+    function submitGatePass() {
+      const compound = document.getElementById('gateCompoundSelect').value;
+      const visitor = document.getElementById('gateVisitorName').value;
+      const plate = document.getElementById('gatePlateNumber').value;
+      const currentData = channelsData[activeChannelKey];
+
+      currentData.messages.push({
+        type: "outbound",
+        sender: "Karim El-Sayed (You)",
+        time: "Just now · Delivered ✓✓",
+        avatar: "../../../../../Images/web/phone.jpg",
+        text: `Security clearance generated for ${visitor} (${plate}) at ${compound}.`,
+        gatePass: {
+          title: `Compound Security PIN #9124-${compound.split(' ')[0]}`,
+          sub: `${compound} · Valid for Saturday Tour · Plate: ${plate}`
+        }
+      });
+      renderMessagesFeed(currentData.messages);
+      closeGatePassModal();
+      showToast('Gate Clearance Pass PIN generated & dispatched via SMS.');
+    }
+
+    function openShareDocModal() {
+      document.getElementById('shareDocModal').classList.add('open');
+    }
+    function closeShareDocModal() {
+      document.getElementById('shareDocModal').classList.remove('open');
+    }
+
+    function submitShareDoc() {
+      const select = document.getElementById('docVaultSelect');
+      const docName = select.options[select.selectedIndex].text.split(' (')[0];
+      const note = document.getElementById('shareDocNoteInput').value.trim();
+      const currentData = channelsData[activeChannelKey];
+
+      currentData.messages.push({
+        type: "outbound",
+        sender: "Karim El-Sayed (You)",
+        time: "Just now · Delivered ✓✓",
+        avatar: "../../../../../Images/web/phone.jpg",
+        text: note || "Attached is the requested document from our verified vault for your immediate review.",
+        doc: {
+          name: docName,
+          specs: "Verified Document · AES-256 Vault Certified"
+        }
+      });
+      renderMessagesFeed(currentData.messages);
+      closeShareDocModal();
+      showToast('Document dispatched from vault.');
+    }
+
+    function handleFileSelected(e) {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        const currentData = channelsData[activeChannelKey];
+        currentData.messages.push({
+          type: "outbound",
+          sender: "Karim El-Sayed (You)",
+          time: "Just now · Delivered ✓✓",
+          avatar: "../../../../../Images/web/phone.jpg",
+          text: `Uploaded file: ${file.name}`,
+          doc: {
+            name: file.name,
+            specs: `${(file.size / (1024 * 1024)).toFixed(1)} MB · Direct Upload`
+          }
+        });
+        renderMessagesFeed(currentData.messages);
+        closeShareDocModal();
+        showToast(`Uploaded and dispatched ${file.name}`);
+      }
+    }
+  </script>
+
+  <!-- Floating Assistant Widget Script -->
+  <script src="../shared/settly-assistant-widget.js"></script>
+</body>
+</html>

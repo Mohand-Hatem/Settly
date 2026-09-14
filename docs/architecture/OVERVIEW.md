@@ -86,12 +86,12 @@ sweeper re-drives — the queue is a latency optimization, never a correctness d
 | Provider | Role | Critical? |
 |---|---|---|
 | Supabase PostgreSQL | Source of truth | ✅ **The only true single point of failure** (#10) |
-| Redis | BullMQ, rate limiting, hybrid-search cache | ❌ Non-critical — degrades, doesn't fail (#10, #26) |
+| Upstash Redis | BullMQ, rate limiting, hybrid-search cache, WS pub/sub | ❌ Non-critical — degrades, doesn't fail (#10, #26, #44) |
 | Cloudinary | Public media | ❌ |
 | Supabase Storage | Private documents | ❌ |
 | Paymob | Payments | ❌ — reconciliation covers outages (#13) |
 | Google Gemini | LLM + embeddings | ❌ — AI is strictly additive (#17, #24) |
-| Resend (provisional #36) | Production email | ❌ — Mailpit locally |
+| Resend | Email delivery (all envs, real inboxes) | ❌ — BullMQ retry + sweeper covers outages (#36, #44) |
 | FCM | Push | ❌ — in-app notification is authoritative (#10) |
 | Sentry | Observability | ❌ |
 
@@ -102,10 +102,10 @@ reliability design. See `FAILURE_MODES.md` for the full matrix.
 
 ```
   LOCAL (now)                          FUTURE PRODUCTION
-  localhost:3000 / :4000                Vercel / Railway (api + worker, 2 services)
+  localhost:3000 / :4000                Vercel (frontend) / Railway (api + worker, 2 services)
   Docker Postgres+PostGIS+pgvector      Supabase PostgreSQL
-  Docker Redis                          Managed Redis
-  Mailpit                               Resend (PROVISIONAL, #36)
+  Docker / Upstash Redis                Upstash Redis
+  Resend (real email to Gmail/etc.)     Resend (LOCKED)
   Cloudinary (real, dev/ folder)        Cloudinary
   Fake Paymob adapter + local signer    Paymob
   Gemini (real, prompt-hash cached)     Gemini
@@ -125,10 +125,11 @@ around a security control** (#37). See `INFRASTRUCTURE.md` and `process/ENVIRONM
 ## 10. What Settly explicitly does NOT contain
 
 Kubernetes · Terraform · service mesh · multi-region · a staging environment · microservices ·
-GraphQL · tRPC · WebSockets · a generic event bus · CASL/Casbin · PostgreSQL RLS · a rental
-lifecycle · agency/organization models · agent subscription billing · a public/partner API ·
+GraphQL · tRPC · Socket.IO (native WebSockets used for 1-on-1 chat; SSE for notifications) ·
+Mailpit (real Resend delivery everywhere) · a generic event bus · CASL/Casbin · PostgreSQL RLS ·
+a rental lifecycle · agency/organization models · agent subscription billing · a public/partner API ·
 LangChain/LangGraph · a dedicated reranker (v1) · an autonomous or multi-agent system (#1, #8,
-#10, #17, #19, #21, #22, #33).
+#10, #17, #19, #21, #22, #33, #43, #44).
 
 ## 11. Related documents
 

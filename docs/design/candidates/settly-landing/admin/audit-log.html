@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Immutable Sovereign Audit Log · Settly Central Oversight</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --error-bg: #FEE2E2;
+      --warning: #B45309;
+      --warning-bg: #FEF3C7;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 290px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Admin Fixed Sidebar Navigation */
+    .admin-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav-container {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0 12px 8px 12px;
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.18);
+      border: 1px solid rgba(198, 151, 73, 0.4);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.live {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    .sidebar-user-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--brass);
+      border: 1px solid var(--brass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .admin-meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-role {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass-200);
+    }
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .breadcrumb-trail .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+      box-shadow: 0 0 0 2px rgba(61, 90, 76, 0.2);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .system-clock {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      background-color: var(--canvas);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .quick-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .btn-secondary {
+      background-color: var(--canvas-2);
+      color: var(--ink);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-secondary:hover {
+      background-color: #EDEAE1;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-800);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-900);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+    }
+
+    /* Portal Container */
+    .portal-content {
+      padding: 28px 32px 48px 32px;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Executive Top Hero */
+    .hero-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero-heading {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .hero-sub {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      margin-top: 4px;
+    }
+
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audit-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--navy-800);
+    }
+
+    /* 4-Metric Executive Ribbon */
+    .metrics-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: transparent;
+    }
+
+    .metric-card.accent-navy::after { background: var(--navy-800); }
+    .metric-card.accent-brass::after { background: var(--brass); }
+    .metric-card.accent-sage::after { background: var(--sage); }
+    .metric-card.accent-error::after { background: var(--error); }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .metric-number {
+      font-family: var(--font-mono);
+      font-size: 2.125rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .metric-delta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .metric-delta.positive {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .metric-delta.neutral {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .metric-delta.negative {
+      background-color: var(--error-bg);
+      color: var(--error);
+    }
+
+    .metric-footer {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    /* Interactive Filter Controls Bar */
+    .controls-toolbar {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      flex-wrap: wrap;
+    }
+
+    .category-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--canvas);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: none;
+      border: none;
+      color: var(--ink-2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .tab-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 320px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      stroke: var(--ink-3);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      outline: none;
+      transition: border 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    /* Master Ledger Table Container */
+    .ledger-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ledger-header-bar {
+      padding: 18px 24px;
+      background-color: var(--canvas);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .ledger-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .merkle-root-chip {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      background-color: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      color: var(--sage);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ledger-table-wrap {
+      overflow-x: auto;
+      max-height: calc(100vh - 380px);
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .ledger-table th {
+      background-color: #FAFAFA;
+      padding: 12px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .ledger-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      vertical-align: middle;
+      transition: background-color 0.15s ease;
+    }
+
+    .ledger-row:hover td {
+      background-color: #FAF9F6;
+    }
+
+    .ledger-row.new-entry td {
+      background-color: var(--brass-050);
+    }
+
+    .badge-chip {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-pass {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+    }
+
+    .badge-warn {
+      background-color: var(--error-bg);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.2);
+    }
+
+    .badge-neutral {
+      background-color: var(--canvas-2);
+      color: var(--navy-800);
+      border: 1px solid var(--line-2);
+    }
+
+    .hash-chip {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--brass-600);
+      background-color: var(--canvas);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .hash-chip:hover {
+      background-color: var(--brass-050);
+      border-color: var(--brass-200);
+    }
+
+    /* Cryptographic Hash Inspector Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: var(--radius-md);
+      width: 100%;
+      max-width: 640px;
+      border: 1px solid var(--line-2);
+      box-shadow: 0 12px 36px rgba(19, 29, 54, 0.25);
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background-color: var(--canvas);
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .hash-inspector-block {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.6;
+      word-break: break-all;
+      border: 1px solid var(--brass);
+    }
+
+    .payload-json {
+      background-color: var(--canvas);
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--navy-900);
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brass);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+    }
+
+    .toast-pill.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1200px) {
+      .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .metrics-ribbon {
+        grid-template-columns: 1fr;
+      }
+      .controls-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-wrap {
+        width: 100%;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Canonical Admin Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">SOVEREIGN ADMIN</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Oversight &amp; Operations</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="moderation.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Moderation Queue</span>
+                <span class="nav-badge" id="sidebarQueueCount">7</span>
+              </a>
+            </li>
+            <li>
+              <a href="agent-verification.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11l-3 3-2-2"></path></svg>
+                <span>Agent Verification</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Intelligence &amp; Governance</div>
+          <ul class="nav-list">
+            <li>
+              <a href="reports.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Platform Reports</span>
+              </a>
+            </li>
+            <li>
+              <a href="audit-log.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <span>Audit Log</span>
+                <span class="nav-badge live">Live</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Cross-Portal Access</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../agent-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Agent Desk</span>
+              </a>
+            </li>
+            <li>
+              <a href="../buyer-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Buyer Portal</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/index.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Market</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer User Card -->
+      <div class="sidebar-user-footer">
+        <div class="admin-profile-card">
+          <div class="admin-avatar">TH</div>
+          <div class="admin-meta">
+            <span class="admin-name">Tamer Hegazy</span>
+            <span class="admin-role">Chief Registrar #SR-001</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="portal-main">
+      
+      <!-- Top Sticky Navigation Bar -->
+      <header class="portal-topbar">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Open Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="breadcrumb-trail">
+            <span>Governance</span>
+            <span>/</span>
+            <span>Security Ledger</span>
+            <span>/</span>
+            <span class="current">Audit Log</span>
+          </div>
+          <div class="portal-trust-chip">
+            <span class="trust-dot"></span>
+            <span>Ledger Integrity: Sealed</span>
+          </div>
+        </div>
+
+        <div class="header-end">
+          <div class="system-clock" id="systemClock">13 Sep 2026 · 14:35:42 EET</div>
+          <button class="quick-action-btn btn-secondary" onclick="simulateIncomingEvent()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Simulate Live Event</span>
+          </button>
+          <button class="quick-action-btn btn-primary" onclick="verifyMerkleRoot()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Verify Merkle Root</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Portal Content Body -->
+      <div class="portal-content">
+
+        <!-- Executive Hero -->
+        <div class="hero-banner">
+          <div>
+            <h1 class="hero-heading">Sovereign Immutable Audit Log</h1>
+            <p class="hero-sub">Cryptographically signed, append-only record of all administrative decrees, title deed verifications, and broker accreditations</p>
+          </div>
+          <div class="hero-badges">
+            <div class="audit-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              <span>Algorithm: SHA-256 Merkle</span>
+            </div>
+            <div class="audit-chip" style="color: var(--sage); border-color: rgba(61,90,76,0.3);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>Zero Replay Anomalies</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Metric Executive Ribbon -->
+        <div class="metrics-ribbon">
+          <div class="metric-card accent-navy">
+            <span class="metric-label">Total Immutable Events</span>
+            <div class="metric-value-row">
+              <span class="metric-number" id="metricTotalEvents">48,291</span>
+              <span class="metric-delta positive">+312 today</span>
+            </div>
+            <span class="metric-footer">Across all sovereign administrative desks</span>
+          </div>
+
+          <div class="metric-card accent-brass">
+            <span class="metric-label">Merkle Root Seal</span>
+            <div class="metric-value-row">
+              <span class="metric-number" style="font-size: 1.5rem; letter-spacing: 0;">#MRK-8819A</span>
+              <span class="metric-delta positive">Verified</span>
+            </div>
+            <span class="metric-footer">Cryptographic continuity intact</span>
+          </div>
+
+          <div class="metric-card accent-sage">
+            <span class="metric-label">Active Registrar Consoles</span>
+            <div class="metric-value-row">
+              <span class="metric-number">3</span>
+              <span class="metric-delta neutral">Sovereign</span>
+            </div>
+            <span class="metric-footer">TH #SR-001, NE #SR-004, MA #SR-008</span>
+          </div>
+
+          <div class="metric-card accent-error">
+            <span class="metric-label">Security Exceptions</span>
+            <div class="metric-value-row">
+              <span class="metric-number">0</span>
+              <span class="metric-delta positive">Clean</span>
+            </div>
+            <span class="metric-footer">Zero unauthorized mutation attempts</span>
+          </div>
+        </div>
+
+        <!-- Interactive Filter Controls Bar -->
+        <div class="controls-toolbar">
+          <div class="category-tabs">
+            <button class="tab-btn active" data-cat="all" onclick="filterCategory('all', this)">All Ledger Events</button>
+            <button class="tab-btn" data-cat="moderation" onclick="filterCategory('moderation', this)">Listing Moderation</button>
+            <button class="tab-btn" data-cat="accreditation" onclick="filterCategory('accreditation', this)">Broker Accreditation</button>
+            <button class="tab-btn" data-cat="title" onclick="filterCategory('title', this)">Title Deed Certifications</button>
+            <button class="tab-btn" data-cat="export" onclick="filterCategory('export', this)">Data Exports</button>
+            <button class="tab-btn" data-cat="security" onclick="filterCategory('security', this)">Security & Auth</button>
+          </div>
+
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" class="search-input" id="searchLogInput" placeholder="Search by hash, ID, entity, registrar..." oninput="handleLogSearch(this.value)">
+          </div>
+        </div>
+
+        <!-- Master Ledger Table Section -->
+        <div class="ledger-card">
+          <div class="ledger-header-bar">
+            <div class="ledger-title">
+              <span>Sovereign Transaction Ledger</span>
+              <span class="merkle-root-chip">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Merkle State: Clean</span>
+              </span>
+            </div>
+            <button class="quick-action-btn btn-secondary" onclick="exportSignedLedger()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Export Signed Ledger (CSV)</span>
+            </button>
+          </div>
+
+          <div class="ledger-table-wrap">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Timestamp (EET)</th>
+                  <th>Event ID</th>
+                  <th>Action Type</th>
+                  <th>Target Entity / Dossier</th>
+                  <th>Registrar Sovereign ID</th>
+                  <th>Node & IP Gateway</th>
+                  <th>Cryptographic Hash</th>
+                  <th>Payload</th>
+                </tr>
+              </thead>
+              <tbody id="ledgerTableBody">
+                <!-- Rendered dynamically by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Cryptographic Hash Inspector Modal -->
+  <div class="modal-overlay" id="hashModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Cryptographic Trace Inspector</h3>
+        <button class="modal-close-btn" onclick="closeModal('hashModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); text-transform: uppercase;">EVENT RECORD:</span>
+          <div style="font-weight: 700; color: var(--navy-900); font-size: 1rem; margin-top: 2px;" id="modalEventId">LOG-2026-99412</div>
+        </div>
+
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); text-transform: uppercase;">BLOCK HASH (SHA-256):</span>
+          <div class="hash-inspector-block" id="modalHashBlock">
+            SHA256: 4f89c011e482701da52c8b024419adfe9902bc4412e881023a19b882410a8812
+          </div>
+        </div>
+
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); text-transform: uppercase;">PREVIOUS CHAIN HASH:</span>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); background: var(--canvas); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--line);" id="modalPrevHash">
+            SHA256: 9a77e102839b1192837f401920ac391823901bca00129381729381729381a001
+          </div>
+        </div>
+
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); text-transform: uppercase;">AUDIT DECREE DETAILS:</span>
+          <div class="payload-json" id="modalPayloadDetails">
+            <!-- Populated via script -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="closeModal('hashModal')">Close Inspector</button>
+        <button class="quick-action-btn btn-brass" onclick="copyModalHash()">Copy Hash Token</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div class="toast-pill" id="toastPill">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span id="toastMessage">Hash validated successfully</span>
+  </div>
+
+  <!-- JavaScript Client Logic -->
+  <script>
+    let events = [{"id": "LOG-2026-99412", "timestamp": "13 Sep 2026 \u00b7 14:24:18 EET", "action": "LISTING_APPROVED", "actionLabel": "Listing Approved", "actionCategory": "moderation", "badgeClass": "badge-pass", "entity": "SET-KD-4029 \u00b7 The Sky Palace, Katameya Heights", "entityType": "Mandate Listing", "registrar": "Tamer Hegazy (Chief Registrar #SR-001)", "ip": "196.221.84.12", "gateway": "Cairo Sovereign Node A", "hash": "SHA256: 4f89c011e482701da52c8b024419adfe9902bc4412e881023a19b882410a8812", "prevHash": "SHA256: 9a77e102839b1192837f401920ac391823901bca00129381729381729381a001", "details": "Cadastral Deed #CAD-KH-2026-8812 verified 100% against Katameya Heights developer master allocation. Zero collisions detected."}, {"id": "LOG-2026-99411", "timestamp": "13 Sep 2026 \u00b7 14:18:02 EET", "action": "BROKER_ACCREDITED", "actionLabel": "Broker Accredited", "actionCategory": "accreditation", "badgeClass": "badge-pass", "entity": "Karim El-Ghamry (SYN-EG-88419-C)", "entityType": "Broker Accreditation", "registrar": "Tamer Hegazy (Chief Registrar #SR-001)", "ip": "196.221.84.12", "gateway": "Cairo Sovereign Node A", "hash": "SHA256: 9a77e102839b1192837f401920ac391823901bca00129381729381729381a001", "prevHash": "SHA256: 3c880192ab410291928374019203948172938471928374019283740192837401", "details": "Egyptian Real Estate Syndicate ID validated via Live Gateway API. Commercial Register #CR-884920-Giza audited and approved for Class A Partner badge."}, {"id": "LOG-2026-99410", "timestamp": "13 Sep 2026 \u00b7 13:55:40 EET", "action": "COLLISION_FLAGGED", "actionLabel": "Collision Flagged", "actionCategory": "moderation", "badgeClass": "badge-warn", "entity": "SET-MR-9044 \u00b7 Waterfront Horizon Villa, Marassi", "entityType": "Mandate Conflict", "registrar": "Nouran El-Shazly (Registrar #SR-004)", "ip": "196.221.84.14", "gateway": "Alexandria Sovereign Gateway", "hash": "SHA256: 3c880192ab410291928374019203948172938471928374019283740192837401", "prevHash": "SHA256: 8810293847102938471029384710293847102938471029384710293847102938", "details": "CRITICAL: Duplicate mandate claim detected on Plot 14, Pier 3 against active mandate SET-MR-5102. Listing automatically quarantined for triage."}, {"id": "LOG-2026-99409", "timestamp": "13 Sep 2026 \u00b7 13:30:19 EET", "action": "TAX_AUDIT_REQUESTED", "actionLabel": "Audit Requisition", "actionCategory": "accreditation", "badgeClass": "badge-warn", "entity": "Nadine Zaki (SYN-EG-61204-C)", "entityType": "Broker Requisition", "registrar": "Tamer Hegazy (Chief Registrar #SR-001)", "ip": "196.221.84.12", "gateway": "Cairo Sovereign Node A", "hash": "SHA256: 8810293847102938471029384710293847102938471029384710293847102938", "prevHash": "SHA256: 77a0192837491029384710293847102938471029384710293847102938471029", "details": "Tax Card Clearance expired on Dec 31, 2025. Automated requisition notice with verification checklist dispatched via encrypted SMS & email."}, {"id": "LOG-2026-99408", "timestamp": "13 Sep 2026 \u00b7 12:45:00 EET", "action": "DEED_AUTHENTICATED", "actionLabel": "Deed Authenticated", "actionCategory": "title", "badgeClass": "badge-pass", "entity": "CAD-MV-2026-5120 \u00b7 Mivida Crescent Lake", "entityType": "Title Verification", "registrar": "Mahmoud Allam (Registrar #SR-008)", "ip": "196.221.84.18", "gateway": "New Cairo Node C", "hash": "SHA256: 77a0192837491029384710293847102938471029384710293847102938471029", "prevHash": "SHA256: 55b1029384710293847102938471029384710293847102938471029384710293", "details": "Emaar Misr developer assignment contract validated against New Cairo 5th Settlement cadastral index. Cryptographic integrity token attached."}, {"id": "LOG-2026-99407", "timestamp": "13 Sep 2026 \u00b7 11:20:15 EET", "action": "REPORT_EXPORTED", "actionLabel": "Governance Export", "actionCategory": "export", "badgeClass": "badge-neutral", "entity": "GOV-REP-2026-Q3 \u00b7 Greater Cairo Valuation Index", "entityType": "Data Export", "registrar": "Tamer Hegazy (Chief Registrar #SR-001)", "ip": "196.221.84.12", "gateway": "Cairo Sovereign Node A", "hash": "SHA256: 55b1029384710293847102938471029384710293847102938471029384710293", "prevHash": "SHA256: 22c1029384710293847102938471029384710293847102938471029384710294", "details": "Quarterly macro evaluation dossier generated and signed with Sovereign SHA-256 certificate for ministerial compliance review."}, {"id": "LOG-2026-99406", "timestamp": "13 Sep 2026 \u00b7 09:02:11 EET", "action": "SESSION_AUTHORIZED", "actionLabel": "Registrar Login", "actionCategory": "security", "badgeClass": "badge-neutral", "entity": "Chief Registrar Desk \u00b7 Tamer Hegazy (#SR-001)", "entityType": "Sovereign Auth", "registrar": "System Sovereign Auth Daemon", "ip": "196.221.84.12", "gateway": "Cairo Sovereign Node A", "hash": "SHA256: 22c1029384710293847102938471029384710293847102938471029384710294", "prevHash": "SHA256: 11d1029384710293847102938471029384710293847102938471029384710295", "details": "Hardware cryptographic token challenge cleared. Multi-factor biometrics matched. Session initialized for 8 hours."}];
+    let activeCategory = 'all';
+    let searchQuery = '';
+
+    function init() {
+      renderLedger();
+      startLiveClock();
+    }
+
+    function renderLedger() {
+      const tbody = document.getElementById('ledgerTableBody');
+      tbody.innerHTML = '';
+
+      const filtered = events.filter(e => {
+        if (activeCategory !== 'all' && e.actionCategory !== activeCategory) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const mId = e.id.toLowerCase().includes(q);
+          const mAct = e.action.toLowerCase().includes(q);
+          const mEnt = e.entity.toLowerCase().includes(q);
+          const mReg = e.registrar.toLowerCase().includes(q);
+          const mHash = e.hash.toLowerCase().includes(q);
+          if (!mId && !mAct && !mEnt && !mReg && !mHash) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 32px; color: var(--ink-3);">
+              No audit records found matching current query.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(e => {
+        const tr = document.createElement('tr');
+        tr.className = `ledger-row ${e.isNew ? 'new-entry' : ''}`;
+
+        tr.innerHTML = `
+          <td style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); white-space: nowrap;">${e.timestamp}</td>
+          <td style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900);">${e.id}</td>
+          <td>
+            <span class="badge-chip ${e.badgeClass}">
+              <span>${e.actionLabel}</span>
+            </span>
+          </td>
+          <td style="font-weight: 600; color: var(--navy-900); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            ${e.entity}
+          </td>
+          <td style="font-size: 0.75rem; color: var(--ink-2);">${e.registrar}</td>
+          <td style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3);">${e.ip} (${e.gateway})</td>
+          <td>
+            <span class="hash-chip" onclick="inspectHash('${e.id}')">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>${e.hash.substring(0, 18)}...</span>
+            </span>
+          </td>
+          <td>
+            <button class="quick-action-btn btn-secondary" style="padding: 4px 8px; font-size: 0.6875rem;" onclick="inspectHash('${e.id}')">
+              Inspect
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderLedger();
+    }
+
+    function handleLogSearch(val) {
+      searchQuery = val;
+      renderLedger();
+    }
+
+    function inspectHash(id) {
+      const e = events.find(x => x.id === id);
+      if (!e) return;
+
+      document.getElementById('modalEventId').textContent = `${e.id} · ${e.actionLabel}`;
+      document.getElementById('modalHashBlock').textContent = e.hash;
+      document.getElementById('modalPrevHash').textContent = e.prevHash;
+      document.getElementById('modalPayloadDetails').textContent = JSON.stringify({
+        eventId: e.id,
+        timestamp: e.timestamp,
+        action: e.action,
+        entity: e.entity,
+        registrar: e.registrar,
+        ipAddress: e.ip,
+        gatewayNode: e.gateway,
+        auditDecreeNote: e.details,
+        cryptographicProof: "SEALED_IMMUTABLE_OK"
+      }, null, 2);
+
+      openModal('hashModal');
+    }
+
+    function copyModalHash() {
+      const hash = document.getElementById('modalHashBlock').textContent.trim();
+      navigator.clipboard.writeText(hash);
+      showToast('Cryptographic hash token copied to clipboard');
+    }
+
+    function simulateIncomingEvent() {
+      const eventNum = Math.floor(10000 + Math.random() * 90000);
+      const newEvent = {
+        id: `LOG-2026-${eventNum}`,
+        timestamp: new Date().toLocaleTimeString('en-GB') + ' EET',
+        action: "DEED_AUTHENTICATED",
+        actionLabel: "Deed Authenticated",
+        actionCategory: "title",
+        badgeClass: "badge-pass",
+        entity: `SET-NC-${Math.floor(1000 + Math.random() * 9000)} · Palm Hills Katameya`,
+        entityType: "Mandate Listing",
+        registrar: "Tamer Hegazy (Chief Registrar #SR-001)",
+        ip: "196.221.84.12",
+        gateway: "Cairo Sovereign Node A",
+        hash: `SHA256: ${Math.random().toString(16).substr(2, 64)}`,
+        prevHash: events[0].hash,
+        details: "Automated real-time deed validation check cleared against Sovereign Cadastral database.",
+        isNew: true
+      };
+
+      events.unshift(newEvent);
+      renderLedger();
+      const currentTotal = parseInt(document.getElementById('metricTotalEvents').textContent.replace(',', '')) || 48291;
+      document.getElementById('metricTotalEvents').textContent = (currentTotal + 1).toLocaleString();
+      showToast(`New audit event ${newEvent.id} sealed into Merkle tree`);
+    }
+
+    function verifyMerkleRoot() {
+      showToast('Cryptographic verification complete: 48,291 events verified with Merkle root #MRK-8819A.');
+    }
+
+    function exportSignedLedger() {
+      showToast('Exporting cryptographic audit ledger with SHA-256 signatures (CSV)...');
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastPill');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3500);
+    }
+
+    // Mobile Menu Toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('mobile-open');
+    });
+
+    // Live Clock
+    function startLiveClock() {
+      setInterval(() => {
+        const now = new Date();
+        const str = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+          ' · ' + now.toLocaleTimeString('en-GB') + ' EET';
+        document.getElementById('systemClock').textContent = str;
+      }, 1000);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+</body>
+</html>

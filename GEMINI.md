@@ -26,3 +26,7 @@ Whenever building, designing, refactoring, or modifying any frontend screens, pa
      - **Agent dashboard (7)**: Overview, My listings, Create listing, Edit listing, Leads / pipeline, Viewings calendar, Analytics.
      - **Admin (5)**: Moderation queue, Agent verification, Reports, Audit log.
    - **Language Policy**: English version first across all screens.
+
+4. **Mandatory Environment & Credentials Protocol**:
+   - Whenever any feature, integration, or service requires `.env` credentials, API keys, secrets, or provider configuration (e.g., Resend API key, Cloudinary credentials, MapTiler key, Paymob secrets, Upstash Redis, Firebase/FCM, etc.), you MUST explicitly ask the user for them before implementing or proceeding.
+   - Never invent placeholder keys for live integrations without user consent.

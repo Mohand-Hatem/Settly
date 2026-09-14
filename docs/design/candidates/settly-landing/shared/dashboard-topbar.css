@@ -1,0 +1,277 @@
+/* =========================================================================
+   SETTLY — UNIFIED DASHBOARD TOP APPLICATION BAR & SIDEBAR BRAND STYLES
+   Canonical Reference Standard: buyer-dashboard/offers.html ("My Offers")
+   ========================================================================= */
+
+/* 1. Sticky Top Application Bar */
+.portal-header {
+  height: var(--header-height, 72px) !important;
+  background-color: var(--white, #FFFFFF) !important;
+  border-bottom: 1px solid var(--line, rgba(30, 42, 74, 0.12)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 32px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 90 !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Header Start (Breadcrumb & Mobile Controls) */
+.header-start {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.mobile-menu-trigger {
+  display: none !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: var(--navy-900, #131D36) !important;
+  padding: 6px !important;
+  border-radius: var(--radius-sm, 8px) !important;
+}
+
+.mobile-brand-mark {
+  display: none !important;
+  align-items: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+}
+
+.mobile-brand-mark img {
+  height: 26px !important;
+  width: auto !important;
+}
+
+.mobile-brand-text {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', system-ui, sans-serif) !important;
+  font-size: 1.125rem !important;
+  font-weight: 800 !important;
+  color: var(--navy-900, #131D36) !important;
+  letter-spacing: -0.03em !important;
+}
+
+.header-breadcrumb {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+  color: var(--ink-3, #8C94A8) !important;
+  text-transform: uppercase !important;
+}
+
+.header-breadcrumb a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.header-breadcrumb a:hover {
+  color: var(--navy-900, #131D36) !important;
+}
+
+.header-breadcrumb span.current,
+.header-breadcrumb .breadcrumb-active {
+  color: var(--navy-900, #131D36) !important;
+  font-weight: 700 !important;
+}
+
+/* 3. Header Actions (Right telemetry & user controls) */
+.header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.portal-trust-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 12px !important;
+  background-color: var(--sage-bg, rgba(61, 90, 76, 0.08)) !important;
+  border: 1px solid rgba(61, 90, 76, 0.2) !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  color: var(--sage, #3D5A4C) !important;
+  letter-spacing: 0.04em !important;
+  white-space: nowrap !important;
+}
+
+.escrow-pulse {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  background-color: var(--sage, #3D5A4C) !important;
+  box-shadow: 0 0 0 2px rgba(61, 90, 76, 0.2) !important;
+  flex-shrink: 0 !important;
+}
+
+.sovereign-rate-pill {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  background-color: var(--canvas-2, #EDE9DF) !important;
+  padding: 6px 12px !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  color: var(--ink, #1E2A4A) !important;
+  border: 1px solid var(--line, rgba(30, 42, 74, 0.12)) !important;
+  white-space: nowrap !important;
+}
+
+.cairo-clock-pill {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: var(--ink, #1E2A4A) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: var(--canvas, #F7F6F3) !important;
+  padding: 6px 12px !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  border: 1px solid var(--line, rgba(30, 42, 74, 0.12)) !important;
+  white-space: nowrap !important;
+}
+
+.clock-live-indicator {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  background-color: var(--sage, #3D5A4C) !important;
+  flex-shrink: 0 !important;
+}
+
+.icon-btn {
+  background: none !important;
+  border: 1px solid var(--line, rgba(30, 42, 74, 0.12)) !important;
+  color: var(--ink-2, #4C5878) !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.15s ease !important;
+  text-decoration: none !important;
+  flex-shrink: 0 !important;
+}
+
+.icon-btn:hover {
+  background-color: var(--canvas, #F7F6F3) !important;
+  color: var(--navy-900, #131D36) !important;
+  border-color: var(--navy-700, #1E2A4A) !important;
+}
+
+.notification-dot {
+  position: absolute !important;
+  top: 9px !important;
+  right: 9px !important;
+  width: 6px !important;
+  height: 6px !important;
+  background-color: var(--brass, #C69749) !important;
+  border-radius: var(--radius-full, 9999px) !important;
+}
+
+.user-profile-badge {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding-left: 8px !important;
+  border-left: 1px solid var(--line, rgba(30, 42, 74, 0.12)) !important;
+  text-decoration: none !important;
+}
+
+.user-avatar-initials {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: var(--radius-full, 9999px) !important;
+  background-color: var(--navy-900, #131D36) !important;
+  color: var(--brass, #C69749) !important;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1.5px solid var(--brass, #C69749) !important;
+  flex-shrink: 0 !important;
+}
+
+.user-meta {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.user-name {
+  font-size: 0.8125rem !important;
+  font-weight: 700 !important;
+  color: var(--navy-900, #131D36) !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+
+.user-tier {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.625rem !important;
+  font-weight: 600 !important;
+  color: var(--brass-600, #AE8033) !important;
+  white-space: nowrap !important;
+}
+
+/* 4. Unified Sidebar Brand Header Typography */
+.brand-name {
+  font-family: var(--font-sans, 'Plus Jakarta Sans', system-ui, sans-serif) !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  color: var(--white, #FFFFFF) !important;
+  line-height: 1.1 !important;
+}
+
+.brand-portal {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.062em !important;
+  text-transform: uppercase !important;
+  color: var(--brass, #C69749) !important;
+  margin-top: 2px !important;
+}
+
+/* 5. Responsive Adaptations */
+@media (max-width: 1200px) {
+  .portal-trust-chip {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .cairo-clock-pill {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .portal-header {
+    padding: 0 16px !important;
+  }
+  .mobile-menu-trigger {
+    display: flex !important;
+  }
+  .mobile-brand-mark {
+    display: flex !important;
+  }
+  .header-breadcrumb {
+    display: none !important;
+  }
+}

@@ -1,0 +1,2559 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent & Broker Accreditation · Settly Central Oversight</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --error-bg: #FEE2E2;
+      --warning: #B45309;
+      --warning-bg: #FEF3C7;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 290px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Admin Fixed Sidebar Navigation */
+    .admin-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav-container {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0 12px 8px 12px;
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.18);
+      border: 1px solid rgba(198, 151, 73, 0.4);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.alert {
+      background-color: var(--error);
+      color: var(--white);
+    }
+
+    .nav-badge.live {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* Sidebar Footer User Card */
+    .sidebar-user-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--navy-800);
+      color: var(--brass);
+      border: 1px solid var(--brass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .admin-meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-role {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass-200);
+    }
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .breadcrumb-trail .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+      box-shadow: 0 0 0 2px rgba(61, 90, 76, 0.2);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .system-clock {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      background-color: var(--canvas);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .quick-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .btn-secondary {
+      background-color: var(--canvas-2);
+      color: var(--ink);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--canvas-2);
+    }
+
+    .btn-primary {
+      background-color: var(--navy-800);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-900);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+    }
+
+    /* Portal Container */
+    .portal-content {
+      padding: 28px 32px 48px 32px;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Executive Top Hero */
+    .hero-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero-heading {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .hero-sub {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      margin-top: 4px;
+    }
+
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audit-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--navy-800);
+    }
+
+    /* 4-Metric Executive Ribbon */
+    .metrics-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: transparent;
+    }
+
+    .metric-card.accent-navy::after { background: var(--navy-800); }
+    .metric-card.accent-brass::after { background: var(--brass); }
+    .metric-card.accent-sage::after { background: var(--sage); }
+    .metric-card.accent-error::after { background: var(--error); }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .metric-number {
+      font-family: var(--font-mono);
+      font-size: 2.125rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .metric-delta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .metric-delta.positive {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .metric-delta.neutral {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .metric-delta.negative {
+      background-color: var(--error-bg);
+      color: var(--error);
+    }
+
+    .metric-footer {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    /* Interactive Triage Toolbar */
+    .triage-toolbar {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--canvas);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: none;
+      border: none;
+      color: var(--ink-2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .tab-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .tab-count {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink);
+    }
+
+    .tab-btn.active .tab-count {
+      background-color: var(--navy-800);
+      color: var(--white);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 320px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      stroke: var(--ink-3);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      outline: none;
+      transition: border 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Master-Detail Split Workspace */
+    .split-workspace {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* Left: Queue Applications List */
+    .queue-panel {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--canvas);
+    }
+
+    .panel-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-status {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .queue-items-container {
+      max-height: calc(100vh - 340px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .broker-card {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    .broker-card:hover {
+      background-color: #FAF9F6;
+    }
+
+    .broker-card.selected {
+      background-color: #F4F1EA;
+      outline: 2px solid var(--brass);
+      outline-offset: -2px;
+    }
+
+    .broker-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .broker-lead {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .broker-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.06);
+    }
+
+    .broker-header-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .broker-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .broker-name {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .broker-agency {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge-chip {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .badge-vip {
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+      border: 1px solid var(--brass-200);
+    }
+
+    .badge-standard {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      border: 1px solid var(--line-2);
+    }
+
+    .badge-alert {
+      background-color: var(--error-bg);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.2);
+    }
+
+    .broker-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 8px 10px;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .meta-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-title {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .meta-val {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .broker-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .time-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .compliance-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.6875rem;
+    }
+
+    .compliance-pill.high { color: var(--sage); }
+    .compliance-pill.warn { color: var(--error); }
+
+    /* Right: Inspection & Verification Dossier Terminal */
+    .dossier-terminal {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .dossier-header-bar {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--line);
+      background-color: #FAFAFA;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .dossier-broker-lead {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .dossier-large-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.08);
+      border: 2px solid var(--brass);
+    }
+
+    .dossier-title-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dossier-name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dossier-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.01em;
+    }
+
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      background-color: var(--brass-050);
+      border: 1px solid var(--brass-200);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--brass-600);
+    }
+
+    .dossier-sub-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      flex-wrap: wrap;
+    }
+
+    .dossier-sub-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dossier-reference-chip {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      color: var(--navy-800);
+    }
+
+    /* Verification Quad Cards */
+    .verification-quad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 24px 28px 16px 28px;
+    }
+
+    .verif-card {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .verif-card.passed {
+      border-color: rgba(61, 90, 76, 0.3);
+      background-color: #F8FAF8;
+    }
+
+    .verif-card.attention {
+      border-color: rgba(153, 27, 27, 0.3);
+      background-color: var(--error-bg);
+    }
+
+    .verif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .verif-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .verif-status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+    }
+
+    .badge-pass {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .badge-warn {
+      background-color: var(--error-bg);
+      color: var(--error);
+    }
+
+    .verif-id-code {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      word-break: break-all;
+    }
+
+    .verif-meta {
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+      line-height: 1.3;
+    }
+
+    /* Document Inspection Tabs & Viewer */
+    .doc-section-title {
+      padding: 12px 28px 8px 28px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .doc-viewer-container {
+      padding: 0 28px 20px 28px;
+    }
+
+    .doc-tabs-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .doc-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: none;
+      border: 1px solid transparent;
+      color: var(--ink-2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .doc-tab-btn:hover {
+      color: var(--ink);
+      background-color: var(--canvas);
+    }
+
+    .doc-tab-btn.active {
+      background-color: var(--navy-800);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .doc-preview-frame {
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-md);
+      background-color: #F5F4F0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Syndicate ID Scanned Card Vector Mockup */
+    .syndicate-card-mockup {
+      width: 100%;
+      max-width: 580px;
+      background: linear-gradient(135deg, #131D36 0%, #1E2A4A 100%);
+      border: 2px solid var(--brass);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .syndicate-card-mockup::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(198, 151, 73, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .syndicate-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(198, 151, 73, 0.4);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .syndicate-rep-title {
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--brass-200);
+      letter-spacing: 0.02em;
+    }
+
+    .syndicate-gov-seal {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: var(--brass);
+      border: 1px solid var(--brass);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .syndicate-card-body {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .syndicate-photo-box {
+      width: 90px;
+      height: 110px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--brass);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .syndicate-photo-box svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--brass-200);
+    }
+
+    .syndicate-card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-detail-row {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .detail-val {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .detail-val.gold {
+      color: var(--brass);
+      font-size: 0.875rem;
+    }
+
+    .syndicate-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .security-hologram {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--brass-200);
+    }
+
+    .doc-actions-overlay {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Performance & Disciplinary Record */
+    .reputation-strip {
+      margin: 0 28px 20px 28px;
+      padding: 16px 20px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .rep-metric {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rep-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .rep-val {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    /* Decision Console Box */
+    .decision-console {
+      padding: 24px 28px;
+      border-top: 1px solid var(--line);
+      background-color: #FAFAFA;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .registrar-notes-area {
+      width: 100%;
+      height: 70px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      background-color: var(--white);
+      color: var(--ink);
+      outline: none;
+      resize: none;
+    }
+
+    .registrar-notes-area:focus {
+      border-color: var(--brass);
+    }
+
+    .preset-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .preset-chip {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .preset-chip:hover {
+      background-color: var(--canvas-2);
+      color: var(--ink);
+    }
+
+    .decision-buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .decision-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .decision-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-approve {
+      background-color: var(--sage);
+      color: var(--white);
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(61, 90, 76, 0.25);
+      transition: all 0.15s ease;
+    }
+
+    .btn-approve:hover {
+      background-color: var(--navy-800);
+    }
+
+    .btn-rectify {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid rgba(180, 83, 9, 0.3);
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-rectify:hover {
+      background-color: var(--warning-bg);
+    }
+
+    .btn-reject {
+      background-color: var(--white);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.3);
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-reject:hover {
+      background-color: var(--error-bg);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: var(--radius-md);
+      width: 100%;
+      max-width: 540px;
+      border: 1px solid var(--line-2);
+      box-shadow: 0 12px 36px rgba(19, 29, 54, 0.25);
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background-color: var(--canvas);
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brass);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+    }
+
+    .toast-pill.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1200px) {
+      .split-workspace {
+        grid-template-columns: 1fr;
+      }
+      .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .verification-quad {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .metrics-ribbon {
+        grid-template-columns: 1fr;
+      }
+      .verification-quad {
+        grid-template-columns: 1fr;
+      }
+      .triage-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-wrap {
+        width: 100%;
+      }
+      .reputation-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Admin Sovereign Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">SOVEREIGN ADMIN</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Oversight &amp; Operations</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="moderation.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Moderation Queue</span>
+                <span class="nav-badge" id="sidebarQueueCount">7</span>
+              </a>
+            </li>
+            <li>
+              <a href="agent-verification.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11l-3 3-2-2"></path></svg>
+                <span>Agent Verification</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Intelligence &amp; Governance</div>
+          <ul class="nav-list">
+            <li>
+              <a href="reports.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Platform Reports</span>
+              </a>
+            </li>
+            <li>
+              <a href="audit-log.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <span>Audit Log</span>
+                <span class="nav-badge live">Live</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Cross-Portal Access</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../agent-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Agent Desk</span>
+              </a>
+            </li>
+            <li>
+              <a href="../buyer-dashboard/overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Buyer Portal</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/index.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Market</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer User Card -->
+      <div class="sidebar-user-footer">
+        <div class="admin-profile-card">
+          <div class="admin-avatar">TH</div>
+          <div class="admin-meta">
+            <span class="admin-name">Tamer Hegazy</span>
+            <span class="admin-role">Chief Registrar #SR-001</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="portal-main">
+      
+      <!-- Top Sticky Navigation Bar -->
+      <header class="portal-topbar">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Open Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="breadcrumb-trail">
+            <span>Oversight</span>
+            <span>/</span>
+            <span>Accreditation</span>
+            <span>/</span>
+            <span class="current">Broker Triage</span>
+          </div>
+          <div class="portal-trust-chip">
+            <span class="trust-dot"></span>
+            <span>Syndicate Gateway: Live</span>
+          </div>
+        </div>
+
+        <div class="header-end">
+          <div class="system-clock" id="systemClock">13 Sep 2026 · 14:25:08 EET</div>
+          <button class="quick-action-btn btn-secondary" onclick="exportAccreditationCSV()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Export Registry</span>
+          </button>
+          <button class="quick-action-btn btn-primary" onclick="batchValidateAPI()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Sync Syndicate API</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Portal Content Body -->
+      <div class="portal-content">
+
+        <!-- Executive Hero -->
+        <div class="hero-banner">
+          <div>
+            <h1 class="hero-heading">Broker & Agent Accreditation</h1>
+            <p class="hero-sub">Official Egyptian Real Estate Syndicate validation, corporate tax compliance, and sovereign credentialing</p>
+          </div>
+          <div class="hero-badges">
+            <div class="audit-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>Median Triage: 3.8 hrs</span>
+            </div>
+            <div class="audit-chip" style="color: var(--sage); border-color: rgba(61,90,76,0.3);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>Integrity: 99.4%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Metric Executive Ribbon -->
+        <div class="metrics-ribbon">
+          <div class="metric-card accent-navy">
+            <span class="metric-label">Active Accredited Brokers</span>
+            <div class="metric-value-row">
+              <span class="metric-number">1,284</span>
+              <span class="metric-delta positive">+18 this mo</span>
+            </div>
+            <span class="metric-footer">Across Cairo, Giza & Coast corridors</span>
+          </div>
+
+          <div class="metric-card accent-brass">
+            <span class="metric-label">Applications Under Triage</span>
+            <div class="metric-value-row">
+              <span class="metric-number">18</span>
+              <span class="metric-delta neutral">3 Expedited</span>
+            </div>
+            <span class="metric-footer">7 pending initial registrar review</span>
+          </div>
+
+          <div class="metric-card accent-sage">
+            <span class="metric-label">Syndicate Match Accuracy</span>
+            <div class="metric-value-row">
+              <span class="metric-number">99.4%</span>
+              <span class="metric-delta positive">+0.3%</span>
+            </div>
+            <span class="metric-footer">Automated National ID & license hash</span>
+          </div>
+
+          <div class="metric-card accent-error">
+            <span class="metric-label">Action Required / Flagged</span>
+            <div class="metric-value-row">
+              <span class="metric-number">4</span>
+              <span class="metric-delta negative">Audits Due</span>
+            </div>
+            <span class="metric-footer">2 expired tax cards, 2 missing POA</span>
+          </div>
+        </div>
+
+        <!-- Interactive Triage Toolbar -->
+        <div class="triage-toolbar">
+          <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all" onclick="filterQueue('all', this)">
+              <span>All Queue</span>
+              <span class="tab-count" id="countAll">7</span>
+            </button>
+            <button class="tab-btn" data-filter="pending" onclick="filterQueue('pending', this)">
+              <span>Awaiting Review</span>
+              <span class="tab-count" id="countPending">5</span>
+            </button>
+            <button class="tab-btn" data-filter="vip" onclick="filterQueue('vip', this)">
+              <span>Expedited VIP</span>
+              <span class="tab-count" id="countVip">2</span>
+            </button>
+            <button class="tab-btn" data-filter="action_required" onclick="filterQueue('action_required', this)">
+              <span>Action Required</span>
+              <span class="tab-count" id="countAction">2</span>
+            </button>
+          </div>
+
+          <div class="toolbar-actions">
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" class="search-input" id="searchQueueInput" placeholder="Filter by broker, syndicate ID, agency..." oninput="handleSearch(this.value)">
+            </div>
+
+            <select class="filter-select" id="tierSelect" onchange="handleTierChange(this.value)">
+              <option value="all">All License Tiers</option>
+              <option value="class-a">Class A Brokerage</option>
+              <option value="developer">Developer Agency Desk</option>
+              <option value="independent">Independent Broker</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Master-Detail Split Workspace -->
+        <div class="split-workspace">
+          
+          <!-- Left Column: Queue Items List -->
+          <div class="queue-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                <span>Accreditation Dossiers</span>
+              </div>
+              <div class="panel-status" id="queueStatusText">Showing 7 applications</div>
+            </div>
+
+            <div class="queue-items-container" id="queueListContainer">
+              <!-- Rendered dynamically by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Right Column: Verification Dossier Inspection Terminal -->
+          <div class="dossier-terminal" id="dossierTerminal">
+            
+            <!-- Terminal Header Bar -->
+            <div class="dossier-header-bar">
+              <div class="dossier-broker-lead">
+                <div class="dossier-large-avatar" id="terminalAvatar" style="background-color: #E7D3AB; color: #1E2A4A;">KG</div>
+                <div class="dossier-title-stack">
+                  <div class="dossier-name-row">
+                    <span class="dossier-name" id="terminalName">Karim El-Ghamry</span>
+                    <span class="tier-badge" id="terminalTier">Class A Brokerage Partner</span>
+                  </div>
+                  <div class="dossier-sub-info">
+                    <span class="dossier-sub-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                      <span id="terminalAgency">Sotheby's International Realty Egypt</span>
+                    </span>
+                    <span>•</span>
+                    <span class="dossier-sub-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                      <span id="terminalPhone">+20 100 892 4110</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dossier-reference-chip" id="terminalRef">DOS-EG-2026-88419</div>
+            </div>
+
+            <!-- Verification Quad Cards -->
+            <div class="verification-quad">
+              <div class="verif-card passed" id="cardSyndicate">
+                <div class="verif-header">
+                  <span class="verif-label">Syndicate License</span>
+                  <span class="verif-status-badge badge-pass" id="badgeSyndicate">Active</span>
+                </div>
+                <div class="verif-id-code" id="valSyndicateId">SYN-EG-88419-C</div>
+                <div class="verif-meta" id="metaSyndicate">Valid thru Dec 2027 · Automated API match confirmed</div>
+              </div>
+
+              <div class="verif-card passed" id="cardTax">
+                <div class="verif-header">
+                  <span class="verif-label">Tax Card Registry</span>
+                  <span class="verif-status-badge badge-pass" id="badgeTax">Audited</span>
+                </div>
+                <div class="verif-id-code" id="valTaxCard">392-881-002</div>
+                <div class="verif-meta" id="metaTax">Dokki Corporate Center · Good standing file active</div>
+              </div>
+
+              <div class="verif-card passed" id="cardCr">
+                <div class="verif-header">
+                  <span class="verif-label">Commercial Reg (CR)</span>
+                  <span class="verif-status-badge badge-pass" id="badgeCr">Valid</span>
+                </div>
+                <div class="verif-id-code" id="valCrNumber">CR-884920-Giza</div>
+                <div class="verif-meta" id="metaCr">Dokki Registry · Active capital reserves verified</div>
+              </div>
+
+              <div class="verif-card passed" id="cardCriminal">
+                <div class="verif-header">
+                  <span class="verif-label">Security Clearance</span>
+                  <span class="verif-status-badge badge-pass" id="badgeCriminal">Cleared</span>
+                </div>
+                <div class="verif-id-code" id="valCriminal">MOI-CR-992014</div>
+                <div class="verif-meta" id="metaCriminal">Ministry of Interior · Zero records on file</div>
+              </div>
+            </div>
+
+            <!-- Document Inspection Section -->
+            <div class="doc-section-title">
+              <span>Notarized Credentials Inspection</span>
+              <span style="color: var(--brass); font-weight: 600; cursor: pointer;" onclick="openDocPreviewModal()">Click to Enlarge Vector Preview</span>
+            </div>
+
+            <div class="doc-viewer-container">
+              <div class="doc-tabs-row">
+                <button class="doc-tab-btn active" id="tabDocSyndicate" onclick="switchDocTab('syndicate')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6"/></svg>
+                  <span>Syndicate Membership Card</span>
+                </button>
+                <button class="doc-tab-btn" id="tabDocTax" onclick="switchDocTab('tax')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                  <span>Tax Certificate</span>
+                </button>
+                <button class="doc-tab-btn" id="tabDocCr" onclick="switchDocTab('cr')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  <span>Commercial Registry (CR)</span>
+                </button>
+              </div>
+
+              <!-- Interactive Document Preview Frame -->
+              <div class="doc-preview-frame">
+                
+                <!-- Syndicate Card Vector -->
+                <div class="syndicate-card-mockup" id="mockupSyndicate">
+                  <div class="syndicate-card-header">
+                    <div>
+                      <div class="syndicate-rep-title">EGYPTIAN REAL ESTATE BROKERS SYNDICATE</div>
+                      <div style="font-size: 0.625rem; color: rgba(255,255,255,0.7);">Ministry of Trade & Sovereign Registry Accreditation</div>
+                    </div>
+                    <div class="syndicate-gov-seal">OFFICIAL SEAL</div>
+                  </div>
+
+                  <div class="syndicate-card-body">
+                    <div class="syndicate-photo-box">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      <span style="font-size: 0.5rem; color: var(--brass); font-weight: 700;">AUTHENTIC</span>
+                    </div>
+
+                    <div class="syndicate-card-details">
+                      <div class="card-detail-row">
+                        <span class="detail-label">Full Accredited Name</span>
+                        <span class="detail-val" id="cardBrokerName">Karim El-Ghamry</span>
+                      </div>
+                      <div class="card-detail-row">
+                        <span class="detail-label">Syndicate License No.</span>
+                        <span class="detail-val gold" id="cardSyndicateNumber">SYN-EG-88419-C</span>
+                      </div>
+                      <div class="card-detail-row">
+                        <span class="detail-label">National ID Number</span>
+                        <span class="detail-val" id="cardNationalId">28409140102941</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="syndicate-card-footer">
+                    <span>Valid Through: <strong id="cardValidThru" style="color: var(--brass-200);">Dec 2027</strong></span>
+                    <span class="security-hologram">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                      <span>Holographic Token Verified</span>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Tax Certificate Vector View (Hidden by default) -->
+                <div class="syndicate-card-mockup" id="mockupTax" style="display: none; background: #FFFFFF; color: #16203A; border-color: var(--line-2);">
+                  <div class="syndicate-card-header" style="border-bottom-color: var(--line);">
+                    <div>
+                      <div class="syndicate-rep-title" style="color: var(--navy-900);">EGYPTIAN TAX AUTHORITY · CORPORATE DIVISION</div>
+                      <div style="font-size: 0.625rem; color: var(--ink-3);">Certificate of Active Registration & Clearance</div>
+                    </div>
+                    <div class="syndicate-gov-seal" style="border-color: var(--sage); color: var(--sage);">STAMPED & VALID</div>
+                  </div>
+                  <div style="padding: 12px 0; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); display: flex; flex-direction: column; gap: 8px;">
+                    <div>Tax Registration File: <strong id="taxDocFile" style="color: var(--navy-900);">392-881-002</strong></div>
+                    <div>Taxpayer Legal Entity: <strong id="taxDocName" style="color: var(--navy-900);">Karim El-Ghamry (Sotheby's Egypt Desk)</strong></div>
+                    <div>Competent Tax Center: <strong>Dokki Corporate Center</strong></div>
+                    <div>Fiscal Year Status: <strong>FY2025/2026 Fully Audited & Clean</strong></div>
+                  </div>
+                </div>
+
+                <!-- Commercial Registry Vector View (Hidden by default) -->
+                <div class="syndicate-card-mockup" id="mockupCr" style="display: none; background: #FFFFFF; color: #16203A; border-color: var(--line-2);">
+                  <div class="syndicate-card-header" style="border-bottom-color: var(--line);">
+                    <div>
+                      <div class="syndicate-rep-title" style="color: var(--navy-900);">MINISTRY OF SUPPLY & INTERNAL TRADE · CR REGISTER</div>
+                      <div style="font-size: 0.625rem; color: var(--ink-3);">General Authority for Real Estate Brokerage Registration</div>
+                    </div>
+                    <div class="syndicate-gov-seal" style="border-color: var(--navy-800); color: var(--navy-800);">REGISTRY AUDITED</div>
+                  </div>
+                  <div style="padding: 12px 0; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); display: flex; flex-direction: column; gap: 8px;">
+                    <div>Commercial Registry No: <strong id="crDocNumber" style="color: var(--navy-900);">CR-884920-Giza</strong></div>
+                    <div>Registered Entity: <strong id="crDocEntity" style="color: var(--navy-900);">Sotheby's International Realty Cairo LLC</strong></div>
+                    <div>Corporate Capital: <strong>15,000,000 EGP (Fully Paid)</strong></div>
+                    <div>Authorized Signatory: <strong>Managing Partner with Full Disposition Mandate</strong></div>
+                  </div>
+                </div>
+
+                <div class="doc-actions-overlay">
+                  <button class="quick-action-btn btn-secondary" onclick="openDocPreviewModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m-11 5L21 3m-3 11v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+                    <span>Inspect High-Res Scan</span>
+                  </button>
+                  <button class="quick-action-btn btn-secondary" onclick="downloadDossierBundle()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span>Download Authenticated ZIP</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Historical Performance & Disciplinary Record -->
+            <div class="reputation-strip">
+              <div class="rep-metric">
+                <span class="rep-label">Active Mandates</span>
+                <span class="rep-val" id="valMandates">24 Mandates</span>
+              </div>
+              <div class="rep-metric">
+                <span class="rep-label">Settly Platform GTV</span>
+                <span class="rep-val" id="valGtv">340M EGP</span>
+              </div>
+              <div class="rep-metric">
+                <span class="rep-label">Escrow Grade</span>
+                <span class="rep-val" id="valRating">AAA Grade</span>
+              </div>
+              <div class="rep-metric">
+                <span class="rep-label">Disciplinary Flags</span>
+                <span class="rep-val" style="color: var(--sage);" id="valDisputes">0 Flags</span>
+              </div>
+            </div>
+
+            <!-- Registrar Decision Console -->
+            <div class="decision-console">
+              <div class="preset-chips-row">
+                <span style="font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--ink-3);">QUICK AUDIT PRESETS:</span>
+                <button class="preset-chip" onclick="applyPresetNote('Syndicate card and Tax card match authenticated central registry. Approved for Class A issuance.')">All Credentials Match</button>
+                <button class="preset-chip" onclick="applyPresetNote('Tax Card clearance certificate expired on Dec 31, 2025. Please upload active FY2026 renewal.')">Request FY26 Tax Renewal</button>
+                <button class="preset-chip" onclick="applyPresetNote('Corporate Power of Attorney requires notarized board signature before verification.')">Missing Notarized POA</button>
+              </div>
+
+              <textarea class="registrar-notes-area" id="registrarNotes" placeholder="Enter confidential registrar verification notes or select a preset above..."></textarea>
+
+              <div class="decision-buttons-row">
+                <div class="decision-left">
+                  <button class="btn-approve" onclick="openApproveModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                    <span>Issue Verified Accreditation</span>
+                  </button>
+                  <button class="btn-rectify" onclick="openRectifyModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <span>Request Rectification</span>
+                  </button>
+                </div>
+                <div class="decision-right">
+                  <button class="btn-reject" onclick="openRejectModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                    <span>Reject Dossier</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Approval Confirmation Modal -->
+  <div class="modal-overlay" id="approveModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Sovereign Broker Accreditation</h3>
+        <button class="modal-close-btn" onclick="closeModal('approveModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink);">
+          You are authorizing official Settly Sovereign Accreditation for:
+        </p>
+        <div style="padding: 14px; background-color: var(--canvas); border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <strong id="approveModalBrokerName" style="color: var(--navy-900); font-size: 1rem;">Karim El-Ghamry</strong>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); margin-top: 4px;">
+            Syndicate ID: <span id="approveModalSyndicateId">SYN-EG-88419-C</span> · Agency: <span id="approveModalAgency">Sotheby's Egypt</span>
+          </div>
+        </div>
+        <div style="font-size: 0.8125rem; color: var(--ink-2);">
+          • Generates cryptographic credential token <code>#EG-ACC-2026-0921</code><br>
+          • Unlocks exclusive compound mandate publishing rights on Settly<br>
+          • Sends automated SMS & email dispatch with gold verification badge
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="closeModal('approveModal')">Cancel</button>
+        <button class="quick-action-btn btn-brass" onclick="executeApprove()">Confirm & Issue Badge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rectification Modal -->
+  <div class="modal-overlay" id="rectifyModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Request Document Rectification</h3>
+        <button class="modal-close-btn" onclick="closeModal('rectifyModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink);">Select the required items for applicant resubmission:</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8125rem;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="checkTax" checked> Expired / Missing FY2026 Tax Card Clearance
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="checkSyndicate"> Blurry or Illegible Syndicate Membership Scan
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="checkPoa"> Missing Notarized Corporate Power of Attorney (POA)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="checkCr"> Commercial Registration (CR) renewal required
+          </label>
+        </div>
+        <textarea id="rectifyCustomNote" style="width: 100%; height: 80px; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--line-2); font-size: 0.8125rem;" placeholder="Additional instructions to the broker..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="closeModal('rectifyModal')">Cancel</button>
+        <button class="quick-action-btn btn-primary" onclick="executeRectify()">Dispatch Requisition Notice</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rejection Modal -->
+  <div class="modal-overlay" id="rejectModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--error);">Reject Accreditation Application</h3>
+        <button class="modal-close-btn" onclick="closeModal('rejectModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink);">Please select the official Egyptian Syndicate rejection code:</p>
+        <select id="rejectReasonCode" style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--line-2); font-size: 0.8125rem;">
+          <option value="EXP_REVOKED">REG-01: Syndicate License Revoked or Suspended</option>
+          <option value="CR_FRAUD">REG-02: Commercial Register mismatch with National ID</option>
+          <option value="ESCROW_COLLISION">REG-03: Multiple unresolved mandate escrow collisions</option>
+          <option value="MOI_RECORD">REG-04: Ministry of Interior security record flag</option>
+        </select>
+        <p style="font-size: 0.75rem; color: var(--ink-3);">
+          This will log an irreversible disciplinary notice in the sovereign audit ledger.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="closeModal('rejectModal')">Cancel</button>
+        <button class="quick-action-btn" style="background-color: var(--error); color: white;" onclick="executeReject()">Confirm Rejection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- High-Res Document Preview Modal -->
+  <div class="modal-overlay" id="docPreviewModal">
+    <div class="modal-card" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Authenticated Credential Inspector</h3>
+        <button class="modal-close-btn" onclick="closeModal('docPreviewModal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="align-items: center; padding: 32px 24px; background: #F7F6F3;">
+        <div id="modalDocumentContainer" style="width: 100%; max-width: 580px;">
+          <!-- Cloned Document View -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-action-btn btn-secondary" onclick="closeModal('docPreviewModal')">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div class="toast-pill" id="toastPill">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span id="toastMessage">Accreditation updated successfully</span>
+  </div>
+
+  <!-- JavaScript Client Logic -->
+  <script>
+    const brokers = [{"id": "DOS-EG-2026-88419", "name": "Karim El-Ghamry", "initials": "KG", "avatarColor": "#1E2A4A", "avatarBg": "#E7D3AB", "syndicateId": "SYN-EG-88419-C", "syndicateValidThru": "Dec 2027", "syndicateStatus": "Active & Current", "nationalId": "28409140102941", "agency": "Sotheby's International Realty Egypt", "agencyRole": "Senior Luxury Broker & Managing Partner", "licenseTier": "Class A Brokerage Partner", "tierCode": "class-a", "crNumber": "CR-884920-Giza", "crOffice": "Dokki Commercial Registration Office", "taxCard": "392-881-002", "taxOffice": "Dokki Corporate Tax Center", "criminalRecord": "MOI-CR-992014 (Clean - Issued Aug 2026)", "mandatesCount": 24, "gtvVolume": "340M EGP", "rating": "AAA Escrow Grade", "appliedTime": "12 mins ago", "priority": "Expedited VIP", "priorityClass": "vip", "status": "pending", "statusLabel": "Awaiting Accreditation", "complianceScore": "99.4%", "syndicateVerified": true, "taxVerified": true, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "Verified against Egyptian Real Estate Syndicate central registry API. All documents fully notarized.", "phone": "+20 100 892 4110", "email": "karim.elghamry@sothebysrealty-eg.com", "officeAddress": "Plot 12, Golden Square Corridor, New Cairo"}, {"id": "DOS-EG-2026-74102", "name": "Laila Rostom", "initials": "LR", "avatarColor": "#3D5A4C", "avatarBg": "#EAF0EC", "syndicateId": "SYN-EG-74102-B", "syndicateValidThru": "Oct 2026", "syndicateStatus": "Active & Current", "nationalId": "29104050104882", "agency": "Coldwell Banker Commercial Cairo", "agencyRole": "Commercial & High-End Residential Advisor", "licenseTier": "Class A Brokerage Partner", "tierCode": "class-a", "crNumber": "CR-104921-Cairo", "crOffice": "Zamalek Registry Office", "taxCard": "481-902-119", "taxOffice": "Zamalek Tax Directorate", "criminalRecord": "MOI-CR-881902 (Clean - Issued Jul 2026)", "mandatesCount": 18, "gtvVolume": "210M EGP", "rating": "AA+ High Standing", "appliedTime": "35 mins ago", "priority": "Standard", "priorityClass": "standard", "status": "pending", "statusLabel": "Syndicate Verification", "complianceScore": "98.1%", "syndicateVerified": true, "taxVerified": true, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "Syndicate ID confirmed. Commercial Register audit shows active capital reserves of 10M EGP.", "phone": "+20 102 441 9928", "email": "laila.rostom@coldwellbanker-cairo.com", "officeAddress": "14 Gezira Island Street, Zamalek, Cairo"}, {"id": "DOS-EG-2026-39910", "name": "Sherif Abdel-Aziz", "initials": "SA", "avatarColor": "#AE8033", "avatarBg": "#F6EEDE", "syndicateId": "SYN-EG-39910-A", "syndicateValidThru": "Mar 2028", "syndicateStatus": "Active & Current", "nationalId": "28011240103991", "agency": "Palm Hills Advisory Desk", "agencyRole": "Executive Luxury Representative", "licenseTier": "Developer Agency Desk", "tierCode": "developer", "crNumber": "CR-772910-Giza", "crOffice": "6th of October Commercial Registry", "taxCard": "550-104-883", "taxOffice": "Sheikh Zayed Tax Center", "criminalRecord": "MOI-CR-771029 (Clean - Issued Aug 2026)", "mandatesCount": 31, "gtvVolume": "490M EGP", "rating": "AAA Escrow Grade", "appliedTime": "1 hour ago", "priority": "Expedited VIP", "priorityClass": "vip", "status": "pending", "statusLabel": "Awaiting Accreditation", "complianceScore": "100%", "syndicateVerified": true, "taxVerified": true, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "Official power of attorney validated by Palm Hills Development Corporation corporate desk.", "phone": "+20 100 119 5532", "email": "sherif.aziz@palmhills-desk.com", "officeAddress": "Palm Hills Club House, 6th of October City"}, {"id": "DOS-EG-2026-61204", "name": "Nadine Zaki", "initials": "NZ", "avatarColor": "#991B1B", "avatarBg": "#FEE2E2", "syndicateId": "SYN-EG-61204-C", "syndicateValidThru": "Nov 2026", "syndicateStatus": "Syndicate Active", "nationalId": "28805190104889", "agency": "Zaki & Partners Real Estate", "agencyRole": "Principal Managing Broker", "licenseTier": "Independent Licensed Broker", "tierCode": "independent", "crNumber": "CR-339102-Cairo", "crOffice": "Maadi Commercial Registry", "taxCard": "229-441-008", "taxOffice": "Maadi Corporate Center", "criminalRecord": "MOI-CR-662910 (Clean - Issued Jun 2026)", "mandatesCount": 9, "gtvVolume": "85M EGP", "rating": "B+ Rectification Needed", "appliedTime": "2 hours ago", "priority": "Action Required", "priorityClass": "alert", "status": "action_required", "statusLabel": "Tax Card Audit Required", "complianceScore": "78.4%", "syndicateVerified": true, "taxVerified": false, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "ATTENTION: Tax card clearance certificate on file expired on Dec 31, 2025. Requisition of FY2026 clearance required.", "phone": "+20 111 882 3341", "email": "nadine@zakipartners-eg.com", "officeAddress": "Road 9, Degla, Maadi, Cairo"}, {"id": "DOS-EG-2026-50821", "name": "Hesham Barakat", "initials": "HB", "avatarColor": "#2B3A61", "avatarBg": "#EAEFF9", "syndicateId": "SYN-EG-50821-B", "syndicateValidThru": "Jan 2027", "syndicateStatus": "Active & Current", "nationalId": "27908120101923", "agency": "SODIC Network Partners", "agencyRole": "Senior Residential Mandate Broker", "licenseTier": "Class A Brokerage Partner", "tierCode": "class-a", "crNumber": "CR-992019-Giza", "crOffice": "Sheikh Zayed Registry", "taxCard": "410-882-901", "taxOffice": "Zayed Tax Center", "criminalRecord": "MOI-CR-554109 (Clean - Issued Jul 2026)", "mandatesCount": 16, "gtvVolume": "175M EGP", "rating": "AA High Standing", "appliedTime": "3 hours ago", "priority": "Standard", "priorityClass": "standard", "status": "pending", "statusLabel": "Awaiting Accreditation", "complianceScore": "97.5%", "syndicateVerified": true, "taxVerified": true, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "Broker license confirmed. All 16 historical mandates closed with zero escrow friction.", "phone": "+20 101 229 8847", "email": "hesham.barakat@sodic-partners.com", "officeAddress": "The Polygon, SODIC West, Km 38 Cairo-Alex Desert Rd"}, {"id": "DOS-EG-2026-91823", "name": "Dalia El-Menoufy", "initials": "DM", "avatarColor": "#991B1B", "avatarBg": "#FEE2E2", "syndicateId": "SYN-EG-91823-A", "syndicateValidThru": "Aug 2027", "syndicateStatus": "Active & Current", "nationalId": "29402170104118", "agency": "Menoufy Real Estate Group", "agencyRole": "Managing Director", "licenseTier": "Independent Licensed Broker", "tierCode": "independent", "crNumber": "CR-440192-Cairo", "crOffice": "New Cairo Commercial Registry", "taxCard": "661-092-334", "taxOffice": "New Cairo 5th Settlement Office", "criminalRecord": "MOI-CR-991044 (Clean - Issued May 2026)", "mandatesCount": 7, "gtvVolume": "62M EGP", "rating": "B Rectification Needed", "appliedTime": "4 hours ago", "priority": "Action Required", "priorityClass": "alert", "status": "action_required", "statusLabel": "Brokerage POA Missing", "complianceScore": "82.0%", "syndicateVerified": true, "taxVerified": true, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "ATTENTION: Corporate Power of Attorney from Menoufy Real Estate Group parent board missing notary seal.", "phone": "+20 122 774 1902", "email": "dalia@menoufygroup.com", "officeAddress": "Sector 1, City Center, New Cairo"}, {"id": "DOS-EG-2026-44019", "name": "Mostafa Kamel", "initials": "MK", "avatarColor": "#1E2A4A", "avatarBg": "#EDE9DF", "syndicateId": "SYN-EG-44019-C", "syndicateValidThru": "Nov 2027", "syndicateStatus": "Active & Current", "nationalId": "28512010103328", "agency": "The Address Investments", "agencyRole": "High-Net-Worth Advisory Specialist", "licenseTier": "Class A Brokerage Partner", "tierCode": "class-a", "crNumber": "CR-882019-Cairo", "crOffice": "Heliopolis Registry Office", "taxCard": "772-109-445", "taxOffice": "Heliopolis Corporate Center", "criminalRecord": "MOI-CR-338190 (Clean - Issued Jul 2026)", "mandatesCount": 21, "gtvVolume": "260M EGP", "rating": "AAA Escrow Grade", "appliedTime": "5 hours ago", "priority": "Standard", "priorityClass": "standard", "status": "pending", "statusLabel": "Awaiting Accreditation", "complianceScore": "99.1%", "syndicateVerified": true, "taxVerified": true, "crVerified": true, "criminalVerified": true, "disputesCount": 0, "notes": "Complete accreditation package with authenticated Syndicate membership and clean MOI clearance.", "phone": "+20 100 551 2290", "email": "m.kamel@theaddress-eg.com", "officeAddress": "Al-Merghany St, Heliopolis, Cairo"}];
+    let currentBrokerId = brokers[0].id;
+    let activeFilter = 'all';
+    let activeTier = 'all';
+    let searchQuery = '';
+
+    // Initialize UI
+    function init() {
+      renderQueueList();
+      selectBroker(currentBrokerId);
+      updateCounts();
+      startLiveClock();
+    }
+
+    // Render Queue
+    function renderQueueList() {
+      const container = document.getElementById('queueListContainer');
+      container.innerHTML = '';
+
+      const filtered = brokers.filter(b => {
+        // Status filter
+        if (activeFilter === 'pending' && b.status !== 'pending') return false;
+        if (activeFilter === 'vip' && b.priority !== 'Expedited VIP') return false;
+        if (activeFilter === 'action_required' && b.status !== 'action_required') return false;
+
+        // Tier filter
+        if (activeTier !== 'all' && b.tierCode !== activeTier) return false;
+
+        // Search query
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchName = b.name.toLowerCase().includes(q);
+          const matchSyn = b.syndicateId.toLowerCase().includes(q);
+          const matchAgency = b.agency.toLowerCase().includes(q);
+          const matchCr = b.crNumber.toLowerCase().includes(q);
+          if (!matchName && !matchSyn && !matchAgency && !matchCr) return false;
+        }
+        return true;
+      });
+
+      document.getElementById('queueStatusText').textContent = `Showing ${filtered.length} applications`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 32px 20px; text-align: center; color: var(--ink-3); font-size: 0.875rem;">
+            No applications found matching current filters.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(b => {
+        const isSelected = b.id === currentBrokerId;
+        const card = document.createElement('div');
+        card.className = `broker-card ${isSelected ? 'selected' : ''}`;
+        card.onclick = () => selectBroker(b.id);
+
+        let priorityBadge = '';
+        if (b.priority === 'Expedited VIP') {
+          priorityBadge = `<span class="badge-chip badge-vip">Expedited VIP</span>`;
+        } else if (b.status === 'action_required') {
+          priorityBadge = `<span class="badge-chip badge-alert">Action Due</span>`;
+        } else {
+          priorityBadge = `<span class="badge-chip badge-standard">Standard</span>`;
+        }
+
+        card.innerHTML = `
+          <div class="broker-card-top">
+            <div class="broker-lead">
+              <div class="broker-avatar" style="background-color: ${b.avatarBg}; color: ${b.avatarColor};">
+                ${b.initials}
+              </div>
+              <div class="broker-header-text">
+                <div class="broker-name-row">
+                  <span class="broker-name">${b.name}</span>
+                  ${b.syndicateVerified ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>` : ''}
+                </div>
+                <span class="broker-agency">${b.agency}</span>
+              </div>
+            </div>
+            ${priorityBadge}
+          </div>
+
+          <div class="broker-meta-grid">
+            <div class="meta-box">
+              <span class="meta-title">Syndicate ID</span>
+              <span class="meta-val">${b.syndicateId}</span>
+            </div>
+            <div class="meta-box">
+              <span class="meta-title">CR File</span>
+              <span class="meta-val">${b.crNumber}</span>
+            </div>
+          </div>
+
+          <div class="broker-footer-row">
+            <span class="time-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>${b.appliedTime}</span>
+            </span>
+            <span class="compliance-pill ${parseFloat(b.complianceScore) >= 95 ? 'high' : 'warn'}">
+              <span>Score: ${b.complianceScore}</span>
+            </span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Select Broker & Populate Terminal
+    function selectBroker(id) {
+      currentBrokerId = id;
+      const b = brokers.find(item => item.id === id);
+      if (!b) return;
+
+      // Update card selection highlight
+      document.querySelectorAll('.broker-card').forEach(card => card.classList.remove('selected'));
+      const cards = document.querySelectorAll('.broker-card');
+      const idx = brokers.filter(x => {
+        if (activeFilter === 'pending' && x.status !== 'pending') return false;
+        if (activeFilter === 'vip' && x.priority !== 'Expedited VIP') return false;
+        if (activeFilter === 'action_required' && x.status !== 'action_required') return false;
+        if (activeTier !== 'all' && x.tierCode !== activeTier) return false;
+        return true;
+      }).findIndex(x => x.id === id);
+      if (cards[idx]) cards[idx].classList.add('selected');
+
+      // Populate Header
+      document.getElementById('terminalAvatar').textContent = b.initials;
+      document.getElementById('terminalAvatar').style.backgroundColor = b.avatarBg;
+      document.getElementById('terminalAvatar').style.color = b.avatarColor;
+      document.getElementById('terminalName').textContent = b.name;
+      document.getElementById('terminalTier').textContent = b.licenseTier;
+      document.getElementById('terminalAgency').textContent = b.agency;
+      document.getElementById('terminalPhone').textContent = b.phone;
+      document.getElementById('terminalRef').textContent = b.id;
+
+      // Populate Verification Quad
+      document.getElementById('valSyndicateId').textContent = b.syndicateId;
+      document.getElementById('metaSyndicate').textContent = `Valid thru ${b.syndicateValidThru} · Automated API match confirmed`;
+
+      document.getElementById('valTaxCard').textContent = b.taxCard;
+      document.getElementById('metaTax').textContent = `${b.taxOffice} · ${b.taxVerified ? 'Good standing file active' : 'ATTENTION: Expired certificate'}`;
+      const cardTax = document.getElementById('cardTax');
+      const badgeTax = document.getElementById('badgeTax');
+      if (b.taxVerified) {
+        cardTax.className = 'verif-card passed';
+        badgeTax.className = 'verif-status-badge badge-pass';
+        badgeTax.textContent = 'Audited';
+      } else {
+        cardTax.className = 'verif-card attention';
+        badgeTax.className = 'verif-status-badge badge-warn';
+        badgeTax.textContent = 'Expired';
+      }
+
+      document.getElementById('valCrNumber').textContent = b.crNumber;
+      document.getElementById('metaCr').textContent = `${b.crOffice} · Active reserves verified`;
+
+      document.getElementById('valCriminal').textContent = b.criminalRecord.split(' ')[0];
+      document.getElementById('metaCriminal').textContent = b.criminalRecord;
+
+      // Populate Vector Document Mockup
+      document.getElementById('cardBrokerName').textContent = b.name;
+      document.getElementById('cardSyndicateNumber').textContent = b.syndicateId;
+      document.getElementById('cardNationalId').textContent = b.nationalId;
+      document.getElementById('cardValidThru').textContent = b.syndicateValidThru;
+
+      document.getElementById('taxDocFile').textContent = b.taxCard;
+      document.getElementById('taxDocName').textContent = `${b.name} (${b.agency})`;
+      document.getElementById('crDocNumber').textContent = b.crNumber;
+      document.getElementById('crDocEntity').textContent = `${b.agency} LLC`;
+
+      // Populate Reputation Metrics
+      document.getElementById('valMandates').textContent = `${b.mandatesCount} Mandates`;
+      document.getElementById('valGtv').textContent = b.gtvVolume;
+      document.getElementById('valRating').textContent = b.rating;
+      document.getElementById('valDisputes').textContent = `${b.disputesCount} Flags`;
+
+      // Pre-fill modal fields
+      document.getElementById('approveModalBrokerName').textContent = b.name;
+      document.getElementById('approveModalSyndicateId').textContent = b.syndicateId;
+      document.getElementById('approveModalAgency').textContent = b.agency;
+
+      // Reset notes
+      document.getElementById('registrarNotes').value = b.notes || '';
+    }
+
+    // Switch Document Tab
+    function switchDocTab(type) {
+      document.getElementById('tabDocSyndicate').classList.remove('active');
+      document.getElementById('tabDocTax').classList.remove('active');
+      document.getElementById('tabDocCr').classList.remove('active');
+
+      document.getElementById('mockupSyndicate').style.display = 'none';
+      document.getElementById('mockupTax').style.display = 'none';
+      document.getElementById('mockupCr').style.display = 'none';
+
+      if (type === 'syndicate') {
+        document.getElementById('tabDocSyndicate').classList.add('active');
+        document.getElementById('mockupSyndicate').style.display = 'block';
+      } else if (type === 'tax') {
+        document.getElementById('tabDocTax').classList.add('active');
+        document.getElementById('mockupTax').style.display = 'block';
+      } else if (type === 'cr') {
+        document.getElementById('tabDocCr').classList.add('active');
+        document.getElementById('mockupCr').style.display = 'block';
+      }
+    }
+
+    // Filter Handlers
+    function filterQueue(filter, btn) {
+      activeFilter = filter;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderQueueList();
+    }
+
+    function handleTierChange(val) {
+      activeTier = val;
+      renderQueueList();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      renderQueueList();
+    }
+
+    function updateCounts() {
+      const total = brokers.length;
+      const pending = brokers.filter(b => b.status === 'pending').length;
+      const vip = brokers.filter(b => b.priority === 'Expedited VIP').length;
+      const action = brokers.filter(b => b.status === 'action_required').length;
+
+      document.getElementById('countAll').textContent = total;
+      document.getElementById('countPending').textContent = pending;
+      document.getElementById('countVip').textContent = vip;
+      document.getElementById('countAction').textContent = action;
+    }
+
+    // Presets
+    function applyPresetNote(text) {
+      const notesArea = document.getElementById('registrarNotes');
+      notesArea.value = text;
+      notesArea.focus();
+    }
+
+    // Modals
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function openApproveModal() { openModal('approveModal'); }
+    function openRectifyModal() { openModal('rectifyModal'); }
+    function openRejectModal() { openModal('rejectModal'); }
+
+    function openDocPreviewModal() {
+      const container = document.getElementById('modalDocumentContainer');
+      container.innerHTML = '';
+      const clone = document.getElementById('mockupSyndicate').cloneNode(true);
+      clone.style.display = 'block';
+      container.appendChild(clone);
+      openModal('docPreviewModal');
+    }
+
+    // Execution Actions
+    function executeApprove() {
+      closeModal('approveModal');
+      const b = brokers.find(item => item.id === currentBrokerId);
+      if (b) {
+        b.status = 'approved';
+        b.statusLabel = 'Accredited';
+        b.priority = 'Standard';
+      }
+      showToast(`Accreditation approved for ${b ? b.name : 'Broker'}. Credential #EG-ACC-2026-0921 issued.`);
+      updateCounts();
+      renderQueueList();
+    }
+
+    function executeRectify() {
+      closeModal('rectifyModal');
+      const b = brokers.find(item => item.id === currentBrokerId);
+      if (b) {
+        b.status = 'action_required';
+        b.statusLabel = 'Rectification Requested';
+      }
+      showToast(`Rectification request dispatched to ${b ? b.name : 'Broker'}. SMS notification sent.`);
+      updateCounts();
+      renderQueueList();
+    }
+
+    function executeReject() {
+      closeModal('rejectModal');
+      const b = brokers.find(item => item.id === currentBrokerId);
+      if (b) {
+        b.status = 'rejected';
+        b.statusLabel = 'Accreditation Revoked';
+      }
+      showToast(`Application for ${b ? b.name : 'Broker'} rejected. Logged in audit registry.`);
+      updateCounts();
+      renderQueueList();
+    }
+
+    function downloadDossierBundle() {
+      showToast(`Packaging authenticated compliance bundle for ${currentBrokerId}...`);
+    }
+
+    function exportAccreditationCSV() {
+      showToast('Exporting Egyptian Real Estate Syndicate Accreditation Registry (CSV)...');
+    }
+
+    function batchValidateAPI() {
+      showToast('Automated sync: 1,284 broker records queried against Syndicate Gateway. 0 desyncs.');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastPill');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3500);
+    }
+
+    // Mobile Menu Toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('mobile-open');
+    });
+
+    // Live Clock
+    function startLiveClock() {
+      setInterval(() => {
+        const now = new Date();
+        const str = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+          ' · ' + now.toLocaleTimeString('en-GB') + ' EET';
+        document.getElementById('systemClock').textContent = str;
+      }, 1000);
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+      }
+    });
+
+    // Start on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+</body>
+</html>

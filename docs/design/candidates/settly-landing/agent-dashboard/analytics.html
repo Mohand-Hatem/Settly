@@ -1,0 +1,2294 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brokerage Performance & Market Telemetry · Settly Agent Desk</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+:root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+/* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.15);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background-color: var(--brass);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Advisor Profile Card in Sidebar */
+    .sidebar-advisor {
+      margin: 0 16px 16px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .advisor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brass);
+    }
+
+    .advisor-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .advisor-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .advisor-role {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .advisor-license {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-regulatory-box {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--ink-3);
+    }
+
+    .header-breadcrumb .sep {
+      color: var(--line-2);
+    }
+
+    .header-breadcrumb .current {
+      color: var(--navy-900);
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--sage);
+      border-radius: 50%;
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sovereign-fx-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .fx-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--brass);
+      border-radius: 50%;
+    }
+
+    .cairo-clock-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+    }
+
+    .user-avatar-initials {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--brass);
+      font-weight: 700;
+      font-size: 0.6875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .user-badge {
+      font-size: 0.625rem;
+      color: var(--ink-3);
+    }
+
+    /* Portal Content Viewport */
+    .portal-content {
+      padding: 32px;
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Hero Header */
+    .analytics-hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .hero-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      max-width: 760px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass-600);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--brass-600);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--ink-3);
+    }
+
+    /* 4-Metric Executive Telemetry Ribbon */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .telemetry-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .telemetry-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .telemetry-badge.badge-sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .telemetry-badge.badge-brass {
+      background-color: rgba(198, 151, 73, 0.15);
+      color: var(--brass-600);
+    }
+
+    .telemetry-metric-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .telemetry-metric {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .telemetry-unit {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .telemetry-desc {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    /* Main Charts Grid: Left Velocity Bar Chart + Right SVG Pie/Donut Visualizer */
+    .charts-split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .chart-box {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      position: relative;
+    }
+
+    .chart-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chart-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .chart-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.2;
+    }
+
+    .chart-sub {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .chart-pill-selector {
+      display: inline-flex;
+      background-color: var(--canvas-2);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .chart-pill-btn {
+      padding: 4px 10px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chart-pill-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    /* Interactive Bar Chart Styling */
+    .bar-chart-visual {
+      position: relative;
+      height: 230px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding-top: 36px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .bar-col {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .bar-pill {
+      width: 100%;
+      max-width: 48px;
+      background: linear-gradient(180deg, var(--brass) 0%, var(--brass-600) 50%, var(--navy-900) 100%);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .bar-col:hover .bar-pill {
+      filter: brightness(1.2);
+      transform: scaleY(1.03);
+      transform-origin: bottom;
+    }
+
+    .bar-val-label {
+      position: absolute;
+      top: -24px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+    }
+
+    .bar-x-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .bar-footer-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      padding-top: 6px;
+    }
+
+    .bar-footer-stats strong {
+      font-family: var(--font-mono);
+      color: var(--navy-900);
+    }
+
+    /* Floating Tooltip */
+    .chart-tooltip {
+      position: absolute;
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brass);
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.3);
+      font-size: 0.6875rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 140px;
+    }
+
+    .chart-tooltip.visible {
+      opacity: 1;
+    }
+
+    /* Interactive SVG Donut / Pie Visualizer */
+    .pie-module-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .pie-render-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      flex-wrap: wrap;
+    }
+
+    .svg-donut-wrapper {
+      width: 220px;
+      height: 220px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      overflow: visible;
+    }
+
+    .donut-slice {
+      fill: transparent;
+      stroke-width: 24;
+      transform-origin: center;
+      transition: transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+      cursor: pointer;
+    }
+
+    .donut-slice:hover {
+      transform: scale(1.04);
+      filter: drop-shadow(0 4px 10px rgba(19, 29, 54, 0.2));
+    }
+
+    /* Central Telemetry Core */
+    .donut-center-core {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background-color: var(--white);
+      box-shadow: inset 0 2px 8px rgba(19, 29, 54, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .center-metric-val {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .center-metric-pct {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--brass-600);
+    }
+
+    .center-metric-sub {
+      font-size: 0.625rem;
+      color: var(--ink-3);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Interactive Legend Pills */
+    .pie-legend-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .legend-item:hover, .legend-item.active {
+      background-color: var(--white);
+      border-color: var(--brass);
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.06);
+      transform: translateX(3px);
+    }
+
+    .legend-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .legend-item-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .legend-val {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .legend-pct {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-3);
+    }
+
+    /* Second Pie/Donut Section: Buyer Capital Origin */
+    .capital-origin-plate {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .capital-origin-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .capital-source-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .source-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .source-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+    }
+
+    .source-bar-track {
+      height: 8px;
+      background-color: var(--canvas-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+    }
+
+    .source-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+    }
+
+    /* Deal Conversion & Pipeline Funnel Card */
+    .pipeline-funnel-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .funnel-stages-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      position: relative;
+    }
+
+    .funnel-stage-cell {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .funnel-stage-cell:hover {
+      background-color: var(--white);
+      border-color: var(--brass);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(19, 29, 54, 0.08);
+    }
+
+    .funnel-stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .funnel-stage-num {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      text-transform: uppercase;
+    }
+
+    .funnel-stage-rate {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      padding: 1px 6px;
+      background-color: var(--canvas-2);
+      border-radius: var(--radius-full);
+      color: var(--navy-900);
+      font-weight: 600;
+    }
+
+    .funnel-stage-val {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .funnel-stage-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      line-height: 1.25;
+    }
+
+    .funnel-stage-volume {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    /* 14 Mandates Matrix Table Card */
+    .matrix-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .matrix-header-bar {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .matrix-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .matrix-title {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .matrix-sub {
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+    }
+
+    .matrix-search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .matrix-search {
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px 8px 36px;
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      outline: none;
+      min-width: 280px;
+      transition: border-color 0.15s ease;
+    }
+
+    .matrix-search:focus {
+      border-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 12px;
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+
+    .matrix-table-wrap {
+      overflow-x: auto;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.8125rem;
+      min-width: 800px;
+    }
+
+    .matrix-table th {
+      background-color: var(--canvas-2);
+      padding: 12px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .matrix-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    .matrix-table tr:hover td {
+      background-color: rgba(198, 151, 73, 0.03);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+    }
+
+    .badge-sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .badge-warning {
+      background-color: rgba(180, 83, 9, 0.12);
+      color: var(--warning);
+    }
+
+    .badge-ink {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    /* Toast Notification */
+    .toast-shelf {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid var(--brass);
+      pointer-events: auto;
+      animation: slideToast 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideToast {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1200px) {
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .charts-split-grid {
+        grid-template-columns: 1fr;
+      }
+      .funnel-stages-row {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+      .funnel-stages-row {
+        grid-template-columns: 1fr;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .header-breadcrumb .portal-sub-name, .header-breadcrumb .sep {
+        display: none;
+      }
+      .portal-trust-chip {
+        display: none;
+      }
+      .cairo-clock-pill {
+        display: none;
+      }
+      .sovereign-fx-pill {
+        display: none;
+      }
+      .hero-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+      .hero-actions button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+<aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Agent Emblem Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads & Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics & Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Inventory & Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged-in Agent Profile Card -->
+      <div class="sidebar-advisor">
+        <div class="advisor-header">
+          <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+          <div class="advisor-meta">
+            <span class="advisor-name">Karim El-Sayed</span>
+            <span class="advisor-role">Senior Private Advisor</span>
+            <span class="advisor-license">License #EG-8841-B</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width: 100%; padding: 6px 12px; font-size: 0.75rem; justify-content: center; background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.15);" onclick="showToast('Agent desk status: Active & Verified')">
+          <span>Broker Desk Verified</span>
+        </button>
+      </div>
+
+      <!-- Legal & Trust Footer -->
+      <div class="sidebar-regulatory-box">
+        Verified Listings & Exclusive Mandates<br>
+        Licensed Independent Broker
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      <!-- Top Sticky Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">MARKET &amp; PORTFOLIO ANALYTICS</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>TRANSACTION TELEMETRY</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Active Leads &amp; Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Portal Content -->
+      <div class="portal-content">
+        <!-- Hero Header -->
+        <div class="analytics-hero">
+          <div class="hero-text-wrap">
+            <h1 class="hero-title">Brokerage Performance &amp; Market Telemetry</h1>
+            <p class="hero-subtitle">Quarterly commission velocity, mandate exposure analytics, and corridor transaction benchmarks across New Cairo, West Cairo, and North Coast</p>
+          </div>
+          <div class="hero-actions">
+            <button class="btn-secondary" id="periodDropdownBtn" onclick="cyclePeriod()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span id="activePeriodLabel">Period: Q3 2026 (Active)</span>
+            </button>
+            <button class="btn-primary" onclick="exportDossier()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export Performance Dossier</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Metric Executive Ribbon -->
+        <div class="telemetry-grid">
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">YTD Transaction Volume</span>
+              <span class="telemetry-badge badge-sage">+28.4% YoY</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-metric" id="metricVolume">384.2M</span>
+              <span class="telemetry-unit">EGP</span>
+            </div>
+            <p class="telemetry-desc">8 verified luxury transactions concluded across Cairo prime corridors.</p>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Earned Advisory Commission</span>
+              <span class="telemetry-badge badge-brass">2.5% Mandate</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-metric" id="metricCommission">9.6M</span>
+              <span class="telemetry-unit">EGP</span>
+            </div>
+            <p class="telemetry-desc">Fiduciary representation fees settled and cleared through partner banking desks.</p>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Days on Market Velocity</span>
+              <span class="telemetry-badge badge-sage">58% Faster</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-metric">24</span>
+              <span class="telemetry-unit">Days</span>
+            </div>
+            <p class="telemetry-desc">Average time to contract vs Greater Cairo luxury benchmark of 58 days.</p>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Portfolio Engagement</span>
+              <span class="telemetry-badge">14 Mandates</span>
+            </div>
+            <div class="telemetry-metric-row">
+              <span class="telemetry-metric">48.2k</span>
+              <span class="telemetry-unit">Views</span>
+            </div>
+            <p class="telemetry-desc">342 pre-qualified buyer inquiries with a 64% escorted tour conversion rate.</p>
+          </div>
+        </div>
+
+        <!-- Two Core Interactive Visualizers: Bar Velocity + SVG Donut/Pie Chart -->
+        <div class="charts-split-grid">
+          
+          <!-- LEFT: Monthly Volume Velocity (Interactive Bar Chart + Tooltip) -->
+          <div class="chart-box" id="barChartCard">
+            <div class="chart-box-header">
+              <div class="chart-title-wrap">
+                <h2 class="chart-title">Transaction Volume Velocity</h2>
+                <p class="chart-sub">Monthly closed sales volume in Millions EGP (Apr — Sep 2026)</p>
+              </div>
+              <div class="chart-pill-selector">
+                <button class="chart-pill-btn active" onclick="setBarMode('volume', this)">Volume</button>
+                <button class="chart-pill-btn" onclick="setBarMode('commission', this)">Commission</button>
+              </div>
+            </div>
+
+            <!-- Custom Interactive Bar Chart Container -->
+            <div class="bar-chart-visual" id="barContainer">
+              <!-- April -->
+              <div class="bar-col" data-month="April 2026" data-vol="48.0M" data-comm="1.20M" data-deals="1" onmouseenter="showBarTooltip(event, this)" onmousemove="moveBarTooltip(event)" onmouseleave="hideBarTooltip()">
+                <span class="bar-val-label">48M</span>
+                <div class="bar-pill" style="height: 61%;"></div>
+                <span class="bar-x-label">Apr</span>
+              </div>
+
+              <!-- May -->
+              <div class="bar-col" data-month="May 2026" data-vol="56.0M" data-comm="1.40M" data-deals="1" onmouseenter="showBarTooltip(event, this)" onmousemove="moveBarTooltip(event)" onmouseleave="hideBarTooltip()">
+                <span class="bar-val-label">56M</span>
+                <div class="bar-pill" style="height: 71%;"></div>
+                <span class="bar-x-label">May</span>
+              </div>
+
+              <!-- June -->
+              <div class="bar-col" data-month="June 2026" data-vol="62.0M" data-comm="1.55M" data-deals="1" onmouseenter="showBarTooltip(event, this)" onmousemove="moveBarTooltip(event)" onmouseleave="hideBarTooltip()">
+                <span class="bar-val-label">62M</span>
+                <div class="bar-pill" style="height: 79%;"></div>
+                <span class="bar-x-label">Jun</span>
+              </div>
+
+              <!-- July -->
+              <div class="bar-col" data-month="July 2026" data-vol="74.0M" data-comm="1.85M" data-deals="2" onmouseenter="showBarTooltip(event, this)" onmousemove="moveBarTooltip(event)" onmouseleave="hideBarTooltip()">
+                <span class="bar-val-label">74M</span>
+                <div class="bar-pill" style="height: 94%;"></div>
+                <span class="bar-x-label">Jul</span>
+              </div>
+
+              <!-- August -->
+              <div class="bar-col" data-month="August 2026" data-vol="66.0M" data-comm="1.65M" data-deals="1" onmouseenter="showBarTooltip(event, this)" onmousemove="moveBarTooltip(event)" onmouseleave="hideBarTooltip()">
+                <span class="bar-val-label">66M</span>
+                <div class="bar-pill" style="height: 84%;"></div>
+                <span class="bar-x-label">Aug</span>
+              </div>
+
+              <!-- September -->
+              <div class="bar-col" data-month="September 2026" data-vol="78.2M" data-comm="1.95M" data-deals="2" onmouseenter="showBarTooltip(event, this)" onmousemove="moveBarTooltip(event)" onmouseleave="hideBarTooltip()">
+                <span class="bar-val-label">78M</span>
+                <div class="bar-pill" style="height: 100%;"></div>
+                <span class="bar-x-label">Sep</span>
+              </div>
+
+              <!-- Floating Tooltip -->
+              <div class="chart-tooltip" id="barTooltip">
+                <strong id="tipMonth" style="color: var(--brass-200); font-size: 0.75rem;">September 2026</strong>
+                <span>Closed Volume: <strong id="tipVol" style="font-family: var(--font-mono); color: var(--white);">78.2M EGP</strong></span>
+                <span>Advisory Earned: <strong id="tipComm" style="font-family: var(--font-mono); color: var(--brass);">1.95M EGP</strong></span>
+                <span style="color: rgba(255,255,255,0.7);">Mandates Closed: <strong id="tipDeals">2</strong></span>
+              </div>
+            </div>
+
+            <div class="bar-footer-stats">
+              <span>6-Month Trajectory: <strong>384.2M EGP</strong></span>
+              <span>Advisory Earned: <strong>9,605,000 EGP</strong></span>
+            </div>
+          </div>
+
+          <!-- RIGHT: Interactive SVG Pie/Donut Visualizer (Corridors & Capital Sources) -->
+          <div class="chart-box" id="pieChartCard">
+            <div class="chart-box-header">
+              <div class="chart-title-wrap">
+                <h2 class="chart-title">Corridor Share &amp; Capital Origin</h2>
+                <p class="chart-sub">Asset concentration across New Cairo, North Coast, and West Cairo</p>
+              </div>
+              <span class="portal-trust-chip">100% Freehold</span>
+            </div>
+
+            <div class="pie-module-container">
+              <!-- Donut and Interactive Legend -->
+              <div class="pie-render-row">
+                
+                <!-- SVG Donut Chart with Dynamic Central Telemetry Core -->
+                <div class="svg-donut-wrapper">
+                  <svg class="donut-svg" viewBox="0 0 100 100">
+                    <!-- Base Track Circle -->
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="var(--canvas-2)" stroke-width="24"></circle>
+
+                    <!-- Slice 1: Golden Square & Katameya (46%) -> stroke-dasharray: 109.8 129.2 -->
+                    <!-- Circumference = 2 * PI * 38 = 238.76 -->
+                    <!-- 46% = 109.83, offset = 0 -->
+                    <circle id="sliceNewCairo" class="donut-slice" cx="50" cy="50" r="38"
+                            stroke="var(--brass)"
+                            stroke-dasharray="109.83 128.93"
+                            stroke-dashoffset="0"
+                            onmouseenter="highlightDonut('New Cairo', '176.7M EGP', '46%', 'SET-KD-4029 &amp; Mivida')"
+                            onmouseleave="resetDonut()">
+                    </circle>
+
+                    <!-- Slice 2: North Coast Shoreline (31%) -> 74.01, offset = -109.83 -->
+                    <circle id="sliceNorthCoast" class="donut-slice" cx="50" cy="50" r="38"
+                            stroke="var(--sage)"
+                            stroke-dasharray="74.01 164.75"
+                            stroke-dashoffset="-109.83"
+                            onmouseenter="highlightDonut('North Coast', '119.1M EGP', '31%', 'Marassi &amp; Hacienda')"
+                            onmouseleave="resetDonut()">
+                    </circle>
+
+                    <!-- Slice 3: West Cairo / 6th of October (23%) -> 54.91, offset = -183.84 -->
+                    <circle id="sliceWestCairo" class="donut-slice" cx="50" cy="50" r="38"
+                            stroke="var(--navy-700)"
+                            stroke-dasharray="54.92 183.84"
+                            stroke-dashoffset="-183.84"
+                            onmouseenter="highlightDonut('West Cairo', '88.4M EGP', '23%', 'Palm Hills &amp; Allegria')"
+                            onmouseleave="resetDonut()">
+                    </circle>
+                  </svg>
+
+                  <!-- Dynamic Central Telemetry Readout -->
+                  <div class="donut-center-core" id="donutCenterCore">
+                    <span class="center-metric-val" id="centerMetricVal">384.2M</span>
+                    <span class="center-metric-pct" id="centerMetricPct">Total GTV</span>
+                    <span class="center-metric-sub" id="centerMetricSub">14 Mandates</span>
+                  </div>
+                </div>
+
+                <!-- Interactive Legend -->
+                <div class="pie-legend-list">
+                  <div class="legend-item" id="legNewCairo"
+                       onmouseenter="highlightDonut('New Cairo', '176.7M EGP', '46%', 'Golden Square')"
+                       onmouseleave="resetDonut()">
+                    <div class="legend-item-left">
+                      <span class="legend-dot" style="background-color: var(--brass);"></span>
+                      <span class="legend-name">Golden Square &amp; Katameya</span>
+                    </div>
+                    <div class="legend-item-right">
+                      <span class="legend-val">176.7M EGP</span>
+                      <span class="legend-pct">46% Share</span>
+                    </div>
+                  </div>
+
+                  <div class="legend-item" id="legNorthCoast"
+                       onmouseenter="highlightDonut('North Coast', '119.1M EGP', '31%', 'Marassi Shoreline')"
+                       onmouseleave="resetDonut()">
+                    <div class="legend-item-left">
+                      <span class="legend-dot" style="background-color: var(--sage);"></span>
+                      <span class="legend-name">North Coast Prime Shore</span>
+                    </div>
+                    <div class="legend-item-right">
+                      <span class="legend-val">119.1M EGP</span>
+                      <span class="legend-pct">31% Share</span>
+                    </div>
+                  </div>
+
+                  <div class="legend-item" id="legWestCairo"
+                       onmouseenter="highlightDonut('West Cairo', '88.4M EGP', '23%', 'Palm Hills October')"
+                       onmouseleave="resetDonut()">
+                    <div class="legend-item-left">
+                      <span class="legend-dot" style="background-color: var(--navy-700);"></span>
+                      <span class="legend-name">6th of October &amp; Zayed</span>
+                    </div>
+                    <div class="legend-item-right">
+                      <span class="legend-val">88.4M EGP</span>
+                      <span class="legend-pct">23% Share</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Buyer Liquidity Origin Breakdown Strip -->
+              <div class="capital-origin-plate">
+                <span class="capital-origin-title">Buyer Capital &amp; Liquidity Origin</span>
+                <div class="capital-source-bars">
+                  <div class="source-bar-row">
+                    <div class="source-bar-header">
+                      <span>CIB &amp; HSBC Premier Wealth (Egyptian Sovereignty)</span>
+                      <strong style="font-family: var(--font-mono);">45% · 172.9M EGP</strong>
+                    </div>
+                    <div class="source-bar-track">
+                      <div class="source-bar-fill" style="width: 45%; background-color: var(--brass);"></div>
+                    </div>
+                  </div>
+
+                  <div class="source-bar-row">
+                    <div class="source-bar-header">
+                      <span>Gulf &amp; Expat USD Remittances (UAE, KSA, UK)</span>
+                      <strong style="font-family: var(--font-mono);">35% · 134.5M EGP</strong>
+                    </div>
+                    <div class="source-bar-track">
+                      <div class="source-bar-fill" style="width: 35%; background-color: var(--sage);"></div>
+                    </div>
+                  </div>
+
+                  <div class="source-bar-row">
+                    <div class="source-bar-header">
+                      <span>Family Offices &amp; Private Syndicates</span>
+                      <strong style="font-family: var(--font-mono);">20% · 76.8M EGP</strong>
+                    </div>
+                    <div class="source-bar-track">
+                      <div class="source-bar-fill" style="width: 20%; background-color: var(--navy-700);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Deal Conversion & Pipeline Funnel Card -->
+        <div class="pipeline-funnel-card">
+          <div class="chart-box-header" style="border-bottom: none; padding-bottom: 0;">
+            <div class="chart-title-wrap">
+              <h2 class="chart-title">Advisory Desk Deal Conversion Funnel</h2>
+              <p class="chart-sub">From exclusive mandate engagement to legal contract closing velocity</p>
+            </div>
+            <span class="telemetry-badge badge-sage">Overall Conversion: 57.1%</span>
+          </div>
+
+          <div class="funnel-stages-row">
+            <!-- Stage 1 -->
+            <div class="funnel-stage-cell" onclick="showToast('Stage 1: 14 Active Mandates under exclusive representation')">
+              <div class="funnel-stage-top">
+                <span class="funnel-stage-num">Stage 01</span>
+                <span class="funnel-stage-rate">100% Inflow</span>
+              </div>
+              <span class="funnel-stage-val">14</span>
+              <span class="funnel-stage-label">Exclusive Mandates</span>
+              <span class="funnel-stage-volume">384.2M EGP Pool</span>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="funnel-stage-cell" onclick="showToast('Stage 2: 342 Pre-qualified inquiries logged')">
+              <div class="funnel-stage-top">
+                <span class="funnel-stage-num">Stage 02</span>
+                <span class="funnel-stage-rate">24.4 avg/mandate</span>
+              </div>
+              <span class="funnel-stage-val">342</span>
+              <span class="funnel-stage-label">Qualified Leads</span>
+              <span class="funnel-stage-volume">Tier 1 Liquidity</span>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="funnel-stage-cell" onclick="showToast('Stage 3: 48 Escorted VIP physical tours executed')">
+              <div class="funnel-stage-top">
+                <span class="funnel-stage-num">Stage 03</span>
+                <span class="funnel-stage-rate">14.0% Tour Pace</span>
+              </div>
+              <span class="funnel-stage-val">48</span>
+              <span class="funnel-stage-label">Escorted VIP Viewings</span>
+              <span class="funnel-stage-volume">Security Cleared</span>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="funnel-stage-cell" onclick="showToast('Stage 4: 12 Formal written purchase offers received')">
+              <div class="funnel-stage-top">
+                <span class="funnel-stage-num">Stage 04</span>
+                <span class="funnel-stage-rate">25.0% Offer Rate</span>
+              </div>
+              <span class="funnel-stage-val">12</span>
+              <span class="funnel-stage-label">Formal Offers</span>
+              <span class="funnel-stage-volume">Under Negotiation</span>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="funnel-stage-cell" onclick="showToast('Stage 5: 8 Luxury contracts settled and concluded')">
+              <div class="funnel-stage-top">
+                <span class="funnel-stage-num">Stage 05</span>
+                <span class="funnel-stage-rate">66.7% Close Rate</span>
+              </div>
+              <span class="funnel-stage-val">8</span>
+              <span class="funnel-stage-label">Concluded Deals</span>
+              <span class="funnel-stage-volume">Settled &amp; Transferred</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 14-Mandate Exposure & Conversion Matrix (Table) -->
+        <div class="matrix-card">
+          <div class="matrix-header-bar">
+            <div class="matrix-title-wrap">
+              <h2 class="matrix-title">14-Mandate Exposure &amp; Conversion Matrix</h2>
+              <p class="matrix-sub">Full portfolio breakdown ranking listings by verified engagement, physical tours, and deal conversion</p>
+            </div>
+            <div class="matrix-search-box">
+              <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="mandateSearchInput" class="matrix-search" placeholder="Search mandates, corridors, or ref IDs..." oninput="filterMandates()">
+            </div>
+          </div>
+
+          <div class="matrix-table-wrap">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Mandate Asset</th>
+                  <th>Corridor Location</th>
+                  <th>Asking Price</th>
+                  <th>Views</th>
+                  <th>Inquiries</th>
+                  <th>VIP Tours</th>
+                  <th>DOM</th>
+                  <th>Conversion</th>
+                  <th>Mandate Status</th>
+                </tr>
+              </thead>
+              <tbody id="matrixTableBody">
+                <!-- Dynamically filled via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Dynamic Toast Container -->
+  <div class="toast-shelf" id="toastContainer"></div>
+
+  <script>
+    const MANDATES = [
+  {
+    "id": "SET-KD-4029",
+    "title": "The Grand Residence, Katameya Dunes",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "priceEgp": 44500000,
+    "views": 4820,
+    "inquiries": 18,
+    "tours": 4,
+    "daysOnMarket": 22,
+    "conversion": "50%",
+    "status": "Under Contract",
+    "statusClass": "badge-warning"
+  },
+  {
+    "id": "SET-MR-5102",
+    "title": "Waterfront Penthouse, Marassi Marina",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "priceEgp": 47500000,
+    "views": 6140,
+    "inquiries": 24,
+    "tours": 6,
+    "daysOnMarket": 14,
+    "conversion": "67%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-PH-8819",
+    "title": "Signature Villa V12, Palm Hills October",
+    "corridor": "6th of October \u00b7 West Cairo",
+    "priceEgp": 38200000,
+    "views": 3940,
+    "inquiries": 14,
+    "tours": 3,
+    "daysOnMarket": 31,
+    "conversion": "67%",
+    "status": "Under Contract",
+    "statusClass": "badge-warning"
+  },
+  {
+    "id": "SET-VL-3012",
+    "title": "Sky Villa Duplex, SODIC Villette",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "priceEgp": 26800000,
+    "views": 5210,
+    "inquiries": 31,
+    "tours": 8,
+    "daysOnMarket": 19,
+    "conversion": "75%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-MV-9014",
+    "title": "Lakefront Palace, Mivida Crescent",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "priceEgp": 52000000,
+    "views": 4120,
+    "inquiries": 16,
+    "tours": 5,
+    "daysOnMarket": 28,
+    "conversion": "60%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-HB-7721",
+    "title": "Beachfront Chalet, Hacienda Bay",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "priceEgp": 58000000,
+    "views": 5980,
+    "inquiries": 22,
+    "tours": 4,
+    "daysOnMarket": 35,
+    "conversion": "50%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-AL-6401",
+    "title": "Golf Course Villa, Allegria SODIC",
+    "corridor": "6th of October \u00b7 West Cairo",
+    "priceEgp": 34500000,
+    "views": 3810,
+    "inquiries": 15,
+    "tours": 3,
+    "daysOnMarket": 42,
+    "conversion": "67%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-SW-1109",
+    "title": "Lagoon Haven Mansion, SwanLake Residences",
+    "corridor": "New Cairo \u00b7 First Settlement",
+    "priceEgp": 62000000,
+    "views": 7430,
+    "inquiries": 38,
+    "tours": 9,
+    "daysOnMarket": 9,
+    "conversion": "78%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-UP-2305",
+    "title": "Panoramic Sky Penthouse, Uptown Cairo",
+    "corridor": "Mokattam / Central Cairo",
+    "priceEgp": 29800000,
+    "views": 4650,
+    "inquiries": 20,
+    "tours": 5,
+    "daysOnMarket": 24,
+    "conversion": "60%",
+    "status": "Offer Pending",
+    "statusClass": "badge-warning"
+  },
+  {
+    "id": "SET-SS-8410",
+    "title": "Mediterranean Villa, Seashell Sahel",
+    "corridor": "North Coast \u00b7 Ghazala Bay",
+    "priceEgp": 68000000,
+    "views": 8100,
+    "inquiries": 42,
+    "tours": 8,
+    "daysOnMarket": 11,
+    "conversion": "88%",
+    "status": "Sold / Settled",
+    "statusClass": "badge-ink"
+  },
+  {
+    "id": "SET-BD-4190",
+    "title": "Garden Townhouse, Badya Palm Hills",
+    "corridor": "6th of October \u00b7 West Cairo",
+    "priceEgp": 15900000,
+    "views": 2980,
+    "inquiries": 12,
+    "tours": 2,
+    "daysOnMarket": 45,
+    "conversion": "50%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-CH-6512",
+    "title": "The Palm Residence, Casa Heights",
+    "corridor": "Sheikh Zayed \u00b7 West Cairo",
+    "priceEgp": 22400000,
+    "views": 3200,
+    "inquiries": 11,
+    "tours": 2,
+    "daysOnMarket": 38,
+    "conversion": "50%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  },
+  {
+    "id": "SET-MR-9041",
+    "title": "Marina Views Corner Suite, Marassi",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "priceEgp": 31500000,
+    "views": 4400,
+    "inquiries": 19,
+    "tours": 4,
+    "daysOnMarket": 16,
+    "conversion": "75%",
+    "status": "Sold / Settled",
+    "statusClass": "badge-ink"
+  },
+  {
+    "id": "SET-KD-8832",
+    "title": "Fairway Horizon Villa, Katameya Dunes",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "priceEgp": 49000000,
+    "views": 4720,
+    "inquiries": 21,
+    "tours": 5,
+    "daysOnMarket": 18,
+    "conversion": "80%",
+    "status": "Active Exclusive",
+    "statusClass": "badge-sage"
+  }
+];
+
+    let currentCurrency = 'EGP';
+    const fxRate = 48.85;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTable(MANDATES);
+    });
+
+    // Render Matrix Table
+    function renderTable(data) {
+      const tbody = document.getElementById('matrixTableBody');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 32px; color: var(--ink-3);">No matching mandates found.</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <strong style="color: var(--navy-900); font-weight:700;">${item.title}</strong>
+              <span style="font-family: var(--font-mono); font-size:0.6875rem; color: var(--ink-3);">${item.id}</span>
+            </div>
+          </td>
+          <td style="color: var(--ink-2);">${item.corridor}</td>
+          <td style="font-family: var(--font-mono); font-weight:700; color: var(--navy-900);">${(item.priceEgp / 1000000).toFixed(1)}M EGP</td>
+          <td style="font-family: var(--font-mono); color: var(--ink);">${item.views.toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: var(--ink);">${item.inquiries}</td>
+          <td style="font-family: var(--font-mono); font-weight:600; color: var(--brass-600);">${item.tours}</td>
+          <td style="font-family: var(--font-mono); color: var(--ink-2);">${item.daysOnMarket}d</td>
+          <td style="font-family: var(--font-mono); font-weight:700; color: var(--sage);">${item.conversion}</td>
+          <td>
+            <span class="badge-status ${item.statusClass}">${item.status}</span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Filter Table
+    function filterMandates() {
+      const q = document.getElementById('mandateSearchInput').value.toLowerCase();
+      const filtered = MANDATES.filter(m => 
+        m.title.toLowerCase().includes(q) ||
+        m.corridor.toLowerCase().includes(q) ||
+        m.id.toLowerCase().includes(q) ||
+        m.status.toLowerCase().includes(q)
+      );
+      renderTable(filtered);
+    }
+
+    // Donut Interactivity
+    function highlightDonut(corridorName, valueStr, pctStr, notes) {
+      document.getElementById('centerMetricVal').textContent = valueStr;
+      document.getElementById('centerMetricPct').textContent = pctStr;
+      document.getElementById('centerMetricSub').textContent = corridorName;
+
+      // Highlight corresponding legend
+      document.querySelectorAll('.legend-item').forEach(el => el.classList.remove('active'));
+      if (corridorName.includes('New Cairo')) document.getElementById('legNewCairo')?.classList.add('active');
+      if (corridorName.includes('North Coast')) document.getElementById('legNorthCoast')?.classList.add('active');
+      if (corridorName.includes('West Cairo')) document.getElementById('legWestCairo')?.classList.add('active');
+    }
+
+    function resetDonut() {
+      document.getElementById('centerMetricVal').textContent = '384.2M';
+      document.getElementById('centerMetricPct').textContent = 'Total GTV';
+      document.getElementById('centerMetricSub').textContent = '14 Mandates';
+      document.querySelectorAll('.legend-item').forEach(el => el.classList.remove('active'));
+    }
+
+    // Bar Chart Tooltips
+    const barTooltip = document.getElementById('barTooltip');
+    function showBarTooltip(e, col) {
+      const month = col.getAttribute('data-month');
+      const vol = col.getAttribute('data-vol');
+      const comm = col.getAttribute('data-comm');
+      const deals = col.getAttribute('data-deals');
+
+      document.getElementById('tipMonth').textContent = month;
+      document.getElementById('tipVol').textContent = `${vol} EGP`;
+      document.getElementById('tipComm').textContent = `${comm} EGP`;
+      document.getElementById('tipDeals').textContent = deals;
+
+      moveBarTooltip(e);
+      barTooltip.classList.add('visible');
+    }
+
+    function moveBarTooltip(e) {
+      const containerRect = document.getElementById('barContainer').getBoundingClientRect();
+      const leftPos = e.clientX - containerRect.left - 70;
+      const topPos = e.clientY - containerRect.top - 85;
+      barTooltip.style.left = `${Math.max(10, Math.min(containerRect.width - 150, leftPos))}px`;
+      barTooltip.style.top = `${Math.max(5, topPos)}px`;
+    }
+
+    function hideBarTooltip() {
+      barTooltip.classList.remove('visible');
+    }
+
+    // Bar Mode Toggle (Volume vs Commission)
+    function setBarMode(mode, btn) {
+      document.querySelectorAll('.chart-pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cols = document.querySelectorAll('.bar-col');
+      cols.forEach(col => {
+        const valLabel = col.querySelector('.bar-val-label');
+        const pill = col.querySelector('.bar-pill');
+        if (mode === 'volume') {
+          valLabel.textContent = col.getAttribute('data-vol').replace('.0M', 'M').replace('.2M', 'M');
+        } else {
+          valLabel.textContent = col.getAttribute('data-comm');
+        }
+      });
+      showToast(`Showing ${mode === 'volume' ? 'closed transaction volume' : 'advisory commission earned'}`);
+    }
+
+    // Period Cycle
+    const periods = ['Q3 2026 (Active)', 'Trailing 12M', 'YTD 2026', 'All-Time'];
+    let periodIdx = 0;
+    function cyclePeriod() {
+      periodIdx = (periodIdx + 1) % periods.length;
+      document.getElementById('activePeriodLabel').textContent = `Period: ${periods[periodIdx]}`;
+      showToast(`Data refreshed for ${periods[periodIdx]}`);
+    }
+
+    // Export Dossier
+    function exportDossier() {
+      showToast('Generating executive performance dossier PDF...');
+      setTimeout(() => {
+        showToast('Performance Dossier (Q3-2026-Settly.pdf) ready for download');
+      }, 1200);
+    }
+
+    // Dynamic Toast
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brass);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>${msg}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3200);
+    }
+
+    // Live Clock
+    function updateClock() {
+      const el = document.getElementById('cairoClock');
+      if (!el) return;
+      const now = new Date();
+      const options = { timeZone: 'Africa/Cairo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      el.textContent = `${now.toLocaleTimeString('en-GB', options)} CLT`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Mobile Sidebar Drawer
+    const mobileTrigger = document.getElementById('mobileMenuTrigger');
+    const sidebar = document.getElementById('portalSidebar');
+    if (mobileTrigger && sidebar) {
+      mobileTrigger.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+    }
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

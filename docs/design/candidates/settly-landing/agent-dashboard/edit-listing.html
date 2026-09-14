@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Exclusive Mandate · Settly Agent Portal</title>
+  <meta name="description" content="Manage and update verified exclusive property representation mandates on Settly. Adjust asking price, spatial specs, media assets, and legal documentation.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.15);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background-color: var(--brass);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Advisor Profile Card in Sidebar */
+    .sidebar-advisor {
+      margin: 0 16px 16px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .advisor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brass);
+    }
+
+    .advisor-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .advisor-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .advisor-role {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .advisor-license {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-regulatory-box {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--navy-900);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .mobile-brand-mark img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .mobile-brand-text {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .header-breadcrumb .sep {
+      color: var(--line-2);
+    }
+
+    .header-breadcrumb .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+      letter-spacing: 0.03em;
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sovereign-fx-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .fx-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--brass);
+    }
+
+    .cairo-clock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .topbar-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .topbar-icon-btn:hover {
+      background-color: var(--canvas);
+      border-color: var(--line-2);
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--brass);
+      border: 1.5px solid var(--white);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      text-decoration: none;
+    }
+
+    .user-avatar-initials {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .user-tier {
+      font-size: 0.6875rem;
+      color: var(--brass-600);
+      font-weight: 600;
+    }
+
+    /* Portal Content Area */
+    .portal-content {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Command Bar */
+    .command-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .command-title-wrap {
+      max-width: 780px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass);
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      border-color: var(--brass-600);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--navy-700);
+    }
+
+    .btn-danger {
+      background-color: var(--white);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.2);
+    }
+
+    .btn-danger:hover {
+      background-color: rgba(153, 27, 27, 0.06);
+      border-color: var(--error);
+    }
+
+    /* Hero Mandate Status Banner */
+    .hero-status-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .status-card-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .status-property-thumb {
+      width: 88px;
+      height: 70px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      border: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+
+    .status-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .status-pill-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-reserved {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    .badge-active {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    .ref-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      background-color: var(--canvas-2);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .status-card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.2;
+    }
+
+    .status-card-meta {
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+    }
+
+    .status-telemetry-cluster {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-left: 1px solid var(--line);
+      padding-left: 24px;
+    }
+
+    .telemetry-item {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .telemetry-item-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .telemetry-item-val {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .switcher-dropdown-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 240px;
+    }
+
+    /* Tabbed Workbench Container */
+    .workbench-tabs-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .workbench-tab-nav {
+      display: flex;
+      align-items: center;
+      background-color: var(--canvas-2);
+      border-bottom: 1px solid var(--line-2);
+      padding: 0 24px;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .workbench-tab-btn {
+      padding: 16px 18px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      border-bottom: 3px solid transparent;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .workbench-tab-btn:hover {
+      color: var(--navy-900);
+    }
+
+    .workbench-tab-btn.active {
+      color: var(--navy-900);
+      font-weight: 700;
+      border-bottom-color: var(--brass);
+      background-color: var(--white);
+    }
+
+    .workbench-tab-pane {
+      display: none;
+      padding: 32px;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .workbench-tab-pane.active {
+      display: flex;
+    }
+
+    /* Form Layouts */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-input {
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      background-color: var(--white);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--navy-800);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    .form-input-mono {
+      font-family: var(--font-mono);
+    }
+
+    .select-dropdown {
+      height: 44px;
+      padding: 0 32px 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      background-color: var(--white);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: all 0.15s ease;
+    }
+
+    .select-dropdown:focus {
+      border-color: var(--navy-800);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    /* Price Revision Table Log */
+    .revision-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .revision-table th {
+      background-color: var(--canvas-2);
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .revision-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+    }
+
+    /* Gallery Grid in Tab 4 */
+    .gallery-editor-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .gallery-editor-item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background-color: var(--navy-900);
+      transition: all 0.15s ease;
+    }
+
+    .gallery-editor-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-editor-item.active {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(198, 151, 73, 0.3);
+    }
+
+    .cover-tag {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Danger Zone Card */
+    .danger-zone-card {
+      background-color: var(--white);
+      border: 1px solid rgba(153, 27, 27, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .danger-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--error);
+      font-weight: 700;
+      font-size: 0.9375rem;
+    }
+
+    .danger-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 8px;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background-color: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(12px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background-color: var(--canvas);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Toast notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      animation: toastIn 0.25s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Backdrop for Mobile Sidebar */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 45;
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 992px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-backdrop.active {
+        display: block;
+      }
+      .sidebar-close-btn {
+        display: flex;
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .mobile-brand-mark {
+        display: flex;
+      }
+      .header-breadcrumb,
+      .portal-trust-chip,
+      .sovereign-fx-pill,
+      .cairo-clock-pill,
+      .user-tier {
+        display: none;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+        height: 64px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+        gap: 20px;
+      }
+      .command-title {
+        font-size: 1.625rem;
+      }
+      .status-telemetry-cluster {
+        border-left: none;
+        padding-left: 0;
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .command-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .command-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .command-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .gallery-editor-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .workbench-tab-pane {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Backdrop for Mobile Drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Canonical 288px Fixed Sidebar -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Agent Emblem Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads & Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics & Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Inventory & Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged-in Agent Profile Card -->
+      <div class="sidebar-advisor">
+        <div class="advisor-header">
+          <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+          <div class="advisor-meta">
+            <span class="advisor-name">Karim El-Sayed</span>
+            <span class="advisor-role">Senior Private Advisor</span>
+            <span class="advisor-license">License #EG-8841-B</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width: 100%; padding: 6px 12px; font-size: 0.75rem; justify-content: center; background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.15);" onclick="showToast('Agent desk status: Active & Verified')">
+          <span>Broker Desk Verified</span>
+        </button>
+      </div>
+
+      <!-- Legal & Trust Footer -->
+      <div class="sidebar-regulatory-box">
+        Verified Listings & Exclusive Mandates<br>
+        Licensed Independent Broker
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="portal-main">
+      <!-- Top Sticky Navigation Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">EDIT MANDATE</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>MANDATE REVISION DESK</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Active Leads &amp; Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Portal Content Body -->
+      <div class="portal-content">
+        <!-- Command Bar -->
+        <div class="command-bar">
+          <div class="command-title-wrap">
+            <h1 class="command-title" id="pageMainHeading">Edit Mandate: The Grand Residence</h1>
+            <p class="command-subtitle">Modify verified listing specifications, asking price, active media assets, and legal representation notes.</p>
+          </div>
+          <div class="command-actions">
+            <a href="../public/property-detail.html" class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>View Public Page</span>
+            </a>
+            <button class="btn btn-brass" onclick="saveAllChanges()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero Mandate Status Banner -->
+        <div class="hero-status-card">
+          <div class="status-card-left">
+            <img id="statusHeroImg" src="../../../../../Images/web/1.jpg" alt="Property Cover" class="status-property-thumb">
+            <div class="status-details">
+              <div class="status-pill-row">
+                <span class="status-badge badge-reserved" id="statusBadgeDisplay">Under Contract</span>
+                <span class="ref-pill" id="refCodeDisplay">SET-KD-4029</span>
+              </div>
+              <div class="status-card-title" id="statusTitleDisplay">The Grand Residence, Katameya Dunes</div>
+              <div class="status-card-meta" id="statusLocationDisplay">Katameya Dunes Golf & Rock · New Cairo</div>
+            </div>
+          </div>
+
+          <div class="status-telemetry-cluster">
+            <div class="telemetry-item">
+              <span class="telemetry-item-label">Current Offer</span>
+              <span class="telemetry-item-val" style="color: var(--brass-600);" id="telemetryOfferVal">44.5M EGP</span>
+            </div>
+            <div class="telemetry-item">
+              <span class="telemetry-item-label">Market Time</span>
+              <span class="telemetry-item-val" id="telemetryDaysVal">22 Days</span>
+            </div>
+            <div class="telemetry-item">
+              <span class="telemetry-item-label">Inquiries</span>
+              <span class="telemetry-item-val" id="telemetryLeadsVal">18 Leads</span>
+            </div>
+          </div>
+
+          <!-- Unit Switcher -->
+          <div class="switcher-dropdown-wrap">
+            <span style="font-family: var(--font-mono); font-size: 0.625rem; font-weight: 700; color: var(--ink-3); text-transform: uppercase;">Switch Property to Edit:</span>
+            <select id="propertySwitcherSelect" class="select-dropdown" onchange="switchProperty(this.value)">
+              <option value="SET-KD-4029" selected>The Grand Residence (SET-KD-4029)</option>
+              <option value="SET-MR-5102">Waterfront Penthouse (SET-MR-5102)</option>
+              <option value="SET-PH-8819">Signature Villa V12 (SET-PH-8819)</option>
+              <option value="SET-VL-3012">Sky Villa Duplex (SET-VL-3012)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabbed Workbench -->
+        <div class="workbench-tabs-card">
+          <nav class="workbench-tab-nav">
+            <button class="workbench-tab-btn active" onclick="switchTab('tabGeneral', this)">01 General & Location</button>
+            <button class="workbench-tab-btn" onclick="switchTab('tabSpecs', this)">02 Spatial Specs</button>
+            <button class="workbench-tab-btn" onclick="switchTab('tabValuation', this)">03 Valuation & Terms</button>
+            <button class="workbench-tab-btn" onclick="switchTab('tabMedia', this)">04 Media & Floorplans</button>
+          </nav>
+
+          <!-- Tab 1: General & Location -->
+          <div class="workbench-tab-pane active" id="tabGeneral">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Property Title</label>
+                <input type="text" id="editPropTitle" class="form-input" value="The Grand Residence, Katameya Dunes">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Reference ID (Immutable)</label>
+                <input type="text" id="editPropRef" class="form-input form-input-mono" value="SET-KD-4029" readonly style="background-color: var(--canvas-2);">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Master Compound</label>
+                <input type="text" id="editPropCompound" class="form-input" value="Katameya Dunes Golf & Rock">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Corridor District</label>
+                <input type="text" id="editPropDistrict" class="form-input" value="New Cairo · Golden Square">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Mandate Representation Type</label>
+                <select id="editPropMandate" class="select-dropdown">
+                  <option selected>Exclusive Seller Mandate</option>
+                  <option>Direct Developer Exclusive</option>
+                  <option>Co-Brokerage Mandate</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Handover Timeline</label>
+                <select id="editPropHandover" class="select-dropdown">
+                  <option selected>Immediate Handover</option>
+                  <option>Q4 2026 Delivery</option>
+                  <option>2027 Construction Milestone</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Spatial Specs -->
+          <div class="workbench-tab-pane" id="tabSpecs">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Built-Up Area (BUA m²)</label>
+                <input type="number" id="editPropBua" class="form-input form-input-mono" value="680" oninput="recalcRateM2()">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Plot / Land Area (m²)</label>
+                <input type="number" id="editPropLand" class="form-input form-input-mono" value="1120">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Bedrooms</label>
+                <select id="editPropBeds" class="select-dropdown">
+                  <option>3 Master Suites</option>
+                  <option>4 Master Suites</option>
+                  <option selected>5 Master Suites</option>
+                  <option>6 Master Suites</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Bathrooms</label>
+                <select id="editPropBaths" class="select-dropdown">
+                  <option>4 Bathrooms</option>
+                  <option>5 Bathrooms</option>
+                  <option>6 Bathrooms</option>
+                  <option selected>7 Bathrooms</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Finishing Specification</label>
+                <select id="editPropFinish" class="select-dropdown">
+                  <option selected>Ultra Super Lux (Furnished)</option>
+                  <option>Fully Finished</option>
+                  <option>Core & Shell</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Primary View</label>
+                <input type="text" id="editPropView" class="form-input" value="Golf Fairway Panorama">
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Valuation & Commercials -->
+          <div class="workbench-tab-pane" id="tabValuation">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Asking Price (EGP)</label>
+                <input type="number" id="editPropPrice" class="form-input form-input-mono" value="44500000" oninput="recalcRateM2()">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Calculated Rate per m²</label>
+                <input type="text" id="editPropRateM2" class="form-input form-input-mono" value="65,441 EGP/m²" readonly style="background-color: var(--canvas-2);">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span>Price Revision Audit Trail</span>
+                <button type="button" class="btn btn-outline btn-sm" onclick="openPriceModal()">+ Log Revision</button>
+              </label>
+              <table class="revision-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Prior Value</th>
+                    <th>Revised Value</th>
+                    <th>Revision Rationale</th>
+                    <th>Authorized By</th>
+                  </tr>
+                </thead>
+                <tbody id="revisionTableBody">
+                  <tr>
+                    <td>2026-09-12</td>
+                    <td>45,000,000 EGP</td>
+                    <td style="font-weight: 700; color: var(--navy-900);">44,500,000 EGP</td>
+                    <td>Counter-offer concession with Tier-1 verified buyer</td>
+                    <td>Karim El-Sayed</td>
+                  </tr>
+                  <tr>
+                    <td>2026-08-20</td>
+                    <td>—</td>
+                    <td>45,000,000 EGP</td>
+                    <td>Initial verified exclusive exchange listing</td>
+                    <td>Karim El-Sayed</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 4: Media & Floorplans -->
+          <div class="workbench-tab-pane" id="tabMedia">
+            <div>
+              <span style="font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--ink-2); text-transform: uppercase; margin-bottom: 12px; display: block;">Select Primary Cover Image</span>
+              <div class="gallery-editor-grid">
+                <div class="gallery-editor-item active" onclick="selectEditImage('1.jpg', this)">
+                  <img src="../../../../../Images/web/1.jpg" alt="Katameya Dunes">
+                  <span class="cover-tag">Current Cover</span>
+                </div>
+                <div class="gallery-editor-item" onclick="selectEditImage('2.jpg', this)">
+                  <img src="../../../../../Images/web/2.jpg" alt="Marassi Penthouse">
+                </div>
+                <div class="gallery-editor-item" onclick="selectEditImage('3.jpg', this)">
+                  <img src="../../../../../Images/web/3.jpg" alt="Palm Hills October">
+                </div>
+                <div class="gallery-editor-item" onclick="selectEditImage('4.jpg', this)">
+                  <img src="../../../../../Images/web/4.jpg" alt="Villette Duplex">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Virtual Video Tour or Drone Walkthrough URL</label>
+              <input type="url" class="form-input" value="https://settly.com/tours/katameya-dunes-lake-villa-360">
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone-card">
+          <div class="danger-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Mandate Lifecycle & Delisting Controls</span>
+          </div>
+          <p style="font-size: 0.8125rem; color: var(--ink-2);">Archiving or marking a property as sold will withdraw it from the public search index and preserve all historical diligence for legal audit.</p>
+          <div class="danger-actions-row">
+            <button class="btn btn-outline" onclick="openStatusModal('reserved')">Mark as Reserved / Under Contract</button>
+            <button class="btn btn-outline" onclick="openStatusModal('sold')">Mark Concluded & Sold</button>
+            <button class="btn btn-danger" onclick="openDelistModal()">Archive Mandate</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Price Revision Modal -->
+  <div class="modal-backdrop" id="modalPriceRevision">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Log Price Revision</h3>
+        <button class="modal-close" onclick="closeModal('modalPriceRevision')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">New Asking Price (EGP)</label>
+          <input type="number" id="inputNewRevPrice" class="form-input form-input-mono" value="44000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Revision Rationale</label>
+          <select id="selectRevReason" class="select-dropdown">
+            <option>Seller Approved Price Optimization</option>
+            <option>Bilateral Purchase Contract Negotiation</option>
+            <option>Seasonal Corridor Adjustment</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalPriceRevision')">Cancel</button>
+        <button class="btn btn-brass" onclick="applyPriceRevision()">Apply Revision</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delist Modal -->
+  <div class="modal-backdrop" id="modalDelistConfirm">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Archive Exclusive Mandate</h3>
+        <button class="modal-close" onclick="closeModal('modalDelistConfirm')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink-2);">Are you sure you want to withdraw this mandate from the active exchange? This will close all active viewing bookings.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalDelistConfirm')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmDelist()">Confirm Archive</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    const listings = [
+  {
+    "id": "SET-KD-4029",
+    "title": "The Grand Residence, Katameya Dunes",
+    "district": "New Cairo \u00b7 Golden Square",
+    "compound": "Katameya Dunes Golf & Rock",
+    "typology": "Standalone Villa",
+    "bua": 680,
+    "land": 1120,
+    "beds": 5,
+    "baths": 7,
+    "finish": "Ultra Super Lux (Furnished)",
+    "view": "Golf Fairway Panorama",
+    "priceEgp": 44500000,
+    "askingPriceEgp": 45000000,
+    "pricePerM2": 65441,
+    "status": "reserved",
+    "statusLabel": "Under Contract",
+    "mandate": "Exclusive Seller Mandate",
+    "handover": "Immediate Handover",
+    "image": "1.jpg",
+    "views": 84,
+    "inquiries": 18,
+    "tours": 4,
+    "daysOnMarket": 22,
+    "hasActiveOffer": true,
+    "buyerOffer": "44,500,000 EGP (Tarek Mansour)",
+    "deedNo": "DEED-EG-2024-4029-KD",
+    "amenities": [
+      "Private Infinity Pool",
+      "Smart Home Automation",
+      "Private Elevator",
+      "Chauffeur Quarters",
+      "Landscaped Perimeter"
+    ]
+  },
+  {
+    "id": "SET-MR-5102",
+    "title": "Waterfront Penthouse, Marassi Marina",
+    "district": "North Coast \u00b7 Sidi Abd El Rahman",
+    "compound": "Marassi Marina",
+    "typology": "Penthouse",
+    "bua": 420,
+    "land": 0,
+    "beds": 4,
+    "baths": 5,
+    "finish": "Designer Furnished + Yacht Berth",
+    "view": "Direct Marina & Sea Panorama",
+    "priceEgp": 47500000,
+    "askingPriceEgp": 50000000,
+    "pricePerM2": 113095,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "mandate": "Exclusive Mandate",
+    "handover": "Immediate Handover",
+    "image": "2.jpg",
+    "views": 142,
+    "inquiries": 24,
+    "tours": 6,
+    "daysOnMarket": 14,
+    "hasActiveOffer": true,
+    "buyerOffer": "47,500,000 EGP (Youssef Hafez)",
+    "deedNo": "DEED-EG-2023-5102-MR",
+    "amenities": [
+      "Private Yacht Berth",
+      "Panoramic Sea Terrace",
+      "Jacuzzi Deck",
+      "Concierge Reception"
+    ]
+  },
+  {
+    "id": "SET-PH-8819",
+    "title": "Signature Villa V12, Palm Hills October",
+    "district": "6th of October \u00b7 West Cairo",
+    "compound": "Palm Hills Golf Views",
+    "typology": "Standalone Villa",
+    "bua": 520,
+    "land": 850,
+    "beds": 5,
+    "baths": 6,
+    "finish": "Core & Shell (Custom Plan)",
+    "view": "Fairway & Water Feature",
+    "priceEgp": 38200000,
+    "askingPriceEgp": 38200000,
+    "pricePerM2": 73461,
+    "status": "reserved",
+    "statusLabel": "Under Contract",
+    "mandate": "Exclusive Mandate",
+    "handover": "Immediate Handover",
+    "image": "3.jpg",
+    "views": 96,
+    "inquiries": 14,
+    "tours": 3,
+    "daysOnMarket": 31,
+    "hasActiveOffer": true,
+    "buyerOffer": "38,200,000 EGP (Dr. Amr Fahmy)",
+    "deedNo": "DEED-EG-2024-8819-PH",
+    "amenities": [
+      "Fairway Frontage",
+      "Basement Spa Shell",
+      "4-Car Garage",
+      "Double Height Salon"
+    ]
+  },
+  {
+    "id": "SET-VL-3012",
+    "title": "Sky Villa Duplex, SODIC Villette",
+    "district": "New Cairo \u00b7 Golden Square",
+    "compound": "Villette by SODIC",
+    "typology": "Townhouse",
+    "bua": 310,
+    "land": 0,
+    "beds": 4,
+    "baths": 4,
+    "finish": "Ultra Lux + Private Roof",
+    "view": "Central Park & Waterway",
+    "priceEgp": 26800000,
+    "askingPriceEgp": 26800000,
+    "pricePerM2": 86451,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "mandate": "Direct Developer Exclusive",
+    "handover": "Immediate Handover",
+    "image": "4.jpg",
+    "views": 110,
+    "inquiries": 19,
+    "tours": 5,
+    "daysOnMarket": 9,
+    "hasActiveOffer": false,
+    "buyerOffer": "None (Inquiry Phase)",
+    "deedNo": "DEED-EG-2025-3012-VL",
+    "amenities": [
+      "Private Sky Roof",
+      "Park View",
+      "Smart AC Systems",
+      "Underground Storage"
+    ]
+  }
+];
+
+    let currentProp = listings[0];
+
+    function switchTab(tabId, btnElement) {
+      document.querySelectorAll('.workbench-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.workbench-tab-pane').forEach(p => p.classList.remove('active'));
+      btnElement.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function switchProperty(propId) {
+      const found = listings.find(l => l.id === propId);
+      if (!found) return;
+      currentProp = found;
+
+      // Update Header & Hero
+      document.getElementById('breadcrumbPropId').textContent = found.id;
+      document.getElementById('pageMainHeading').textContent = 'Edit Mandate: ' + found.title.split(',')[0];
+      document.getElementById('statusHeroImg').src = '../../../../../Images/web/' + found.image;
+      document.getElementById('refCodeDisplay').textContent = found.id;
+      document.getElementById('statusTitleDisplay').textContent = found.title;
+      document.getElementById('statusLocationDisplay').textContent = found.compound + ' · ' + found.district;
+      document.getElementById('telemetryOfferVal').textContent = found.priceEgp >= 1000000 ? (found.priceEgp / 1000000).toFixed(1) + 'M EGP' : found.priceEgp.toLocaleString() + ' EGP';
+      document.getElementById('telemetryDaysVal').textContent = found.daysOnMarket + ' Days';
+      document.getElementById('telemetryLeadsVal').textContent = found.inquiries + ' Leads';
+
+      // Update Form Fields
+      document.getElementById('editPropTitle').value = found.title;
+      document.getElementById('editPropRef').value = found.id;
+      document.getElementById('editPropCompound').value = found.compound;
+      document.getElementById('editPropDistrict').value = found.district;
+      document.getElementById('editPropBua').value = found.bua;
+      document.getElementById('editPropLand').value = found.land;
+      document.getElementById('editPropView').value = found.view;
+      document.getElementById('editPropPrice').value = found.priceEgp;
+      document.getElementById('editPropRateM2').value = found.pricePerM2.toLocaleString('en-US') + ' EGP/m²';
+
+      showToast('Loaded ' + found.id + ' into workbench');
+    }
+
+    function recalcRateM2() {
+      const bua = parseInt(document.getElementById('editPropBua').value, 10) || 1;
+      const price = parseInt(document.getElementById('editPropPrice').value, 10) || 0;
+      const rate = Math.round(price / bua);
+      document.getElementById('editPropRateM2').value = rate.toLocaleString('en-US') + ' EGP/m²';
+    }
+
+    function selectEditImage(imgName, element) {
+      document.querySelectorAll('.gallery-editor-item').forEach(el => {
+        el.classList.remove('active');
+        const tag = el.querySelector('.cover-tag');
+        if (tag) tag.remove();
+      });
+      element.classList.add('active');
+      const tag = document.createElement('span');
+      tag.className = 'cover-tag';
+      tag.textContent = 'Current Cover';
+      element.appendChild(tag);
+      document.getElementById('statusHeroImg').src = '../../../../../Images/web/' + imgName;
+      showToast('Set primary cover to ' + imgName);
+    }
+
+    function openPriceModal() {
+      document.getElementById('modalPriceRevision').classList.add('active');
+    }
+
+    function applyPriceRevision() {
+      const newPrice = parseInt(document.getElementById('inputNewRevPrice').value, 10);
+      const reason = document.getElementById('selectRevReason').value;
+      if (!newPrice) return;
+
+      document.getElementById('editPropPrice').value = newPrice;
+      recalcRateM2();
+
+      // Append row to table
+      const tbody = document.getElementById('revisionTableBody');
+      const tr = document.createElement('tr');
+      const today = new Date().toISOString().split('T')[0];
+      tr.innerHTML = '<td>' + today + '</td><td>' + currentProp.priceEgp.toLocaleString() + ' EGP</td><td style="font-weight: 700; color: var(--navy-900);">' + newPrice.toLocaleString() + ' EGP</td><td>' + reason + '</td><td>Karim El-Sayed</td>';
+      tbody.prepend(tr);
+
+      closeModal('modalPriceRevision');
+      showToast('Price revision logged successfully');
+    }
+
+    function openDelistModal() {
+      document.getElementById('modalDelistConfirm').classList.add('active');
+    }
+
+    function confirmDelist() {
+      closeModal('modalDelistConfirm');
+      showToast('Mandate archived from active exchange');
+    }
+
+    function openStatusModal(status) {
+      showToast('Mandate status updated to ' + status.toUpperCase());
+    }
+
+    function saveAllChanges() {
+      showToast('All changes saved to exclusive mandate record');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // Toast Notification System
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    // Mobile Sidebar Drawer Navigation
+    const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
+    const portalSidebar = document.getElementById('portalSidebar');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openSidebar() {
+      portalSidebar.classList.add('open');
+      sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      portalSidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuTrigger) mobileMenuTrigger.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeSidebar();
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    });
+
+    // Live Cairo Clock
+    function updateCairoClock() {
+      try {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const clockEl = document.getElementById('cairoTimeDisplay');
+        if (clockEl) clockEl.textContent = formatter.format(now) + ' CLT';
+      } catch (err) {}
+    }
+    setInterval(updateCairoClock, 1000);
+    updateCairoClock();
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

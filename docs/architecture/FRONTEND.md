@@ -1,8 +1,8 @@
 # Frontend Architecture
 
     Status:       LOCKED
-    Last Updated: 2026-09-05
-    Derived From: Decisions #4, #10, #21, #23, #39, #40
+    Last Updated: 2026-09-14
+    Derived From: Decisions #4, #10, #21, #23, #39, #40, #43, #44
     Related:      API.md, ../design/DESIGN_SYSTEM.md, ../GLOSSARY.md Section 11
 
 ## 1. Purpose
@@ -79,11 +79,11 @@ The browser talks to `api.settly.com` **directly** — no Next.js proxy. CORS + 
 cookies (same-site because both share `.settly.com`). Generated typed client from the committed
 OpenAPI snapshot (`openapi-typescript` + `openapi-fetch`) — see `API.md` Section 15.
 
-## 9. Realtime and AI streaming
+## 9. Realtime, chat, and AI streaming
 
-SSE via fetch-based streaming (not `EventSource`) — thin events trigger a TanStack Query
-invalidation/refetch, never carry data directly. AI/agent responses stream via `POST` (not
-create-then-connect). See `COMMUNICATION.md`, `AGENT.md`.
+- **1-on-1 Chat**: Native browser WebSocket (`/ws/chat?token=...`) connecting directly to the backend (`settly-api`). Bidirectional, typed frames for instant message delivery, optimistic client updates, read receipts, and presence, backed authoritatively by PostgreSQL persistence.
+- **In-App Notifications**: SSE via fetch-based streaming (not `EventSource` due to auth header requirement) — thin events (`/api/v1/events`) trigger a TanStack Query invalidation/refetch, never carry payload data directly.
+- **AI / Agent Responses**: Stream via `POST` (not create-then-connect). See `COMMUNICATION.md`, `AGENT.md`.
 
 ## 10. Auth UX boundary
 
@@ -104,7 +104,7 @@ client's RFC 9457 error handling).
 
 ## 13. Rejected / do not add
 
-Cookie forwarding from the Next server · Next-as-proxy · WebSockets · Firestore chat · Mapbox/
+Cookie forwarding from the Next server · Next-as-proxy · Socket.IO (native WebSockets used for chat) · Firestore chat · Mapbox/
 Google Maps for display · locale-specific slugs (v1) · a fake design system invented before
 Stitch.
 

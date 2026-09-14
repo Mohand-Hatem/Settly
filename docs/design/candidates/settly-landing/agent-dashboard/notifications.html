@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications & Dispatch · Settly Agent Portal</title>
+  
+  <!-- Fonts & Design Tokens -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+
+  <style>
+    :root {
+      --navy-950: #0B1120;
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2C3B63;
+      --navy-600: #3E5080;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E6D2B5;
+      --brass-050: #FBF8F3;
+      --sage: #3D5A4C;
+      --sage-bg: #EBF2EE;
+      --sage-light: #F2F7F4;
+      --canvas: #F7F6F3;
+      --canvas-2: #EDE9DF;
+      --white: #FFFFFF;
+      --ink: #181D27;
+      --ink-2: #414651;
+      --ink-3: #717680;
+      --line: #E2DFD7;
+      --line-2: #CFCBC0;
+      --radius-sm: 8px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --sidebar-width: 288px;
+      --header-height: 72px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(19, 29, 54, 0.2);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--navy-900);
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--canvas);
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: var(--header-height);
+    }
+
+    .sidebar-brand {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .brand-plate {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.12);
+      flex-shrink: 0;
+    }
+
+    .brand-plate img {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s ease;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-close-btn:hover { color: var(--white); }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active { display: block; opacity: 1; }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 12px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+    }
+
+    .nav-link.active {
+      background-color: rgba(198, 151, 73, 0.15);
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.75;
+      flex-shrink: 0;
+      fill: none;
+      stroke: currentColor;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-950);
+      font-weight: 700;
+    }
+
+    .nav-link-ai {
+      background: linear-gradient(90deg, rgba(198, 151, 73, 0.12) 0%, rgba(30, 42, 74, 0) 100%);
+      border: 1px solid rgba(198, 151, 73, 0.25);
+    }
+    .nav-link-ai:hover {
+      background: linear-gradient(90deg, rgba(198, 151, 73, 0.2) 0%, rgba(30, 42, 74, 0.05) 100%);
+      border-color: rgba(198, 151, 73, 0.45);
+    }
+    .sidebar-ai-logo-plate {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      border: 1px solid #C69749;
+      flex-shrink: 0;
+    }
+    .sidebar-ai-logo-img {
+      width: 15px;
+      height: auto;
+      max-height: 15px;
+      object-fit: contain;
+      display: block;
+    }
+    .sidebar-ai-pill {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      background-color: rgba(37, 211, 102, 0.15);
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      color: #25D366;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .sidebar-ai-pill .pulse-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: #25D366;
+      box-shadow: 0 0 6px #25D366;
+    }
+
+    /* Logged-in Agent Profile Card */
+    .sidebar-advisor {
+      margin-top: auto;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .advisor-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      border: 1.5px solid var(--brass);
+    }
+
+    .advisor-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .advisor-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .advisor-meta {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .advisor-status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: var(--radius-full);
+      background-color: #25D366;
+    }
+
+    .btn-advisor-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      background-color: rgba(198, 151, 73, 0.15);
+      border: 1px solid rgba(198, 151, 73, 0.3);
+      color: var(--brass);
+    }
+    .btn-advisor-action:hover {
+      background-color: var(--brass);
+      color: var(--navy-950);
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      letter-spacing: 0.05em;
+    }
+
+    /* Main Content */
+    .portal-main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    .dashboard-workspace {
+      padding: 32px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Command Bar */
+    .command-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .command-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 760px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--ink);
+      border-color: var(--line-2);
+    }
+    .btn-outline:hover {
+      background-color: var(--canvas);
+      border-color: var(--navy-700);
+      color: var(--navy-900);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--navy-950);
+      font-weight: 700;
+    }
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      color: var(--white);
+    }
+
+    /* 4-Metric Telemetry Ribbon */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .telemetry-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .telemetry-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .telemetry-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .telemetry-badge.urgent {
+      background-color: rgba(198, 151, 73, 0.15);
+      color: var(--brass-600);
+    }
+    .telemetry-badge.sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+    .telemetry-badge.neutral {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .telemetry-value-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .telemetry-num {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1;
+    }
+
+    .telemetry-foot {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      background: none;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-pill:hover {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border-color: var(--navy-700);
+    }
+    .filter-pill.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    .filter-pill-count {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      opacity: 0.8;
+    }
+
+    /* Notification Cards Feed */
+    .notifications-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .notify-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 20px;
+      align-items: flex-start;
+      box-shadow: 0 1px 4px rgba(19, 29, 54, 0.04);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .notify-card:hover {
+      border-color: var(--brass-200);
+      box-shadow: 0 6px 20px rgba(19, 29, 54, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .notify-card.unread {
+      border-left: 3px solid var(--brass);
+      background: linear-gradient(90deg, #FCFBF9 0%, #FFFFFF 100%);
+    }
+
+    .notify-icon-disc {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .notify-icon-disc.escrow {
+      background-color: rgba(198, 151, 73, 0.12);
+      color: var(--brass-600);
+      border: 1px solid rgba(198, 151, 73, 0.3);
+    }
+    .notify-icon-disc.warning {
+      background-color: #FEF3F2;
+      color: #D92D20;
+      border: 1px solid #FECDCA;
+    }
+    .notify-icon-disc.security {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+    }
+    .notify-icon-disc.audit {
+      background-color: #F0F4FE;
+      color: #1E2A4A;
+      border: 1px solid #D0DDFE;
+    }
+    .notify-icon-disc.system {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      border: 1px solid var(--line-2);
+    }
+
+    .notify-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .notify-header-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .notify-type-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+    }
+    .notify-type-tag.brass {
+      background-color: rgba(198, 151, 73, 0.15);
+      color: var(--brass-600);
+    }
+    .notify-type-tag.warning {
+      background-color: #FEF3F2;
+      color: #B42318;
+    }
+    .notify-type-tag.sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+    .notify-type-tag.navy {
+      background-color: #F0F4FE;
+      color: var(--navy-800);
+    }
+    .notify-type-tag.neutral {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .notify-timestamp {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .notify-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.3;
+    }
+
+    .notify-desc {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .notify-meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      flex-wrap: wrap;
+    }
+
+    .notify-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .notify-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .notify-dismiss-btn {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      padding: 6px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .notify-dismiss-btn:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    /* Toast */
+    .app-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--brass);
+      font-size: 0.8125rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.3);
+      opacity: 0;
+      transform: translateY(16px);
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @media (max-width: 1024px) {
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .notify-card {
+        grid-template-columns: 1fr;
+      }
+      .notify-actions {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .dashboard-workspace {
+        padding: 20px 16px;
+      }
+      .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- Canonical Executive Sidebar Navigation -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Brand Header -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Executive Desk -->
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent" id="sidebarNotifyCount">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads &amp; Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics &amp; Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Inventory & Public -->
+        <div>
+          <div class="nav-group-title">Inventory &amp; Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Assigned Private Advisor Card -->
+        <div class="sidebar-advisor">
+          <div class="advisor-header">
+            <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+            <div class="advisor-info">
+              <span class="advisor-name">Karim El-Sayed</span>
+              <span class="advisor-meta">
+                <span class="advisor-status-dot"></span>
+                Senior Private Advisor
+              </span>
+            </div>
+          </div>
+          <div class="advisor-actions">
+            <a href="https://wa.me/201000000000" target="_blank" rel="noopener" class="btn-advisor-action btn-advisor-whatsapp">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              Broker Desk Verified
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>VERIFIED LISTINGS &amp; EXCLUSIVE MANDATES</div>
+        <div>LICENSED INDEPENDENT BROKER</div>
+      </div>
+    </aside>
+
+    <!-- Mobile Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      
+      <!-- Canonical Offers-Standard Top Application Bar -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">NOTIFICATIONS &amp; DISPATCH</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>REAL-TIME BROKER TELEMETRY</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Notifications &amp; Operational Alerts" style="background-color: var(--canvas); border-color: var(--navy-700);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Workspace Container -->
+      <div class="dashboard-workspace">
+        
+        <!-- Command Header -->
+        <section class="command-header">
+          <div class="command-title-group">
+            <h1 class="command-title">Executive Notifications &amp; Operational Alerts</h1>
+            <p class="command-subtitle">
+              Real-time transactional telemetry covering escrow clearances, cadastre mandate verifications, compound gate security passes, and buyer offer milestones.
+            </p>
+          </div>
+          <div class="command-actions">
+            <button class="btn btn-outline" onclick="markAllRead()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Mark All as Read</span>
+            </button>
+            <button class="btn btn-outline" onclick="showToast('Alert preferences configured.')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <span>Preferences</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 4-Metric Telemetry Ribbon -->
+        <section class="telemetry-grid">
+          <div class="telemetry-card">
+            <div class="telemetry-top">
+              <span class="telemetry-label">Active Alerts</span>
+              <span class="telemetry-badge urgent" id="metricUnread">5 Pending</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num" id="metricUnreadNum">5</span>
+            </div>
+            <span class="telemetry-foot">2 critical escrow milestones</span>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-top">
+              <span class="telemetry-label">Escrow Cleared</span>
+              <span class="telemetry-badge sage">100% Guaranteed</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num">620K</span>
+              <span style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 600; color: var(--ink-3);">EGP</span>
+            </div>
+            <span class="telemetry-foot">48-hour cooling-off window</span>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-top">
+              <span class="telemetry-label">Compound Gate Passes</span>
+              <span class="telemetry-badge neutral">VIP Access</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num">4</span>
+            </div>
+            <span class="telemetry-foot">Katameya Dunes &amp; Palm Hills PINs</span>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-top">
+              <span class="telemetry-label">Expiring Offers</span>
+              <span class="telemetry-badge urgent">Action Required</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num">1</span>
+            </div>
+            <span class="telemetry-foot">18h remaining before retract</span>
+          </div>
+        </section>
+
+        <!-- Category Filter Bar -->
+        <section class="filter-bar">
+          <div class="filter-pills">
+            <button class="filter-pill active" onclick="filterAlerts('all', this)">
+              <span>All Alerts</span>
+              <span class="filter-pill-count">(5)</span>
+            </button>
+            <button class="filter-pill" onclick="filterAlerts('escrow', this)">
+              <span>Offers &amp; Escrow</span>
+              <span class="filter-pill-count">(2)</span>
+            </button>
+            <button class="filter-pill" onclick="filterAlerts('security', this)">
+              <span>Gate Passes</span>
+              <span class="filter-pill-count">(1)</span>
+            </button>
+            <button class="filter-pill" onclick="filterAlerts('audit', this)">
+              <span>Listing Audits</span>
+              <span class="filter-pill-count">(1)</span>
+            </button>
+            <button class="filter-pill" onclick="filterAlerts('system', this)">
+              <span>System &amp; MLS</span>
+              <span class="filter-pill-count">(1)</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Notification Cards Feed -->
+        <section class="notifications-feed" id="notificationsFeed">
+          
+          <!-- Card 1: Buyer Reservation Deposit Cleared (Escrow) -->
+          <article class="notify-card unread" data-category="escrow" id="notify-1">
+            <div class="notify-icon-disc escrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </div>
+            <div class="notify-body">
+              <div class="notify-header-line">
+                <span class="notify-type-tag brass">Escrow Cleared</span>
+                <span class="notify-timestamp">12m ago</span>
+              </div>
+              <h2 class="notify-title">Buyer Reservation Deposit Cleared — EGP 50,000 (Refundable)</h2>
+              <p class="notify-desc">
+                Tarek Mansour (Tier-1 HNWI Verified) deposited reservation escrow for Lake View Signature Villa (SET-NC-9042). 48-hour cooling-off window initialized.
+              </p>
+              <div class="notify-meta-bar">
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>Cooling-off: 47h 48m left</span>
+                </span>
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                  <span>Barclays Escrow Receipt #SET-ESC-9042</span>
+                </span>
+              </div>
+            </div>
+            <div class="notify-actions">
+              <a href="leads.html" class="btn btn-brass" style="font-size: 0.8125rem; padding: 7px 14px;">Open in Pipeline &rarr;</a>
+              <button class="btn btn-outline" style="font-size: 0.8125rem; padding: 7px 12px;" onclick="showToast('Escrow Deposit Slip #SET-ESC-9042 downloaded.')">Receipt PDF</button>
+              <button class="notify-dismiss-btn" onclick="dismissNotification('notify-1')" title="Dismiss notification">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Card 2: Counter-Offer Expiration Warning -->
+          <article class="notify-card unread" data-category="escrow" id="notify-2">
+            <div class="notify-icon-disc warning">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <div class="notify-body">
+              <div class="notify-header-line">
+                <span class="notify-type-tag warning">Offer SLA Warning</span>
+                <span class="notify-timestamp">45m ago</span>
+              </div>
+              <h2 class="notify-title">Counter-Offer Expiration Warning — Katameya Dunes Grand Residence</h2>
+              <p class="notify-desc">
+                Seller response pending for EGP 44.5M offer submitted by Tarek Mansour. 18 hours 24 minutes remaining before formal offer retraction under mandate SLA.
+              </p>
+              <div class="notify-meta-bar">
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+                  <span>Offer Ref: #SET-KD-4029 · Value: 44,500,000 EGP</span>
+                </span>
+              </div>
+            </div>
+            <div class="notify-actions">
+              <a href="leads.html" class="btn btn-outline" style="font-size: 0.8125rem; padding: 7px 14px;">Review Offer</a>
+              <button class="btn btn-brass" style="font-size: 0.8125rem; padding: 7px 12px;" onclick="showToast('Seller reminder ping dispatched via SMS.')">Ping Seller</button>
+              <button class="notify-dismiss-btn" onclick="dismissNotification('notify-2')" title="Dismiss notification">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Card 3: Compound Security Gate Clearance Approved -->
+          <article class="notify-card unread" data-category="security" id="notify-3">
+            <div class="notify-icon-disc security">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div class="notify-body">
+              <div class="notify-header-line">
+                <span class="notify-type-tag sage">Gate Clearance</span>
+                <span class="notify-timestamp">2h ago</span>
+              </div>
+              <h2 class="notify-title">Compound Security Gate Clearance Approved — Katameya Dunes West Gate</h2>
+              <p class="notify-desc">
+                Gate Pass PIN #KD-8821 generated for tomorrow's private tour at 16:30 CLT. Guest: Tarek Mansour (BMW 7-Series, Plate: س ج د 491).
+              </p>
+              <div class="notify-meta-bar">
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  <span>PIN: 8821-KD · Security Desk: West Command</span>
+                </span>
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>Tour: Sat 14 Sep, 16:30 CLT</span>
+                </span>
+              </div>
+            </div>
+            <div class="notify-actions">
+              <a href="calendar.html" class="btn btn-outline" style="font-size: 0.8125rem; padding: 7px 14px;">View in Calendar</a>
+              <button class="btn btn-brass" style="font-size: 0.8125rem; padding: 7px 12px;" onclick="showToast('Gate PIN #KD-8821 dispatched to client phone.')">Send PIN to Client</button>
+              <button class="notify-dismiss-btn" onclick="dismissNotification('notify-3')" title="Dismiss notification">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Card 4: Cadastre Deed Verified by Settly Legal -->
+          <article class="notify-card" data-category="audit" id="notify-4">
+            <div class="notify-icon-disc audit">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="notify-body">
+              <div class="notify-header-line">
+                <span class="notify-type-tag navy">Cadastre Audited</span>
+                <span class="notify-timestamp">Yesterday</span>
+              </div>
+              <h2 class="notify-title">Cadastre Deed Verified by Settly Legal — Marassi Waterfront Penthouse</h2>
+              <p class="notify-desc">
+                Dr. Sherif Youssef confirmed zero title collisions on Allocation Deed #MR-5102. Mandate status updated to 100% Freehold Verified.
+              </p>
+              <div class="notify-meta-bar">
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span>Auditor: Dr. Sherif Youssef (Settly Legal Counsel)</span>
+                </span>
+              </div>
+            </div>
+            <div class="notify-actions">
+              <a href="edit-listing.html" class="btn btn-outline" style="font-size: 0.8125rem; padding: 7px 14px;">View Mandate</a>
+              <button class="notify-dismiss-btn" onclick="dismissNotification('notify-4')" title="Dismiss notification">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Card 5: Q3 New Cairo Golden Square Telemetry Synchronized -->
+          <article class="notify-card" data-category="system" id="notify-5">
+            <div class="notify-icon-disc system">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <div class="notify-body">
+              <div class="notify-header-line">
+                <span class="notify-type-tag neutral">Sovereign MLS Feed</span>
+                <span class="notify-timestamp">Sep 11</span>
+              </div>
+              <h2 class="notify-title">Q3 New Cairo Golden Square Telemetry Synchronized</h2>
+              <p class="notify-desc">
+                Average price per m² in Golden Square adjusted to 108,333 EGP/m² (+3.2% QoQ). 4 mandates benchmarked against new index.
+              </p>
+              <div class="notify-meta-bar">
+                <span class="notify-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                  <span>Pegged at 48.85 USD/EGP Sovereign FX Rate</span>
+                </span>
+              </div>
+            </div>
+            <div class="notify-actions">
+              <a href="analytics.html" class="btn btn-outline" style="font-size: 0.8125rem; padding: 7px 14px;">Explore Analytics</a>
+              <button class="notify-dismiss-btn" onclick="dismissNotification('notify-5')" title="Dismiss notification">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </article>
+
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="app-toast" id="appToast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('appToast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function filterAlerts(category, btn) {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.notify-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'grid';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function markAllRead() {
+      document.querySelectorAll('.notify-card.unread').forEach(card => {
+        card.classList.remove('unread');
+      });
+      const badge = document.getElementById('sidebarNotifyCount');
+      if (badge) badge.style.display = 'none';
+      const metricNum = document.getElementById('metricUnreadNum');
+      if (metricNum) metricNum.textContent = '0';
+      const metricBadge = document.getElementById('metricUnread');
+      if (metricBadge) {
+        metricBadge.textContent = '0 Pending';
+        metricBadge.className = 'telemetry-badge sage';
+      }
+      showToast('All operational alerts marked as read.');
+    }
+
+    function dismissNotification(id) {
+      const card = document.getElementById(id);
+      if (card) {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+          card.remove();
+          showToast('Notification dismissed.');
+        }, 200);
+      }
+    }
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+</body>
+</html>

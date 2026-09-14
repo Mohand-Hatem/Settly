@@ -40,8 +40,8 @@ needs it — do not front-load them.
 
 - `frontend/` and `backend/` as independent applications (Decision #18) — separate
   `package.json`, lockfiles, no shared-code dependency
-- `docker-compose.yml`: Postgres (PostGIS + pgvector + pg_trgm + btree_gist), Redis, Mailpit
-  (`process/ENVIRONMENT.md`)
+- `docker-compose.yml`: Postgres (PostGIS + pgvector + pg_trgm + btree_gist), Redis (or Upstash Redis config)
+  (`process/ENVIRONMENT.md`). Mailpit is eliminated per Decision #44; Resend is used for email delivery.
 - `.env.example` in each project with every key present, no real values
 - Backend module skeleton: 11 modules, each with `routes/ service/ repository/ sql/`
   (`architecture/BACKEND.md` Section 4)
@@ -87,7 +87,7 @@ demonstrable end to end.
 | Step | Delivers | Governing docs | Acceptance |
 |---|---|---|---|
 | **5** | API skeleton: Zod schemas → OpenAPI generation → CI drift gate; RFC 9457 error middleware; `X-Request-Id`/Pino correlation | `API.md`, `BACKEND.md` §7-9, `OBSERVABILITY.md` | A schema change regenerates the spec and fails CI if uncommitted |
-| **6** | Better Auth wired: sessions, cookie config, `emailVerified`, `role`/`banned`, `preferredLocale` | `AUTH.md` | Register/login/logout work locally via Mailpit; a banned user is rejected immediately |
+| **6** | Better Auth wired: sessions, cookie config, `emailVerified`, `role`/`banned`, `preferredLocale` | `AUTH.md` | Register/login/logout work locally with real verification email via Resend; a banned user is rejected immediately |
 | **7** | Identity module: `AgentProfile`, `UserDevice`, agent verification flow | `AUTH.md`, `DOMAIN_MODEL.md` §3 | An agent can register and await verification; an admin can verify them |
 | **8** | Catalog module: `Property` CRUD, two-tier edit moderation, image upload via Cloudinary | `BUSINESS_RULES.md` §2, `STORAGE.md` | Full P1-P14 lifecycle testable at the service layer |
 | **9** | Filter search: structured + geo (PostGIS), cursor pagination | `SEARCH.md` §2-3, §9 (filter path only — defer lexical/semantic to Phase 3) | `/search/properties` returns correct results with a stable cursor under concurrent inserts |

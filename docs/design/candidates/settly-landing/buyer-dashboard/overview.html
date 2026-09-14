@@ -1,0 +1,2681 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyer Overview · Settly Buyer Portal</title>
+  <meta name="description" content="Buyer dashboard and portfolio overview on Settly. Manage active offers, upcoming property viewings, saved homes, and secure reservation deposits.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-sm: 8px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+
+      --sidebar-width: 288px;
+      --header-height: 76px;
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: var(--canvas);
+      color: var(--ink);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      background-color: var(--canvas);
+      overflow-x: hidden;
+    }
+
+    /* Custom Selection & Caret */
+    ::selection {
+      background-color: var(--brass-200);
+      color: var(--navy-900);
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--canvas-2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--navy-700);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--navy-900);
+    }
+
+    /* Global Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--canvas);
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: var(--header-height);
+    }
+
+    .sidebar-brand {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s ease;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+    }
+
+    /* Mobile Backdrop Overlay */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Official Settly Main Logo Backing Plate */
+    .brand-plate {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.12);
+      flex-shrink: 0;
+    }
+
+    .brand-plate img {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-name {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-top: 2px;
+    }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .nav-group-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 12px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.72);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+    }
+
+    .nav-link.active {
+      background-color: rgba(198, 151, 73, 0.14);
+      color: var(--brass);
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--brass);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .nav-badge.sage {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* Private Advisor Desk Widget */
+    .sidebar-advisor {
+      margin-top: auto;
+      padding: 14px;
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .advisor-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--brass);
+      object-fit: cover;
+    }
+
+    .advisor-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .advisor-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .advisor-meta {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .advisor-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+      display: inline-block;
+    }
+
+    .advisor-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .btn-advisor-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-advisor-whatsapp {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+    }
+
+    .btn-advisor-whatsapp:hover {
+      background-color: rgba(61, 90, 76, 0.2);
+    }
+
+    .btn-advisor-call {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-advisor-call:hover {
+      background-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Main Content Area */
+    .portal-main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Fixed Top App Bar */
+    .portal-header {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .mobile-brand-mark img {
+      height: 28px;
+      width: auto;
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .breadcrumb-node {
+      color: var(--ink-3);
+      text-decoration: none;
+    }
+
+    .breadcrumb-active {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--sage);
+      background-color: var(--sage-bg);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      margin-left: 8px;
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .sovereign-rate-pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cairo-clock {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse-dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+    }
+
+    .header-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .header-icon-btn:hover {
+      background-color: var(--canvas);
+      color: var(--navy-900);
+      border-color: var(--line-2);
+    }
+
+    .header-badge-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--brass);
+    }
+
+    .header-user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px 4px 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      text-decoration: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .header-user-chip:hover {
+      border-color: var(--line-2);
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-800);
+      color: var(--brass);
+      font-weight: 700;
+      font-size: 0.8125rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      border: 1px solid var(--brass-200);
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .user-tier {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    /* Dashboard Workspace Canvas */
+    .dashboard-workspace {
+      padding: 36px 32px 64px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    /* Welcome Banner */
+    .welcome-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .welcome-text h1 {
+      font-family: var(--font-display);
+      font-size: 2.125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .welcome-text p {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .welcome-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-800);
+      color: var(--white);
+      border: 1px solid var(--navy-800);
+    }
+    .btn-primary:hover {
+      background-color: var(--navy-900);
+      border-color: var(--navy-900);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--navy-900);
+      border: 1px solid var(--brass);
+    }
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      border-color: var(--brass-600);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--navy-800);
+      border: 1px solid var(--line-2);
+    }
+    .btn-outline:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--navy-800);
+    }
+
+    /* Telemetry 4-Metric Instrument Panel */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .metric-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      transition: border-color 0.15s ease;
+    }
+
+    .metric-card:hover {
+      border-color: var(--line-2);
+    }
+
+    .metric-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .metric-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .metric-badge.sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 1.5625rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .metric-visual-capacity {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    .capacity-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line-2);
+    }
+
+    .capacity-dot.filled {
+      background-color: var(--brass);
+      border-color: var(--brass);
+    }
+
+    .metric-footnote {
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    /* Urgent Action Center */
+    .action-center {
+      background: #FAF8F4;
+      border: 1px solid var(--brass-200);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .action-center-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(198, 151, 73, 0.25);
+      padding-bottom: 14px;
+    }
+
+    .action-center-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pulse-dot-urgent {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--brass-600);
+      box-shadow: 0 0 0 3px rgba(198, 151, 73, 0.35);
+    }
+
+    .action-center-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--brass-600);
+    }
+
+    .action-cards-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+    }
+
+    .action-item-card {
+      background-color: var(--white);
+      border: 1px solid rgba(198, 151, 73, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .action-item-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .action-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--navy-900);
+      color: var(--brass);
+    }
+
+    .action-countdown {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--error);
+      background-color: rgba(153, 27, 27, 0.08);
+      border: 1px solid rgba(153, 27, 27, 0.25);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .action-item-title {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      line-height: 1.3;
+    }
+
+    .action-item-desc {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+
+    .action-item-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .action-item-ctas {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Active Pipeline & Acquisitions */
+    .section-box {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .section-subtext {
+      font-size: 0.875rem;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+
+    .pipeline-deal-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background-color: var(--canvas);
+      transition: border-color 0.15s ease;
+    }
+
+    .pipeline-deal-card:hover {
+      border-color: var(--line-2);
+    }
+
+    .deal-info-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .deal-thumbnail {
+      width: 140px;
+      height: 95px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .deal-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .deal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .deal-location {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .deal-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      text-decoration: none;
+    }
+    .deal-title:hover {
+      color: var(--brass-600);
+    }
+
+    .deal-specs {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      display: flex;
+      gap: 12px;
+    }
+
+    .deal-finance {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .deal-price {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .deal-status-pill {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+      border: 1px solid var(--brass-200);
+    }
+
+    .deal-status-pill.review {
+      background-color: var(--canvas-2);
+      color: var(--navy-700);
+      border: 1px solid var(--line);
+    }
+
+    /* Stepper Lifecycle Bar */
+    .deal-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .deal-stepper::before {
+      content: '';
+      position: absolute;
+      top: 27px;
+      left: 6%;
+      right: 6%;
+      height: 2px;
+      background-color: var(--line-2);
+      z-index: 1;
+    }
+
+    .step-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+      flex: 1;
+      text-align: center;
+    }
+
+    .step-marker {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      background-color: var(--white);
+      border: 2px solid var(--line-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      transition: all 0.2s ease;
+    }
+
+    .step-marker.done {
+      background-color: var(--sage);
+      border-color: var(--sage);
+      color: var(--white);
+    }
+
+    .step-marker.current {
+      background-color: var(--brass);
+      border-color: var(--brass);
+      color: var(--navy-900);
+      box-shadow: 0 0 0 3px rgba(198, 151, 73, 0.25);
+    }
+
+    .step-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-3);
+    }
+
+    .step-title.current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    /* Split Operational Row */
+    .split-grid-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* Viewing Itinerary Card */
+    .viewing-dossier {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .viewing-time-banner {
+      background: var(--navy-900);
+      color: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .viewing-date-text {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 600;
+    }
+
+    .viewing-hour-pill {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--brass);
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .viewing-body {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .viewing-img {
+      width: 100px;
+      height: 75px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .viewing-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .viewing-prop-title {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .viewing-advisor-row {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .viewing-instruction-note {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      background-color: var(--canvas-2);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      line-height: 1.4;
+    }
+
+    .viewing-actions-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    /* Private Concierge Desk */
+    .advisory-desk-panel {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .advisory-profile-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .advisory-photo {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-800);
+      color: var(--brass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      border: 2px solid var(--brass);
+      flex-shrink: 0;
+    }
+
+    .advisory-info-wrap {
+      flex: 1;
+    }
+
+    .advisory-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .advisory-full-name {
+      font-family: var(--font-display);
+      font-size: 1.1875rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .advisory-license-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+      background-color: var(--sage-bg);
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+    }
+
+    .advisory-bio {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    .advisory-metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background-color: var(--canvas);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+
+    .desk-stat-val {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .desk-stat-lbl {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .advisory-buttons-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    /* Saved Residences Spotlight */
+    .saved-spotlight-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cards-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .property-card-portrait {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+
+    .property-card-portrait:hover {
+      border-color: var(--line-2);
+      transform: translateY(-2px);
+    }
+
+    .card-media-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--navy-900);
+    }
+
+    .card-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .property-card-portrait:hover .card-media-wrap img {
+      transform: scale(1.04);
+    }
+
+    .card-media-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background-color: rgba(19, 29, 54, 0.85);
+      color: var(--white);
+      backdrop-filter: blur(4px);
+    }
+
+    .card-price-overlay {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background-color: rgba(255, 255, 255, 0.95);
+      color: var(--navy-900);
+    }
+
+    .card-content {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .card-location {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    .card-prop-name {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      line-height: 1.3;
+      text-decoration: none;
+    }
+    .card-prop-name:hover {
+      color: var(--brass-600);
+    }
+
+    .card-price-primary {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .card-specs-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .card-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 10px;
+    }
+
+    /* Statutory Escrow Compliance Notice */
+    .statutory-escrow-box {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .escrow-big-shield {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background-color: var(--brass-050);
+      border: 1px solid var(--brass-200);
+      color: var(--brass-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .escrow-big-shield svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+    }
+
+    .escrow-content h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      margin-bottom: 4px;
+    }
+
+    .escrow-content p {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .escrow-key-tokens {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    /* Interactive Modal System */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-window {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      border: 1px solid var(--line);
+      box-shadow: 0 20px 50px rgba(19, 29, 54, 0.25);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--canvas);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+    .modal-close-btn:hover {
+      color: var(--navy-900);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1200px) {
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .action-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .cards-row-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+        z-index: 100;
+      }
+      .portal-sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-close-btn {
+        display: flex;
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger,
+      .mobile-brand-mark {
+        display: inline-flex;
+      }
+      .header-breadcrumb {
+        display: none;
+      }
+      .sovereign-rate-pill,
+      .portal-trust-chip {
+        display: none;
+      }
+      .user-tier {
+        display: none;
+      }
+      .portal-header {
+        padding: 0 16px;
+        height: 64px;
+      }
+      .dashboard-workspace {
+        padding: 16px;
+        gap: 20px;
+      }
+      .welcome-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+      .welcome-text h1 {
+        font-size: 1.625rem;
+        line-height: 1.25;
+      }
+      .welcome-text p {
+        font-size: 0.8125rem;
+        line-height: 1.5;
+      }
+      .welcome-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .welcome-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .metric-card {
+        padding: 14px 12px;
+        gap: 8px;
+      }
+      .metric-value {
+        font-size: 1.375rem;
+      }
+      .metric-footnote {
+        font-size: 0.6875rem;
+      }
+      .action-center {
+        padding: 16px;
+        gap: 16px;
+      }
+      .action-center-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .action-center-title {
+        font-size: 1.125rem;
+      }
+      .action-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .action-item-card {
+        padding: 16px;
+      }
+      .action-item-top {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .action-item-ctas {
+        flex-direction: column;
+        width: 100%;
+      }
+      .action-item-ctas .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .pipeline-deal-card {
+        padding: 16px;
+      }
+      .deal-info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .deal-thumbnail {
+        width: 100%;
+        height: 180px;
+      }
+      .deal-finance {
+        align-items: flex-start;
+      }
+      .deal-stepper {
+        display: none;
+      }
+      .split-grid-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .viewing-dossier,
+      .advisory-desk-panel {
+        padding: 16px;
+      }
+      .viewing-body {
+        flex-direction: column;
+      }
+      .viewing-img {
+        width: 100%;
+        height: 160px;
+      }
+      .viewing-actions-bar {
+        flex-direction: column;
+      }
+      .viewing-actions-bar .btn {
+        width: 100%;
+      }
+      .advisory-metrics-strip {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .advisory-buttons-row {
+        flex-direction: column;
+      }
+      .advisory-buttons-row .btn {
+        width: 100%;
+      }
+      .cards-row-3 {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .statutory-escrow-box {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 14px;
+      }
+      .escrow-key-tokens {
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Official Settly Main Logo Backing Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">BUYER PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Navigation Section -->
+        <div>
+          <div class="nav-group-label">My Portfolio</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="favorites.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span>Favorites &amp; Collections</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="saved-searches.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <span>Saved Searches</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-label">Activity &amp; Offers</div>
+          <ul class="nav-list">
+            <li>
+              <a href="viewings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>My Viewings</span>
+                <span class="nav-badge sage">1</span>
+              </a>
+            </li>
+            <li>
+              <a href="offers.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>My Offers</span>
+                <span class="nav-badge">2</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge">5</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-label">Account &amp; Documents</div>
+          <ul class="nav-list">
+            <li>
+              <a href="documents.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span>My Documents</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="settings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Account Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Assigned Private Advisor Card -->
+        <div class="sidebar-advisor">
+          <div class="advisor-header">
+            <img src="../../../../../Images/web/phone.jpg" alt="Laila El-Gammal" class="advisor-avatar">
+            <div class="advisor-info">
+              <span class="advisor-name">Laila El-Gammal</span>
+              <span class="advisor-meta">
+                <span class="advisor-status-dot"></span>
+                Senior Property Advisor
+              </span>
+            </div>
+          </div>
+          <div class="advisor-actions">
+            <a href="https://wa.me/201000000000" target="_blank" rel="noopener" class="btn-advisor-action btn-advisor-whatsapp">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>VERIFIED LISTINGS &amp; SECURE DEPOSITS</div>
+        <div>LICENSED INDEPENDENT BROKERS</div>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Content Stream -->
+    <main class="portal-main">
+      
+      <!-- Sticky Top Application Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>PORTAL</span>
+            <span>/</span>
+            <span class="current">OVERVIEW</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>VERIFIED DEPOSIT PROTECTION</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search All Real Estate (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="View Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="settings.html" class="user-profile-badge" title="Manage Account Profile">
+            <div class="user-avatar-initials">TM</div>
+            <div class="user-meta">
+              <span class="user-name">Tarek Mansour</span>
+              <span class="user-tier">Tier-1 HNWI Verified</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Dashboard Workspace Container -->
+      <div class="dashboard-workspace">
+        
+        <!-- Welcome Header & High Intent CTAs -->
+        <section class="welcome-bar">
+          <div class="welcome-text">
+            <h1>Buyer Portfolio Overview</h1>
+            <p>Welcome back, Tarek. Track your active property searches, scheduled viewings, offer negotiations, and protected reservation deposits.</p>
+          </div>
+          <div class="welcome-actions">
+            <a href="viewings.html" class="btn btn-outline">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Viewings Calendar</span>
+            </a>
+            <a href="../public/search.html" class="btn btn-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Explore Properties</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- 4-Metric Buyer Telemetry Grid -->
+        <section class="telemetry-grid">
+          <!-- Metric 1: Active Deposits -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-label">Active Deposits</span>
+              <span class="metric-badge sage">Protected</span>
+            </div>
+            <div class="metric-value">EGP 50,000</div>
+            <div class="metric-footnote">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Secure · 48h Refund Guarantee</span>
+            </div>
+          </div>
+
+          <!-- Metric 2: Active Offers Pipeline -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-label">Active Offers</span>
+              <span class="metric-badge">2 of 5 Max</span>
+            </div>
+            <div class="metric-value">2 Live</div>
+            <div class="metric-visual-capacity">
+              <div class="capacity-dot filled"></div>
+              <div class="capacity-dot filled"></div>
+              <div class="capacity-dot"></div>
+              <div class="capacity-dot"></div>
+              <div class="capacity-dot"></div>
+            </div>
+            <div class="metric-footnote">
+              <span>1 Accepted (Deposit Due) · 1 In Review</span>
+            </div>
+          </div>
+
+          <!-- Metric 3: Confirmed Viewings -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-label">Confirmed Viewings</span>
+              <span class="metric-badge sage">1 Scheduled</span>
+            </div>
+            <div class="metric-value">1 Upcoming</div>
+            <div class="metric-footnote">
+              <span>Tomorrow 15:00 CLT · Katameya Dunes</span>
+            </div>
+          </div>
+
+          <!-- Metric 4: Saved Residences & Radar -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-label">Saved Residences</span>
+              <span class="metric-badge">3 Portfolios</span>
+            </div>
+            <div class="metric-value">14 Saved</div>
+            <div class="metric-footnote">
+              <span>4 Active Radar corridor monitors</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Urgent Action Center (Attention Required) -->
+        <section class="action-center">
+          <div class="action-center-header">
+            <div class="action-center-title">
+              <span class="pulse-dot-urgent"></span>
+              <span>Actions Requiring Your Attention</span>
+            </div>
+            <span class="action-center-subtitle">2 Pending Items</span>
+          </div>
+
+          <div class="action-cards-grid">
+            <!-- Action Item 1: 72H Escrow Deposit Window -->
+            <div class="action-item-card">
+              <div class="action-item-top">
+                <div class="action-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span>OFFER ACCEPTED · RESERVATION DEPOSIT</span>
+                </div>
+                <div class="action-countdown" id="depositCountdown">
+                  41h 18m 24s remaining
+                </div>
+              </div>
+              <div class="action-item-title">
+                The Grand Residence — Katameya Dunes, New Cairo
+              </div>
+              <div class="action-item-desc">
+                The seller accepted your offer of <strong>EGP 42,500,000</strong>. Complete the refundable <strong>EGP 50,000</strong> reservation deposit to secure the property before the 72-hour window expires.
+              </div>
+              <div class="action-item-meta-row">
+                <span>Hold Period: 72 hours</span>
+                <span>48h cooling-off full refund guarantee</span>
+              </div>
+              <div class="action-item-ctas">
+                <button class="btn btn-brass" onclick="openEscrowModal()">
+                  <span>Pay Reservation Deposit (EGP 50,000) →</span>
+                </button>
+                <a href="../public/property-detail.html" class="btn btn-outline">
+                  <span>Review Details</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Action Item 2: Reschedule Proposal -->
+            <div class="action-item-card">
+              <div class="action-item-top">
+                <div class="action-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span>RESCHEDULE PROPOSED</span>
+                </div>
+                <div class="metric-badge">Viewing</div>
+              </div>
+              <div class="action-item-title">
+                Waterfront Penthouse — Marassi Marina, North Coast
+              </div>
+              <div class="action-item-desc">
+                Listing agent Karim Nour proposed moving your viewing from Thursday 11:00 to <strong>Saturday at 16:30 CLT</strong> to accommodate compound security clearance.
+              </div>
+              <div class="action-item-meta-row">
+                <span>Proposed: Sat, 19 Sep · 16:30 CLT</span>
+                <span>Host: Karim Nour (Licensed Broker)</span>
+              </div>
+              <div class="action-item-ctas">
+                <button class="btn btn-primary" onclick="confirmReschedule(this)">
+                  <span>Accept Saturday Slot</span>
+                </button>
+                <a href="viewings.html" class="btn btn-outline">
+                  <span>Propose Alternate</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Active Transactions & Negotiation Tracker -->
+        <section class="section-box">
+          <div class="section-header-row">
+            <div>
+              <h2 class="section-heading">Active Negotiations &amp; Purchases</h2>
+              <p class="section-subtext">Track your offers from submission to reservation and contract signing.</p>
+            </div>
+            <a href="offers.html" class="btn btn-outline">View All Offers (2)</a>
+          </div>
+
+          <!-- Transaction 1: Katameya Dunes (ACCEPTED) -->
+          <div class="pipeline-deal-card">
+            <div class="deal-info-grid">
+              <div class="deal-thumbnail">
+                <img src="../../../../../Images/web/2.jpg" alt="Katameya Dunes luxury villa facade">
+              </div>
+              <div class="deal-content">
+                <span class="deal-location">Golden Square · New Cairo</span>
+                <a href="../public/property-detail.html" class="deal-title">The Grand Residence — Katameya Dunes</a>
+                <div class="deal-specs">
+                  <span>5 Beds</span>
+                  <span>·</span>
+                  <span>6 Baths</span>
+                  <span>·</span>
+                  <span>740 m²</span>
+                  <span>·</span>
+                  <span>EGP 57,432 / m²</span>
+                </div>
+              </div>
+              <div class="deal-finance">
+                <div class="deal-price">EGP 42,500,000</div>
+                <span class="deal-status-pill">ACCEPTED · RESERVATION PENDING</span>
+              </div>
+            </div>
+
+            <!-- Stepper Progress Bar -->
+            <div class="deal-stepper">
+              <div class="step-node">
+                <div class="step-marker done">✓</div>
+                <span class="step-title">1. Offer Made</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker done">✓</div>
+                <span class="step-title">2. Counter-Offer</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker done">✓</div>
+                <span class="step-title">3. Accepted</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker current">4</div>
+                <span class="step-title current">4. Reservation Deposit</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker">5</div>
+                <span class="step-title">5. Reserved</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker">6</div>
+                <span class="step-title">6. Closing / Title</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction 2: Palm Hills October (PENDING_AGENT) -->
+          <div class="pipeline-deal-card">
+            <div class="deal-info-grid">
+              <div class="deal-thumbnail">
+                <img src="../../../../../Images/web/3.jpg" alt="Palm Hills October signature villa">
+              </div>
+              <div class="deal-content">
+                <span class="deal-location">Golf Extension · Palm Hills October, West Cairo</span>
+                <a href="../public/property-detail.html" class="deal-title">Signature Villa V12 — Palm Hills October</a>
+                <div class="deal-specs">
+                  <span>4 Beds</span>
+                  <span>·</span>
+                  <span>5 Baths</span>
+                  <span>·</span>
+                  <span>520 m²</span>
+                  <span>·</span>
+                  <span>EGP 59,615 / m²</span>
+                </div>
+              </div>
+              <div class="deal-finance">
+                <div class="deal-price">EGP 31,000,000</div>
+                <span class="deal-status-pill review">UNDER AGENT REVIEW · 5D TTL</span>
+              </div>
+            </div>
+
+            <!-- Stepper Progress Bar -->
+            <div class="deal-stepper">
+              <div class="step-node">
+                <div class="step-marker done">✓</div>
+                <span class="step-title">1. Offer Made</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker current">2</div>
+                <span class="step-title current">2. Agent Review</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker">3</div>
+                <span class="step-title">3. Decision</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker">4</div>
+                <span class="step-title">4. Reservation Deposit</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker">5</div>
+                <span class="step-title">5. Reserved</span>
+              </div>
+              <div class="step-node">
+                <div class="step-marker">6</div>
+                <span class="step-title">6. Closing / Title</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Split Grid: Upcoming Viewing Dossier & Private Concierge Desk -->
+        <section class="split-grid-row">
+          
+          <!-- Upcoming Confirmed Viewing Dossier -->
+          <div class="viewing-dossier">
+            <div class="section-header-row" style="padding-bottom: 8px; margin-bottom: 0;">
+              <div>
+                <h3 class="section-heading" style="font-size: 1.1875rem;">Next Confirmed Inspection</h3>
+                <span class="section-subtext">Confirmed under Settly Rule V2</span>
+              </div>
+              <span class="metric-badge sage">CONFIRMED</span>
+            </div>
+
+            <div class="viewing-time-banner">
+              <div>
+                <div class="viewing-date-text">Tomorrow · Wednesday, 16 Sep</div>
+                <span style="font-size: 0.8125rem; opacity: 0.8;">Africa/Cairo Wall-Clock</span>
+              </div>
+              <div class="viewing-hour-pill">15:00 – 16:00 CLT</div>
+            </div>
+
+            <div class="viewing-body">
+              <img src="../../../../../Images/web/4.jpg" alt="Mivida Garden Duplex" class="viewing-img">
+              <div class="viewing-details">
+                <span class="deal-location">New Cairo · Fifth Settlement</span>
+                <div class="viewing-prop-title">Mivida Boulevard Duplex</div>
+                <div class="viewing-advisor-row">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Advisor: Karim Nour (Licensed Broker)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="viewing-instruction-note">
+              <strong>Access Protocol:</strong> Gate QR pass pre-cleared at Mivida Gate 3. Compound security instructions and guest parking coordinates sent to your WhatsApp. Arrival grace period: 30 minutes per Rule V9.
+            </div>
+
+            <div class="viewing-actions-bar">
+              <button class="btn btn-outline" onclick="openGatePassModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Gate Pass &amp; Map</span>
+              </button>
+              <button class="btn btn-outline" onclick="syncCalendar()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Add to Calendar (.ics)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Private Concierge Desk Panel -->
+          <div class="advisory-desk-panel">
+            <div class="section-header-row" style="padding-bottom: 8px; margin-bottom: 0;">
+              <div>
+                <h3 class="section-heading" style="font-size: 1.1875rem;">Dedicated Property Advisor</h3>
+                <span class="section-subtext">Independent buy-side property specialist</span>
+              </div>
+              <span class="metric-badge sage">ONLINE</span>
+            </div>
+
+            <div class="advisory-profile-top">
+              <div class="advisory-photo">LG</div>
+              <div class="advisory-info-wrap">
+                <div class="advisory-title-row">
+                  <span class="advisory-full-name">Laila El-Gammal</span>
+                  <span class="advisory-license-tag">Licensed Broker</span>
+                </div>
+                <div class="advisory-bio">
+                  Senior Property Advisor specializing in New Cairo luxury enclaves and North Coast beachfront villas. Fully independent from developers.
+                </div>
+              </div>
+            </div>
+
+            <div class="advisory-metrics-strip">
+              <div>
+                <div class="desk-stat-val">4.98 / 5.0</div>
+                <div class="desk-stat-lbl">Rating (64 Deals)</div>
+              </div>
+              <div>
+                <div class="desk-stat-val">&lt; 15 min</div>
+                <div class="desk-stat-lbl">Avg Response</div>
+              </div>
+              <div>
+                <div class="desk-stat-val">100%</div>
+                <div class="desk-stat-lbl">Buy-Side Focused</div>
+              </div>
+            </div>
+
+            <div class="advisory-buttons-row">
+              <a href="messages.html" class="btn btn-primary" style="flex: 1;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Direct Message</span>
+              </a>
+              <a href="https://wa.me/201004829100" target="_blank" rel="noopener" class="btn btn-brass">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span>WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Saved Residences & Radar Spotlight -->
+        <section class="saved-spotlight-section">
+          <div class="section-header-row" style="background-color: transparent; border: none; padding: 0;">
+            <div>
+              <h2 class="section-heading">Saved Residences &amp; Radar Spotlight</h2>
+              <p class="section-subtext">Quick access to properties in your curated collections.</p>
+            </div>
+            <a href="favorites.html" class="btn btn-outline">View All (14)</a>
+          </div>
+
+          <div class="cards-row-3">
+            <!-- Property 1 -->
+            <div class="property-card-portrait">
+              <div class="card-media-wrap">
+                <img src="../../../../../Images/web/5.jpg" alt="Villette SODIC New Cairo">
+                <div class="card-media-badge">SODIC · Villette</div>
+                <div class="card-price-overlay">EGP 65,263 / m²</div>
+              </div>
+              <div class="card-content">
+                <span class="card-location">New Cairo · Fifth Settlement</span>
+                <a href="../public/property-detail.html" class="card-prop-name">Skyline Duplex with Private Sky Garden</a>
+                <div class="card-price-primary">EGP 24,800,000</div>
+                <div class="card-specs-row">
+                  <span>4 Beds</span>
+                  <span>·</span>
+                  <span>4 Baths</span>
+                  <span>·</span>
+                  <span>380 m²</span>
+                </div>
+                <div class="card-footer-actions">
+                  <a href="viewings.html" class="btn btn-outline" style="flex: 1; padding: 6px 12px; font-size: 0.75rem;">
+                    Request Viewing
+                  </a>
+                  <a href="offers.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;">
+                    Make Offer
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Property 2 -->
+            <div class="property-card-portrait">
+              <div class="card-media-wrap">
+                <img src="../../../../../Images/web/6.jpg" alt="Hacienda Bay North Coast">
+                <div class="card-media-badge">Palm Hills · Coastal</div>
+                <div class="card-price-overlay">EGP 93,548 / m²</div>
+              </div>
+              <div class="card-content">
+                <span class="card-location">Sidi Abd El Rahman · North Coast</span>
+                <a href="../public/property-detail.html" class="card-prop-name">Seaside Beach Villa with Lagoon Access</a>
+                <div class="card-price-primary">EGP 58,000,000</div>
+                <div class="card-specs-row">
+                  <span>6 Beds</span>
+                  <span>·</span>
+                  <span>7 Baths</span>
+                  <span>·</span>
+                  <span>620 m²</span>
+                </div>
+                <div class="card-footer-actions">
+                  <a href="viewings.html" class="btn btn-outline" style="flex: 1; padding: 6px 12px; font-size: 0.75rem;">
+                    Request Viewing
+                  </a>
+                  <a href="offers.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;">
+                    Make Offer
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Property 3 -->
+            <div class="property-card-portrait">
+              <div class="card-media-wrap">
+                <img src="../../../../../Images/web/7.jpg" alt="Karmell SODIC New Zayed">
+                <div class="card-media-badge">SODIC · Karmell</div>
+                <div class="card-price-overlay">EGP 66,101 / m²</div>
+              </div>
+              <div class="card-content">
+                <span class="card-location">Sheikh Zayed · New Zayed</span>
+                <a href="../public/property-detail.html" class="card-prop-name">Executive Modern Townhouse Corner</a>
+                <div class="card-price-primary">EGP 19,500,000</div>
+                <div class="card-specs-row">
+                  <span>3 Beds</span>
+                  <span>·</span>
+                  <span>4 Baths</span>
+                  <span>·</span>
+                  <span>295 m²</span>
+                </div>
+                <div class="card-footer-actions">
+                  <a href="viewings.html" class="btn btn-outline" style="flex: 1; padding: 6px 12px; font-size: 0.75rem;">
+                    Request Viewing
+                  </a>
+                  <a href="offers.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;">
+                    Make Offer
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Central Bank of Egypt Statutory Escrow Disclosure Footer -->
+        <section class="statutory-escrow-box">
+          <div class="escrow-big-shield">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="escrow-content">
+            <h3>Protected Deposits &amp; Verified Listings Guarantee</h3>
+            <p>
+              All reservation deposits paid on Settly are held securely to lock in your agreed property price. Funds are subject to a 48-hour cooling-off window with a 100% full refund policy. Deposits are only disbursed once property deed verification and closing terms are confirmed.
+            </p>
+            <div class="escrow-key-tokens">
+              <span>Secure Deposit Protection</span>
+              <span>·</span>
+              <span>Licensed Independent Brokers</span>
+              <span>·</span>
+              <span>Verified Property Deeds</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Interactive Escrow Payment Modal -->
+  <div class="modal-backdrop" id="escrowModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">Secure Reservation Deposit</div>
+        <button class="modal-close-btn" onclick="closeEscrowModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background-color: var(--canvas-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px;">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3);">RESERVATION DEPOSIT</div>
+          <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--navy-900); margin: 4px 0;">EGP 50,000</div>
+          <div style="font-size: 0.8125rem; color: var(--ink-2);">Refundable reservation deposit on accepted offer of EGP 42,500,000 (The Grand Residence — Katameya Dunes).</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8125rem; color: var(--ink-2);">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 6px;">
+            <span>Payment Method:</span>
+            <strong>Secure Bank Card / Wire</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 6px;">
+            <span>Deposit Reference:</span>
+            <span style="font-family: var(--font-mono);">SET-RES-88204</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 6px;">
+            <span>Refund Guarantee:</span>
+            <span style="color: var(--sage); font-weight: 600;">48h 100% Refundable</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Reservation Hold:</span>
+            <span style="font-family: var(--font-mono); color: var(--brass-600); font-weight: 600;">14m 58s remaining</span>
+          </div>
+        </div>
+
+        <button class="btn btn-brass" style="width: 100%; margin-top: 8px;" onclick="executeSimulatedDeposit(this)">
+          <span>Confirm Reservation Deposit (EGP 50,000) →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Gate Pass QR Modal -->
+  <div class="modal-backdrop" id="gatePassModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">Compound Gate Access Clearance</div>
+        <button class="modal-close-btn" onclick="closeGatePassModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" style="align-items: center; text-align: center;">
+        <div style="background: var(--navy-900); padding: 16px; border-radius: var(--radius-sm); display: inline-flex; justify-content: center; align-items: center;">
+          <!-- SVG QR Code Vector -->
+          <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.75">
+            <rect x="2" y="2" width="8" height="8" rx="1"/>
+            <rect x="4" y="4" width="4" height="4" fill="var(--brass)"/>
+            <rect x="14" y="2" width="8" height="8" rx="1"/>
+            <rect x="16" y="4" width="4" height="4" fill="var(--brass)"/>
+            <rect x="2" y="14" width="8" height="8" rx="1"/>
+            <rect x="4" y="16" width="4" height="4" fill="var(--brass)"/>
+            <path d="M14 14h2v2h-2zM18 14h4v2h-4zM14 18h4v4h-4zM20 18h2v4h-2z"/>
+          </svg>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; color: var(--navy-900); margin-top: 10px;">PASS #MV-2026-90412</div>
+        <div style="font-size: 0.8125rem; color: var(--ink-2); line-height: 1.4;">
+          Valid for entry at <strong>Mivida Gate 3 (South Cairo Entrance)</strong> tomorrow from 14:30 to 16:30 CLT.<br>
+          GPS Coordinates: <span style="font-family: var(--font-mono);">30°00'48"N 31°28'12"E</span>
+        </div>
+        <button class="btn btn-outline" style="width: 100%;" onclick="alert('GPS Coordinates dispatched to your mobile navigation app.')">
+          Open in Google Maps / Waze
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Scripts & Telemetry Simulator -->
+  <script>
+    // Live Cairo Clock Simulation
+    function updateCairoClock() {
+      const clockEl = document.getElementById('liveCairoClock');
+      if (!clockEl) return;
+      
+      const now = new Date();
+      // Africa/Cairo is UTC+3 in summer / DST
+      const options = { 
+        timeZone: 'Africa/Cairo', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit', 
+        hour12: false 
+      };
+      const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
+      clockEl.textContent = `${timeString} CLT · Africa/Cairo`;
+    }
+    setInterval(updateCairoClock, 1000);
+    updateCairoClock();
+
+    // 72-Hour Deposit Countdown Timer
+    let depositSeconds = 41 * 3600 + 18 * 60 + 24;
+    function updateDepositCountdown() {
+      const el = document.getElementById('depositCountdown');
+      if (!el) return;
+      if (depositSeconds <= 0) {
+        el.textContent = 'WINDOW EXPIRED';
+        return;
+      }
+      depositSeconds--;
+      const hours = Math.floor(depositSeconds / 3600);
+      const minutes = Math.floor((depositSeconds % 3600) / 60);
+      const seconds = depositSeconds % 60;
+      el.textContent = `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s remaining`;
+    }
+    setInterval(updateDepositCountdown, 1000);
+
+    // Mobile Sidebar Drawer System
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('portalSidebar');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.add('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.remove('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openSidebar();
+      });
+    }
+
+    if (sidebarCloseBtn) {
+      sidebarCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeSidebar();
+      });
+    }
+
+    if (sidebarBackdrop) {
+      sidebarBackdrop.addEventListener('click', () => {
+        closeSidebar();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
+    });
+
+    // Close on navigation link click in mobile view
+    document.querySelectorAll('.portal-sidebar .nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          closeSidebar();
+        }
+      });
+    });
+
+    // Modal Handlers
+    function openEscrowModal() {
+      document.getElementById('escrowModal').classList.add('active');
+    }
+    function closeEscrowModal() {
+      document.getElementById('escrowModal').classList.remove('active');
+    }
+
+    function openGatePassModal() {
+      document.getElementById('gatePassModal').classList.add('active');
+    }
+    function closeGatePassModal() {
+      document.getElementById('gatePassModal').classList.remove('active');
+    }
+
+    // Interactive Demo Functions
+    function executeSimulatedDeposit(btn) {
+      btn.innerHTML = '<span>Processing Deposit...</span>';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.innerHTML = '<span>Deposit Confirmed ✓</span>';
+        btn.style.backgroundColor = 'var(--sage)';
+        btn.style.borderColor = 'var(--sage)';
+        alert('Reservation deposit of EGP 50,000 confirmed! The Grand Residence is now reserved for you with a 48-hour cooling-off guarantee.');
+        setTimeout(closeEscrowModal, 1500);
+      }, 1000);
+    }
+
+    function confirmReschedule(buttonEl) {
+      buttonEl.innerHTML = '<span>Slot Confirmed ✓</span>';
+      buttonEl.style.backgroundColor = 'var(--sage)';
+      buttonEl.style.borderColor = 'var(--sage)';
+      buttonEl.disabled = true;
+      alert('Viewing slot on Saturday at 16:30 CLT confirmed! Calendar invitation and driver gate pass issued.');
+    }
+
+    function syncCalendar() {
+      alert('Simulated .ics calendar invite generated with 30-min arrival grace reminder.');
+    }
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

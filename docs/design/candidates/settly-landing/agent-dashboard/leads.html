@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads &amp; Deal Pipeline · Settly Agent Desk</title>
+  
+  <!-- Typography Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+:root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+/* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.15);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background-color: var(--brass);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Advisor Profile Card in Sidebar */
+    .sidebar-advisor {
+      margin: 0 16px 16px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .advisor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brass);
+    }
+
+    .advisor-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .advisor-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .advisor-role {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .advisor-license {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-regulatory-box {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--navy-900);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .mobile-brand-mark img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    .mobile-brand-text {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--ink-3);
+    }
+
+    .header-breadcrumb .sep {
+      color: var(--line-2);
+    }
+
+    .header-breadcrumb .current {
+      color: var(--navy-900);
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--sage);
+      border-radius: 50%;
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sovereign-fx-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .fx-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--brass);
+      border-radius: 50%;
+    }
+
+    .cairo-clock-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .notif-btn {
+      position: relative;
+      background: none;
+      border: 1px solid var(--line);
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .notif-btn:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--brass);
+      border-radius: 50%;
+      border: 2px solid var(--white);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+    }
+
+    .user-avatar-initials {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--brass);
+      font-weight: 700;
+      font-size: 0.6875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.1;
+    }
+
+    .user-tier {
+      font-size: 0.625rem;
+      color: var(--ink-3);
+    }
+
+    /* Main Scrollable Canvas */
+    .portal-content {
+      padding: 36px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Command & Header Bar */
+    .command-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .command-title-wrap {
+      max-width: 800px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass);
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      border-color: var(--brass-600);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--navy-700);
+    }
+
+    .btn-icon {
+      padding: 10px 12px;
+    }
+
+    /* 4-Metric Executive Telemetry Ribbon */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .telemetry-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .telemetry-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .telemetry-badge.badge-sage {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .telemetry-badge.badge-brass {
+      background-color: var(--brass-subtle);
+      color: var(--brass-600);
+    }
+
+    .telemetry-metric {
+      font-family: var(--font-mono);
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .telemetry-desc {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    /* Workbench Controls & Filter Ribbon */
+    .workbench-ribbon {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .workbench-search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      min-width: 280px;
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .workbench-search-box svg {
+      color: var(--ink-3);
+      flex-shrink: 0;
+    }
+
+    .workbench-search-input {
+      border: none;
+      background: none;
+      outline: none;
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      width: 100%;
+    }
+
+    .workbench-filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--canvas);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-pill:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .filter-pill.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    .filter-pill.active .pill-count {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: var(--white);
+    }
+
+    .pill-count {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      background-color: rgba(30, 42, 74, 0.08);
+      color: var(--ink-3);
+    }
+
+    .view-toggle-wrap {
+      display: flex;
+      align-items: center;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .view-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.08);
+    }
+
+    /* Pipeline Status Indicator Strip */
+    .pipeline-summary-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+    }
+
+    .pipeline-summary-bar strong {
+      color: var(--navy-900);
+      font-family: var(--font-mono);
+    }
+
+    /* Kanban Board Layout */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(250px, 1fr));
+      gap: 16px;
+      align-items: flex-start;
+      overflow-x: auto;
+      padding-bottom: 16px;
+    }
+
+    .kanban-column {
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      transition: border-color 0.2s ease;
+    }
+
+    .kanban-col-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .kanban-col-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kanban-col-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--brass);
+    }
+
+    .kanban-col-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.01em;
+    }
+
+    .kanban-col-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line);
+    }
+
+    .kanban-col-val {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-weight: 600;
+    }
+
+    .kanban-col-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    /* Lead Kanban Card */
+    .lead-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 1px 4px rgba(19, 29, 54, 0.04);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .lead-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(19, 29, 54, 0.08);
+      border-color: var(--brass);
+    }
+
+    .lead-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .lead-client-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .lead-client-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.2;
+    }
+
+    .lead-client-tier {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-weight: 500;
+    }
+
+    .lead-ref-chip {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      background-color: var(--brass-subtle);
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .lead-property-plate {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+
+    .lead-property-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .lead-property-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .lead-property-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lead-property-corridor {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lead-card-metrics {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .lead-card-val {
+      font-family: var(--font-mono);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .lead-sla-pill {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lead-sla-pill.urgent {
+      background-color: rgba(180, 83, 9, 0.12);
+      color: var(--warning);
+      border: 1px solid rgba(180, 83, 9, 0.25);
+    }
+
+    .lead-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-xs {
+      padding: 4px 8px;
+      font-size: 0.6875rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Broadsheet Table View */
+    .table-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: none;
+    }
+
+    .pipeline-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.8125rem;
+    }
+
+    .pipeline-table th {
+      background-color: var(--canvas-2);
+      padding: 12px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .pipeline-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    .pipeline-table tr:hover td {
+      background-color: rgba(198, 151, 73, 0.03);
+    }
+
+    .table-client-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .table-avatar-initials {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--brass);
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+    }
+
+    .stage-badge.st-new {
+      background-color: rgba(180, 83, 9, 0.12);
+      color: var(--warning);
+    }
+
+    .stage-badge.st-qualified {
+      background-color: rgba(61, 90, 76, 0.12);
+      color: var(--sage);
+    }
+
+    .stage-badge.st-viewing {
+      background-color: rgba(30, 42, 74, 0.08);
+      color: var(--navy-800);
+    }
+
+    .stage-badge.st-offer {
+      background-color: var(--brass-subtle);
+      color: var(--brass-600);
+    }
+
+    .stage-badge.st-contract {
+      background-color: var(--navy-900);
+      color: var(--white);
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(19, 29, 54, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-dialog {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 45px rgba(19, 29, 54, 0.3);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-subtitle {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      margin-top: 2px;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--navy-900);
+      background-color: var(--canvas-2);
+    }
+
+    .modal-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-input, .modal-select, .modal-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-2);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--ink);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .modal-input:focus, .modal-select:focus, .modal-textarea:focus {
+      border-color: var(--navy-900);
+      background-color: var(--white);
+    }
+
+    .modal-dossier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background-color: var(--canvas);
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .dossier-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dossier-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dossier-val {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      pointer-events: auto;
+      animation: slideToast 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideToast {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1200px) {
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger,
+      .mobile-brand-mark {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .sovereign-fx-pill,
+      .cairo-clock-pill,
+      .header-breadcrumb,
+      .portal-trust-chip,
+      .user-tier {
+        display: none;
+      }
+      .command-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+      .command-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+      }
+      .command-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+      .workbench-search-box {
+        min-width: 100%;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Canonical Agent Sidebar Navigation -->
+<aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Agent Emblem Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads & Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics & Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Inventory & Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged-in Agent Profile Card -->
+      <div class="sidebar-advisor">
+        <div class="advisor-header">
+          <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+          <div class="advisor-meta">
+            <span class="advisor-name">Karim El-Sayed</span>
+            <span class="advisor-role">Senior Private Advisor</span>
+            <span class="advisor-license">License #EG-8841-B</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width: 100%; padding: 6px 12px; font-size: 0.75rem; justify-content: center; background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.15);" onclick="showToast('Agent desk status: Active & Verified')">
+          <span>Broker Desk Verified</span>
+        </button>
+      </div>
+
+      <!-- Legal & Trust Footer -->
+      <div class="sidebar-regulatory-box">
+        Verified Listings & Exclusive Mandates<br>
+        Licensed Independent Broker
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      <!-- Top Sticky Navigation Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">LEADS &amp; PIPELINE</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>QUALIFIED BUYER PIPELINE</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Active Leads &amp; Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Canvas -->
+      <div class="portal-content">
+        
+        <!-- Command Bar -->
+        <section class="command-bar">
+          <div class="command-title-wrap">
+            <h1 class="command-title">Private Client Leads &amp; Deal Pipeline</h1>
+            <p class="command-subtitle">8 active qualified inquiries across 14 exclusive mandates · 2 contracts pending final escrow</p>
+          </div>
+          <div class="command-actions">
+            <button class="btn btn-brass" onclick="openNewLeadModal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Add Private Lead</span>
+            </button>
+            <button class="btn btn-outline" onclick="exportPipelineCsv()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export CSV Dossier</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 4-Metric Executive Telemetry Ribbon -->
+        <section class="telemetry-grid">
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Active Pipeline</span>
+              <span class="telemetry-badge">100% Verified</span>
+            </div>
+            <div class="telemetry-metric">312.5M <span style="font-size: 1rem; font-weight: 500;">EGP</span></div>
+            <div class="telemetry-desc">8 high-intent inquiries across 14 exclusive seller mandates.</div>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Avg Response SLA</span>
+              <span class="telemetry-badge badge-sage">Optimal Pace</span>
+            </div>
+            <div class="telemetry-metric">14 <span style="font-size: 1rem; font-weight: 500;">mins</span></div>
+            <div class="telemetry-desc">Institutional SLA target: &lt; 30 mins · 98% on-time pace this month.</div>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Viewing Conversion</span>
+              <span class="telemetry-badge badge-brass">+12% vs Cairo</span>
+            </div>
+            <div class="telemetry-metric">64%</div>
+            <div class="telemetry-desc">9 private compound viewings scheduled and conducted this week.</div>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Pending Escrow</span>
+              <span class="telemetry-badge">Closing Q3</span>
+            </div>
+            <div class="telemetry-metric">82.7M <span style="font-size: 1rem; font-weight: 500;">EGP</span></div>
+            <div class="telemetry-desc">2 contracts under legal review and title clearance with developers.</div>
+          </div>
+        </section>
+
+        <!-- Workbench Controls & Filter Ribbon -->
+        <section class="workbench-ribbon">
+          <div class="workbench-search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="leadSearchInput" class="workbench-search-input" placeholder="Search by buyer name, ref ID, compound, or phone..." oninput="filterLeads()">
+          </div>
+
+          <div class="workbench-filters">
+            <button class="filter-pill active" data-stage="all" onclick="setStageFilter('all', this)">
+              <span>All Leads</span>
+              <span class="pill-count" id="countAll">8</span>
+            </button>
+            <button class="filter-pill" data-stage="new" onclick="setStageFilter('new', this)">
+              <span>New Inquiries</span>
+              <span class="pill-count" id="countNew">3</span>
+            </button>
+            <button class="filter-pill" data-stage="qualified" onclick="setStageFilter('qualified', this)">
+              <span>Qualified</span>
+              <span class="pill-count" id="countQualified">2</span>
+            </button>
+            <button class="filter-pill" data-stage="viewing" onclick="setStageFilter('viewing', this)">
+              <span>Viewings</span>
+              <span class="pill-count" id="countViewing">1</span>
+            </button>
+            <button class="filter-pill" data-stage="offer" onclick="setStageFilter('offer', this)">
+              <span>Offers</span>
+              <span class="pill-count" id="countOffer">1</span>
+            </button>
+            <button class="filter-pill" data-stage="contract" onclick="setStageFilter('contract', this)">
+              <span>In Escrow</span>
+              <span class="pill-count" id="countContract">1</span>
+            </button>
+          </div>
+
+          <div class="view-toggle-wrap">
+            <button class="view-btn active" id="btnViewKanban" onclick="switchView('kanban')" title="Kanban Board View">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"></rect><rect x="14" y="3" width="7" height="18" rx="1"></rect></svg>
+              <span>Board</span>
+            </button>
+            <button class="view-btn" id="btnViewTable" onclick="switchView('table')" title="Broadsheet Table View">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>Table</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Pipeline Status Summary Bar -->
+        <div class="pipeline-summary-bar">
+          <span id="pipelineStatusReadout">Displaying <strong>8</strong> active qualified opportunities · Pipeline Volume: <strong>312,500,000 EGP</strong></span>
+          <span style="font-size: 0.75rem; color: var(--ink-3);">Click any card to inspect dossier or advance deal stage</span>
+        </div>
+
+        <!-- 1. Interactive Kanban Board -->
+        <div class="kanban-board" id="kanbanBoard">
+          
+          <!-- Column 1: New Inquiries -->
+          <div class="kanban-column" id="col-new">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot" style="background-color: var(--warning);"></span>
+                <span class="kanban-col-title">New Inquiries</span>
+                <span class="kanban-col-badge" id="badge-col-new">3</span>
+              </div>
+              <span class="kanban-col-val" id="val-col-new">118.8M</span>
+            </div>
+            <div class="kanban-col-body" id="body-col-new"></div>
+          </div>
+
+          <!-- Column 2: Qualified & Analysis -->
+          <div class="kanban-column" id="col-qualified">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot" style="background-color: var(--sage);"></span>
+                <span class="kanban-col-title">Qualified</span>
+                <span class="kanban-col-badge" id="badge-col-qualified">2</span>
+              </div>
+              <span class="kanban-col-val" id="val-col-qualified">110.0M</span>
+            </div>
+            <div class="kanban-col-body" id="body-col-qualified"></div>
+          </div>
+
+          <!-- Column 3: Viewing Scheduled -->
+          <div class="kanban-column" id="col-viewing">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot" style="background-color: var(--navy-800);"></span>
+                <span class="kanban-col-title">Viewing Scheduled</span>
+                <span class="kanban-col-badge" id="badge-col-viewing">1</span>
+              </div>
+              <span class="kanban-col-val" id="val-col-viewing">44.5M</span>
+            </div>
+            <div class="kanban-col-body" id="body-col-viewing"></div>
+          </div>
+
+          <!-- Column 4: Offer Submitted -->
+          <div class="kanban-column" id="col-offer">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot" style="background-color: var(--brass);"></span>
+                <span class="kanban-col-title">Offer Submitted</span>
+                <span class="kanban-col-badge" id="badge-col-offer">1</span>
+              </div>
+              <span class="kanban-col-val" id="val-col-offer">38.2M</span>
+            </div>
+            <div class="kanban-col-body" id="body-col-offer"></div>
+          </div>
+
+          <!-- Column 5: Under Contract / Escrow -->
+          <div class="kanban-column" id="col-contract">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot" style="background-color: var(--navy-900);"></span>
+                <span class="kanban-col-title">In Escrow</span>
+                <span class="kanban-col-badge" id="badge-col-contract">1</span>
+              </div>
+              <span class="kanban-col-val" id="val-col-contract">68.0M</span>
+            </div>
+            <div class="kanban-col-body" id="body-col-contract"></div>
+          </div>
+
+        </div>
+
+        <!-- 2. Broadsheet Table View -->
+        <div class="table-card" id="tableView">
+          <table class="pipeline-table">
+            <thead>
+              <tr>
+                <th>Buyer / Client</th>
+                <th>Target Mandate</th>
+                <th>Deal Value</th>
+                <th>Pipeline Stage</th>
+                <th>SLA &amp; Next Step</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal 1: Lead Intelligence Dossier -->
+  <div class="modal-backdrop" id="modalDossier">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="dossierName">Client Intelligence Dossier</h2>
+          <p class="modal-subtitle" id="dossierId">LEAD-2026-081 · Ingested Today, 14:18 CLT</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modalDossier')" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="modal-dossier-grid">
+        <div class="dossier-item">
+          <span class="dossier-label">Client Classification</span>
+          <span class="dossier-val" id="dossierTier">Expat HNW (London / Cairo)</span>
+        </div>
+        <div class="dossier-item">
+          <span class="dossier-label">Direct Phone</span>
+          <span class="dossier-val" id="dossierPhone">+20 100 892 4410</span>
+        </div>
+        <div class="dossier-item">
+          <span class="dossier-label">Target Mandate</span>
+          <span class="dossier-val" id="dossierMandate">Waterfront Penthouse (SET-MR-5102)</span>
+        </div>
+        <div class="dossier-item">
+          <span class="dossier-label">Estimated Deal Value</span>
+          <span class="dossier-val" id="dossierValue" style="color: var(--navy-900); font-family: var(--font-mono); font-weight: 700;">47,500,000 EGP</span>
+        </div>
+        <div class="dossier-item" style="grid-column: 1 / -1;">
+          <span class="dossier-label">Proof of Funds &amp; Financial Diligence</span>
+          <span class="dossier-val" id="dossierPof">Verified Offshore Transfer Slip (Barclays UK)</span>
+        </div>
+        <div class="dossier-item" style="grid-column: 1 / -1;">
+          <span class="dossier-label">Advisor Handover Notes</span>
+          <p id="dossierNotes" style="font-size: 0.8125rem; color: var(--ink); line-height: 1.5; margin-top: 4px;">Submitted inquiry 18m ago. High intent cash buyer seeking turnkey designer penthouse.</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="openWhatsAppForCurrentLead()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          <span>WhatsApp Client</span>
+        </button>
+        <button class="btn btn-brass" onclick="openAdvanceCurrentLead()">
+          <span>Advance Stage &rarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Advance Deal Stage -->
+  <div class="modal-backdrop" id="modalAdvance">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">Advance Pipeline Stage</h2>
+          <p class="modal-subtitle" id="advanceSubtitle">Move lead through the institutional transaction lifecycle</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modalAdvance')" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label" for="advanceStageSelect">New Transaction Stage</label>
+        <select id="advanceStageSelect" class="modal-select">
+          <option value="new">01 New Inquiries</option>
+          <option value="qualified">02 Qualified &amp; Diligence</option>
+          <option value="viewing">03 Viewing Scheduled</option>
+          <option value="offer">04 Offer Submitted</option>
+          <option value="contract">05 Under Contract / Escrow</option>
+        </select>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label" for="advanceNoteInput">Advisor Milestone Rationale</label>
+        <textarea id="advanceNoteInput" class="modal-textarea" rows="3" placeholder="Document meeting outcome, seller response, or gate pass issuance..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('modalAdvance')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAdvanceStage()">Confirm Stage Update</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add Walk-In / Private Lead -->
+  <div class="modal-backdrop" id="modalNewLead">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">Log Private Client Lead</h2>
+          <p class="modal-subtitle">Intake walk-in or offline private wealth buyer inquiry</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modalNewLead')" aria-label="Close modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label" for="newLeadName">Buyer Full Name</label>
+        <input type="text" id="newLeadName" class="modal-input" placeholder="e.g. Eng. Karim Mansour">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="modal-form-group">
+          <label class="modal-label" for="newLeadTier">Client Tier</label>
+          <select id="newLeadTier" class="modal-select">
+            <option value="Tier 1 Private Client">Tier 1 Private Client</option>
+            <option value="Family Office Principal">Family Office Principal</option>
+            <option value="Expat HNW (Offshore)">Expat HNW (Offshore)</option>
+            <option value="Institutional Investor">Institutional Investor</option>
+          </select>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label" for="newLeadPhone">Phone / WhatsApp</label>
+          <input type="text" id="newLeadPhone" class="modal-input" placeholder="+20 100 ...">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="modal-form-group">
+          <label class="modal-label" for="newLeadMandate">Target Mandate</label>
+          <select id="newLeadMandate" class="modal-select">
+            <option value="SET-KD-4029|The Grand Residence, Katameya Dunes|44500000|../../../../../Images/web/1.jpg">The Grand Residence (44.5M EGP)</option>
+            <option value="SET-MR-5102|Waterfront Penthouse, Marassi Marina|47500000|../../../../../Images/web/2.jpg">Waterfront Penthouse (47.5M EGP)</option>
+            <option value="SET-PH-8819|Signature Villa V12, Palm Hills|38200000|../../../../../Images/web/3.jpg">Signature Villa V12 (38.2M EGP)</option>
+            <option value="SET-VL-3012|Sky Villa Duplex, SODIC Villette|26800000|../../../../../Images/web/4.jpg">Sky Villa Duplex (26.8M EGP)</option>
+            <option value="SET-MV-9014|Lakefront Palace, Mivida Crescent|52000000|../../../../../Images/web/5.jpg">Lakefront Palace (52.0M EGP)</option>
+          </select>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-label" for="newLeadPof">Liquidity Status</label>
+          <select id="newLeadPof" class="modal-select">
+            <option value="Pre-approved Cash Buyer">Pre-approved Cash Buyer</option>
+            <option value="Bank Attestation Verified">Bank Attestation Verified</option>
+            <option value="Escrow Deposit Ready">Escrow Deposit Ready</option>
+            <option value="Instalment Buyer (Down payment ready)">Instalment Buyer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label" for="newLeadNotes">Advisor Initial Notes</label>
+        <textarea id="newLeadNotes" class="modal-textarea" rows="2" placeholder="Brief qualification summary and immediate next step..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('modalNewLead')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveNewLead()">Save to Pipeline</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Pipeline Engine Scripts -->
+  <script>
+    // State
+    let leads = [
+  {
+    "id": "LEAD-2026-081",
+    "name": "Dr. Laila Hegazi",
+    "tier": "Expat HNW (London / Cairo)",
+    "phone": "+20 100 892 4410",
+    "email": "laila.hegazi@harley-consult.co.uk",
+    "mandateId": "SET-MR-5102",
+    "mandateTitle": "Waterfront Penthouse, Marassi Marina",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "valueEgp": 47500000,
+    "stage": "new",
+    "stageLabel": "New Inquiry",
+    "source": "Settly Direct Web",
+    "slaText": "12 mins remaining",
+    "slaUrgent": true,
+    "pofStatus": "Verified Offshore Transfer Slip (Barclays UK)",
+    "timeline": "Immediate Handover (Summer 2026)",
+    "notes": "Submitted inquiry 18m ago. High intent cash buyer seeking turnkey designer penthouse. Requesting WhatsApp contact with advisor.",
+    "image": "../../../../../Images/web/2.jpg",
+    "createdDate": "Today, 14:18 CLT"
+  },
+  {
+    "id": "LEAD-2026-082",
+    "name": "Eng. Amr Soliman",
+    "tier": "Tier 1 Private Client",
+    "phone": "+20 122 341 9081",
+    "email": "amr.soliman@techcorp-mena.com",
+    "mandateId": "SET-VL-3012",
+    "mandateTitle": "Sky Villa Duplex, SODIC Villette",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "valueEgp": 26800000,
+    "stage": "new",
+    "stageLabel": "New Inquiry",
+    "source": "Platform WhatsApp Ingestion",
+    "slaText": "24 mins remaining",
+    "slaUrgent": true,
+    "pofStatus": "Verified Proof of Funds (CIB Wealth)",
+    "timeline": "45-Day Handover",
+    "notes": "Direct WhatsApp inquiry requesting architectural floorplan CAD and maintenance installment schedules for Villette resale.",
+    "image": "../../../../../Images/web/4.jpg",
+    "createdDate": "Today, 13:45 CLT"
+  },
+  {
+    "id": "LEAD-2026-083",
+    "name": "Nour El-Din Mansy",
+    "tier": "Family Office Principal",
+    "phone": "+20 101 555 7820",
+    "email": "nour@mansyholdings.eg",
+    "mandateId": "SET-KD-4029",
+    "mandateTitle": "The Grand Residence, Katameya Dunes",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "valueEgp": 44500000,
+    "stage": "new",
+    "stageLabel": "New Inquiry",
+    "source": "Settly Private Referral",
+    "slaText": "35 mins ago",
+    "slaUrgent": false,
+    "pofStatus": "Corporate Bank Guarantee (QNB)",
+    "timeline": "Immediate Handover",
+    "notes": "Seeking 5-bedroom golf fairway standalone with private infinity pool for immediate residency. Family office acquisition.",
+    "image": "../../../../../Images/web/1.jpg",
+    "createdDate": "Today, 12:10 CLT"
+  },
+  {
+    "id": "LEAD-2026-077",
+    "name": "Dr. Sherif Zahran",
+    "tier": "Tier 1 Private Client",
+    "phone": "+20 111 908 6723",
+    "email": "szahran@cairo-cardio.org",
+    "mandateId": "SET-MV-9014",
+    "mandateTitle": "Lakefront Palace, Mivida Crescent",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "valueEgp": 52000000,
+    "stage": "qualified",
+    "stageLabel": "Qualified",
+    "source": "Settly Broker Concierge",
+    "slaText": "Diligence Active",
+    "slaUrgent": false,
+    "pofStatus": "HSBC Premier Liquidity Attestation",
+    "timeline": "Immediate Handover",
+    "notes": "Full financial qualification completed. Buyer reviewed 3D matterport model and cadastral boundaries. Awaiting seller terms review.",
+    "image": "../../../../../Images/web/5.jpg",
+    "createdDate": "Yesterday, 17:30 CLT"
+  },
+  {
+    "id": "LEAD-2026-075",
+    "name": "Karima Fayed",
+    "tier": "Family Office / Investor",
+    "phone": "+20 120 771 2940",
+    "email": "karima@fayed-invest.com",
+    "mandateId": "SET-HB-7721",
+    "mandateTitle": "Beachfront Chalet, Hacienda Bay",
+    "corridor": "North Coast \u00b7 Sidi Abd El Rahman",
+    "valueEgp": 58000000,
+    "stage": "qualified",
+    "stageLabel": "Qualified",
+    "source": "Settly Direct Web",
+    "slaText": "Prequalified",
+    "slaUrgent": false,
+    "pofStatus": "Banque Misr Private Desk Attestation",
+    "timeline": "Immediate Cash Closing",
+    "notes": "Looking for beachfront second home. Ready to place 10% earnest money deposit upon physical inspection with advisor.",
+    "image": "../../../../../Images/web/6.jpg",
+    "createdDate": "2 days ago"
+  },
+  {
+    "id": "LEAD-2026-068",
+    "name": "Dr. Tarek Mansour",
+    "tier": "Tier 1 Private Client",
+    "phone": "+20 100 443 8912",
+    "email": "tmansour@mansour-medical.com",
+    "mandateId": "SET-KD-4029",
+    "mandateTitle": "The Grand Residence, Katameya Dunes",
+    "corridor": "New Cairo \u00b7 Golden Square",
+    "valueEgp": 44500000,
+    "stage": "viewing",
+    "stageLabel": "Viewing Scheduled",
+    "source": "Direct Advisor Outreach",
+    "slaText": "Viewing: Tomorrow 4:30 PM",
+    "slaUrgent": true,
+    "pofStatus": "Verified CIB Wealth Escrow Ready",
+    "timeline": "Closing within 30 days",
+    "notes": "VIP compound tour confirmed for Tomorrow at 4:30 PM. Gate pass issued and approved by Katameya Dunes management office.",
+    "image": "../../../../../Images/web/1.jpg",
+    "createdDate": "Scheduled Sep 14"
+  },
+  {
+    "id": "LEAD-2026-062",
+    "name": "Eng. Hisham El-Gazzar",
+    "tier": "Expat HNW (Dubai / Cairo)",
+    "phone": "+971 50 289 1104",
+    "email": "hisham.gazzar@gulfinfra.ae",
+    "mandateId": "SET-PH-8819",
+    "mandateTitle": "Signature Villa V12, Palm Hills October",
+    "corridor": "6th of October \u00b7 West Cairo",
+    "valueEgp": 38200000,
+    "stage": "offer",
+    "stageLabel": "Offer Submitted",
+    "source": "Settly Concierge Desk",
+    "slaText": "Counter-offer Under Review",
+    "slaUrgent": false,
+    "pofStatus": "First Abu Dhabi Bank (FAB) Verified",
+    "timeline": "Immediate Closing",
+    "notes": "Formal written offer lodged at 38.2M EGP. 10% manager check ready with broker. Awaiting seller signature on escrow term sheet.",
+    "image": "../../../../../Images/web/3.jpg",
+    "createdDate": "Offer Lodged Sep 12"
+  },
+  {
+    "id": "LEAD-2026-059",
+    "name": "Ziad El-Chiaty",
+    "tier": "Institutional / Ultra HNW",
+    "phone": "+20 102 334 0099",
+    "email": "ziad@chiaty-holdings.com",
+    "mandateId": "SET-KH-0018",
+    "mandateTitle": "The Sovereign Estate, Katameya Heights",
+    "corridor": "New Cairo \u00b7 Katameya",
+    "valueEgp": 68000000,
+    "stage": "contract",
+    "stageLabel": "Under Contract",
+    "source": "Managing Partner Desk",
+    "slaText": "Closing in 14 Days",
+    "slaUrgent": false,
+    "pofStatus": "10% Escrow Lodged (Banque Misr)",
+    "timeline": "Escrow Completion Oct 1",
+    "notes": "Sale agreement executed. 10% reservation escrow deposit lodged. Notary title deed clearance underway with developer legal desk.",
+    "image": "../../../../../Images/web/hero.jpg",
+    "createdDate": "In Escrow Sep 10"
+  }
+];
+    let currentFilterStage = 'all';
+    let searchQuery = '';
+    let activeLeadForModal = null;
+
+    // Format currency
+    function formatEGP(val) {
+      return new Intl.NumberFormat('en-US').format(val) + ' EGP';
+    }
+
+    // Render Kanban & Table
+    function renderPipeline() {
+      const cols = {
+        new: { el: document.getElementById('body-col-new'), badge: document.getElementById('badge-col-new'), valEl: document.getElementById('val-col-new'), count: 0, val: 0 },
+        qualified: { el: document.getElementById('body-col-qualified'), badge: document.getElementById('badge-col-qualified'), valEl: document.getElementById('val-col-qualified'), count: 0, val: 0 },
+        viewing: { el: document.getElementById('body-col-viewing'), badge: document.getElementById('badge-col-viewing'), valEl: document.getElementById('val-col-viewing'), count: 0, val: 0 },
+        offer: { el: document.getElementById('body-col-offer'), badge: document.getElementById('badge-col-offer'), valEl: document.getElementById('val-col-offer'), count: 0, val: 0 },
+        contract: { el: document.getElementById('body-col-contract'), badge: document.getElementById('badge-col-contract'), valEl: document.getElementById('val-col-contract'), count: 0, val: 0 }
+      };
+
+      // Clear column bodies
+      Object.values(cols).forEach(c => c.el.innerHTML = '');
+
+      // Table body
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+
+      let displayedCount = 0;
+      let totalPipelineVal = 0;
+
+      // Filter
+      leads.forEach(lead => {
+        const matchesStage = currentFilterStage === 'all' || lead.stage === currentFilterStage;
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q || 
+          lead.name.toLowerCase().includes(q) ||
+          lead.mandateTitle.toLowerCase().includes(q) ||
+          lead.mandateId.toLowerCase().includes(q) ||
+          lead.phone.toLowerCase().includes(q) ||
+          lead.tier.toLowerCase().includes(q);
+
+        // Update column aggregates
+        if (cols[lead.stage]) {
+          cols[lead.stage].count++;
+          cols[lead.stage].val += lead.valueEgp;
+        }
+
+        if (matchesStage && matchesSearch) {
+          displayedCount++;
+          totalPipelineVal += lead.valueEgp;
+
+          // Add to Kanban
+          if (cols[lead.stage]) {
+            const card = document.createElement('div');
+            card.className = 'lead-card';
+            card.onclick = () => openDossier(lead.id);
+
+            const urgentClass = lead.slaUrgent ? 'urgent' : '';
+
+            card.innerHTML = `
+              <div class="lead-card-top">
+                <div class="lead-client-block">
+                  <span class="lead-client-name">${lead.name}</span>
+                  <span class="lead-client-tier">${lead.tier}</span>
+                </div>
+                <span class="lead-ref-chip">${lead.mandateId}</span>
+              </div>
+
+              <div class="lead-property-plate">
+                <img src="${lead.image}" alt="${lead.mandateTitle}" class="lead-property-thumb">
+                <div class="lead-property-info">
+                  <span class="lead-property-title">${lead.mandateTitle}</span>
+                  <span class="lead-property-corridor">${lead.corridor}</span>
+                </div>
+              </div>
+
+              <div class="lead-card-metrics">
+                <span class="lead-card-val">${(lead.valueEgp / 1000000).toFixed(1)}M EGP</span>
+                <span class="lead-sla-pill ${urgentClass}">${lead.slaText}</span>
+              </div>
+
+              <div class="lead-card-actions">
+                <button class="btn btn-outline btn-xs" onclick="event.stopPropagation(); openWhatsAppLead('${lead.phone}', '${lead.name}')">WhatsApp</button>
+                <button class="btn btn-outline btn-xs" onclick="event.stopPropagation(); quickAdvanceLead('${lead.id}')">Move &rarr;</button>
+              </div>
+            `;
+            cols[lead.stage].el.appendChild(card);
+          }
+
+          // Add to Table
+          const tr = document.createElement('tr');
+          const stageBadgeClass = 'st-' + lead.stage;
+          tr.innerHTML = `
+            <td>
+              <div class="table-client-wrap">
+                <div class="table-avatar-initials">${lead.name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <strong style="color: var(--navy-900);">${lead.name}</strong>
+                  <span style="font-size: 0.6875rem; color: var(--ink-3);">${lead.tier} · ${lead.phone}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-weight: 600; color: var(--navy-900);">${lead.mandateTitle}</span>
+                <span style="font-family: var(--font-mono); font-size: 0.6875rem; color: var(--brass-600);">${lead.mandateId} · ${lead.corridor}</span>
+              </div>
+            </td>
+            <td>
+              <span style="font-family: var(--font-mono); font-weight: 700; color: var(--navy-900); font-size: 0.875rem;">${(lead.valueEgp / 1000000).toFixed(1)}M EGP</span>
+            </td>
+            <td>
+              <span class="stage-badge ${stageBadgeClass}">${lead.stageLabel}</span>
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 0.75rem; font-weight: 600; color: var(--navy-900);">${lead.slaText}</span>
+                <span style="font-size: 0.6875rem; color: var(--ink-3);">${lead.createdDate}</span>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <button class="btn btn-outline btn-xs" onclick="openDossier('${lead.id}')">Dossier</button>
+              <button class="btn btn-brass btn-xs" onclick="quickAdvanceLead('${lead.id}')">Advance</button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        }
+      });
+
+      // Update Column Header Badges
+      Object.keys(cols).forEach(k => {
+        cols[k].badge.textContent = cols[k].count;
+        cols[k].valEl.textContent = (cols[k].val / 1000000).toFixed(1) + 'M';
+      });
+
+      // Update Toolbar stage counts
+      document.getElementById('countAll').textContent = leads.length;
+      document.getElementById('countNew').textContent = cols.new.count;
+      document.getElementById('countQualified').textContent = cols.qualified.count;
+      document.getElementById('countViewing').textContent = cols.viewing.count;
+      document.getElementById('countOffer').textContent = cols.offer.count;
+      document.getElementById('countContract').textContent = cols.contract.count;
+
+      // Update Readout
+      document.getElementById('pipelineStatusReadout').innerHTML = `Displaying <strong>${displayedCount}</strong> active qualified opportunities · Pipeline Volume: <strong>${new Intl.NumberFormat('en-US').format(totalPipelineVal)} EGP</strong>`;
+    }
+
+    // Filter by Stage
+    function setStageFilter(stage, btnEl) {
+      currentFilterStage = stage;
+      document.querySelectorAll('.filter-pill').forEach(el => el.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderPipeline();
+    }
+
+    // Filter by Search Query
+    function filterLeads() {
+      searchQuery = document.getElementById('leadSearchInput').value;
+      renderPipeline();
+    }
+
+    // Switch View
+    function switchView(mode) {
+      const kanban = document.getElementById('kanbanBoard');
+      const table = document.getElementById('tableView');
+      const btnK = document.getElementById('btnViewKanban');
+      const btnT = document.getElementById('btnViewTable');
+
+      if (mode === 'kanban') {
+        kanban.style.display = 'grid';
+        table.style.display = 'none';
+        btnK.classList.add('active');
+        btnT.classList.remove('active');
+      } else {
+        kanban.style.display = 'none';
+        table.style.display = 'block';
+        btnT.classList.add('active');
+        btnK.classList.remove('active');
+      }
+    }
+
+    // Dossier Modal
+    function openDossier(leadId) {
+      const lead = leads.find(l => l.id === leadId);
+      if (!lead) return;
+      activeLeadForModal = lead;
+
+      document.getElementById('dossierName').textContent = lead.name;
+      document.getElementById('dossierId').textContent = `${lead.id} · Ingested ${lead.createdDate}`;
+      document.getElementById('dossierTier').textContent = lead.tier;
+      document.getElementById('dossierPhone').textContent = `${lead.phone} (${lead.email})`;
+      document.getElementById('dossierMandate').textContent = `${lead.mandateTitle} (${lead.mandateId})`;
+      document.getElementById('dossierValue').textContent = formatEGP(lead.valueEgp);
+      document.getElementById('dossierPof').textContent = lead.pofStatus;
+      document.getElementById('dossierNotes').textContent = lead.notes;
+
+      openModal('modalDossier');
+    }
+
+    function openWhatsAppForCurrentLead() {
+      if (!activeLeadForModal) return;
+      openWhatsAppLead(activeLeadForModal.phone, activeLeadForModal.name);
+    }
+
+    function openWhatsAppLead(phone, name) {
+      const cleaned = phone.replace(/[^0-9]/g, '');
+      const msg = encodeURIComponent(`Dear ${name}, Karim El-Sayed here from Settly Private Desk regarding your luxury mandate inquiry. How may I assist your review today?`);
+      window.open(`https://wa.me/${cleaned}?text=${msg}`, '_blank');
+      showToast(`Opening WhatsApp communication with ${name}...`);
+    }
+
+    function quickAdvanceLead(leadId) {
+      const lead = leads.find(l => l.id === leadId);
+      if (!lead) return;
+      activeLeadForModal = lead;
+      openAdvanceCurrentLead();
+    }
+
+    function openAdvanceCurrentLead() {
+      closeModal('modalDossier');
+      if (!activeLeadForModal) return;
+      document.getElementById('advanceSubtitle').textContent = `Advancing ${activeLeadForModal.name} (${activeLeadForModal.mandateId})`;
+      document.getElementById('advanceStageSelect').value = activeLeadForModal.stage;
+      document.getElementById('advanceNoteInput').value = '';
+      openModal('modalAdvance');
+    }
+
+    function confirmAdvanceStage() {
+      if (!activeLeadForModal) return;
+      const newStage = document.getElementById('advanceStageSelect').value;
+      const note = document.getElementById('advanceNoteInput').value.trim();
+
+      const stageLabels = {
+        new: 'New Inquiry',
+        qualified: 'Qualified',
+        viewing: 'Viewing Scheduled',
+        offer: 'Offer Submitted',
+        contract: 'Under Contract / Escrow'
+      };
+
+      activeLeadForModal.stage = newStage;
+      activeLeadForModal.stageLabel = stageLabels[newStage] || newStage;
+      if (note) {
+        activeLeadForModal.notes += ` | Note: ${note}`;
+      }
+
+      closeModal('modalAdvance');
+      renderPipeline();
+      showToast(`Lead ${activeLeadForModal.name} advanced to ${stageLabels[newStage]}!`);
+    }
+
+    // Add Lead Modal
+    function openNewLeadModal() {
+      document.getElementById('newLeadName').value = '';
+      document.getElementById('newLeadPhone').value = '';
+      document.getElementById('newLeadNotes').value = '';
+      openModal('modalNewLead');
+    }
+
+    function saveNewLead() {
+      const name = document.getElementById('newLeadName').value.trim();
+      const phone = document.getElementById('newLeadPhone').value.trim();
+      const tier = document.getElementById('newLeadTier').value;
+      const mandateRaw = document.getElementById('newLeadMandate').value.split('|');
+      const pof = document.getElementById('newLeadPof').value;
+      const notes = document.getElementById('newLeadNotes').value.trim();
+
+      if (!name || !phone) {
+        alert('Please provide the client name and phone number.');
+        return;
+      }
+
+      const newId = `LEAD-2026-0${84 + leads.length}`;
+      const newLead = {
+        id: newId,
+        name: name,
+        tier: tier,
+        phone: phone,
+        email: `${name.toLowerCase().replace(/[^a-z]/g, '')}@private-client.eg`,
+        mandateId: mandateRaw[0],
+        mandateTitle: mandateRaw[1],
+        corridor: "New Cairo · Golden Square",
+        valueEgp: parseInt(mandateRaw[2]),
+        stage: "new",
+        stageLabel: "New Inquiry",
+        source: "Managing Broker Walk-In",
+        slaText: "30 mins remaining",
+        slaUrgent: true,
+        pofStatus: pof,
+        timeline: "Immediate Review",
+        notes: notes || "Direct walk-in lead registered by Karim El-Sayed.",
+        image: mandateRaw[3],
+        createdDate: "Just now"
+      };
+
+      leads.unshift(newLead);
+      closeModal('modalNewLead');
+      renderPipeline();
+      showToast(`Private lead ${name} added to pipeline!`);
+    }
+
+    // Export CSV
+    function exportPipelineCsv() {
+      let csv = "Lead ID,Client Name,Classification Tier,Phone,Email,Target Mandate ID,Target Mandate Title,Deal Value (EGP),Stage,SLA Status,Proof of Funds,Created\n";
+      leads.forEach(l => {
+        csv += `"${l.id}","${l.name}","${l.tier}","${l.phone}","${l.email}","${l.mandateId}","${l.mandateTitle}",${l.valueEgp},"${l.stageLabel}","${l.slaText}","${l.pofStatus}","${l.createdDate}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `settly_agent_pipeline_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Pipeline CSV dossier generated successfully.');
+    }
+
+    // Modal Helper
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('active');
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brass);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>${msg}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    // Cairo Live Clock
+    function updateClock() {
+      const el = document.getElementById('cairoClock');
+      if (!el) return;
+      const now = new Date();
+      const options = { timeZone: 'Africa/Cairo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      el.textContent = now.toLocaleTimeString('en-GB', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Mobile Sidebar Drawer
+    const mobileTrigger = document.getElementById('mobileMenuTrigger');
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+    const sidebar = document.getElementById('portalSidebar');
+
+    if (mobileTrigger && sidebar) {
+      mobileTrigger.addEventListener('click', () => sidebar.classList.add('mobile-open'));
+    }
+    if (closeBtn && sidebar) {
+      closeBtn.addEventListener('click', () => sidebar.classList.remove('mobile-open'));
+    }
+
+    // Initialize
+    renderPipeline();
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 # Settly Glossary
 
     Status:       LOCKED
-    Last Updated: 2026-09-05
-    Decisions:    #1, #3, #5, #6, #11, #13, #14, #19, #24, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42
+    Last Updated: 2026-09-14
+    Decisions:    #1, #3, #5, #6, #11, #13, #14, #19, #24, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #44
                   (#15 canonical description REVERSED by #39)
     Related:      product/BUSINESS_RULES.md, DECISIONS.md
 
@@ -315,6 +315,12 @@ authoritative state through the normal API. Events are **signals, not data carri
 there is no replay buffer, no backpressure problem, and no authorization logic duplicated into the
 stream.
 
+**WebSocket (1-on-1 Chat)** — bidirectional native WebSocket connection (`/ws/chat?token=...`) dedicated strictly to real-time conversation between buyer and agent (Decision #43). Messages are durably persisted to PostgreSQL first, while Upstash Redis Pub/Sub distributes new messages across active API nodes. Never used for notifications.
+
+**Server-Sent Events (SSE)** — unidirectional server-to-client stream (`/api/v1/events`) dedicated strictly to in-app notifications and background job completions (Decision #21, #43). SSE transports thin invalidation signals that trigger client-side TanStack Query refetches; never used for chat or heavy payloads.
+
+**Upstash Redis** — managed, serverless-friendly Redis service backing BullMQ job queues, Tier A/B/C rate limiting, natural-language search query caching, and WebSocket pub/sub cross-instance sync (Decision #44). Connected via standard TCP `ioredis` in backend and worker processes.
+
 **Tier A / B / C** — the rate-limiting classes. **A** is sensitive (login, reset, verification,
 payment operations) and falls back to Postgres-backed counters when Redis is down, after an
 in-memory check. **B** is authenticated writes, bounded primarily by business invariants. **C** is
@@ -328,8 +334,7 @@ the real external service where the service itself owns a behaviour we need to e
 is real locally because EXIF stripping is theirs; Supabase Storage may be substituted because
 magic-byte verification, authorization and audit are ours.
 
-**Mailpit** — the local email sink. **No transactional email provider is required for local
-development.** The production provider (Resend, provisional) is a deployment concern.
+**Mailpit** — **retired and eliminated (#44).** Previously proposed as a local email sink; superseded by Resend used across all environments to guarantee dev/prod delivery parity to real inboxes (e.g. Gmail/Outlook).
 
 **Circuit state** — the last observed outcome of a call to an external provider, reported by
 `/health/detail`. **We never actively probe paid providers** — a health check that calls Gemini

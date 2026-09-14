@@ -1,8 +1,8 @@
-# Communication — SSE, Notifications, Email, Push
+# Communication — SSE, WebSocket Chat, Notifications, Email, Push
 
-    Status:       LOCKED · Resend PROVISIONAL
-    Last Updated: 2026-09-05
-    Derived From: Decisions #10, #21, #33, #36, #39, #40, #42
+    Status:       LOCKED
+    Last Updated: 2026-09-14
+    Derived From: Decisions #10, #21, #33, #36, #39, #40, #42, #43, #44
     Related:      API.md Section 13, ../process/ENVIRONMENT.md
 
 ## 1. Purpose
@@ -51,25 +51,36 @@ locale switch re-renders existing notifications correctly with no data migration
         ▼  60s sweeper re-enqueues anything still PENDING
 ```
 
-## 6. Email — Resend (PROVISIONAL, Decision #36)
+## 6. Email — Resend (LOCKED, Decisions #36 & #44)
 
 Chosen for React Email (bilingual templates in the same stack as the UI), no sandbox-approval
-friction (unlike SES), and bounce/complaint webhooks without extra infrastructure. **Local
-development uses Mailpit and never touches Resend** — no quota burned, no risk of emailing a real
-address from seeded data. Production domain verification, SPF/DKIM/DMARC, pricing — **PENDING
-V18**, not to be assumed verified.
+friction (unlike SES), and bounce/complaint webhooks without extra infrastructure. **Resend is locked
+across all environments (development, testing, production) — Mailpit is eliminated.** All emails
+reach real inboxes (e.g., Gmail, Outlook). Business logic interacts strictly via an `EmailService`
+abstraction. Production domain verification, SPF/DKIM/DMARC, pricing — **PENDING V18**, not to be
+assumed verified.
 
 ## 7. Push — FCM
 
 Firebase Cloud Messaging for push when the app is closed. **A no-op adapter locally** — logs the
 payload, no real send. `UserDevice` holds registration tokens, pruned on invalidation.
 
-## 8. Messages and conversations
+## 8. Messages, conversations, and WebSocket chat (Decision #43)
 
 `Conversation` is strictly two-party (buyer/agent, per property) — no group chat, no
-`ConversationParticipant` model. Sending a message goes through normal REST (validation,
-persistence, authorization, audit trail); only *receiving* needs a push, which is exactly what
-SSE's thin-event model provides.
+`ConversationParticipant` model.
+
+**Real-time transport:**
+- **1-on-1 Chat uses native WebSocket (`/ws/chat`)** for instant bidirectional message exchange,
+  delivery acknowledgements, and future typing indicators/presence.
+- **PostgreSQL is the sole source of truth**: every message is validated (Zod), authorized (policy
+  check), and written to PostgreSQL before or concurrently with WebSocket broadcast. Messages are
+  never held only in memory or Redis.
+- **Cross-instance communication**: because API instances are horizontally scalable and stateless,
+  WebSocket connections across different server nodes are synchronized via **Upstash Redis Pub/Sub**.
+  A message sent to node A is published to Redis and forwarded to the recipient connected to node B.
+- Reconnection and auth: WebSocket connections authenticate via the user's active session cookie
+  or bearer token during the HTTP upgrade handshake.
 
 ## 9. Privacy (Decision #42)
 
@@ -80,23 +91,23 @@ regenerated from `type`+`params`, so no PII is trapped in stored notification te
 
 ## 10. Failure behaviour
 
-Resend down → in-app notification still delivered, email queued and retried, sweeper catches it.
-FCM down → same, push-side. SSE connection drops → client reconnects and refetches; no data loss
-because SSE was never the source of truth.
+Resend down → in-app notification still delivered, email queued in BullMQ and retried, sweeper catches it.
+FCM down → same, push-side. SSE/WebSocket connection drops → client reconnects and refetches; no data loss
+because PostgreSQL is the source of truth, never the socket stream.
 
 ## 11. Pending verification
 
 **V18** (Resend domain/pricing/webhooks) · V25 (Next.js locale routing interaction with any
-SSE-driven client behaviour, if relevant).
+SSE/WebSocket-driven client behaviour, if relevant).
 
 ## 12. Rejected / do not add
 
-WebSockets/Socket.IO (bidirectional infrastructure for a unidirectional problem) · Firestore for
-chat (a second database for business-critical messages) · SSE event replay · a
-`NotificationTemplate` model · a `ConversationParticipant` model · storing rendered notification
-text.
+Socket.IO (native WebSockets used for 1-on-1 chat; SSE used for notifications) · Mailpit (real Resend
+delivery locked across all environments) · Firestore for chat (a second database for business-critical
+messages) · SSE event replay · a `NotificationTemplate` model · a `ConversationParticipant` model ·
+storing rendered notification text.
 
 ## 13. Related documents
 
-`API.md` Section 13 for the SSE HTTP contract · `../process/ENVIRONMENT.md` for Mailpit/FCM
-local substitution.
+`API.md` Section 13 for the SSE HTTP contract · `../process/ENVIRONMENT.md` for environment variables
+and external service configuration.

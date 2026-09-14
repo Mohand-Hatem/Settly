@@ -1,8 +1,8 @@
 # Infrastructure
 
-    Status:       LOCKED · Resend PROVISIONAL
-    Last Updated: 2026-09-05
-    Derived From: Decisions #22, #36, #37
+    Status:       LOCKED
+    Last Updated: 2026-09-14
+    Derived From: Decisions #22, #36, #37, #43, #44
     Related:      OVERVIEW.md, ../process/ENVIRONMENT.md
 
 ## 1. Purpose
@@ -16,11 +16,11 @@ must not be violated by convenience.
   Local machine
   ├── frontend/          Next.js @ localhost:3000
   ├── backend/
-  │     ├── api          Express @ localhost:4000
+  │     ├── api          Express @ localhost:4000 (REST + SSE + WebSocket)
   │     └── worker        BullMQ consumers + schedulers
   ├── PostgreSQL          Docker: PostGIS + pgvector + pg_trgm + btree_gist
-  ├── Redis               Docker
-  ├── Mailpit             local inbox — no production email provider needed locally
+  ├── Redis               Docker or Upstash Redis (dev)
+  ├── Resend              REAL email delivery to real inboxes (Decisions #36, #44)
   ├── Cloudinary          REAL, dev/ folder (EXIF-stripping is theirs, must be exercised)
   ├── Paymob              FAKE adapter + local webhook signer (sandbox is a manual pre-release check)
   ├── Gemini               REAL, prompt-hash cached
@@ -31,27 +31,31 @@ must not be violated by convenience.
 ## 3. Future production topology (not yet deployed)
 
 ```
-  Vercel                 frontend
-  Railway                settly-api (ALWAYS ON — hard constraint) + settly-worker (2 services)
-  Managed Redis          BullMQ + rate limiting + hybrid-search cache
+  Vercel                 frontend (Next.js App Router — serverless / edge)
+  Railway                settly-api (ALWAYS ON container — REST, SSE, WebSocket)
+  Railway                settly-worker (ALWAYS ON container — BullMQ consumers + 9 schedulers)
+  Upstash Redis          BullMQ queues + rate limiting + hybrid-search cache + WS pub/sub
   Supabase PostgreSQL    PostGIS + pgvector + pg_trgm + btree_gist
   Cloudinary             public media
   Supabase Storage       private documents
   Paymob                  production payments
-  Resend (PROVISIONAL)   production email — V18 not yet verified
+  Resend                 production email (LOCKED)
   Google Geocoding       server-side, listing creation only
   MapTiler                map tiles
   FCM                     push
   Sentry                  errors + Crons
 ```
 
-## 4. Hard constraint
+## 4. Hard constraint: Serverless vs. Always-On Container Boundary
 
-> **The backend must be always-on. It cannot sleep on idle.** Scheduled reconciliation and expiry
-> jobs are load-bearing (`CONCURRENCY_AND_IDEMPOTENCY.md` Section 8); a sleeping backend silently
-> invalidates the payment reliability design.
+> **The backend API and workers must be always-on containers. They cannot run in stateless serverless functions.**
 
-Any scale-to-zero host is disqualified for the API/worker.
+1. **Native WebSockets (`/ws/chat`)**: require an open, persistent TCP socket connection with in-memory connection handles. Stateless serverless functions (like Vercel functions) terminate immediately after returning an HTTP response and cannot maintain socket connections.
+2. **Server-Sent Events (`/api/v1/events`)**: require a persistent HTTP stream. Serverless function timeout limits (e.g. 15s–60s) would forcibly terminate SSE streams and induce perpetual client reconnections.
+3. **BullMQ Workers**: require a continuous Node.js event loop listening for Redis jobs. Serverless functions cannot poll or block on Redis queues while idle.
+4. **Scheduled reconciliation and expiry jobs** (`CONCURRENCY_AND_IDEMPOTENCY.md` Section 8) are load-bearing. A sleeping backend invalidates the payment reliability design.
+
+**Resolution:** Vercel deploys the frontend; Railway (or an equivalent container runner) runs `settly-api` and `settly-worker` as persistent services. Cross-instance WebSocket messaging is coordinated across containers via **Upstash Redis Pub/Sub**.
 
 ## 5. Two Railway services — not one
 

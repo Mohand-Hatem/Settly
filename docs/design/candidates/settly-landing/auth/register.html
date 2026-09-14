@@ -1013,7 +1013,7 @@
         }
       }
     </style>
-  </head>
+</head>
   <body>
     <div class="auth-layout">
       <!-- Left Pane: Architectural Scrim & Institutional Credentials (50%) -->
@@ -1048,12 +1048,12 @@
 
           <!-- Central Broadsheet Quote -->
           <div class="auth-brand-quote">
-            <div class="auth-quote-tag">Direct Fiduciary Ingestion</div>
+            <div class="auth-quote-tag">Verified Real Estate Platform</div>
             <h2 class="auth-quote-text">
-              "Direct access to Egypt's verified prime inventory. Zero phantom listings. Complete cadastral title deed authentication."
+              "Direct access to Egypt's verified prime inventory. Zero phantom listings. Complete title deed verification."
             </h2>
             <p class="auth-quote-caption">
-              Create your account to unlock verified price matrices, request priority viewings, and submit legally binding offers secured under CBE Law 27/2020.
+              Create your account to browse verified property listings, request viewings, and submit offers with protected reservation deposits.
             </p>
           </div>
 
@@ -1064,11 +1064,11 @@
               <span class="pillar-lbl">Audited Volume</span>
             </div>
             <div class="pillar-item">
-              <span class="pillar-val">Law 27/2020</span>
-              <span class="pillar-lbl">CBE Escrow Rail</span>
+              <span class="pillar-val">48-Hour</span>
+              <span class="pillar-lbl">Refund Window</span>
             </div>
             <div class="pillar-item">
-              <span class="pillar-val">100% FRA</span>
+              <span class="pillar-val">100%</span>
               <span class="pillar-lbl">Licensed Brokers</span>
             </div>
           </div>
@@ -1100,7 +1100,7 @@
 
             <h1 class="auth-card-title">Create your account</h1>
             <p class="auth-card-desc">
-              Join institutional investors, diaspora family offices, and certified advisors on Egypt's sovereign property terminal.
+              Join verified buyers and licensed advisors on Settly's premium real estate platform.
             </p>
           </div>
 
@@ -1145,7 +1145,7 @@
               <button
                 type="button"
                 class="btn-demo-quick"
-                onclick="fillDemoRegister('Tarek Mansour', 'tarek.mansour@diaspora-capital.com', '+20', '1001234567', 'Settly#Elite2026', 'buyer')"
+                onclick="fillDemoRegister('Tarek Mansour', 'tarek.mansour@settly.com', '+20', '1001234567', 'Settly#Elite2026', 'buyer')"
                 title="Fill Buyer Registration"
               >
                 Buyer Demo
@@ -1330,25 +1330,25 @@
                     type="text"
                     id="firmInput"
                     class="form-input"
-                    placeholder="e.g. Sovereign Advisory Group"
+                    placeholder="e.g. Elite Realty Advisors"
                   />
                 </div>
                 <span class="field-error-msg" id="firmError">Please enter your advisory firm or brokerage name.</span>
               </div>
 
-              <!-- FRA License Registration -->
+              <!-- Real Estate Broker License -->
               <div class="form-group">
-                <label for="licenseInput" class="form-label">FRA REGISTRATION NUMBER</label>
+                <label for="licenseInput" class="form-label">BROKER LICENSE NUMBER</label>
                 <div class="input-wrapper">
                   <input
                     type="text"
                     id="licenseInput"
                     class="form-input"
-                    placeholder="FRA-EG #8841-B"
+                    placeholder="BRK-EG #8841-B"
                     style="font-family: var(--mono-val);"
                   />
                 </div>
-                <span class="field-error-msg" id="licenseError">Please provide your valid FRA Egypt license credential.</span>
+                <span class="field-error-msg" id="licenseError">Please provide your valid real estate broker license number.</span>
               </div>
             </div>
 
@@ -1368,10 +1368,10 @@
             <div class="form-check-row">
               <input type="checkbox" id="termsCheck" class="custom-checkbox" required />
               <label for="termsCheck" class="checkbox-label">
-                I agree to Settly's <a href="#" onclick="event.preventDefault(); showToast('Viewing Fiduciary Terms of Exchange.');">Fiduciary Terms</a> and statutory CBE Escrow Protection (Law 27/2020).
+                I agree to Settly's <a href="#" onclick="event.preventDefault(); showToast('Viewing Terms of Service.');">Terms of Service</a> and <a href="#" onclick="event.preventDefault(); showToast('Viewing Privacy Policy.');">Privacy Policy</a>.
               </label>
             </div>
-            <span class="field-error-msg" id="termsError" style="margin-left: 24px;">You must accept the Fiduciary Terms of Exchange.</span>
+            <span class="field-error-msg" id="termsError" style="margin-left: 24px;">You must accept the Terms of Service.</span>
 
             <!-- Submit CTA -->
             <button type="submit" class="btn-auth-submit" id="btnSubmit">
@@ -1421,7 +1421,7 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            <span>Central Bank of Egypt Law 27/2020 Escrow Protected</span>
+            <span>Verified Listings &amp; Secure Deposit Protection</span>
           </div>
         </div>
       </div>
@@ -1457,7 +1457,7 @@
           tabAgent.classList.remove('active');
           tabAgent.setAttribute('aria-selected', 'false');
           emailLabel.textContent = 'PORTAL EMAIL ADDRESS';
-          emailInput.placeholder = 'tarek@diaspora-capital.com';
+          emailInput.placeholder = 'tarek@settly.com';
           advisorFields.style.display = 'none';
           corridorGroup.style.display = 'flex';
         } else {
@@ -1675,8 +1675,8 @@
         document.getElementById('termsCheck').checked = true;
 
         if (role === 'agent') {
-          document.getElementById('firmInput').value = 'Sovereign Advisory Group';
-          document.getElementById('licenseInput').value = 'FRA-EG #8841-B';
+          document.getElementById('firmInput').value = 'Elite Realty Advisors';
+          document.getElementById('licenseInput').value = 'BRK-EG #8841-B';
         }
 
         checkPasswordStrength(password);
@@ -1741,7 +1741,7 @@
           stateText.style.color = 'var(--navy-600)';
         } else if (score >= 4) {
           segs.forEach(s => s.style.background = 'var(--sage)');
-          stateText.textContent = 'Fiduciary Grade';
+          stateText.textContent = 'Strong Password';
           stateText.style.color = 'var(--sage)';
         }
       }
@@ -1813,7 +1813,7 @@
         const btn = document.getElementById('btnSubmit');
         const btnText = document.getElementById('btnText');
         btn.classList.add('loading');
-        btnText.textContent = 'Generating Fiduciary Key...';
+        btnText.textContent = 'Creating Account...';
 
         setTimeout(() => {
           btn.classList.remove('loading');
@@ -1831,7 +1831,7 @@
         setTimeout(() => {
           showToast('SSO Verified. Routing to verification...');
           setTimeout(() => {
-            window.location.href = 'verify-email.html?email=tarek.mansour%40diaspora-capital.com&role=' + currentRole;
+            window.location.href = 'verify-email.html?email=tarek.mansour%40settly.com&role=' + currentRole;
           }, 900);
         }, 700);
       }
@@ -1845,5 +1845,5 @@
         }, 3400);
       }
     </script>
-  </body>
+</body>
 </html>

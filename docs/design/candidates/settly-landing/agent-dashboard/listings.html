@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Listings & Exclusive Mandates · Settly Agent Portal</title>
+  <meta name="description" content="Exclusive luxury listings portfolio and representation mandates for licensed real estate advisors on Settly. Manage inventory, pricing, inquiries, and viewings.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.15);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background-color: var(--brass);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Advisor Profile Card in Sidebar */
+    .sidebar-advisor {
+      margin: 0 16px 16px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .advisor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brass);
+    }
+
+    .advisor-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .advisor-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .advisor-role {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .advisor-license {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-regulatory-box {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--navy-900);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .mobile-brand-mark img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .mobile-brand-text {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .header-breadcrumb .sep {
+      color: var(--line-2);
+    }
+
+    .header-breadcrumb .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+      letter-spacing: 0.03em;
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sovereign-fx-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .fx-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--brass);
+    }
+
+    .cairo-clock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .topbar-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .topbar-icon-btn:hover {
+      background-color: var(--canvas);
+      border-color: var(--line-2);
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--brass);
+      border: 1.5px solid var(--white);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      text-decoration: none;
+    }
+
+    .user-avatar-initials {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .user-tier {
+      font-size: 0.6875rem;
+      color: var(--brass-600);
+      font-weight: 600;
+    }
+
+    /* Portal Content Area */
+    .portal-content {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Command Bar */
+    .command-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .command-title-wrap {
+      max-width: 780px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass);
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      border-color: var(--brass-600);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--navy-700);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+
+    /* 4-Metric Telemetry Ribbon */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .telemetry-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .telemetry-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -4px rgba(19, 29, 54, 0.08);
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .telemetry-tag {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+    }
+
+    .telemetry-tag.success {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border-color: rgba(61, 90, 76, 0.2);
+    }
+
+    .telemetry-tag.warning {
+      background-color: var(--brass-050);
+      color: var(--brass-600);
+      border-color: rgba(198, 151, 73, 0.3);
+    }
+
+    .telemetry-value-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .telemetry-num {
+      font-family: var(--font-mono);
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .telemetry-unit {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .telemetry-footer {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    /* Filtering & View Mode Workbench */
+    .workbench-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .workbench-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+
+    .workbench-search-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px 0 42px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      background-color: var(--canvas);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .workbench-search-input:focus {
+      background-color: var(--white);
+      border-color: var(--navy-800);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    .workbench-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .select-dropdown {
+      height: 42px;
+      padding: 0 32px 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--navy-900);
+      background-color: var(--white);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: all 0.15s ease;
+    }
+
+    .select-dropdown:focus {
+      border-color: var(--navy-800);
+    }
+
+    .view-mode-toggle {
+      display: inline-flex;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas-2);
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .view-toggle-btn {
+      border: none;
+      background: none;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      transition: all 0.15s ease;
+    }
+
+    .view-toggle-btn:hover {
+      color: var(--navy-900);
+    }
+
+    .view-toggle-btn.active {
+      background-color: var(--white);
+      color: var(--navy-900);
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.1);
+    }
+
+    /* Filter Pills Row */
+    .filter-pills-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .filter-pill {
+      border: 1px solid var(--line);
+      background-color: var(--canvas);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .filter-pill:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--line-2);
+      color: var(--navy-900);
+    }
+
+    .filter-pill.active {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    .filter-pill .pill-count {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      background-color: rgba(30, 42, 74, 0.08);
+    }
+
+    .filter-pill.active .pill-count {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: var(--white);
+    }
+
+    .results-count-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      color: var(--ink-3);
+      padding: 0 4px;
+    }
+
+    .results-count-bar strong {
+      color: var(--navy-900);
+    }
+
+    /* Grid View: 3-column Portrait Cards (4:3 ratio images) */
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .listing-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px -4px rgba(19, 29, 54, 0.1);
+      border-color: var(--line-2);
+    }
+
+    .card-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background-color: var(--navy-900);
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .listing-card:hover .card-img {
+      transform: scale(1.03);
+    }
+
+    .card-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(19, 29, 54, 0.4) 0%, transparent 40%, rgba(19, 29, 54, 0.8) 100%);
+      pointer-events: none;
+    }
+
+    .card-badges-top {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-active {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    .badge-reserved {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    .badge-draft {
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+      border: 1px solid var(--line-2);
+    }
+
+    .ref-code-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background-color: rgba(19, 29, 54, 0.7);
+      backdrop-filter: blur(4px);
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .card-price-overlay {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .card-price-egp {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 1px 3px rgba(19, 29, 54, 0.6);
+    }
+
+    .card-rate-m2 {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--brass-200);
+      font-weight: 500;
+    }
+
+    .card-body {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .card-mandate-type {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.3;
+      text-decoration: none;
+    }
+
+    .card-title:hover {
+      color: var(--brass-600);
+    }
+
+    .card-location {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-specs-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      flex-wrap: wrap;
+    }
+
+    .card-spec-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-spec-item strong {
+      color: var(--navy-900);
+    }
+
+    .card-telemetry-micro {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+      padding: 4px 0;
+    }
+
+    .card-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    .card-actions-row .btn {
+      flex: 1;
+    }
+
+    /* Table View: Broadsheet Density */
+    .table-container {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: none;
+    }
+
+    .listings-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      min-width: 1000px;
+    }
+
+    .listings-table th {
+      background-color: var(--canvas-2);
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .listings-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      vertical-align: middle;
+    }
+
+    .listings-table tr:hover td {
+      background-color: rgba(247, 246, 243, 0.5);
+    }
+
+    .table-property-cell {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .table-thumb {
+      width: 60px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--line);
+    }
+
+    .table-property-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .table-prop-title {
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      text-decoration: none;
+    }
+
+    .table-prop-title:hover {
+      color: var(--brass-600);
+    }
+
+    .table-prop-sub {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .table-price-cell {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .table-rate-sub {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .table-telemetry-cell {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    .table-actions-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background-color: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 540px;
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(12px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      color: var(--ink-2);
+      letter-spacing: 0.05em;
+    }
+
+    .form-input {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--navy-800);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background-color: var(--canvas);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Toast notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      animation: toastIn 0.25s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Backdrop for Mobile Sidebar */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 45;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1200px) {
+      .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-backdrop.active {
+        display: block;
+      }
+      .sidebar-close-btn {
+        display: flex;
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .mobile-brand-mark {
+        display: flex;
+      }
+      .header-breadcrumb,
+      .portal-trust-chip,
+      .sovereign-fx-pill,
+      .cairo-clock-pill,
+      .user-tier {
+        display: none;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+        height: 64px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+        gap: 20px;
+      }
+      .command-title {
+        font-size: 1.625rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .listings-grid {
+        grid-template-columns: 1fr;
+      }
+      .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .telemetry-card {
+        padding: 16px 14px;
+      }
+      .command-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .command-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .command-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .workbench-row-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .workbench-controls {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .select-dropdown {
+        flex: 1;
+        min-width: 140px;
+      }
+      .view-mode-toggle {
+        margin-left: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Backdrop for Mobile Drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Canonical 288px Fixed Sidebar -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Agent Emblem Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads & Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics & Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Inventory & Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged-in Agent Profile Card -->
+      <div class="sidebar-advisor">
+        <div class="advisor-header">
+          <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+          <div class="advisor-meta">
+            <span class="advisor-name">Karim El-Sayed</span>
+            <span class="advisor-role">Senior Private Advisor</span>
+            <span class="advisor-license">License #EG-8841-B</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width: 100%; padding: 6px 12px; font-size: 0.75rem; justify-content: center; background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.15);" onclick="showToast('Agent desk status: Active & Verified')">
+          <span>Broker Desk Verified</span>
+        </button>
+      </div>
+
+      <!-- Legal & Trust Footer -->
+      <div class="sidebar-regulatory-box">
+        Verified Listings & Exclusive Mandates<br>
+        Licensed Independent Broker
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="portal-main">
+      <!-- Top Sticky Navigation Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">MY LISTINGS &amp; MANDATES</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>EXCLUSIVE MANDATES ACTIVE</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Active Leads &amp; Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Portal Content Body -->
+      <div class="portal-content">
+        <!-- Command Bar -->
+        <div class="command-bar">
+          <div class="command-title-wrap">
+            <h1 class="command-title">Exclusive Listings & Mandates</h1>
+            <p class="command-subtitle">Managing broker portfolio of 14 luxury units across New Cairo, West Cairo, and North Coast prime corridors.</p>
+          </div>
+          <div class="command-actions">
+            <button class="btn btn-outline" onclick="exportPortfolioCsv()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export CSV Dossier</span>
+            </button>
+            <a href="create-listing.html" class="btn btn-brass">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Create Listing</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4-Metric Telemetry KPI Ribbon -->
+        <div class="telemetry-grid">
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Total Portfolio</span>
+              <span class="telemetry-tag success">100% Freehold</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num">486.5M</span>
+              <span class="telemetry-unit">EGP</span>
+            </div>
+            <div class="telemetry-footer">
+              <span>14 Exclusive Seller Representation Mandates</span>
+            </div>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Active Public</span>
+              <span class="telemetry-tag">Published</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num" id="statActiveCount">11</span>
+              <span class="telemetry-unit">Units</span>
+            </div>
+            <div class="telemetry-footer">
+              <span>342 aggregate buyer inquiries this quarter</span>
+            </div>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Under Contract</span>
+              <span class="telemetry-tag warning">In Escrow</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num">2</span>
+              <span class="telemetry-unit">Units</span>
+            </div>
+            <div class="telemetry-footer">
+              <span>Katameya Dunes & Palm Hills V12</span>
+            </div>
+          </div>
+
+          <div class="telemetry-card">
+            <div class="telemetry-header">
+              <span class="telemetry-label">Draft / Private</span>
+              <span class="telemetry-tag">Off-Market</span>
+            </div>
+            <div class="telemetry-value-wrap">
+              <span class="telemetry-num">1</span>
+              <span class="telemetry-unit">Unit</span>
+            </div>
+            <div class="telemetry-footer">
+              <span>Villette Phase IV Sky Mansion staging</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtering & Search Workbench -->
+        <div class="workbench-card">
+          <div class="workbench-row-top">
+            <div class="search-input-wrap">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="workbenchSearch" class="workbench-search-input" placeholder="Search by Ref ID (e.g. SET-KD-4029), property title, or compound..." oninput="filterListings()">
+            </div>
+            <div class="workbench-controls">
+              <select id="filterDistrict" class="select-dropdown" onchange="filterListings()">
+                <option value="all">All Corridors</option>
+                <option value="New Cairo">New Cairo</option>
+                <option value="6th of October">6th of October / New Zayed</option>
+                <option value="North Coast">North Coast (Sahel)</option>
+              </select>
+
+              <select id="filterTypology" class="select-dropdown" onchange="filterListings()">
+                <option value="all">All Typologies</option>
+                <option value="Standalone Villa">Standalone Villa</option>
+                <option value="Twin House">Twin House</option>
+                <option value="Townhouse">Townhouse</option>
+                <option value="Penthouse">Penthouse</option>
+              </select>
+
+              <select id="sortBy" class="select-dropdown" onchange="sortListings()">
+                <option value="price-desc">Price: High to Low</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="inquiries-desc">Most Inquiries</option>
+                <option value="updated-desc">Recently Updated</option>
+              </select>
+
+              <div class="view-mode-toggle">
+                <button class="view-toggle-btn active" id="btnViewGrid" onclick="setViewMode('grid')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  <span>Grid</span>
+                </button>
+                <button class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                  <span>Table</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-pills-row">
+            <button class="filter-pill active" data-status="all" onclick="setStatusFilter('all', this)">
+              <span>All Mandates</span>
+              <span class="pill-count">14</span>
+            </button>
+            <button class="filter-pill" data-status="active" onclick="setStatusFilter('active', this)">
+              <span>Active</span>
+              <span class="pill-count">11</span>
+            </button>
+            <button class="filter-pill" data-status="reserved" onclick="setStatusFilter('reserved', this)">
+              <span>Under Contract</span>
+              <span class="pill-count">2</span>
+            </button>
+            <button class="filter-pill" data-status="draft" onclick="setStatusFilter('draft', this)">
+              <span>Draft / Off-Market</span>
+              <span class="pill-count">1</span>
+            </button>
+          </div>
+
+          <div class="results-count-bar">
+            <span>Showing <strong id="visibleCount">14</strong> of 14 mandates</span>
+            <span id="filteredPortfolioValue">Portfolio Value: EGP 486,500,000</span>
+          </div>
+        </div>
+
+        <!-- Grid View (Cards Container) -->
+        <div class="listings-grid" id="listingsGridContainer">
+          <!-- Populated dynamically by JavaScript -->
+        </div>
+
+        <!-- Table View (Broadsheet Container) -->
+        <div class="table-container" id="listingsTableContainer">
+          <table class="listings-table">
+            <thead>
+              <tr>
+                <th>Property & Mandate</th>
+                <th>Corridor / District</th>
+                <th>Typology & Specs</th>
+                <th>Asking Price (EGP)</th>
+                <th>Status</th>
+                <th>Telemetry</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listingsTableBody">
+              <!-- Populated dynamically by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Quick Edit Modal -->
+  <div class="modal-backdrop" id="modalQuickEdit">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Quick Update Mandate</h3>
+        <button class="modal-close" onclick="closeModal('modalQuickEdit')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editListingId">
+        <div class="form-group">
+          <label class="form-label">Property Title</label>
+          <input type="text" id="editTitle" class="form-input" readonly style="background-color: var(--canvas-2);">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Asking Price (EGP)</label>
+          <input type="number" id="editPrice" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mandate Status</label>
+          <select id="editStatus" class="select-dropdown" style="width: 100%;">
+            <option value="active">Active (Published on Exchange)</option>
+            <option value="reserved">Reserved (Under Contract)</option>
+            <option value="draft">Draft (Private Off-Market)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Broker Representation Notes</label>
+          <input type="text" id="editNotes" class="form-input" placeholder="e.g. Exclusive mandate active until Dec 2026">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalQuickEdit')">Cancel</button>
+        <button class="btn btn-brass" onclick="saveQuickEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Listing Modal -->
+  <div class="modal-backdrop" id="modalShareListing">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Share Listing Dossier</h3>
+        <button class="modal-close" onclick="closeModal('modalShareListing')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink-2);">Share verified exclusive property dossier with accredited buyers or institutional family offices.</p>
+        <div class="form-group">
+          <label class="form-label">Public Exchange Link</label>
+          <input type="text" id="shareUrlInput" class="form-input" readonly>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-outline" style="flex: 1;" onclick="copyShareUrl()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy Link</span>
+          </button>
+          <button class="btn btn-primary" style="flex: 1;" onclick="shareViaWhatsApp()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            <span>WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delist / Archive Modal -->
+  <div class="modal-backdrop" id="modalDelist">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Archive Mandate</h3>
+        <button class="modal-close" onclick="closeModal('modalDelist')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink-2);">Are you sure you want to archive this mandate from public exchange? You can re-activate it at any time from your draft archive.</p>
+        <div class="form-group">
+          <label class="form-label">Archive Reason</label>
+          <select class="select-dropdown" style="width: 100%;">
+            <option>Transaction Closed (Sold via Settly)</option>
+            <option>Owner Requested Temporary Hold</option>
+            <option>Exclusive Representation Period Ended</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modalDelist')">Cancel</button>
+        <button class="btn btn-brass" onclick="confirmArchive()">Confirm Archive</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Dynamic Logic Scripts -->
+  <script>
+    // Embedded Data Matrix
+    let listings = [
+  {
+    "id": "SET-KD-4029",
+    "title": "The Grand Residence, Katameya Dunes",
+    "district": "New Cairo",
+    "compound": "Katameya Dunes Golf & Rock",
+    "corridor": "Golden Square",
+    "typology": "Standalone Villa",
+    "bua": 680,
+    "land": 1120,
+    "beds": 5,
+    "baths": 7,
+    "finish": "Ultra Super Lux (Furnished)",
+    "priceEgp": 44500000,
+    "askingPriceEgp": 45000000,
+    "pricePerM2": 65441,
+    "status": "reserved",
+    "statusLabel": "Under Contract",
+    "statusBadgeClass": "badge-reserved",
+    "mandate": "Exclusive Seller Mandate",
+    "image": "1.jpg",
+    "views": 84,
+    "inquiries": 18,
+    "tours": 4,
+    "daysOnMarket": 22,
+    "hasActiveOffer": true,
+    "updated": "2026-09-12"
+  },
+  {
+    "id": "SET-MR-5102",
+    "title": "Waterfront Penthouse, Marassi Marina",
+    "district": "North Coast",
+    "compound": "Marassi Marina",
+    "corridor": "Sidi Abd El Rahman",
+    "typology": "Penthouse",
+    "bua": 420,
+    "land": 0,
+    "beds": 4,
+    "baths": 5,
+    "finish": "Designer Furnished + Yacht Berth",
+    "priceEgp": 47500000,
+    "askingPriceEgp": 50000000,
+    "pricePerM2": 113095,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Mandate",
+    "image": "2.jpg",
+    "views": 142,
+    "inquiries": 24,
+    "tours": 6,
+    "daysOnMarket": 14,
+    "hasActiveOffer": true,
+    "updated": "2026-09-11"
+  },
+  {
+    "id": "SET-PH-8819",
+    "title": "Signature Villa V12, Palm Hills October",
+    "district": "6th of October",
+    "compound": "Palm Hills Golf Views",
+    "corridor": "West Cairo",
+    "typology": "Standalone Villa",
+    "bua": 520,
+    "land": 850,
+    "beds": 5,
+    "baths": 6,
+    "finish": "Core & Shell (Custom Plan)",
+    "priceEgp": 38200000,
+    "askingPriceEgp": 38200000,
+    "pricePerM2": 73461,
+    "status": "reserved",
+    "statusLabel": "Under Contract",
+    "statusBadgeClass": "badge-reserved",
+    "mandate": "Exclusive Mandate",
+    "image": "3.jpg",
+    "views": 96,
+    "inquiries": 14,
+    "tours": 3,
+    "daysOnMarket": 31,
+    "hasActiveOffer": true,
+    "updated": "2026-09-10"
+  },
+  {
+    "id": "SET-VL-3012",
+    "title": "Sky Villa Duplex, SODIC Villette",
+    "district": "New Cairo",
+    "compound": "Villette by SODIC",
+    "corridor": "Golden Square",
+    "typology": "Townhouse",
+    "bua": 310,
+    "land": 0,
+    "beds": 4,
+    "baths": 4,
+    "finish": "Ultra Lux + Private Roof",
+    "priceEgp": 26800000,
+    "askingPriceEgp": 26800000,
+    "pricePerM2": 86451,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Direct Developer Exclusive",
+    "image": "4.jpg",
+    "views": 110,
+    "inquiries": 19,
+    "tours": 5,
+    "daysOnMarket": 9,
+    "hasActiveOffer": false,
+    "updated": "2026-09-09"
+  },
+  {
+    "id": "SET-MV-9014",
+    "title": "Lakefront Palace, Mivida Crescent",
+    "district": "New Cairo",
+    "compound": "Mivida by Emaar Misr",
+    "corridor": "Road 90",
+    "typology": "Standalone Villa",
+    "bua": 620,
+    "land": 980,
+    "beds": 6,
+    "baths": 7,
+    "finish": "Fully Finished Modern Luxury",
+    "priceEgp": 52000000,
+    "askingPriceEgp": 52000000,
+    "pricePerM2": 83870,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Seller Mandate",
+    "image": "5.jpg",
+    "views": 156,
+    "inquiries": 29,
+    "tours": 8,
+    "daysOnMarket": 18,
+    "hasActiveOffer": false,
+    "updated": "2026-09-08"
+  },
+  {
+    "id": "SET-HB-7721",
+    "title": "Beachfront Chalet, Hacienda Bay",
+    "district": "North Coast",
+    "compound": "Hacienda Bay by Palm Hills",
+    "corridor": "Sidi Heneish",
+    "typology": "Standalone Villa",
+    "bua": 380,
+    "land": 650,
+    "beds": 4,
+    "baths": 5,
+    "finish": "Turnkey Seafront Designer Spec",
+    "priceEgp": 58000000,
+    "askingPriceEgp": 60000000,
+    "pricePerM2": 152631,
+    "status": "active",
+    "statusLabel": "Prime Release",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Mandate",
+    "image": "6.jpg",
+    "views": 204,
+    "inquiries": 38,
+    "tours": 7,
+    "daysOnMarket": 27,
+    "hasActiveOffer": false,
+    "updated": "2026-09-07"
+  },
+  {
+    "id": "SET-AL-1204",
+    "title": "Golf Course Twin House, Allegria",
+    "district": "6th of October",
+    "compound": "The Allegria by SODIC",
+    "corridor": "Sheikh Zayed",
+    "typology": "Twin House",
+    "bua": 340,
+    "land": 490,
+    "beds": 4,
+    "baths": 4,
+    "finish": "Super Lux Fairway Panorama",
+    "priceEgp": 31500000,
+    "askingPriceEgp": 31500000,
+    "pricePerM2": 92647,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Mandate",
+    "image": "7.jpg",
+    "views": 88,
+    "inquiries": 12,
+    "tours": 4,
+    "daysOnMarket": 35,
+    "hasActiveOffer": false,
+    "updated": "2026-09-06"
+  },
+  {
+    "id": "SET-SL-4411",
+    "title": "Park Residence Villa, Swan Lake",
+    "district": "New Cairo",
+    "compound": "Swan Lake Residences",
+    "corridor": "First Settlement",
+    "typology": "Standalone Villa",
+    "bua": 540,
+    "land": 780,
+    "beds": 5,
+    "baths": 6,
+    "finish": "Semi-Finished Architectural",
+    "priceEgp": 49000000,
+    "askingPriceEgp": 49000000,
+    "pricePerM2": 90740,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Seller Mandate",
+    "image": "8.jpg",
+    "views": 130,
+    "inquiries": 22,
+    "tours": 5,
+    "daysOnMarket": 12,
+    "hasActiveOffer": false,
+    "updated": "2026-09-05"
+  },
+  {
+    "id": "SET-KM-6109",
+    "title": "Garden Villa Townhouse, Karmell",
+    "district": "6th of October",
+    "compound": "Karmell by SODIC",
+    "corridor": "New Zayed",
+    "typology": "Townhouse",
+    "bua": 280,
+    "land": 200,
+    "beds": 3,
+    "baths": 4,
+    "finish": "Modern Core & Shell",
+    "priceEgp": 19500000,
+    "askingPriceEgp": 19500000,
+    "pricePerM2": 69642,
+    "status": "active",
+    "statusLabel": "Value Mandate",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Direct Developer Mandate",
+    "image": "9.jpg",
+    "views": 72,
+    "inquiries": 15,
+    "tours": 3,
+    "daysOnMarket": 40,
+    "hasActiveOffer": false,
+    "updated": "2026-09-04"
+  },
+  {
+    "id": "SET-CC-8205",
+    "title": "Ras El Hekma Shoreline Villa, Cali Coast",
+    "district": "North Coast",
+    "compound": "Cali Coast by Maven",
+    "corridor": "Ras El Hekma",
+    "typology": "Standalone Villa",
+    "bua": 450,
+    "land": 720,
+    "beds": 5,
+    "baths": 6,
+    "finish": "Fully Finished Beachfront",
+    "priceEgp": 46000000,
+    "askingPriceEgp": 46000000,
+    "pricePerM2": 102222,
+    "status": "active",
+    "statusLabel": "New Release",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Mandate",
+    "image": "10.jpg",
+    "views": 165,
+    "inquiries": 31,
+    "tours": 9,
+    "daysOnMarket": 6,
+    "hasActiveOffer": false,
+    "updated": "2026-09-03"
+  },
+  {
+    "id": "SET-NC-1044",
+    "title": "Diplomatic Suite, Al Maqsad",
+    "district": "New Cairo",
+    "compound": "Al Maqsad Residences",
+    "corridor": "Diplomatic Quarter",
+    "typology": "Penthouse",
+    "bua": 360,
+    "land": 0,
+    "beds": 4,
+    "baths": 5,
+    "finish": "Ultra Lux Handover Ready",
+    "priceEgp": 28500000,
+    "askingPriceEgp": 28500000,
+    "pricePerM2": 79166,
+    "status": "active",
+    "statusLabel": "Active Exclusive",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Mandate",
+    "image": "11.jpg",
+    "views": 94,
+    "inquiries": 16,
+    "tours": 4,
+    "daysOnMarket": 25,
+    "hasActiveOffer": false,
+    "updated": "2026-09-02"
+  },
+  {
+    "id": "SET-KH-0018",
+    "title": "The Sovereign Estate, Katameya Heights",
+    "district": "New Cairo",
+    "compound": "Katameya Heights Golf & Tennis",
+    "corridor": "Ring Road",
+    "typology": "Standalone Villa",
+    "bua": 850,
+    "land": 1800,
+    "beds": 6,
+    "baths": 8,
+    "finish": "Stately Masterwork + Private Pool",
+    "priceEgp": 68000000,
+    "askingPriceEgp": 70000000,
+    "pricePerM2": 80000,
+    "status": "active",
+    "statusLabel": "Trophy Asset",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Sole Exclusive Mandate",
+    "image": "hero.jpg",
+    "views": 310,
+    "inquiries": 42,
+    "tours": 12,
+    "daysOnMarket": 45,
+    "hasActiveOffer": false,
+    "updated": "2026-09-01"
+  },
+  {
+    "id": "SET-SS-3301",
+    "title": "Seaside Horizon Twin Villa, SilverSands",
+    "district": "North Coast",
+    "compound": "SilverSands by Ora",
+    "corridor": "Sidi Heneish",
+    "typology": "Twin House",
+    "bua": 320,
+    "land": 450,
+    "beds": 4,
+    "baths": 4,
+    "finish": "Turnkey Luxury Beachfront",
+    "priceEgp": 41000000,
+    "askingPriceEgp": 41000000,
+    "pricePerM2": 128125,
+    "status": "active",
+    "statusLabel": "Prime Release",
+    "statusBadgeClass": "badge-active",
+    "mandate": "Exclusive Mandate",
+    "image": "horizontal.jfif",
+    "views": 118,
+    "inquiries": 20,
+    "tours": 5,
+    "daysOnMarket": 16,
+    "hasActiveOffer": false,
+    "updated": "2026-08-30"
+  },
+  {
+    "id": "SET-VL-9900",
+    "title": "Off-Market Sky Mansion, Villette Phase IV",
+    "district": "New Cairo",
+    "compound": "Villette by SODIC",
+    "corridor": "Golden Square",
+    "typology": "Standalone Villa",
+    "bua": 590,
+    "land": 820,
+    "beds": 5,
+    "baths": 6,
+    "finish": "Core & Shell (Custom Layout)",
+    "priceEgp": 35000000,
+    "askingPriceEgp": 35000000,
+    "pricePerM2": 59322,
+    "status": "draft",
+    "statusLabel": "Private Draft",
+    "statusBadgeClass": "badge-draft",
+    "mandate": "Private Off-Market Mandate",
+    "image": "panoramic.jfif",
+    "views": 0,
+    "inquiries": 0,
+    "tours": 0,
+    "daysOnMarket": 3,
+    "hasActiveOffer": false,
+    "updated": "2026-08-28"
+  }
+];
+
+    let currentStatusFilter = 'all';
+    let currentViewMode = 'grid';
+
+    // Format Number with Commas
+    function formatEgp(num) {
+      return num.toLocaleString('en-US') + ' EGP';
+    }
+
+    // Render Grid View
+    function renderGrid(data) {
+      const container = document.getElementById('listingsGridContainer');
+      if (!container) return;
+
+      if (data.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 60px 20px; text-align: center; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);"><p style="font-family: var(--font-display); font-size: 1.25rem; color: var(--navy-900); margin-bottom: 8px;">No listings matched your criteria</p><p style="font-size: 0.875rem; color: var(--ink-3);">Try adjusting your search terms, district filter, or status pill.</p></div>';
+        return;
+      }
+
+      container.innerHTML = data.map(function(item) {
+        const landHtml = item.land > 0 ? '<span class="card-spec-item"><strong>' + item.land + '</strong> m² Land</span>' : '';
+        return '<article class="listing-card" id="card-' + item.id + '">' +
+          '<div class="card-media">' +
+            '<img src="../../../../../Images/web/' + item.image + '" alt="' + item.title + '" class="card-img" loading="lazy">' +
+            '<div class="card-scrim"></div>' +
+            '<div class="card-badges-top">' +
+              '<span class="status-badge ' + item.statusBadgeClass + '">' + item.statusLabel + '</span>' +
+              '<span class="ref-code-badge">' + item.id + '</span>' +
+            '</div>' +
+            '<div class="card-price-overlay">' +
+              '<span class="card-price-egp">' + formatEgp(item.priceEgp) + '</span>' +
+              '<span class="card-rate-m2">' + item.pricePerM2.toLocaleString('en-US') + ' EGP/m²</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-body">' +
+            '<span class="card-mandate-type">' + item.mandate + '</span>' +
+            '<a href="../public/property-detail.html" class="card-title">' + item.title + '</a>' +
+            '<div class="card-location">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
+              '<span>' + item.compound + ' · ' + item.district + '</span>' +
+            '</div>' +
+            '<div class="card-specs-row">' +
+              '<span class="card-spec-item"><strong>' + item.bua + '</strong> m² BUA</span>' +
+              landHtml +
+              '<span class="card-spec-item"><strong>' + item.beds + '</strong> Beds</span>' +
+              '<span class="card-spec-item"><strong>' + item.baths + '</strong> Baths</span>' +
+            '</div>' +
+            '<div class="card-telemetry-micro">' +
+              '<span>' + item.views + ' Views · ' + item.inquiries + ' Inquiries</span>' +
+              '<span>' + item.tours + ' Tours Confirmed</span>' +
+            '</div>' +
+            '<div class="card-actions-row">' +
+              '<button class="btn btn-outline btn-sm" onclick="openQuickEdit(\'' + item.id + '\')">Quick Update</button>' +
+              '<button class="btn btn-outline btn-sm" onclick="openShareModal(\'' + item.id + '\', \'' + item.title.replace(/'/g, "\\'") + '\')">Share</button>' +
+              '<a href="edit-listing.html?id=' + item.id + '" class="btn btn-primary btn-sm">Full Edit</a>' +
+            '</div>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    // Render Table View
+    function renderTable(data) {
+      const tbody = document.getElementById('listingsTableBody');
+      if (!tbody) return;
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="padding: 40px; text-align: center; color: var(--ink-3);">No matching properties found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(function(item) {
+        return '<tr>' +
+          '<td>' +
+            '<div class="table-property-cell">' +
+              '<img src="../../../../../Images/web/' + item.image + '" alt="' + item.title + '" class="table-thumb">' +
+              '<div class="table-property-meta">' +
+                '<a href="../public/property-detail.html" class="table-prop-title">' + item.title + '</a>' +
+                '<span class="table-prop-sub">' + item.id + ' · ' + item.mandate + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<span style="font-weight: 600; color: var(--navy-900);">' + item.compound + '</span><br>' +
+            '<span style="font-size: 0.6875rem; color: var(--ink-3);">' + item.district + ' (' + item.corridor + ')</span>' +
+          '</td>' +
+          '<td>' +
+            '<span style="font-family: var(--font-mono); font-weight: 600;">' + item.typology + '</span><br>' +
+            '<span style="font-size: 0.6875rem; font-family: var(--font-mono);">' + item.bua + ' m² · ' + item.beds + 'B / ' + item.baths + 'Ba</span>' +
+          '</td>' +
+          '<td>' +
+            '<div class="table-price-cell">' + formatEgp(item.priceEgp) + '</div>' +
+            '<div class="table-rate-sub">' + item.pricePerM2.toLocaleString('en-US') + ' EGP/m²</div>' +
+          '</td>' +
+          '<td>' +
+            '<span class="status-badge ' + item.statusBadgeClass + '">' + item.statusLabel + '</span>' +
+          '</td>' +
+          '<td>' +
+            '<div class="table-telemetry-cell">' +
+              '<strong>' + item.inquiries + '</strong> Leads · <strong>' + item.tours + '</strong> Tours<br>' +
+              '<span style="font-size: 0.6875rem; color: var(--ink-3);">' + item.daysOnMarket + 'd on market</span>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div class="table-actions-cell">' +
+              '<button class="btn btn-outline btn-sm" onclick="openQuickEdit(\'' + item.id + '\')" title="Quick Update">Edit</button>' +
+              '<button class="btn btn-outline btn-sm" onclick="openShareModal(\'' + item.id + '\', \'' + item.title.replace(/'/g, "\\'") + '\')" title="Share">Share</button>' +
+              '<a href="../public/property-detail.html" class="btn btn-outline btn-sm" title="View Public Page">View</a>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    // Filter & Sort Engine
+    function getFilteredData() {
+      const search = (document.getElementById('workbenchSearch').value || '').toLowerCase().trim();
+      const district = document.getElementById('filterDistrict').value;
+      const typology = document.getElementById('filterTypology').value;
+
+      return listings.filter(function(item) {
+        // Status Filter
+        if (currentStatusFilter !== 'all' && item.status !== currentStatusFilter) return false;
+
+        // District Filter
+        if (district !== 'all' && item.district !== district) return false;
+
+        // Typology Filter
+        if (typology !== 'all' && item.typology !== typology) return false;
+
+        // Search Match
+        if (search) {
+          const matchTitle = item.title.toLowerCase().includes(search);
+          const matchId = item.id.toLowerCase().includes(search);
+          const matchCompound = item.compound.toLowerCase().includes(search);
+          const matchDistrict = item.district.toLowerCase().includes(search);
+          if (!matchTitle && !matchId && !matchCompound && !matchDistrict) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function sortData(data) {
+      const sort = document.getElementById('sortBy').value;
+      return [...data].sort(function(a, b) {
+        if (sort === 'price-desc') return b.priceEgp - a.priceEgp;
+        if (sort === 'price-asc') return a.priceEgp - b.priceEgp;
+        if (sort === 'inquiries-desc') return b.inquiries - a.inquiries;
+        if (sort === 'updated-desc') return new Date(b.updated) - new Date(a.updated);
+        return 0;
+      });
+    }
+
+    function updateUi() {
+      const filtered = getFilteredData();
+      const sorted = sortData(filtered);
+
+      const visibleEl = document.getElementById('visibleCount');
+      if (visibleEl) visibleEl.textContent = sorted.length;
+
+      const totalVal = sorted.reduce(function(sum, item) { return sum + item.priceEgp; }, 0);
+      const valEl = document.getElementById('filteredPortfolioValue');
+      if (valEl) valEl.textContent = 'Filtered Portfolio: ' + formatEgp(totalVal);
+
+      if (currentViewMode === 'grid') {
+        renderGrid(sorted);
+      } else {
+        renderTable(sorted);
+      }
+    }
+
+    function filterListings() {
+      updateUi();
+    }
+
+    function sortListings() {
+      updateUi();
+    }
+
+    function setStatusFilter(status, btnElement) {
+      currentStatusFilter = status;
+      document.querySelectorAll('.filter-pill').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      btnElement.classList.add('active');
+      updateUi();
+    }
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const gridContainer = document.getElementById('listingsGridContainer');
+      const tableContainer = document.getElementById('listingsTableContainer');
+      const btnGrid = document.getElementById('btnViewGrid');
+      const btnTable = document.getElementById('btnViewTable');
+
+      if (mode === 'grid') {
+        gridContainer.style.display = 'grid';
+        tableContainer.style.display = 'none';
+        btnGrid.classList.add('active');
+        btnTable.classList.remove('active');
+      } else {
+        gridContainer.style.display = 'none';
+        tableContainer.style.display = 'block';
+        btnTable.classList.add('active');
+        btnGrid.classList.remove('active');
+      }
+      updateUi();
+    }
+
+    // Quick Edit Functions
+    function openQuickEdit(id) {
+      const item = listings.find(function(l) { return l.id === id; });
+      if (!item) return;
+
+      document.getElementById('editListingId').value = item.id;
+      document.getElementById('editTitle').value = item.title + ' (' + item.id + ')';
+      document.getElementById('editPrice').value = item.priceEgp;
+      document.getElementById('editStatus').value = item.status;
+      document.getElementById('editNotes').value = item.mandate;
+
+      document.getElementById('modalQuickEdit').classList.add('active');
+    }
+
+    function saveQuickEdit() {
+      const id = document.getElementById('editListingId').value;
+      const newPrice = parseInt(document.getElementById('editPrice').value, 10);
+      const newStatus = document.getElementById('editStatus').value;
+
+      const item = listings.find(function(l) { return l.id === id; });
+      if (item && !isNaN(newPrice)) {
+        item.priceEgp = newPrice;
+        item.pricePerM2 = Math.round(newPrice / item.bua);
+        item.status = newStatus;
+        if (newStatus === 'active') {
+          item.statusLabel = 'Active Exclusive';
+          item.statusBadgeClass = 'badge-active';
+        } else if (newStatus === 'reserved') {
+          item.statusLabel = 'Under Contract';
+          item.statusBadgeClass = 'badge-reserved';
+        } else {
+          item.statusLabel = 'Private Draft';
+          item.statusBadgeClass = 'badge-draft';
+        }
+        showToast('Updated ' + item.id + ' successfully');
+        closeModal('modalQuickEdit');
+        updateUi();
+      }
+    }
+
+    // Share Modal Functions
+    function openShareModal(id, title) {
+      const url = 'https://settly.com/exclusive/' + id;
+      document.getElementById('shareUrlInput').value = url;
+      document.getElementById('modalShareListing').classList.add('active');
+    }
+
+    function copyShareUrl() {
+      const input = document.getElementById('shareUrlInput');
+      input.select();
+      navigator.clipboard.writeText(input.value).then(function() {
+        showToast('Copied property dossier link to clipboard');
+        closeModal('modalShareListing');
+      });
+    }
+
+    function shareViaWhatsApp() {
+      const url = document.getElementById('shareUrlInput').value;
+      const text = encodeURIComponent('Exclusive Property Mandate on Settly: ' + url);
+      window.open('https://wa.me/?text=' + text, '_blank');
+      closeModal('modalShareListing');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function confirmArchive() {
+      showToast('Mandate archived from active exchange');
+      closeModal('modalDelist');
+    }
+
+    // Export CSV Dossier
+    function exportPortfolioCsv() {
+      const headers = ['Ref ID', 'Property Title', 'Compound', 'District', 'Corridor', 'Typology', 'BUA (m2)', 'Land (m2)', 'Beds', 'Baths', 'Price (EGP)', 'Price/m2', 'Status', 'Inquiries', 'Tours'];
+      const rows = listings.map(function(l) {
+        return [
+          l.id,
+          '"' + l.title.replace(/"/g, '""') + '"',
+          '"' + l.compound.replace(/"/g, '""') + '"',
+          l.district,
+          l.corridor,
+          l.typology,
+          l.bua,
+          l.land,
+          l.beds,
+          l.baths,
+          l.priceEgp,
+          l.pricePerM2,
+          l.statusLabel,
+          l.inquiries,
+          l.tours
+        ];
+      });
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(function(e) { return e.join(','); })].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'settly_agent_mandates_portfolio.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Exported 14 mandates to CSV dossier');
+    }
+
+    // Toast Notification System
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(function() { toast.remove(); }, 250);
+      }, 3500);
+    }
+
+    // Mobile Sidebar Drawer Navigation
+    const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
+    const portalSidebar = document.getElementById('portalSidebar');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openSidebar() {
+      portalSidebar.classList.add('open');
+      sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      portalSidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuTrigger) mobileMenuTrigger.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeSidebar();
+        document.querySelectorAll('.modal-backdrop').forEach(function(m) {
+          m.classList.remove('active');
+        });
+      }
+    });
+
+    // Close modal on backdrop click
+    document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        if (e.target === backdrop) backdrop.classList.remove('active');
+      });
+    });
+
+    // Live Cairo Time Clock
+    function updateCairoClock() {
+      try {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const clockEl = document.getElementById('cairoTimeDisplay');
+        if (clockEl) clockEl.textContent = formatter.format(now) + ' CLT';
+      } catch (err) {}
+    }
+    setInterval(updateCairoClock, 1000);
+    updateCairoClock();
+
+    // Initial render
+    updateUi();
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

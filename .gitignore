@@ -61,6 +61,7 @@ share/python-wheels/
 # Environment Variables, Secrets & Credentials
 # ------------------------------------------------------------------------------
 .env
+.env.local
 .env*.local
 .env.development
 .env.test
@@ -161,3 +162,24 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 .vscode/*.log
+
+# ------------------------------------------------------------------------------
+# Prisma
+# ------------------------------------------------------------------------------
+# Generated Prisma client (regenerated on postinstall)
+backend/src/generated/
+
+# ------------------------------------------------------------------------------
+# Docker
+# ------------------------------------------------------------------------------
+docker/data/
+docker/volumes/
+*.pid
+
+# ------------------------------------------------------------------------------
+# Agent & AI Tool State (local-only, not for repo)
+# ------------------------------------------------------------------------------
+.specify/
+.claude/
+graphify-out/
+skills-lock.json

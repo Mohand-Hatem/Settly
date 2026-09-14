@@ -1,8 +1,8 @@
 # Environment
 
     Status:       LOCKED
-    Last Updated: 2026-09-05
-    Derived From: Decisions #22, #33, #37
+    Last Updated: 2026-09-14
+    Derived From: Decisions #22, #33, #37, #44
     Related:      ../architecture/INFRASTRUCTURE.md, TESTING.md
 
 ## 1. Purpose
@@ -17,8 +17,8 @@ development be a faithful rehearsal of production rather than an approximation.
   backend/api  localhost:4000
   worker        local process (no port)
   Postgres      Docker (PostGIS + pgvector + pg_trgm + btree_gist)
-  Redis         Docker
-  Mailpit       local inbox
+  Redis         Upstash Redis (cloud instance) or Docker Redis (local)
+  Email         Resend (real delivery to inbox, e.g. Gmail; Mailpit eliminated)
 ```
 
 `localhost:3000` and `localhost:4000` are **same-site** — `SameSite` is evaluated on the
@@ -47,7 +47,7 @@ sessions — never rotate casually. gitleaks + GitHub secret scanning catch acci
 
 ## 6. Docker Compose (local)
 
-Postgres (with the four required extensions), Redis, Mailpit. A backend Dockerfile gives
+Postgres (with the four required extensions), Redis (or Upstash Redis config). Mailpit is eliminated per Decision #44; Resend is used for real email delivery across all environments. A backend Dockerfile gives
 local/production parity for Railway's build.
 
 ## 7. Substitution rule (Decision #37)
@@ -61,7 +61,7 @@ local/production parity for Railway's build.
 | Supabase Storage | Local filesystem adapter | Magic bytes, authorization, audit are ours |
 | Paymob | **Fake adapter** + local webhook signer | HMAC verification, amount assertion, the state machine are ours. One sandbox test remains mandatory (V4) |
 | Gemini | Real, prompt-hash cached | Quality is theirs; the cache makes repeated iteration free |
-| Email | Mailpit | Delivery is theirs |
+| Email | **Resend** (real delivery to developer's inbox) | Delivery is theirs; eliminates dev/prod divergence and verifies real DKIM/SPF and rendering (Decision #44) |
 | FCM | No-op adapter | Delivery is theirs |
 | Google Geocoding | Fixtures | Deterministic, called once per listing |
 | Sentry | Off | — |
@@ -89,8 +89,7 @@ V6 (Prisma over Supavisor transaction mode) · V32 (CI service-container extensi
 
 ## 11. Rejected / do not add
 
-Requiring a purchased domain, Vercel deployment, Railway deployment, or a production email
-provider as a *current* development requirement — all are deployment-phase concerns.
+Requiring a purchased domain, Vercel deployment, or Railway deployment as a *current* development requirement — these are deployment-phase concerns. Mailpit is rejected/eliminated (Decision #44) in favor of real Resend delivery.
 
 ## 12. Related documents
 

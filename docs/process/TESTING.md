@@ -59,7 +59,7 @@ intermittently-failing gate is one people learn to bypass.
 
 ## 6. Environment and substitution
 
-Mailpit for email · fake Paymob adapter + local webhook signer (sandbox is a manual pre-release
+Resend for email locally (real delivery to developer's inbox; Mailpit eliminated per #44; faked in CI) · fake Paymob adapter + local webhook signer (sandbox is a manual pre-release
 check, never CI) · **Gemini never in gated CI** — evaluation runs separately · Cloudinary real
 locally, faked in CI · MSW driven by the **committed OpenAPI snapshot**, so mocks cannot drift
 from the contract.

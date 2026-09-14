@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #F7F6F3;
+  --foreground: #16203A;
+  --canvas: #F7F6F3;
+  --canvas-2: #EFEDE6;
+  --navy-950: #0B111F;
+  --navy-900: #131D36;
+  --navy-800: #1E2A4A;
+  --navy-700: #2B3A61;
+  --navy-600: #3D4E7A;
+  --brass: #C69749;
+  --brass-600: #AE8033;
+  --brass-700: #936B28;
+  --brass-200: #E7D3AB;
+  --brass-050: #F6EEDE;
+  --sage: #3D5A4C;
+  --sage-050: #EAF0EC;
+  --sage-bg: #EAF0EC;
+  --ink: #16203A;
+  --ink-1: #16203A;
+  --ink-2: #4C5878;
+  --ink-3: #646D88;
+  --line: rgba(30, 42, 74, 0.10);
+  --line-2: rgba(30, 42, 74, 0.18);
+  --display: var(--font-spectral), "Spectral", Georgia, serif;
+  --serif: var(--font-spectral), "Spectral", Georgia, serif;
+  --serif-display: var(--font-spectral), "Spectral", Georgia, serif;
+  --sans: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --mono-ui: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
+  --shadow-1: 0 1px 2px rgba(19, 29, 54, 0.04), 0 8px 24px -12px rgba(19, 29, 54, 0.14);
+  --shadow-2: 0 2px 4px rgba(19, 29, 54, 0.05), 0 24px 48px -20px rgba(19, 29, 54, 0.24);
+  --max: 1320px;
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Logical properties for bilingual LTR / RTL readiness */
+.border-inline-start {
+  border-inline-start-width: 1px;
+}
+
+.padding-inline-start {
+  padding-inline-start: 1rem;
+}

@@ -17,9 +17,11 @@ controls. AI is strictly additive in Settly — nothing in the transactional cor
 parsing (<400ms budget), a mid-tier model for the assistant. The saving is modest at this scale
 (#33) — the architecture stays model-per-task configurable rather than optimized.
 
-**Embeddings**: target 1536 dimensions via official dimensionality reduction if the model
-supports it, with **mandatory re-normalization after truncation**. Exact model/native dimensions —
-PENDING V1. pgvector HNSW limits vs. Gemini's native 3072 dims — PENDING V2.
+**Embeddings**: **`gemini-embedding-001`** (**VERIFIED V1**; `text-embedding-004` is deprecated/404).
+Native dimensions: **3072**. Truncated to **1536 dimensions** via Matryoshka Representation Learning
+(`outputDimensionality: 1536`), with **mandatory manual $L_2$ re-normalization after truncation**
+(empirically verified: truncated vector norm is ~0.701, not unit length). 1536 dimensions fits comfortably
+under pgvector's 2,000-dimension HNSW ceiling (`vector(1536)`). Pricing: \$0.15 / 1M input tokens.
 
 ## 3. Orchestration — Vercel AI SDK as the port, nothing more
 

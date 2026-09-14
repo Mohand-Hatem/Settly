@@ -1,0 +1,902 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==============================================================================
+// Enums
+// ==============================================================================
+
+enum Role {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum DeviceType {
+  IOS
+  ANDROID
+  WEB
+}
+
+enum PropertyType {
+  APARTMENT
+  VILLA
+  DUPLEX
+  PENTHOUSE
+  TOWNHOUSE
+  CHALET
+}
+
+enum ListingIntent {
+  SALE
+  RENT
+}
+
+enum PropertyStatus {
+  DRAFT
+  PENDING_REVIEW
+  REJECTED
+  PUBLISHED
+  RESERVED
+  SOLD
+  RENTED
+  ARCHIVED
+  SUSPENDED
+}
+
+enum RentalPeriod {
+  MONTHLY
+  YEARLY
+}
+
+enum AreaLevel {
+  GOVERNORATE
+  CITY
+  DISTRICT
+  COMPOUND
+}
+
+enum AmenityCategory {
+  INTERIOR
+  EXTERIOR
+  FACILITY
+  SECURITY
+  LOCATION
+}
+
+enum AlertCadence {
+  INSTANT
+  DAILY
+  WEEKLY
+  OFF
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  LOST
+}
+
+enum ViewingStatus {
+  REQUESTED
+  CONFIRMED
+  RESCHEDULE_PROPOSED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum OfferStatus {
+  PENDING_AGENT
+  PENDING_BUYER
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  WITHDRAWN
+  RESERVED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  EXPIRED
+}
+
+enum AttemptStatus {
+  INITIATED
+  REDIRECTED
+  SUCCEEDED
+  FAILED
+}
+
+enum RefundStatus {
+  REQUESTED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum VisibilityScope {
+  PUBLIC
+  PARTY
+  PRIVATE
+}
+
+enum DocumentStatus {
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum ArticleCategory {
+  GUIDE
+  FAQ
+  LEGAL
+  MARKET
+}
+
+enum EmbeddingSourceType {
+  DOCUMENT_CHUNK
+  ARTICLE_CHUNK
+}
+
+enum AiRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum AgentRunStatus {
+  RUNNING
+  PAUSED
+  COMPLETED
+  FAILED
+}
+
+enum ActorType {
+  USER
+  AGENT
+  ADMIN
+  AI_TOOL
+  SYSTEM
+}
+
+enum ReportTargetType {
+  PROPERTY
+  AGENT
+  MESSAGE
+  REVIEW
+}
+
+enum ReportStatus {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+// ==============================================================================
+// 1. Better Auth (4 Tables)
+// ==============================================================================
+
+model User {
+  id              String    @id
+  name            String
+  email           String    @unique
+  emailVerified   Boolean   @default(false)
+  image           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  role            Role      @default(USER)
+  banned          Boolean   @default(false)
+  banReason       String?
+  banExpires      DateTime?
+  anonymizedAt    DateTime?
+  preferredLocale String?   @default("en")
+
+  sessions               Session[]
+  accounts               Account[]
+  agentProfile           AgentProfile?
+  devices                UserDevice[]
+  properties             Property[]
+  collections            Collection[]
+  savedSearches          SavedSearch[]
+  leadsAsBuyer           Lead[]                 @relation("BuyerLeads")
+  leadsAsAgent           Lead[]                 @relation("AgentLeads")
+  viewingsAsBuyer        Viewing[]              @relation("BuyerViewings")
+  viewingsAsAgent        Viewing[]              @relation("AgentViewings")
+  offersAsBuyer          Offer[]                @relation("BuyerOffers")
+  offersAsAgent          Offer[]                @relation("AgentOffers")
+  offerRevisions         OfferRevision[]
+  payments               Payment[]
+  conversationsAsBuyer   Conversation[]         @relation("BuyerConversations")
+  conversationsAsAgent   Conversation[]         @relation("AgentConversations")
+  messages               Message[]
+  notifications          Notification[]
+  documents              Document[]
+  aiConversations        AiConversation[]
+  agentRuns              AgentRun[]
+  propertyViewEvents     PropertyViewEvent[]
+  searchEvents           SearchEvent[]
+  reportsSubmitted       Report[]               @relation("ReportedBy")
+  reportsResolved        Report[]               @relation("ResolvedBy")
+  availabilities         AgentAvailability[]
+  idempotencyKeys        IdempotencyKey[]
+  priceHistoriesChanged  PropertyPriceHistory[]
+  checkoutHeldProperties Property[]             @relation("CheckoutHoldUser")
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+  @@map("verification")
+}
+
+// ==============================================================================
+// 2. Identity (2 Tables)
+// ==============================================================================
+
+model AgentProfile {
+  id            String    @id
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  licenseNumber String
+  brokerageName String?
+  bioEn         String?
+  bioAr         String?
+  isVerified    Boolean   @default(false)
+  verifiedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model UserDevice {
+  id         String     @id
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fcmToken   String     @unique
+  deviceType DeviceType @default(WEB)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+// ==============================================================================
+// 3. Catalog (6 Tables)
+// ==============================================================================
+
+model Property {
+  id                    String                                 @id
+  agentId               String
+  agent                 User                                   @relation(fields: [agentId], references: [id])
+  areaId                String
+  area                  Area                                   @relation(fields: [areaId], references: [id])
+  slug                  String                                 @unique
+  titleEn               String?
+  titleAr               String?
+  descriptionEn         String?
+  descriptionAr         String?
+  propertyType          PropertyType
+  listingIntent         ListingIntent
+  price                 BigInt
+  rentalPeriod          RentalPeriod?
+  bedrooms              Int
+  bathrooms             Int
+  areaSqm               Decimal                                @db.Decimal(10, 2)
+  status                PropertyStatus                         @default(DRAFT)
+  featured              Boolean                                @default(false)
+  latitude              Float
+  longitude             Float
+  location              Unsupported("geography(Point, 4326)")?
+  embedding             Unsupported("vector(1536)")?
+  searchVectorEn        Unsupported("tsvector")?
+  searchVectorAr        Unsupported("tsvector")?
+  publishedAt           DateTime?
+  checkoutHoldExpiresAt DateTime?
+  checkoutHoldUserId    String?
+  checkoutHoldUser      User?                                  @relation("CheckoutHoldUser", fields: [checkoutHoldUserId], references: [id])
+  createdAt             DateTime                               @default(now())
+  updatedAt             DateTime                               @updatedAt
+
+  images             PropertyImage[]
+  amenities          PropertyAmenity[]
+  priceHistories     PropertyPriceHistory[]
+  collectionItems    CollectionItem[]
+  savedSearchMatches SavedSearchMatch[]
+  leads              Lead[]
+  viewings           Viewing[]
+  offers             Offer[]
+  conversations      Conversation[]
+  documents          Document[]
+  viewEvents         PropertyViewEvent[]
+
+  @@index([listingIntent, price])
+  @@index([areaId])
+  @@index([propertyType])
+  @@index([bedrooms])
+  @@index([publishedAt(sort: Desc)])
+  @@index([agentId, status, updatedAt(sort: Desc)])
+}
+
+model PropertyImage {
+  id                 String   @id
+  propertyId         String
+  property           Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  cloudinaryPublicId String
+  url                String
+  captionEn          String?
+  captionAr          String?
+  isCover            Boolean  @default(false)
+  order              Int      @default(0)
+  createdAt          DateTime @default(now())
+
+  @@index([propertyId, order])
+}
+
+model Amenity {
+  id        String          @id
+  slug      String          @unique
+  nameEn    String
+  nameAr    String
+  icon      String?
+  category  AmenityCategory @default(INTERIOR)
+  createdAt DateTime        @default(now())
+
+  properties PropertyAmenity[]
+}
+
+model PropertyAmenity {
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  amenityId  String
+  amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@id([propertyId, amenityId])
+}
+
+model Area {
+  id              String    @id
+  slug            String    @unique
+  nameEn          String
+  nameAr          String
+  aliases         String[]
+  parentId        String?
+  parent          Area?     @relation("AreaHierarchy", fields: [parentId], references: [id])
+  children        Area[]    @relation("AreaHierarchy")
+  level           AreaLevel
+  boundaryGeoJson String?
+  centerLat       Float?
+  centerLng       Float?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  properties Property[]
+  articles   KnowledgeArticle[]
+}
+
+model PropertyPriceHistory {
+  id          String   @id
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  price       BigInt
+  changedAt   DateTime @default(now())
+  changedById String?
+  changedBy   User?    @relation(fields: [changedById], references: [id])
+
+  @@index([propertyId, changedAt(sort: Desc)])
+}
+
+// ==============================================================================
+// 4. Engagement (4 Tables)
+// ==============================================================================
+
+model Collection {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CollectionItem[]
+
+  @@unique([userId, name])
+}
+
+model CollectionItem {
+  id           String     @id
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  propertyId   String
+  property     Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  note         String?
+  addedAt      DateTime   @default(now())
+
+  @@unique([collectionId, propertyId])
+}
+
+model SavedSearch {
+  id             String       @id
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  filters        Json
+  alertCadence   AlertCadence @default(DAILY)
+  lastNotifiedAt DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  matches SavedSearchMatch[]
+
+  @@index([userId])
+}
+
+model SavedSearchMatch {
+  id         String      @id
+  searchId   String
+  search     SavedSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  matchedAt  DateTime    @default(now())
+
+  @@unique([searchId, propertyId])
+}
+
+// ==============================================================================
+// 5. Pipeline (5 Tables)
+// ==============================================================================
+
+model Lead {
+  id         String     @id
+  buyerId    String
+  buyer      User       @relation("BuyerLeads", fields: [buyerId], references: [id])
+  agentId    String
+  agent      User       @relation("AgentLeads", fields: [agentId], references: [id])
+  propertyId String
+  property   Property   @relation(fields: [propertyId], references: [id])
+  status     LeadStatus @default(NEW)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([buyerId, propertyId])
+  @@index([agentId, status])
+}
+
+model AgentAvailability {
+  id           String    @id
+  agentId      String
+  agent        User      @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  isBlackout   Boolean   @default(false)
+  specificDate DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([agentId, dayOfWeek])
+}
+
+model Viewing {
+  id                 String        @id
+  buyerId            String
+  buyer              User          @relation("BuyerViewings", fields: [buyerId], references: [id])
+  agentId            String
+  agent              User          @relation("AgentViewings", fields: [agentId], references: [id])
+  propertyId         String
+  property           Property      @relation(fields: [propertyId], references: [id])
+  startsAt           DateTime
+  endsAt             DateTime
+  status             ViewingStatus @default(REQUESTED)
+  cancellationReason String?
+  notes              String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([buyerId, status])
+  @@index([agentId, startsAt])
+}
+
+model Offer {
+  id         String      @id
+  buyerId    String
+  buyer      User        @relation("BuyerOffers", fields: [buyerId], references: [id])
+  agentId    String
+  agent      User        @relation("AgentOffers", fields: [agentId], references: [id])
+  propertyId String
+  property   Property    @relation(fields: [propertyId], references: [id])
+  status     OfferStatus @default(PENDING_AGENT)
+  acceptedAt DateTime?
+  expiresAt  DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  revisions OfferRevision[]
+  payments  Payment[]
+
+  @@index([buyerId, status])
+  @@index([propertyId])
+}
+
+model OfferRevision {
+  id                  String    @id
+  offerId             String
+  offer               Offer     @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  actorId             String
+  actor               User      @relation(fields: [actorId], references: [id])
+  revisionNumber      Int
+  amount              BigInt
+  earnestMoney        BigInt?
+  conditions          String?
+  proposedClosingDate DateTime?
+  createdAt           DateTime  @default(now())
+
+  @@unique([offerId, revisionNumber])
+}
+
+// ==============================================================================
+// 6. Payments (5 Tables)
+// ==============================================================================
+
+model Payment {
+  id          String        @id
+  offerId     String
+  offer       Offer         @relation(fields: [offerId], references: [id])
+  buyerId     String
+  buyer       User          @relation(fields: [buyerId], references: [id])
+  grossAmount BigInt
+  feeAmount   BigInt
+  netAmount   BigInt
+  currency    String        @default("EGP")
+  status      PaymentStatus @default(PENDING)
+  deadlineAt  DateTime
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  attempts PaymentAttempt[]
+  refunds  Refund[]
+
+  @@index([offerId])
+  @@index([buyerId])
+}
+
+model PaymentAttempt {
+  id                    String        @id
+  paymentId             String
+  payment               Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  provider              String        @default("PAYMOB")
+  providerTransactionId String?
+  status                AttemptStatus @default(INITIATED)
+  errorMessage          String?
+  createdAt             DateTime      @default(now())
+
+  @@index([paymentId])
+}
+
+model Refund {
+  id               String       @id
+  paymentId        String
+  payment          Payment      @relation(fields: [paymentId], references: [id])
+  amount           BigInt
+  feeReturned      BigInt
+  status           RefundStatus @default(REQUESTED)
+  reason           String
+  providerRefundId String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([paymentId])
+}
+
+model WebhookEvent {
+  id              String    @id
+  provider        String
+  eventId         String
+  eventType       String
+  payload         Json?
+  payloadPurgedAt DateTime?
+  processedAt     DateTime?
+  error           String?
+  createdAt       DateTime  @default(now())
+
+  @@unique([provider, eventId])
+}
+
+model IdempotencyKey {
+  id           String   @id
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key          String
+  method       String
+  path         String
+  paramsHash   String
+  statusCode   Int?
+  responseBody Json?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, key])
+  @@index([expiresAt])
+}
+
+// ==============================================================================
+// 7. Communication (3 Tables)
+// ==============================================================================
+
+model Conversation {
+  id            String    @id
+  propertyId    String
+  property      Property  @relation(fields: [propertyId], references: [id])
+  buyerId       String
+  buyer         User      @relation("BuyerConversations", fields: [buyerId], references: [id])
+  agentId       String
+  agent         User      @relation("AgentConversations", fields: [agentId], references: [id])
+  lastMessageAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  messages Message[]
+
+  @@unique([buyerId, agentId, propertyId])
+}
+
+model Message {
+  id             String       @id
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id])
+  body           String
+  attachments    Json?
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model Notification {
+  id                String    @id
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  params            Json
+  isRead            Boolean   @default(false)
+  readAt            DateTime?
+  channelsDelivered Json?
+  createdAt         DateTime  @default(now())
+
+  @@index([userId, isRead, createdAt(sort: Desc)])
+}
+
+// ==============================================================================
+// 8. Knowledge & AI (6 Tables)
+// ==============================================================================
+
+model Document {
+  id              String          @id
+  propertyId      String?
+  property        Property?       @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  uploaderId      String
+  uploader        User            @relation(fields: [uploaderId], references: [id])
+  filename        String
+  mimeType        String
+  sizeBytes       BigInt
+  storageKey      String
+  visibilityScope VisibilityScope @default(PRIVATE)
+  language        String
+  status          DocumentStatus  @default(PROCESSING)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  embeddings Embedding[]
+
+  @@index([propertyId, visibilityScope])
+}
+
+model KnowledgeArticle {
+  id          String          @id
+  slug        String          @unique
+  areaId      String?
+  area        Area?           @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  titleEn     String
+  titleAr     String
+  bodyEn      String
+  bodyAr      String
+  category    ArticleCategory @default(GUIDE)
+  isPublished Boolean         @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  embeddings Embedding[]
+
+  @@index([category, isPublished])
+}
+
+model Embedding {
+  id              String                       @id
+  sourceType      EmbeddingSourceType
+  sourceId        String
+  documentId      String?
+  document        Document?                    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  articleId       String?
+  article         KnowledgeArticle?            @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  chunkIndex      Int
+  chunkText       String
+  language        String
+  visibilityScope VisibilityScope
+  embedding       Unsupported("vector(1536)")?
+  createdAt       DateTime                     @default(now())
+
+  @@index([sourceType, sourceId])
+  @@index([visibilityScope])
+}
+
+model AiConversation {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages AiMessage[]
+
+  @@index([userId, updatedAt(sort: Desc)])
+}
+
+model AiMessage {
+  id               String         @id
+  conversationId   String
+  conversation     AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role             AiRole
+  content          String
+  toolCalls        Json?
+  toolResults      Json?
+  tokensUsed       Int?
+  latencyMs        Int?
+  detectedLanguage String?
+  retrievalTrace   Json?
+  createdAt        DateTime       @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model AgentRun {
+  id           String         @id
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal         String
+  status       AgentRunStatus @default(RUNNING)
+  budgetTokens Int            @default(50000)
+  tokensUsed   Int            @default(0)
+  stepCount    Int            @default(0)
+  stepTrace    Json
+  result       Json?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([userId, status])
+}
+
+// ==============================================================================
+// 9. Analytics & Governance (4 Tables)
+// ==============================================================================
+
+model PropertyViewEvent {
+  id         String   @id
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  source     String?
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId, createdAt])
+}
+
+model SearchEvent {
+  id           String   @id
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  query        String?
+  filters      Json
+  totalResults Int
+  zeroResult   Boolean  @default(false)
+  language     String?
+  timingsMs    Json?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id         String    @id
+  actorType  ActorType
+  actorId    String
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json
+  ipAddress  String?
+  createdAt  DateTime  @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+}
+
+model Report {
+  id              String           @id
+  reporterId      String
+  reporter        User             @relation("ReportedBy", fields: [reporterId], references: [id])
+  targetType      ReportTargetType
+  targetId        String
+  reason          String
+  details         String?
+  status          ReportStatus     @default(PENDING)
+  resolutionNotes String?
+  resolvedById    String?
+  resolvedBy      User?            @relation("ResolvedBy", fields: [resolvedById], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([status, createdAt])
+}

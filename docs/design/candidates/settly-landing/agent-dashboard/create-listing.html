@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Exclusive Listing · Settly Agent Portal</title>
+  <meta name="description" content="Draft and publish verified luxury real estate representation mandates across Egypt's prime corridors. Multi-step broker intake wizard with live preview.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-brand-row {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-plate {
+      width: 36px;
+      height: 36px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.2);
+    }
+
+    .brand-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass);
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: var(--white);
+      background-color: rgba(198, 151, 73, 0.15);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background-color: var(--brass);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+    }
+
+    /* Advisor Profile Card in Sidebar */
+    .sidebar-advisor {
+      margin: 0 16px 16px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .advisor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brass);
+    }
+
+    .advisor-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .advisor-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--white);
+    }
+
+    .advisor-role {
+      font-size: 0.6875rem;
+      color: var(--brass);
+      font-weight: 600;
+    }
+
+    .advisor-license {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .sidebar-regulatory-box {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Sticky Navigation Bar */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--navy-900);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .mobile-brand-mark img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .mobile-brand-text {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .header-breadcrumb .sep {
+      color: var(--line-2);
+    }
+
+    .header-breadcrumb .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+      letter-spacing: 0.03em;
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sovereign-fx-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .fx-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--brass);
+    }
+
+    .cairo-clock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .topbar-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .topbar-icon-btn:hover {
+      background-color: var(--canvas);
+      border-color: var(--line-2);
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--brass);
+      border: 1.5px solid var(--white);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      text-decoration: none;
+    }
+
+    .user-avatar-initials {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .user-tier {
+      font-size: 0.6875rem;
+      color: var(--brass-600);
+      font-weight: 600;
+    }
+
+    /* Portal Content Area */
+    .portal-content {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Command Bar */
+    .command-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .command-title-wrap {
+      max-width: 780px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass);
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      border-color: var(--brass-600);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--navy-700);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+
+    /* 5-Step Progress Stepper Bar */
+    .stepper-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 16px 24px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+    }
+
+    .stepper-list {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      position: relative;
+    }
+
+    .stepper-list::before {
+      content: '';
+      position: absolute;
+      left: 30px;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 2px;
+      background-color: var(--canvas-2);
+      z-index: 1;
+    }
+
+    .stepper-item {
+      position: relative;
+      z-index: 2;
+      background-color: var(--white);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--canvas-2);
+      border: 2px solid var(--line-2);
+      color: var(--ink-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .step-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-num-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .step-title {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+
+    .stepper-item.active .step-circle {
+      background-color: var(--brass);
+      border-color: var(--brass);
+      color: var(--navy-900);
+      box-shadow: 0 0 0 4px rgba(198, 151, 73, 0.2);
+    }
+
+    .stepper-item.active .step-title {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .stepper-item.completed .step-circle {
+      background-color: var(--sage);
+      border-color: var(--sage);
+      color: var(--white);
+    }
+
+    .stepper-item.completed .step-title {
+      color: var(--sage);
+    }
+
+    /* Main Split Layout: Left Form (62%) / Right Sticky Preview (38%) */
+    .wizard-split-layout {
+      display: grid;
+      grid-template-columns: 1.65fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* Form Container Card */
+    .form-pane-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .step-pane {
+      display: none;
+      flex-direction: column;
+      gap: 22px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .step-pane.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .step-heading {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+    }
+
+    /* Form Elements */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-label .helper-note {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .form-input {
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      background-color: var(--white);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--navy-800);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    .form-input-mono {
+      font-family: var(--font-mono);
+    }
+
+    .select-dropdown {
+      height: 44px;
+      padding: 0 32px 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      background-color: var(--white);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: all 0.15s ease;
+    }
+
+    .select-dropdown:focus {
+      border-color: var(--navy-800);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    /* Card Radios for Mandate Type and Typology */
+    .selection-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .selection-card {
+      border: 1.5px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      cursor: pointer;
+      background-color: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .selection-card:hover {
+      border-color: var(--navy-700);
+      background-color: var(--canvas);
+    }
+
+    .selection-card.selected {
+      border-color: var(--brass);
+      background-color: var(--brass-050);
+      box-shadow: 0 0 0 1px var(--brass);
+    }
+
+    .selection-card-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .selection-card-desc {
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+      line-height: 1.35;
+    }
+
+    /* Gallery Photo Picker */
+    .gallery-picker-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .gallery-grid-picker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .gallery-thumb-item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background-color: var(--navy-900);
+      transition: all 0.15s ease;
+    }
+
+    .gallery-thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-thumb-item:hover {
+      opacity: 0.9;
+    }
+
+    .gallery-thumb-item.active {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(198, 151, 73, 0.3);
+    }
+
+    .gallery-thumb-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      font-weight: 700;
+      padding: 2px 5px;
+      background-color: rgba(19, 29, 54, 0.8);
+      color: var(--white);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Dropzone Mockup */
+    .dropzone-box {
+      border: 2px dashed var(--line-2);
+      border-radius: var(--radius-md);
+      padding: 28px 20px;
+      text-align: center;
+      background-color: var(--canvas);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .dropzone-box:hover {
+      border-color: var(--navy-700);
+      background-color: var(--canvas-2);
+    }
+
+    .dropzone-icon {
+      width: 36px;
+      height: 36px;
+      color: var(--brass);
+    }
+
+    .dropzone-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .dropzone-sub {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+    }
+
+    /* Form Action Nav Bar */
+    .form-navigation-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+      margin-top: 8px;
+    }
+
+    .nav-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Sticky Live Preview Console */
+    .preview-sticky-col {
+      position: sticky;
+      top: calc(var(--header-height) + 24px);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .preview-console-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .preview-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .preview-header-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .preview-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--sage);
+      background-color: var(--sage-bg);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .preview-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+    }
+
+    /* Live Card Frame inside Preview Console */
+    .live-preview-card {
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--white);
+      box-shadow: 0 8px 24px -4px rgba(19, 29, 54, 0.08);
+    }
+
+    .preview-card-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background-color: var(--navy-900);
+    }
+
+    .preview-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.3s ease;
+    }
+
+    .preview-card-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(19, 29, 54, 0.3) 0%, transparent 40%, rgba(19, 29, 54, 0.8) 100%);
+      pointer-events: none;
+    }
+
+    .preview-badges-top {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .preview-price-overlay {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .preview-price-egp {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 1px 3px rgba(19, 29, 54, 0.6);
+    }
+
+    .preview-rate-m2 {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass-200);
+      font-weight: 500;
+    }
+
+    .preview-card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .preview-card-mandate {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--brass-600);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .preview-card-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.3;
+    }
+
+    .preview-card-location {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .preview-card-specs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+      flex-wrap: wrap;
+    }
+
+    .preview-card-advisor {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    /* Compliance Readiness Checklist */
+    .checklist-card {
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checklist-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .checklist-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    .check-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--sage);
+      flex-shrink: 0;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background-color: var(--white);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 40px rgba(19, 29, 54, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(12px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close:hover {
+      background-color: var(--canvas-2);
+      color: var(--navy-900);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background-color: var(--canvas);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Toast notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      animation: toastIn 0.25s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Backdrop for Mobile Sidebar */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 45;
+    }
+
+    /* Responsive Media Queries */
+    @media (max-width: 1100px) {
+      .wizard-split-layout {
+        grid-template-columns: 1fr;
+      }
+      .preview-sticky-col {
+        position: static;
+      }
+      .stepper-list {
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-backdrop.active {
+        display: block;
+      }
+      .sidebar-close-btn {
+        display: flex;
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger {
+        display: block;
+      }
+      .mobile-brand-mark {
+        display: flex;
+      }
+      .header-breadcrumb,
+      .portal-trust-chip,
+      .sovereign-fx-pill,
+      .cairo-clock-pill,
+      .user-tier {
+        display: none;
+      }
+      .portal-topbar {
+        padding: 0 16px;
+        height: 64px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+        gap: 20px;
+      }
+      .command-title {
+        font-size: 1.625rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .command-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .command-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .command-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .form-grid-2, .form-grid-3, .selection-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-grid-picker {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-pane-card {
+        padding: 20px 16px;
+      }
+      .form-navigation-row {
+        flex-direction: column-reverse;
+        gap: 12px;
+      }
+      .form-navigation-row .btn, .nav-actions-right, .nav-actions-right .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Backdrop for Mobile Drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Canonical 288px Fixed Sidebar -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Settly Agent Emblem Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">AGENT PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-container">
+        <div>
+          <div class="nav-group-title">Executive Desk</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+            <li>
+              <a href="listings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>My Listings</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="leads.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Leads & Pipeline</span>
+                <span class="nav-badge urgent">8</span>
+              </a>
+            </li>
+            <li>
+              <a href="calendar.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Viewings Calendar</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="analytics.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Analytics & Reports</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-title">Inventory & Public</div>
+          <ul class="nav-list">
+            <li>
+              <a href="create-listing.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Create Listing</span>
+              </a>
+            </li>
+            <li>
+              <a href="../public/agent-profile.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Public Profile</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged-in Agent Profile Card -->
+      <div class="sidebar-advisor">
+        <div class="advisor-header">
+          <img src="../../../../../Images/web/phone.jpg" alt="Karim El-Sayed" class="advisor-avatar">
+          <div class="advisor-meta">
+            <span class="advisor-name">Karim El-Sayed</span>
+            <span class="advisor-role">Senior Private Advisor</span>
+            <span class="advisor-license">License #EG-8841-B</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width: 100%; padding: 6px 12px; font-size: 0.75rem; justify-content: center; background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.15);" onclick="showToast('Agent desk status: Active & Verified')">
+          <span>Broker Desk Verified</span>
+        </button>
+      </div>
+
+      <!-- Legal & Trust Footer -->
+      <div class="sidebar-regulatory-box">
+        Verified Listings & Exclusive Mandates<br>
+        Licensed Independent Broker
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="portal-main">
+      <!-- Top Sticky Navigation Bar -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>AGENT PORTAL</span>
+            <span>/</span>
+            <span class="current">CREATE LISTING</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>NEW MANDATE WORKBENCH</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search Properties (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="Active Leads &amp; Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="../public/agent-profile.html" class="user-profile-badge" title="Manage Public Profile">
+            <div class="user-avatar-initials">KS</div>
+            <div class="user-meta">
+              <span class="user-name">Karim El-Sayed</span>
+              <span class="user-tier">Licensed Advisor</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Portal Content Body -->
+      <div class="portal-content">
+        <!-- Command Bar -->
+        <div class="command-bar">
+          <div class="command-title-wrap">
+            <h1 class="command-title">Create Exclusive Mandate</h1>
+            <p class="command-subtitle">Draft and publish verified luxury real estate representation mandates across Egypt's prime corridors.</p>
+          </div>
+          <div class="command-actions">
+            <a href="listings.html" class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              <span>Back to Listings</span>
+            </a>
+            <button class="btn btn-outline" onclick="saveDraft()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <span>Save Draft</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5-Step Progress Stepper -->
+        <div class="stepper-card">
+          <ul class="stepper-list">
+            <li class="stepper-item active" id="stepperItem1" onclick="jumpToStep(1)">
+              <div class="step-circle">1</div>
+              <div class="step-text">
+                <span class="step-num-label">Step 01</span>
+                <span class="step-title">Mandate & Location</span>
+              </div>
+            </li>
+            <li class="stepper-item" id="stepperItem2" onclick="jumpToStep(2)">
+              <div class="step-circle">2</div>
+              <div class="step-text">
+                <span class="step-num-label">Step 02</span>
+                <span class="step-title">Spatial Specs</span>
+              </div>
+            </li>
+            <li class="stepper-item" id="stepperItem3" onclick="jumpToStep(3)">
+              <div class="step-circle">3</div>
+              <div class="step-text">
+                <span class="step-num-label">Step 03</span>
+                <span class="step-title">Valuation & Terms</span>
+              </div>
+            </li>
+            <li class="stepper-item" id="stepperItem4" onclick="jumpToStep(4)">
+              <div class="step-circle">4</div>
+              <div class="step-text">
+                <span class="step-num-label">Step 04</span>
+                <span class="step-title">Media & Gallery</span>
+              </div>
+            </li>
+            <li class="stepper-item" id="stepperItem5" onclick="jumpToStep(5)">
+              <div class="step-circle">5</div>
+              <div class="step-text">
+                <span class="step-num-label">Step 05</span>
+                <span class="step-title">Title & Diligence</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Wizard Split Layout -->
+        <div class="wizard-split-layout">
+          <!-- Left Column: Form Panes -->
+          <div class="form-pane-card">
+            <!-- Step 1: Mandate & Location -->
+            <div class="step-pane active" id="stepPane1">
+              <div class="step-header">
+                <h2 class="step-heading">Mandate & Location Details</h2>
+                <p class="step-desc">Specify broker representation rights, property corridor, and development credentials.</p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Mandate Representation Type</label>
+                <div class="selection-cards-grid">
+                  <div class="selection-card selected" id="cardMandateExclusive" onclick="selectMandateType('Exclusive Seller Mandate', this)">
+                    <span class="selection-card-title">Exclusive Seller</span>
+                    <span class="selection-card-desc">Sole legal representative for private seller under signed mandate.</span>
+                  </div>
+                  <div class="selection-card" id="cardMandateDeveloper" onclick="selectMandateType('Direct Developer Mandate', this)">
+                    <span class="selection-card-title">Direct Developer</span>
+                    <span class="selection-card-desc">Official primary launch inventory allocated directly by developer.</span>
+                  </div>
+                  <div class="selection-card" id="cardMandateCobroke" onclick="selectMandateType('Co-Brokerage Mandate', this)">
+                    <span class="selection-card-title">Co-Brokerage</span>
+                    <span class="selection-card-desc">Split representation agreement with accredited co-broker.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Property Display Title</label>
+                <input type="text" id="inputTitle" class="form-input" value="The Grand Fairway Villa, Allegria" oninput="updateLivePreview()">
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">
+                    <span>Reference ID</span>
+                    <span class="helper-note">Auto-Generated</span>
+                  </label>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" id="inputRefId" class="form-input form-input-mono" value="SET-AL-8902" readonly style="background-color: var(--canvas-2);">
+                    <button type="button" class="btn btn-outline" style="padding: 0 12px;" onclick="regenerateRefId()" title="Regenerate Ref Code">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Corridor District</label>
+                  <select id="selectDistrict" class="select-dropdown" onchange="updateLivePreview()">
+                    <option value="6th of October · Sheikh Zayed" selected>6th of October · Sheikh Zayed</option>
+                    <option value="6th of October · New Zayed">6th of October · New Zayed</option>
+                    <option value="New Cairo · Golden Square">New Cairo · Golden Square</option>
+                    <option value="New Cairo · Road 90">New Cairo · Road 90</option>
+                    <option value="North Coast · Sidi Abd El Rahman">North Coast · Sidi Abd El Rahman</option>
+                    <option value="North Coast · Ras El Hekma">North Coast · Ras El Hekma</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Master Compound / Development</label>
+                  <select id="selectCompound" class="select-dropdown" onchange="updateLivePreview()">
+                    <option value="The Allegria by SODIC" selected>The Allegria by SODIC</option>
+                    <option value="Katameya Dunes Golf & Rock">Katameya Dunes Golf & Rock</option>
+                    <option value="Mivida by Emaar Misr">Mivida by Emaar Misr</option>
+                    <option value="Palm Hills Golf Views">Palm Hills Golf Views</option>
+                    <option value="Villette by SODIC">Villette by SODIC</option>
+                    <option value="Marassi Marina">Marassi Marina</option>
+                    <option value="Swan Lake Residences">Swan Lake Residences</option>
+                    <option value="Hacienda Bay">Hacienda Bay</option>
+                    <option value="SilverSands by Ora">SilverSands by Ora</option>
+                    <option value="Cali Coast by Maven">Cali Coast by Maven</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Handover Timeline</label>
+                  <select id="selectHandover" class="select-dropdown">
+                    <option value="Immediate" selected>Ready for Immediate Handover</option>
+                    <option value="2026">Q4 2026 Delivery</option>
+                    <option value="2027">2027 Construction Milestone</option>
+                    <option value="2028">2028 Off-Plan Delivery</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-navigation-row">
+                <div></div>
+                <div class="nav-actions-right">
+                  <button type="button" class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                  <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+                    <span>Next: Spatial Specs</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Spatial Typology & Specifications -->
+            <div class="step-pane" id="stepPane2">
+              <div class="step-header">
+                <h2 class="step-heading">Spatial Architecture & Specs</h2>
+                <p class="step-desc">Configure built dimensions, land plot area, bedroom arrangements, and luxury finishes.</p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Property Typology</label>
+                <div class="selection-cards-grid">
+                  <div class="selection-card selected" id="cardTypoVilla" onclick="selectTypology('Standalone Villa', this)">
+                    <span class="selection-card-title">Standalone Villa</span>
+                    <span class="selection-card-desc">Private detached residence with private garden perimeter.</span>
+                  </div>
+                  <div class="selection-card" id="cardTypoTwin" onclick="selectTypology('Twin House', this)">
+                    <span class="selection-card-title">Twin House</span>
+                    <span class="selection-card-desc">Semi-detached villa sharing a single boundary wall.</span>
+                  </div>
+                  <div class="selection-card" id="cardTypoTown" onclick="selectTypology('Townhouse', this)">
+                    <span class="selection-card-title">Townhouse</span>
+                    <span class="selection-card-desc">Multi-story attached urban residence with private garden.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Built-Up Area (BUA)</label>
+                  <div style="position: relative;">
+                    <input type="number" id="inputBua" class="form-input form-input-mono" value="480" oninput="updateLivePreview()">
+                    <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3);">m²</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Land / Plot Area</label>
+                  <div style="position: relative;">
+                    <input type="number" id="inputLand" class="form-input form-input-mono" value="650" oninput="updateLivePreview()">
+                    <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3);">m²</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Bedrooms</label>
+                  <select id="selectBeds" class="select-dropdown" onchange="updateLivePreview()">
+                    <option value="3">3 Master Suites</option>
+                    <option value="4">4 Master Suites</option>
+                    <option value="5" selected>5 Master Suites</option>
+                    <option value="6">6 Master Suites</option>
+                    <option value="7">7+ Stately Suites</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Bathrooms</label>
+                  <select id="selectBaths" class="select-dropdown" onchange="updateLivePreview()">
+                    <option value="3">3 Bathrooms</option>
+                    <option value="4">4 Bathrooms</option>
+                    <option value="5">5 Bathrooms</option>
+                    <option value="6" selected>6 Bathrooms</option>
+                    <option value="7">7 Bathrooms</option>
+                    <option value="8">8 Bathrooms</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Finishing Level</label>
+                  <select id="selectFinish" class="select-dropdown">
+                    <option value="Ultra Super Lux" selected>Ultra Super Lux (Designer Spec)</option>
+                    <option value="Fully Finished">Fully Finished (Ready to Furnish)</option>
+                    <option value="Semi-Finished">Semi-Finished (Custom Handover)</option>
+                    <option value="Core & Shell">Core & Shell (Architectural Blank Canvas)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">View Typology</label>
+                  <select id="selectView" class="select-dropdown">
+                    <option value="Golf Fairway" selected>Golf Fairway Panorama</option>
+                    <option value="Private Lake">Private Lake / Lagoon View</option>
+                    <option value="Seafront">Direct Seafront Beachfront</option>
+                    <option value="Garden">Landscaped Botanical Garden</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-navigation-row">
+                <button type="button" class="btn btn-outline" onclick="goToStep(1)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                  <span>Previous</span>
+                </button>
+                <div class="nav-actions-right">
+                  <button type="button" class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                  <button type="button" class="btn btn-primary" onclick="goToStep(3)">
+                    <span>Next: Valuation & Terms</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Valuation, Pricing & Commercial Terms -->
+            <div class="step-pane" id="stepPane3">
+              <div class="step-header">
+                <h2 class="step-heading">Valuation & Commercial Terms</h2>
+                <p class="step-desc">Establish verified asking price, payment options, and earnest money deposit terms.</p>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Asking Price (EGP)</label>
+                  <input type="number" id="inputPrice" class="form-input form-input-mono" value="36000000" oninput="updateLivePreview()">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Calculated Rate per m²</label>
+                  <input type="text" id="displayRateM2" class="form-input form-input-mono" value="75,000 EGP/m²" readonly style="background-color: var(--canvas-2); color: var(--navy-900); font-weight: 700;">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Payment Commercial Structure</label>
+                <div class="selection-cards-grid">
+                  <div class="selection-card selected" id="cardPayCash" onclick="selectPaymentMode('Cash Settlement', this)">
+                    <span class="selection-card-title">Cash Settlement</span>
+                    <span class="selection-card-desc">Lump sum wire transfer with 5% negotiated cash closing discount.</span>
+                  </div>
+                  <div class="selection-card" id="cardPayInstallment" onclick="selectPaymentMode('Installment Plan', this)">
+                    <span class="selection-card-title">Installment Schedule</span>
+                    <span class="selection-card-desc">25% down payment with equal semi-annual payments over 5 years.</span>
+                  </div>
+                  <div class="selection-card" id="cardPayBespoke" onclick="selectPaymentMode('Bespoke Plan', this)">
+                    <span class="selection-card-title">Bespoke Financing</span>
+                    <span class="selection-card-desc">Custom structured milestones agreed directly with private seller.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Maintenance Fund Deposit</label>
+                  <input type="text" id="inputMaintenance" class="form-input form-input-mono" value="2,880,000 EGP (8% One-Time)">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Reservation Deposit Terms</label>
+                  <input type="text" class="form-input form-input-mono" value="50,000 EGP (48h Cooling-off Protected)" readonly style="background-color: var(--canvas-2);">
+                </div>
+              </div>
+
+              <div class="form-navigation-row">
+                <button type="button" class="btn btn-outline" onclick="goToStep(2)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                  <span>Previous</span>
+                </button>
+                <div class="nav-actions-right">
+                  <button type="button" class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                  <button type="button" class="btn btn-primary" onclick="goToStep(4)">
+                    <span>Next: Media & Gallery</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Media & Architectural Gallery -->
+            <div class="step-pane" id="stepPane4">
+              <div class="step-header">
+                <h2 class="step-heading">Architectural Visual Assets</h2>
+                <p class="step-desc">Select high-resolution primary photography from your verified portfolio library.</p>
+              </div>
+
+              <div>
+                <span class="gallery-picker-label">Select Primary Cover Photography</span>
+                <div class="gallery-grid-picker" id="galleryPicker">
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('1.jpg', this)">
+                    <img src="../../../../../Images/web/1.jpg" alt="Katameya Dunes Villa">
+                    <span class="gallery-thumb-badge">KD Villa</span>
+                  </div>
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('2.jpg', this)">
+                    <img src="../../../../../Images/web/2.jpg" alt="Marassi Penthouse">
+                    <span class="gallery-thumb-badge">Marassi</span>
+                  </div>
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('3.jpg', this)">
+                    <img src="../../../../../Images/web/3.jpg" alt="Palm Hills October">
+                    <span class="gallery-thumb-badge">Palm Hills</span>
+                  </div>
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('4.jpg', this)">
+                    <img src="../../../../../Images/web/4.jpg" alt="Villette Duplex">
+                    <span class="gallery-thumb-badge">Villette</span>
+                  </div>
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('5.jpg', this)">
+                    <img src="../../../../../Images/web/5.jpg" alt="Mivida Crescent">
+                    <span class="gallery-thumb-badge">Mivida</span>
+                  </div>
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('6.jpg', this)">
+                    <img src="../../../../../Images/web/6.jpg" alt="Hacienda Bay">
+                    <span class="gallery-thumb-badge">Hacienda</span>
+                  </div>
+                  <div class="gallery-thumb-item active" onclick="selectPrimaryImage('7.jpg', this)">
+                    <img src="../../../../../Images/web/7.jpg" alt="Allegria Fairway">
+                    <span class="gallery-thumb-badge">Allegria</span>
+                  </div>
+                  <div class="gallery-thumb-item" onclick="selectPrimaryImage('8.jpg', this)">
+                    <img src="../../../../../Images/web/8.jpg" alt="Swan Lake">
+                    <span class="gallery-thumb-badge">Swan Lake</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dropzone-box" onclick="showToast('Simulating architectural photo upload')">
+                <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span class="dropzone-title">Click or Drag Additional HD Architectural Photos</span>
+                <span class="dropzone-sub">Supports TIFF, JPG, PNG up to 50MB per frame. EXIF color profiles preserved.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Virtual Video Tour or Drone Walkthrough URL</label>
+                <input type="url" class="form-input" placeholder="https://settly.com/tours/allegria-fairway-360">
+              </div>
+
+              <div class="form-navigation-row">
+                <button type="button" class="btn btn-outline" onclick="goToStep(3)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                  <span>Previous</span>
+                </button>
+                <div class="nav-actions-right">
+                  <button type="button" class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                  <button type="button" class="btn btn-primary" onclick="goToStep(5)">
+                    <span>Next: Title & Diligence</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5: Title & Legal Diligence -->
+            <div class="step-pane" id="stepPane5">
+              <div class="step-header">
+                <h2 class="step-heading">Title Verification & Diligence</h2>
+                <p class="step-desc">Attest legal ownership deeds, developer no-objection certificates, and mandate terms.</p>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Primary Ownership Deed / Contract No.</label>
+                  <input type="text" class="form-input form-input-mono" value="DEED-EG-2024-88190-ZA">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Developer NOC Status</label>
+                  <select class="select-dropdown">
+                    <option selected>NOC Clearance Issued by Developer</option>
+                    <option>NOC Pending Final Administrative Sign-off</option>
+                    <option>Direct Developer Contract (No NOC Required)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Mandate Exclusivity Period</label>
+                <div class="selection-cards-grid">
+                  <div class="selection-card">
+                    <span class="selection-card-title">3 Months</span>
+                    <span class="selection-card-desc">Short-term exclusive window for prompt seasonal closing.</span>
+                  </div>
+                  <div class="selection-card selected">
+                    <span class="selection-card-title">6 Months</span>
+                    <span class="selection-card-desc">Settly standard recommended exclusive mandate term.</span>
+                  </div>
+                  <div class="selection-card">
+                    <span class="selection-card-title">12 Months</span>
+                    <span class="selection-card-desc">Comprehensive private institutional representation agreement.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background-color: var(--canvas); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.8125rem; color: var(--navy-900); cursor: pointer;">
+                  <input type="checkbox" id="checkFiduciarySignoff" checked style="margin-top: 3px; accent-color: var(--brass);">
+                  <span>I, <strong>Karim El-Sayed</strong> (License #EG-8841-B), confirm that I have inspected the property, verified the owner's legal title, and am authorized to represent this unit exclusively on the Settly Exchange.</span>
+                </label>
+              </div>
+
+              <div class="form-navigation-row">
+                <button type="button" class="btn btn-outline" onclick="goToStep(4)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                  <span>Previous</span>
+                </button>
+                <div class="nav-actions-right">
+                  <button type="button" class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                  <button type="button" class="btn btn-brass" onclick="publishMandate()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Publish Mandate to Exchange</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Sticky Live Preview Console -->
+          <div class="preview-sticky-col">
+            <div class="preview-console-card">
+              <div class="preview-header-bar">
+                <span class="preview-header-title">Live Exchange Preview</span>
+                <span class="preview-live-badge">
+                  <span class="preview-live-dot"></span>
+                  <span>Real-Time</span>
+                </span>
+              </div>
+
+              <!-- Live Card Frame -->
+              <div class="live-preview-card">
+                <div class="preview-card-media">
+                  <img id="previewImg" src="../../../../../Images/web/7.jpg" alt="Preview Cover" class="preview-card-img">
+                  <div class="preview-card-scrim"></div>
+                  <div class="preview-badges-top">
+                    <span class="status-badge badge-active" id="previewStatusBadge">Active Exclusive</span>
+                    <span class="ref-code-badge" id="previewRefBadge">SET-AL-8902</span>
+                  </div>
+                  <div class="preview-price-overlay">
+                    <span class="preview-price-egp" id="previewPriceEgp">36,000,000 EGP</span>
+                    <span class="preview-rate-m2" id="previewRateM2">75,000 EGP/m²</span>
+                  </div>
+                </div>
+
+                <div class="preview-card-body">
+                  <span class="preview-card-mandate" id="previewMandate">Exclusive Seller Mandate</span>
+                  <div class="preview-card-title" id="previewTitle">The Grand Fairway Villa, Allegria</div>
+                  <div class="preview-card-location">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span id="previewLocation">The Allegria by SODIC · Sheikh Zayed</span>
+                  </div>
+                  <div class="preview-card-specs">
+                    <span><strong id="previewBua">480</strong> m² BUA</span>
+                    <span><strong id="previewLand">650</strong> m² Land</span>
+                    <span><strong id="previewBeds">5</strong> Beds</span>
+                    <span><strong id="previewBaths">6</strong> Baths</span>
+                  </div>
+                  <div class="preview-card-advisor">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Represented by Karim El-Sayed (#EG-8841-B)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Readiness Checklist -->
+              <div class="checklist-card">
+                <span class="checklist-title">Mandate Readiness Checklist</span>
+                <ul class="checklist-items">
+                  <li class="checklist-item">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Exclusive representation mandate verified</span>
+                  </li>
+                  <li class="checklist-item">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Spatial dimensions & plot verified</span>
+                  </li>
+                  <li class="checklist-item">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Asking valuation meets market corridor</span>
+                  </li>
+                  <li class="checklist-item">
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>High-resolution cover asset selected</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Success Publish Modal -->
+  <div class="modal-backdrop" id="modalPublishSuccess">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Mandate Published Successfully</h3>
+        <button class="modal-close" onclick="closeModal('modalPublishSuccess')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; padding: 12px 0;">
+          <div style="width: 54px; height: 54px; border-radius: 50%; background-color: var(--sage-bg); color: var(--sage); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h4 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--navy-900); margin-bottom: 6px;" id="publishedModalTitle">The Grand Fairway Villa, Allegria</h4>
+          <p style="font-family: var(--font-mono); font-size: 0.8125rem; color: var(--brass-600); font-weight: 700;" id="publishedModalRef">SET-AL-8902 · EXCLUSIVE MANDATE</p>
+        </div>
+        <p style="font-size: 0.875rem; color: var(--ink-2); text-align: center;">Your exclusive representation mandate is now active on the Settly Public Exchange and visible to accredited buyers and diaspora family offices.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="listings.html" class="btn btn-outline">Return to Listings</a>
+        <a href="../public/property-detail.html" class="btn btn-brass">View Public Page</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Dynamic Wizard Engine -->
+  <script>
+    let currentStep = 1;
+    let selectedImage = '7.jpg';
+    let selectedMandate = 'Exclusive Seller Mandate';
+    let selectedTypology = 'Standalone Villa';
+    let selectedPayment = 'Cash Settlement';
+
+    // Step Navigation
+    function goToStep(step) {
+      if (step < 1 || step > 5) return;
+      currentStep = step;
+
+      // Update Panes
+      for (let i = 1; i <= 5; i++) {
+        const pane = document.getElementById('stepPane' + i);
+        const item = document.getElementById('stepperItem' + i);
+        if (pane) pane.classList.toggle('active', i === step);
+        if (item) {
+          item.classList.toggle('active', i === step);
+          item.classList.toggle('completed', i < step);
+        }
+      }
+
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    function jumpToStep(step) {
+      goToStep(step);
+    }
+
+    // Selection Handlers
+    function selectMandateType(type, element) {
+      selectedMandate = type;
+      document.querySelectorAll('#stepPane1 .selection-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+      updateLivePreview();
+    }
+
+    function selectTypology(typo, element) {
+      selectedTypology = typo;
+      document.querySelectorAll('#stepPane2 .selection-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+      updateLivePreview();
+    }
+
+    function selectPaymentMode(mode, element) {
+      selectedPayment = mode;
+      document.querySelectorAll('#stepPane3 .selection-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function selectPrimaryImage(imgName, element) {
+      selectedImage = imgName;
+      document.querySelectorAll('.gallery-thumb-item').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      document.getElementById('previewImg').src = '../../../../../Images/web/' + imgName;
+      showToast('Updated cover photography to ' + imgName);
+    }
+
+    function regenerateRefId() {
+      const prefixes = ['SET-AL', 'SET-KD', 'SET-MR', 'SET-PH', 'SET-VL', 'SET-HB'];
+      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+      const num = Math.floor(1000 + Math.random() * 9000);
+      const code = prefix + '-' + num;
+      document.getElementById('inputRefId').value = code;
+      updateLivePreview();
+      showToast('Generated new reference ID: ' + code);
+    }
+
+    // Real-Time Live Preview Synchronizer
+    function updateLivePreview() {
+      const title = document.getElementById('inputTitle').value || 'Untitled Luxury Mandate';
+      const refId = document.getElementById('inputRefId').value || 'SET-PENDING';
+      const district = document.getElementById('selectDistrict').value;
+      const compound = document.getElementById('selectCompound').value;
+      const bua = parseInt(document.getElementById('inputBua').value, 10) || 0;
+      const land = parseInt(document.getElementById('inputLand').value, 10) || 0;
+      const beds = document.getElementById('selectBeds').value;
+      const baths = document.getElementById('selectBaths').value;
+      const price = parseInt(document.getElementById('inputPrice').value, 10) || 0;
+
+      // Calculate Price per m2
+      const rateM2 = bua > 0 ? Math.round(price / bua) : 0;
+
+      // Update Card DOM
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('previewRefBadge').textContent = refId;
+      document.getElementById('previewMandate').textContent = selectedMandate;
+      document.getElementById('previewLocation').textContent = compound + ' · ' + district;
+      document.getElementById('previewBua').textContent = bua;
+      document.getElementById('previewLand').textContent = land;
+      document.getElementById('previewBeds').textContent = beds;
+      document.getElementById('previewBaths').textContent = baths;
+
+      document.getElementById('previewPriceEgp').textContent = price.toLocaleString('en-US') + ' EGP';
+      document.getElementById('previewRateM2').textContent = rateM2.toLocaleString('en-US') + ' EGP/m²';
+      document.getElementById('displayRateM2').value = rateM2.toLocaleString('en-US') + ' EGP/m²';
+    }
+
+    // Save Draft
+    function saveDraft() {
+      const draftObj = {
+        title: document.getElementById('inputTitle').value,
+        refId: document.getElementById('inputRefId').value,
+        district: document.getElementById('selectDistrict').value,
+        compound: document.getElementById('selectCompound').value,
+        bua: document.getElementById('inputBua').value,
+        land: document.getElementById('inputLand').value,
+        price: document.getElementById('inputPrice').value,
+        image: selectedImage,
+        timestamp: new Date().toISOString()
+      };
+      try {
+        localStorage.setItem('settly_draft_mandate', JSON.stringify(draftObj));
+      } catch (e) {}
+      showToast('Mandate draft saved successfully to local advisor desk');
+    }
+
+    // Publish Mandate
+    function publishMandate() {
+      const title = document.getElementById('inputTitle').value;
+      const refId = document.getElementById('inputRefId').value;
+      const price = document.getElementById('inputPrice').value;
+
+      if (!title || !price) {
+        showToast('Please specify property title and asking price before publishing');
+        return;
+      }
+
+      document.getElementById('publishedModalTitle').textContent = title;
+      document.getElementById('publishedModalRef').textContent = refId + ' · ' + selectedMandate.toUpperCase();
+      document.getElementById('modalPublishSuccess').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // Toast System
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    // Mobile Sidebar Drawer Navigation
+    const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
+    const portalSidebar = document.getElementById('portalSidebar');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openSidebar() {
+      portalSidebar.classList.add('open');
+      sidebarBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      portalSidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuTrigger) mobileMenuTrigger.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeSidebar();
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    });
+
+    // Live Cairo Clock
+    function updateCairoClock() {
+      try {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Africa/Cairo',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const clockEl = document.getElementById('cairoTimeDisplay');
+        if (clockEl) clockEl.textContent = formatter.format(now) + ' CLT';
+      } catch (err) {}
+    }
+    setInterval(updateCairoClock, 1000);
+    updateCairoClock();
+
+    // Initial setup
+    updateLivePreview();
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

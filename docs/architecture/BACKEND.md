@@ -19,12 +19,14 @@ PostGIS drivers) for no benefit Settly needs (#8).
 
 ```
   backend/
-  ├── settly-api      Express, SSE, ALWAYS ON — scheduled jobs depend on this
-  └── settly-worker    BullMQ consumers + 9 schedulers
+  ├── settly-api       Express, SSE, native WebSocket (/ws/chat), ALWAYS ON
+  └── settly-worker    BullMQ consumers + 9 schedulers (Upstash Redis, ALWAYS ON)
 ```
 
-Two Railway services in production (#22) — split for architectural honesty (a worker crash
-cannot take down the API) at negligible cost, not because the codebase differs.
+Two Railway/container services in production (#22, #44) — split for architectural honesty (a worker
+crash cannot take down the API) at negligible cost. **Critical constraint:** BullMQ worker event loops
+and native WebSocket connections require persistent, continuously-running Node.js processes. They
+cannot be deployed inside ephemeral, scale-to-zero serverless functions (such as Vercel functions).
 
 ## 4. Module structure — 11 modules, no admin module
 
@@ -77,7 +79,7 @@ re-drives anything stuck. No generic `OutboxEvent` model (#8).
   Transaction commits (writes the row, status = PENDING)
         │
         ▼  ENQUEUE — after commit, never inside the transaction
-  BullMQ (Redis)
+  BullMQ (Upstash Redis via TCP)
         │
         ▼
   Worker executes, updates status

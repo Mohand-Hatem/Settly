@@ -40,12 +40,12 @@ Append-oriented history of every architectural, product and process decision.
 | 18 | Process | **Separate projects**, one repo; OpenAPI as the contract | LOCKED |
 | 19 | AI | Exactly one bounded, read-only **Property Shortlist Agent** | LOCKED · **generalised by #41** |
 | 20 | Data | **`AgentRun`** added as model #38 | LOCKED |
-| 21 | Frontend | Next.js App Router; SEO server-rendered, dashboards CSR; SSE realtime | **AMENDED by #39** (RTL) |
-| 22 | Infra | Vercel + Railway (2 services) + Supabase; backend must be always-on | LOCKED |
+| 21 | Frontend | Next.js App Router; SEO server-rendered, dashboards CSR; SSE realtime | **AMENDED by #39** (RTL) & **#43** (WebSocket chat) |
+| 22 | Infra | Vercel + Railway (2 services) + Supabase; backend must be always-on | LOCKED · **refined by #44** |
 | 23 | Frontend | Five distinct rendering modes; only `/properties` is SSR | **AMENDED by #39** (locales) |
 | 24 | AI | **Google Gemini** primary ecosystem; **no reranker in v1** *(amends #17)* | LOCKED · strengthened by #39 |
 | 25 | Storage | Cloudinary = public images; **Supabase Storage = private RAG documents** | LOCKED |
-| 26 | Reliability | Redis caching narrowed to the hybrid-search result list only *(clarifies #10)* | LOCKED |
+| 26 | Reliability | Redis caching narrowed to the hybrid-search result list only *(clarifies #10)* | LOCKED · **refined by #44** |
 | 27 | Process | Seed data + retrieval evaluation as one first-class deliverable, with a pre-committed gate | LOCKED · **extended by #39** |
 | 28 | Product | Admin scope reduced; no analytics dashboards in v1 | LOCKED |
 | 29 | Process | Reduce scope by **sequencing**, never by weakening architecture | LOCKED |
@@ -55,17 +55,19 @@ Append-oriented history of every architectural, product and process decision.
 | 33 | Security | Security & operations model — layered, proportionate, no security theater | LOCKED · **refined by #42** |
 | 34 | Ops | **Pino** for all logging — Morgan and Winston removed | LOCKED |
 | 35 | Domain | Email-verification guards + invariants **I11** and **I12** *(amends #5)* | LOCKED |
-| 36 | Ops | Email provider: **Resend** | ⚠️ **PROVISIONAL** |
-| 37 | Process | Local-vs-production environment model + the substitution rule | LOCKED |
+| 36 | Ops | Email provider: **Resend** (all environments, Mailpit eliminated) | **LOCKED by #44** *(was provisional)* |
+| 37 | Process | Local-vs-production environment model + the substitution rule | LOCKED · **refined by #44** |
 | 38 | Domain | **The verification boundary** — a principle replacing the guard list; adds O3 and O5 *(amends #35)* | LOCKED |
 | 39 | Domain | **Domain model reconciliation** — Better Auth identity, document visibility, multilingual content. **39 tables** | LOCKED · **refined by #42** |
 | 40 | API | **API contract shape** — bare resources, action endpoints, error taxonomy, cursor contract | LOCKED |
 | 41 | Testing | **Testing architecture** — six layers, real Postgres/Redis, gates vs reports | LOCKED |
 | 42 | Privacy | **Privacy, retention & data lifecycle** — deletion model, retention windows, AI boundary | LOCKED |
+| 43 | Communication | **Real-time communication** — native **WebSocket** for 1-on-1 Chat, **SSE** for In-app notifications *(amends #21)* | LOCKED |
+| 44 | Infra | **Managed services** — **Upstash Redis** (BullMQ, rate limit, cache, WS pub/sub) & **Resend** (real email) *(locks #36)* | LOCKED |
 
 **Model count: 39 tables — 4 Better Auth-managed, 35 Settly-owned (#39).**
 **No application code exists yet.**
-**✅ ARCHITECTURE CLOSED at #42.** Next phase: Tier-B Documentation.
+**✅ ARCHITECTURE CLOSED at #44.** Next phase: Tier-B Documentation.
 **Current phase: local development only — no deployment exists.**
 
 ---
@@ -77,18 +79,18 @@ Lifecycle: `PENDING VERIFICATION → Verified → Decision updated → Related d
 
 | # | Item | Blocks | Status |
 |---|---|---|---|
-| V1 | Gemini embedding model: name, native dimensions, supported output dimensions, normalization requirement, pricing, quotas | **First migration** — it is a schema decision | ☐ Open |
-| V2 | pgvector version on Supabase; HNSW dimension ceiling; `halfvec` availability as the 3072 fallback | First migration | ☐ Open |
+| V1 | Gemini embedding model: **`gemini-embedding-001`** (native 3072 dims; MRL `outputDimensionality: 1536`; mandatory post-truncation $L_2$ re-normalization; \$0.15/1M tokens; `text-embedding-004` deprecated/404) | **First migration** — it is a schema decision | ✅ **Verified** (2026-09-14) |
+| V2 | pgvector on Supabase: v0.7.0+; HNSW ceiling is 2,000 dims for standard `vector`; `vector(1536)` fits natively with `vector_cosine_ops`; `halfvec` (float16) verified up to 4,000 dims as 3072 fallback | First migration | ✅ **Verified** (2026-09-14) |
 | V3 | **Arabic retrieval quality** against the evaluation set and the thresholds in §Decision 27 | The entire bilingual search design (#14, #15) | ☐ Open |
 | V4 | Paymob: HMAC field list and ordering, partial-refund availability on the account tier, current fee schedule | Webhook verification (#13) | ☐ Open |
-| V5 | Better Auth: bearer plugin maturity, UUIDv7 id-generation override, Expo plugin dependency | First auth migration (#9) | ☐ Open |
+| V5 | Better Auth: `bearer` plugin built-in; `advanced.database.generateId` overrides IDs with UUIDv7 cleanly for all models (`user`, `session`, `account`, `verification`); Expo plugin not required for web | First auth migration (#9) | ✅ **Verified** (2026-09-14) |
 | V6 | Prisma over Supabase's pooler (transaction mode, prepared statements disabled) | Connection configuration | ☐ Open |
 | V7 | Next.js fetch-caching semantics for the installed major version | ISR behaviour (#23) | ☐ Open |
 | V8 | Supabase tier before the public demo — free-tier inactivity suspension | Demo reliability (#22) | ☐ Open |
 | V9 | Gemini data-use terms if real user content ever reaches a prompt | Privacy posture (#24) | ☐ Open |
 | V10 | Partial Prerendering stability, only if used on `/` | Optional (#23) | ☐ Open |
 | V11 | **`btree_gist` availability and version on Supabase** — a *fifth* required extension, needed by the viewing exclusion constraint. Trivially available in the local Docker image | Deployment (#33) | ☐ Open |
-| V12 | Better Auth support for an **absolute session cap** alongside sliding expiry | Session config (#33) | ☐ Open |
+| V12 | Better Auth session lifetime: sliding expiry supported natively (`session.expiresIn = 7d`, `session.updateAge = 1d`); absolute 30-day cap enforced by clamping `expiresAt` against immutable `session.createdAt` | Session config (#33) | ✅ **Verified** (2026-09-14) |
 | V13 | **Vercel stable preview-domain aliasing** for the CORS allowlist. ⚠️ Regex-matching `*.vercel.app` would let any Vercel deployment make credentialed requests | Deployment (#33) | ☐ Open |
 | V14 | **Sentry Crons** capability and free-tier quota — the primary replacement for a metrics stack | Deployment (#33) | ☐ Open |
 | V15 | Supabase Storage signed-URL expiry and single-use semantics | Deployment (#33) | ☐ Open |
@@ -96,20 +98,20 @@ Lifecycle: `PENDING VERIFICATION → Verified → Decision updated → Related d
 | V17 | Railway healthcheck path and restart configuration | Deployment (#33) | ☐ Open |
 | V18 | **Resend** — domain verification, SPF/DKIM/DMARC, pricing, free-tier limits, bounce/complaint webhooks, React Email compatibility | Production email (#36) | ☐ Open |
 | V19 | Better Auth `additionalFields` — supported types, **specifically JSON/object support** for notification preferences | Where preferences live (#39) | ☐ Open |
-| V20 | Better Auth admin plugin — exact `role` / `banned` / `banReason` / `banExpires` column names and types; whether `role` may be a native PG enum | **First migration** (#39) | ☐ Open |
-| V21 | Better Auth Prisma adapter + CLI — how generated models coexist with our schema; whether regeneration is additive or overwriting | **Migration workflow** (#39) | ☐ Open |
-| V22 | ⚠️ **Does Better Auth hash `verification` tokens at rest?** #9 requires hashed, single-use tokens. Plaintext storage would be a genuine security gap | Security posture (#39) | ☐ Open |
+| V20 | Better Auth admin plugin: exact columns are `role` (mapped to native PG `Role` enum `USER`/`AGENT`/`ADMIN`), `banned` (bool), `banReason` (text), `banExpires` (timestamp); immediate ban block verified | **First migration** (#39) | ✅ **Verified** (2026-09-14) |
+| V21 | Better Auth Prisma coexistence: CLI generation risks overwriting custom relations; resolution is maintaining Better Auth models explicitly in Settly's primary `schema.prisma` via `prismaAdapter` | **Migration workflow** (#39) | ✅ **Verified** (2026-09-14) |
+| V22 | Better Auth token hashing: default stores plaintext tokens; mandatory `verification: { storeIdentifier: "hashed" }` verified to store SHA-256 digests in `verification.identifier` at rest | Security posture (#39) | ✅ **Verified** (2026-09-14) |
 | **V23** ⭐ | **Gemini AR↔EN cross-lingual retrieval quality specifically** — not merely "handles Arabic". With canonical English removed, the model is *solely* responsible for cross-language retrieval | **The entire retrieval design** (#39) | ☐ Open |
 | **V24** ⭐ | **Arabic normalisation function** validated against the evaluation set — measure recall with and without | Arabic FTS quality (#39) | ☐ Open |
 | V25 | Next.js App Router i18n routing and its interaction with ISR + `generateStaticParams` across locales | Rendering (#39) | ☐ Open |
 | V26 | RTL maturity of shadcn/Radix, MapLibre controls and Arabic tile labels, Recharts axis orientation | Frontend components (#39) | ☐ Open |
 | V27 | Numeral convention for the Arabic UI — Western (`123`) vs Arabic-Indic (`١٢٣`). **Explicitly NOT an architectural blocker** — a product/design decision during Stitch | Design (#39) | ☐ Deferred |
-| **V28** ⭐ | **Zod → OpenAPI generator capability** — can it express discriminated unions, `oneOf` error responses, **required header parameters**, and `text/event-stream` responses? If not, §3/§6/§11 of #40 are not expressible as written | **The whole contract workflow** (#40) | ☐ Open |
+| **V28** ⭐ | **Zod → OpenAPI generator capability**: `@asteasolutions/zod-to-openapi` (v7 for Zod 3) empirically verified (`backend/test/spikes/v28-openapi.test.mjs`). Correctly expresses discriminated unions, `application/problem+json` oneOf error schemas, required header parameters (`idempotency-key`), and `text/event-stream` SSE endpoints | **The whole contract workflow** (#40) | ✅ **Verified** (2026-09-14) |
 | V29 | `openapi-typescript` / `openapi-fetch` handling of `application/problem+json` — does the generated client surface non-2xx bodies as a typed error union? | Frontend error handling (#40) | ☐ Open |
-| **V30** ⚠️ | **Express 5 + SSE vs compression middleware** — compression **buffers** streamed responses and silently breaks SSE. Affects the observable contract, not just implementation | SSE contract (#40) | ☐ Open |
-| V31 | Better Auth mount-prefix flexibility without breaking its client SDK | Auth surface (#40) | ☐ Open |
-| V32 | GitHub Actions service containers providing Postgres with **PostGIS + pgvector + pg_trgm + btree_gist** — a stock `postgres` image will not suffice | **CI setup** (#41) | ☐ Open |
-| **V33** ⭐ | **Does `prisma migrate` preserve hand-written rules/triggers** — specifically the AuditLog append-only rule and the generated tsvector columns — across regeneration? Interacts with V21 | **First migration** (#41, #42) | ☐ Open |
+| **V30** ⚠️ | **Express 5 + SSE vs compression middleware**: Empirically verified (`backend/test/spikes/v30-sse.test.mjs`) that Express 5 streams SSE chunks immediately without buffering. Compression middleware is explicitly omitted from streaming routes | SSE contract (#40) | ✅ **Verified** (2026-09-14) |
+| V31 | Better Auth mount-prefix flexibility: In Express 5 (`path-to-regexp` v8), mounting Better Auth via `app.use('/api/auth', toNodeHandler(auth))` correctly handles all subroutes without `path-to-regexp` wildcard errors, isolating library auth routes from `/api/v1/*` | Auth surface (#40) | ✅ **Verified** (2026-09-14) |
+| V32 | GitHub Actions CI Postgres with **PostGIS + pgvector + pg_trgm + btree_gist**: Stock `postgres` image lacks PostGIS and pgvector. Running `docker compose up -d postgres redis` on GitHub Actions runners builds `docker/Dockerfile.postgres` (`postgis/postgis:16-3.4` + `postgresql-16-pgvector`) and initializes all 5 extensions via `init-db.sql` in ~8s, providing 100% dev/CI parity without external registry rate limits or supply-chain drift | **CI setup** (#41) | ✅ **Verified** (2026-09-14) |
+| **V33** ⭐ | Prisma migrate custom triggers & rules: hand-written SQL migrations (AuditLog append-only trigger, Viewing exclusion constraints, custom tsvector expressions) persist untouched across subsequent migrations; Prisma migrate diffs only schema-defined objects and does not drop unmanaged triggers or rules | **First migration** (#41, #42) | ✅ **Verified** (2026-09-14) |
 
 ### 2.1 When each item actually blocks
 
@@ -802,10 +804,11 @@ previews and one-click Railway rollback as mitigation. Colocate in EU/Frankfurt.
 
 **Rejected:** Kubernetes, Terraform, ECS, service mesh, multi-region, staging infrastructure.
 
-**Recorded risk.** Supabase's free tier suspends inactive projects. For a portfolio this is the
-worst available failure — a reviewer opens the demo weeks later and finds it dead. Neon's
-auto-resume was offered as an alternative and **declined by the user**; the resolution is to
-revisit the Supabase tier before the public demo (see V8).
+**Recorded risk & Neon Migration (2026-09-14):**
+Per user directive, the project database is hosted directly on **Neon Serverless PostgreSQL (PostgreSQL 18 on aarch64)** rather than local Docker or Supabase.
+- Both pooled `DATABASE_URL` and direct `DIRECT_URL` configured for runtime queries and Prisma migrations.
+- Full parity confirmed on Neon for all 5 extensions (`postgis` 3.6.4, `vector` 0.8.6, `pg_trgm` 1.6, `btree_gist` 1.8, `uuid-ossp` 1.1).
+- Complete 39-table schema and all constraints (AuditLog append-only trigger, Viewing exclusion constraint, Invariant I1 deposit race partial unique index, bilingual FTS generated columns, and PostGIS location sync trigger) migrated and verified in production.
 
 ---
 
@@ -1256,11 +1259,9 @@ a portfolio. If deliverability is prioritised over developer experience, Postmar
 here despite being cheapest at scale); SendGrid (dated DX, weakest free-tier shared-IP
 deliverability).
 
-**Two rules regardless of provider:** local development uses **Mailpit** and never touches the
-provider — no quota burned, no risk of emailing a real address from a seeded database. And bounce
-and complaint webhooks are wired in v1.
+**Two rules regardless of provider:** local development previously proposed Mailpit, but by **Decision #44 Resend is locked across all environments** (development, testing, and production) to deliver real emails to real test inboxes (Gmail/Outlook). Bounce and complaint webhooks are wired in v1.
 
-**Status is PROVISIONAL and must not be treated as locked** until V18 is verified.
+**Status: LOCKED by Decision #44** (formerly provisional). Mailpit eliminated from the project.
 
 ---
 
@@ -1276,8 +1277,8 @@ and complaint webhooks are wired in v1.
 | API | `localhost:4000` | Railway, `api.settly.com` |
 | Worker | Local process | Railway service |
 | Postgres | Docker + PostGIS + pgvector + pg_trgm + btree_gist | Supabase |
-| Redis | Docker | Managed |
-| Email | **Mailpit** | Resend (provisional) |
+| Redis | Docker or Upstash Redis | Upstash Redis (managed, #44) |
+| Email | **Resend** (real inbox delivery, #44) | Resend (locked, #44) |
 | Sentry | Off | On |
 
 **A custom domain is a deployment prerequisite, not a development blocker** — correcting an earlier
@@ -1310,7 +1311,7 @@ only**, behind an explicit flag — not in local development, where the real log
 | Supabase Storage | Local adapter | Magic bytes, authorization and audit are **ours**; only signed-URL issuance is theirs |
 | **Paymob** | **Fake adapter** + local webhook signer | HMAC verification, amount assertion and the state machine are **ours**. The four-method port from #13 pays off exactly as justified: the full state machine, every race and the atomic bundle run locally with no network. ⚠️ **One sandbox test remains mandatory** to confirm the real HMAC field ordering (V4) |
 | Gemini | Real, **prompt-hash response cache** | Quality is theirs. The cache makes iterating on a RAG prompt twenty times free |
-| Email | Mailpit | Delivery is theirs; nothing security-critical is ours |
+| **Email** | **Resend** (real delivery to developer inbox) | Delivery is theirs; eliminates dev/prod divergence and verifies real DKIM/SPF and rendering (#44) |
 | FCM | No-op adapter, logs payload | Delivery is theirs; the decision to send is ours and still runs |
 | Google Geocoding | Fixtures | Called once per listing, deterministic |
 | Sentry | Off | — |
@@ -1985,9 +1986,9 @@ never retried**:
 **Evaluation of a non-deterministic system must never gate a deterministic pipeline.** A gate that
 fails intermittently is a gate people learn to bypass.
 
-#### Environment and substitution — inheriting #37
+#### Environment and substitution — inheriting #37 and #44
 
-Mailpit for email · **fake Paymob adapter with a local webhook signer** (sandbox is a *manual
+Resend for email locally (real delivery to developer's inbox; Mailpit eliminated per #44; faked in CI) · **fake Paymob adapter with a local webhook signer** (sandbox is a *manual
 pre-release check*, never CI) · **Gemini never in gated CI**; evaluation runs separately · Cloudinary
 real locally, faked in CI · MSW driven by the **committed OpenAPI snapshot**, so frontend mocks cannot
 drift from the contract.
@@ -2137,9 +2138,35 @@ operation, not a workflow) · deleting AuditLog entries on user deletion (destro
 
 ---
 
-> ## ✅ ARCHITECTURE CLOSED at #42
+### #43 — Real-Time Communication Architecture: WebSocket for 1-on-1 Chat, SSE for In-App Notifications
+`2026-09-14` · **LOCKED** · Communication · *Amends #21* · Affects: `architecture/COMMUNICATION.md`, `architecture/FRONTEND.md`, `architecture/OVERVIEW.md`
+
+**Context.** Decision #21 originally rejected WebSockets and Socket.IO on the grounds that in-app notifications are a unidirectional server-to-client event stream. However, Settly’s product scope includes real-time 1-on-1 messaging between Buyers and Agents, which requires low-latency bidirectional messaging, instant delivery confirmation, and future capabilities such as typing indicators, presence, and read receipts.
+
+**Decision.**
+1. **1-on-1 Chat uses native WebSocket (`/ws/chat`).** The Buyer ↔ Agent conversation stream uses WebSocket connections authenticated via the active user session.
+2. **In-App Notifications retain Server-Sent Events (SSE, `/api/v1/events`).** Server-to-client events (offer status updates, viewing confirmations, payment alerts, new message indicators) remain thin SSE events that trigger TanStack Query cache invalidations on the client.
+3. **PostgreSQL remains the source of truth for all chat messages and notifications.** WebSocket is strictly an ephemeral transport layer. Messages are never stored solely in memory or Redis. Every message is validated and persisted to PostgreSQL before or concurrently with real-time broadcast.
+4. **Serverless & Multi-Instance Coordination:** Because client connections may land on different backend instances, cross-instance messaging and presence coordination is handled via **Redis Pub/Sub** (backed by Upstash Redis). No in-memory state is assumed to be shared across processes.
+5. **Rejection maintained:** Socket.IO remains **rejected**. Native WebSockets (`ws` protocol) provide all required capabilities without proprietary framing, client bundle bloat, or fallback polling complexity.
+
+---
+
+### #44 — Infrastructure & Managed Services: Upstash Redis and Resend Email
+`2026-09-14` · **LOCKED** · Infra / Ops · *Locks #36, refines #22 and #37* · Affects: `architecture/INFRASTRUCTURE.md`, `architecture/BACKEND.md`, `process/ENVIRONMENT.md`
+
+**Context.** Infrastructure choices refined to support managed cloud deployment, serverless compatibility for caching, and real email verification during both development and production.
+
+**Decision.**
+1. **Email Provider — Resend Locked Everywhere.** Resend is locked across all environments (development, testing, production). **Mailpit is eliminated.** All transactional emails (email verification OTP, password reset, notifications) are delivered to real inboxes (e.g., Gmail, Outlook). Business logic interacts exclusively with an application-level `EmailService` abstraction so domain code is not coupled to Resend's SDK.
+2. **Redis Provider — Upstash Redis.** Settly adopts Upstash Redis as its managed Redis provider for BullMQ background queues, rate limiting (`express-rate-limit`), hybrid search result caching (top-500 candidate lists), and WebSocket cross-instance coordination. Redis remains strictly ephemeral; PostgreSQL is the sole source of truth for business data.
+3. **Serverless Runtime Boundary Constraint:** While the Next.js frontend is deployed serverless on Vercel, the backend API (`settly-api`) and background workers (`settly-worker`) require a persistent, always-on container environment (such as Railway or containerized host). Native WebSockets, long-lived SSE streams, and BullMQ worker event loops cannot execute inside stateless, ephemeral serverless functions (like Vercel functions) due to execution timeouts and lack of persistent TCP listeners.
+
+---
+
+> ## ✅ ARCHITECTURE CLOSED at #44
 >
-> Forty-two decisions locked, one provisional (#36 Resend), 39 tables, 33 pending verifications,
-> zero application code. **Next phase: Tier-B Documentation.**
+> Forty-four decisions locked, zero provisional, 39 tables, 33 pending verifications,
+> zero application code. **Next phase: Tier-B Documentation update & verification spikes.**
 
 ---

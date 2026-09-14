@@ -1,0 +1,3139 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings · Settly Buyer Portal</title>
+  <meta name="description" content="Manage your personal profile, buyer verification status, security credentials, notification channels, and deposit refund details on Settly.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #131D36;
+      --navy-800: #1E2A4A;
+      --navy-700: #2B3A61;
+      --navy-600: #3D4E7A;
+      --brass: #C69749;
+      --brass-600: #AE8033;
+      --brass-200: #E7D3AB;
+      --brass-050: #F6EEDE;
+      --canvas: #F7F6F3;
+      --canvas-2: #EFEDE6;
+      --white: #FFFFFF;
+      --ink: #16203A;
+      --ink-2: #4C5878;
+      --ink-3: #646D88;
+      --line: rgba(30, 42, 74, 0.10);
+      --line-2: rgba(30, 42, 74, 0.18);
+      --sage: #3D5A4C;
+      --sage-bg: #EAF0EC;
+      --error: #991B1B;
+      --warning: #B45309;
+
+      --font-display: 'Spectral', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --sidebar-width: 288px;
+      --header-height: 72px;
+
+      --radius-sm: 8px;
+      --radius-md: 9px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--canvas);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Fixed Sidebar Navigation */
+    .portal-sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      height: var(--header-height);
+    }
+
+    .sidebar-brand {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s ease;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-close-btn:hover {
+      color: var(--white);
+    }
+
+    /* Mobile Backdrop Overlay */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(19, 29, 54, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .sidebar-backdrop.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Official Settly Main Logo Backing Plate */
+    .brand-plate {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 2px 8px rgba(19, 29, 54, 0.12);
+      flex-shrink: 0;
+    }
+
+    .brand-plate img {
+      height: 30px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-name {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .brand-portal {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-top: 2px;
+    }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .nav-group-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.062em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 12px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: rgba(255, 255, 255, 0.72);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+    }
+
+    .nav-link.active {
+      background-color: rgba(198, 151, 73, 0.14);
+      color: var(--brass);
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--brass);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--white);
+    }
+
+    .nav-badge.urgent {
+      background-color: var(--brass);
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .nav-badge.sage {
+      background-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* Private Advisor Desk Widget */
+    .sidebar-advisor {
+      margin-top: auto;
+      padding: 14px;
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .advisor-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--brass);
+      object-fit: cover;
+    }
+
+    .advisor-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .advisor-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .advisor-meta {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--brass);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .advisor-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+      display: inline-block;
+    }
+
+    .advisor-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .btn-advisor-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-advisor-whatsapp {
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+    }
+
+    .btn-advisor-whatsapp:hover {
+      background-color: rgba(61, 90, 76, 0.2);
+    }
+
+    .btn-advisor-call {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-advisor-call:hover {
+      background-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Main Content Wrapper */
+    .portal-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--canvas);
+    }
+
+    /* Top Navigation Header */
+    .portal-topbar {
+      height: var(--header-height);
+      background-color: var(--white);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .header-start {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      cursor: pointer;
+      color: var(--navy-900);
+    }
+
+    .mobile-brand-mark {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .mobile-brand-mark img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .mobile-brand-text {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      text-transform: uppercase;
+    }
+
+    .header-breadcrumb .sep {
+      color: var(--line-2);
+    }
+
+    .header-breadcrumb .current {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .portal-trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--sage);
+      letter-spacing: 0.03em;
+    }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--sage);
+    }
+
+    .header-end {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sovereign-fx-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .fx-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--brass);
+    }
+
+    .cairo-clock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-2);
+    }
+
+    .topbar-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-2);
+      cursor: pointer;
+      position: relative;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .topbar-icon-btn:hover {
+      border-color: var(--navy-700);
+      color: var(--navy-900);
+      background-color: var(--canvas);
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--brass);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      background-color: var(--canvas);
+      text-decoration: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .user-profile-badge:hover {
+      border-color: var(--navy-700);
+    }
+
+    .user-avatar-initials {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--navy-900);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .user-tier {
+      font-size: 0.6875rem;
+      color: var(--brass-600);
+      font-weight: 600;
+    }
+
+    /* Portal Content Wrapper */
+    .portal-content {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Command Bar */
+    .command-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .command-title-wrap {
+      max-width: 760px;
+    }
+
+    .command-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .command-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .command-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border: 1px solid var(--navy-900);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .btn-outline {
+      background-color: var(--white);
+      color: var(--navy-900);
+      border: 1px solid var(--line-2);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--canvas-2);
+      border-color: var(--navy-700);
+    }
+
+    .btn-brass {
+      background-color: var(--brass);
+      color: var(--white);
+      border: 1px solid var(--brass);
+    }
+
+    .btn-brass:hover {
+      background-color: var(--brass-600);
+      border-color: var(--brass-600);
+    }
+
+    .btn-danger {
+      background-color: var(--white);
+      color: var(--error);
+      border: 1px solid rgba(153, 27, 27, 0.25);
+    }
+
+    .btn-danger:hover {
+      background-color: rgba(153, 27, 27, 0.05);
+      border-color: var(--error);
+    }
+
+    /* Verification & Profile Plate (Hero Strip) */
+    .profile-plate-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      flex-wrap: wrap;
+    }
+
+    .profile-plate-main {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .profile-avatar-wrap {
+      position: relative;
+    }
+
+    .profile-avatar-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 100%);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      border: 3px solid var(--white);
+      box-shadow: 0 4px 12px rgba(19, 29, 54, 0.12);
+    }
+
+    .avatar-edit-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: var(--brass);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--white);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .avatar-edit-badge:hover {
+      transform: scale(1.1);
+    }
+
+    .profile-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .profile-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      line-height: 1.2;
+    }
+
+    .buyer-tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.25);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .profile-occupation {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+    }
+
+    .profile-checks-strip {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      color: var(--ink);
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .check-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .check-label {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .check-val {
+      font-weight: 600;
+      color: var(--navy-900);
+      font-size: 0.75rem;
+    }
+
+    /* Segmented Tab Navigation */
+    .tabs-nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 12px 18px;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .tab-btn:hover {
+      color: var(--navy-900);
+      background-color: rgba(30, 42, 74, 0.03);
+    }
+
+    .tab-btn.active {
+      color: var(--navy-900);
+      font-weight: 700;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--brass);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .tab-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--canvas-2);
+      color: var(--ink-2);
+    }
+
+    .tab-btn.active .tab-badge {
+      background-color: var(--navy-900);
+      color: var(--white);
+    }
+
+    /* Tab Content Section */
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .tab-pane.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card Panels */
+    .settings-card {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-head-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .card-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .card-desc {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+
+    /* Form Fields Grid */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-hint {
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      font-weight: 400;
+    }
+
+    .form-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--navy-700);
+      background-color: var(--white);
+      box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+    }
+
+    .input-badge-inside {
+      position: absolute;
+      right: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage-bg);
+      color: var(--sage);
+      border: 1px solid rgba(61, 90, 76, 0.2);
+    }
+
+    .form-select {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: var(--navy-700);
+      background-color: var(--white);
+    }
+
+    /* Radio Pills */
+    .radio-pill-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .radio-pill-label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas);
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ink);
+      transition: all 0.15s ease;
+    }
+
+    .radio-pill-label:hover {
+      border-color: var(--navy-700);
+    }
+
+    .radio-pill-label input {
+      display: none;
+    }
+
+    .radio-pill-label.active {
+      background-color: var(--white);
+      border-color: var(--navy-900);
+      color: var(--navy-900);
+      box-shadow: 0 2px 6px rgba(19, 29, 54, 0.08);
+    }
+
+    /* Corridor Checkbox Tags */
+    .corridor-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .corridor-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background-color: var(--canvas);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      font-size: 0.8125rem;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .corridor-tag:hover {
+      border-color: var(--navy-700);
+    }
+
+    .corridor-tag input {
+      display: none;
+    }
+
+    .corridor-tag.selected {
+      background-color: var(--navy-900);
+      color: var(--white);
+      border-color: var(--navy-900);
+    }
+
+    /* Verification Tier Broad-plate */
+    .tier-broad-card {
+      background: linear-gradient(135deg, rgba(30, 42, 74, 0.04) 0%, rgba(198, 151, 73, 0.06) 100%);
+      border: 1px solid rgba(198, 151, 73, 0.25);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tier-broad-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tier-medal-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brass);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(198, 151, 73, 0.3);
+    }
+
+    .tier-broad-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tier-broad-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .tier-broad-desc {
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+    }
+
+    /* Verification Docs Table */
+    .kyc-doc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background-color: var(--white);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .kyc-doc-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .doc-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy-800);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .kyc-doc-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kyc-doc-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--navy-900);
+    }
+
+    .kyc-doc-detail {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+    }
+
+    /* Password Strength Meter */
+    .password-strength-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .strength-meter-bar {
+      height: 4px;
+      background-color: var(--line);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+      gap: 4px;
+    }
+
+    .strength-segment {
+      flex: 1;
+      height: 100%;
+      background-color: var(--line);
+      transition: background-color 0.2s ease;
+    }
+
+    .strength-segment.active-weak { background-color: var(--error); }
+    .strength-segment.active-medium { background-color: var(--warning); }
+    .strength-segment.active-strong { background-color: var(--sage); }
+
+    .strength-criteria-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+    }
+
+    .criteria-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .criteria-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: var(--line-2);
+    }
+
+    .criteria-item.met {
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    .criteria-item.met .criteria-dot {
+      background-color: var(--sage);
+    }
+
+    /* Active Sessions List */
+    .session-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background-color: var(--white);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .session-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .session-device-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background-color: var(--canvas-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy-800);
+    }
+
+    .session-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .session-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .session-tag-current {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage-bg);
+      color: var(--sage);
+    }
+
+    .session-meta-line {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+    }
+
+    /* Notification Channels Matrix */
+    .notif-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+
+    .notif-matrix-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-3);
+      border-bottom: 1px solid var(--line);
+      background-color: var(--canvas);
+    }
+
+    .notif-matrix-table th.col-channel {
+      text-align: center;
+      width: 110px;
+    }
+
+    .notif-matrix-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      vertical-align: middle;
+    }
+
+    .notif-matrix-table td.col-channel {
+      text-align: center;
+    }
+
+    .notif-matrix-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .notif-topic-title {
+      font-weight: 700;
+      color: var(--navy-900);
+      font-size: 0.875rem;
+      margin-bottom: 2px;
+    }
+
+    .notif-topic-desc {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    /* Custom Switch Toggle */
+    .switch-toggle {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 22px;
+    }
+
+    .switch-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--canvas-2);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-full);
+      transition: all 0.2s ease;
+    }
+
+    .switch-slider::before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: var(--white);
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(19, 29, 54, 0.2);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .switch-toggle input:checked + .switch-slider {
+      background-color: var(--navy-900);
+      border-color: var(--navy-900);
+    }
+
+    .switch-toggle input:checked + .switch-slider::before {
+      transform: translateX(16px);
+      background-color: var(--white);
+    }
+
+    /* Bank Account Display Card */
+    .bank-account-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      background-color: var(--canvas);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bank-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .bank-brand-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bank-initials-box {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-900);
+      color: var(--brass);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bank-info-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .bank-name {
+      font-weight: 700;
+      color: var(--navy-900);
+      font-size: 1rem;
+    }
+
+    .bank-account-holder {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    .iban-box {
+      background-color: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .iban-value {
+      font-family: var(--font-mono);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--navy-900);
+      letter-spacing: 0.05em;
+    }
+
+    .iban-copy-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink-3);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease;
+    }
+
+    .iban-copy-btn:hover {
+      color: var(--navy-900);
+    }
+
+    /* Saved Cards List */
+    .card-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background-color: var(--white);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .card-brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card-chip-box {
+      width: 48px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background-color: var(--navy-900);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.05em;
+    }
+
+    .card-meta-line {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .card-number-mask {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .card-expiry-tag {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+    }
+
+    /* Danger Zone */
+    .danger-zone-card {
+      border: 1px solid rgba(153, 27, 27, 0.2);
+      border-radius: var(--radius-lg);
+      background-color: var(--white);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .danger-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--error);
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .danger-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .danger-info-title {
+      font-weight: 700;
+      color: var(--navy-900);
+      font-size: 0.875rem;
+    }
+
+    .danger-info-desc {
+      font-size: 0.75rem;
+      color: var(--ink-2);
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(19, 29, 54, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 580px;
+      box-shadow: 0 20px 40px -12px rgba(19, 29, 54, 0.25);
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      overflow: hidden;
+      transform: scale(0.96);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active .modal-window {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--canvas);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.1875rem;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--ink-3);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--navy-900);
+      background-color: var(--canvas-2);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background-color: var(--canvas);
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast-pill {
+      background-color: var(--navy-900);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(19, 29, 54, 0.25);
+      border: 1px solid rgba(198, 151, 73, 0.35);
+      pointer-events: auto;
+      animation: slideToast 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideToast {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1080px) {
+      .portal-sidebar {
+        transform: translateX(-100%);
+      }
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .portal-main {
+        margin-left: 0;
+      }
+      .mobile-menu-trigger,
+      .mobile-brand-mark {
+        display: flex;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .portal-topbar {
+        padding: 0 16px;
+      }
+      .portal-content {
+        padding: 20px 16px;
+      }
+      .sovereign-fx-pill,
+      .cairo-clock-pill,
+      .header-breadcrumb,
+      .portal-trust-chip,
+      .user-tier {
+        display: none;
+      }
+      .command-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+      .command-actions {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+      }
+      .command-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .profile-plate-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .profile-checks-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .tabs-nav-bar {
+        gap: 4px;
+      }
+      .tab-btn {
+        padding: 10px 14px;
+        font-size: 0.8125rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/settly-assistant-widget.css">
+  <link rel="stylesheet" href="../shared/dashboard-topbar.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Canonical Aside Navigation -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <!-- Official Settly Main Logo Backing Plate -->
+      <div class="sidebar-brand-row">
+        <a href="../public/index.html" class="sidebar-brand">
+          <div class="brand-plate">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Settly</span>
+            <span class="brand-portal">BUYER PORTAL</span>
+          </div>
+        </a>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Navigation Section -->
+        <div>
+          <div class="nav-group-label">My Portfolio</div>
+          <ul class="nav-list">
+            <li>
+              <a href="../assistant/index.html" class="nav-link nav-link-ai">
+                <span class="sidebar-ai-logo-plate">
+                  <img src="../../../../../Images/web/logo.png" alt="Settly Logo" class="sidebar-ai-logo-img">
+                </span>
+                <span>AI Assistant</span>
+                <span class="sidebar-ai-pill">
+                  <span class="pulse-dot"></span>
+                  <span>Live</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="overview.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="favorites.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span>Favorites &amp; Collections</span>
+                <span class="nav-badge">14</span>
+              </a>
+            </li>
+            <li>
+              <a href="saved-searches.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <span>Saved Searches</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-label">Activity &amp; Offers</div>
+          <ul class="nav-list">
+            <li>
+              <a href="viewings.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>My Viewings</span>
+                <span class="nav-badge sage">1</span>
+              </a>
+            </li>
+            <li>
+              <a href="offers.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>My Offers</span>
+                <span class="nav-badge">2</span>
+              </a>
+            </li>
+            <li>
+              <a href="messages.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Messages</span>
+                <span class="nav-badge">3</span>
+              </a>
+            </li>
+            <li>
+              <a href="notifications.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span>Notifications</span>
+                <span class="nav-badge urgent">5</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="nav-group-label">Account &amp; Documents</div>
+          <ul class="nav-list">
+            <li>
+              <a href="documents.html" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span>My Documents</span>
+                <span class="nav-badge">4</span>
+              </a>
+            </li>
+            <li>
+              <a href="settings.html" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Account Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Assigned Private Advisor Card -->
+        <div class="sidebar-advisor">
+          <div class="advisor-header">
+            <img src="../../../../../Images/web/phone.jpg" alt="Laila El-Gammal" class="advisor-avatar">
+            <div class="advisor-info">
+              <span class="advisor-name">Laila El-Gammal</span>
+              <span class="advisor-meta">
+                <span class="advisor-status-dot"></span>
+                Senior Property Advisor
+              </span>
+            </div>
+          </div>
+          <div class="advisor-actions">
+            <a href="https://wa.me/201000000000" target="_blank" rel="noopener" class="btn-advisor-action btn-advisor-whatsapp">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>VERIFIED LISTINGS &amp; SECURE DEPOSITS</div>
+        <div>LICENSED INDEPENDENT BROKERS</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+      <!-- Top Sticky Header -->
+      <!-- Sticky Top Application Bar — Offers Standard -->
+      <header class="portal-header">
+        <div class="header-start">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Navigation Menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- Mobile Brand Logo -->
+          <a href="../public/index.html" class="mobile-brand-mark">
+            <img src="../../../../../Images/web/logo.png" alt="Settly Logo">
+            <span class="mobile-brand-text">Settly</span>
+          </a>
+
+          <div class="header-breadcrumb">
+            <span>PORTAL</span>
+            <span>/</span>
+            <span class="current">ACCOUNT SETTINGS</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="portal-trust-chip">
+            <span class="escrow-pulse"></span>
+            <span>TIER-1 SECURITY ACTIVE</span>
+          </div>
+
+          <div class="sovereign-rate-pill">
+            <span>USD/EGP: <strong>48.85</strong></span>
+          </div>
+
+          <div class="cairo-clock-pill">
+            <span class="clock-live-indicator"></span>
+            <span id="liveCairoClock">14:35 CLT · Africa/Cairo</span>
+          </div>
+
+          <a href="../public/search.html" class="icon-btn" aria-label="Search Properties" title="Search All Real Estate (⌘K)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </a>
+
+          <a href="notifications.html" class="icon-btn" aria-label="Notifications" title="View Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notification-dot"></span>
+          </a>
+
+          <a href="settings.html" class="user-profile-badge" title="Manage Account Profile">
+            <div class="user-avatar-initials">TM</div>
+            <div class="user-meta">
+              <span class="user-name">Tarek Mansour</span>
+              <span class="user-tier">Tier-1 HNWI Verified</span>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="portal-content">
+
+        <!-- Command Bar -->
+        <section class="command-bar">
+          <div class="command-title-wrap">
+            <h1 class="command-title">Account Settings</h1>
+            <p class="command-subtitle">
+              Manage your personal profile, buyer verification status, security credentials, notification channels, and deposit refund details.
+            </p>
+          </div>
+          <div class="command-actions">
+            <button class="btn btn-outline" onclick="confirmSignOut()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              <span>Sign Out</span>
+            </button>
+            <button class="btn btn-primary" onclick="saveAllSettings()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Profile Overview & Verification Strip -->
+        <section class="profile-plate-card">
+          <div class="profile-plate-main">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar-lg">TM</div>
+              <button class="avatar-edit-badge" onclick="triggerAvatarUpload()" title="Change Profile Picture">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              </button>
+            </div>
+            <div class="profile-title-block">
+              <div class="profile-name-row">
+                <span class="profile-name">Tarek Mansour</span>
+                <span class="buyer-tier-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  Tier-1 Verified Buyer
+                </span>
+              </div>
+              <span class="profile-occupation">Managing Partner, Mansour Capital · Member since January 2026</span>
+            </div>
+          </div>
+
+          <div class="profile-checks-strip">
+            <div class="check-item">
+              <div class="check-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="check-text">
+                <span class="check-label">Identity / KYC</span>
+                <span class="check-val">Verified National ID</span>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="check-text">
+                <span class="check-label">Proof of Funds</span>
+                <span class="check-val">CIB Attestation Verified</span>
+              </div>
+            </div>
+
+            <div class="check-item">
+              <div class="check-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="check-text">
+                <span class="check-label">WhatsApp Channel</span>
+                <span class="check-val">+20 100 284 9102</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Segmented Tab Navigation -->
+        <nav class="tabs-nav-bar" role="tablist">
+          <button class="tab-btn active" onclick="switchTab('profile', this)" role="tab" id="tab-profile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile & Preferences</span>
+          </button>
+
+          <button class="tab-btn" onclick="switchTab('verification', this)" role="tab" id="tab-verification">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Verification & KYC</span>
+            <span class="tab-badge">Tier-1</span>
+          </button>
+
+          <button class="tab-btn" onclick="switchTab('security', this)" role="tab" id="tab-security">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Security & Sessions</span>
+            <span class="tab-badge">3 Active</span>
+          </button>
+
+          <button class="tab-btn" onclick="switchTab('notifications', this)" role="tab" id="tab-notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span>Notification Channels</span>
+          </button>
+
+          <button class="tab-btn" onclick="switchTab('payment', this)" role="tab" id="tab-payment">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            <span>Deposit Refund & Payment</span>
+          </button>
+        </nav>
+
+        <!-- TAB 1: PROFILE & PREFERENCES -->
+        <div class="tab-pane active" id="pane-profile">
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Personal Information</h2>
+                <p class="card-desc">Your legal name and contact coordinates are used for property purchase agreements and private viewing registrations.</p>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="inputFullName">Full Legal Name</label>
+                <input type="text" id="inputFullName" class="form-input" value="Tarek Mansour">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputOccupation">Occupation / Entity</label>
+                <input type="text" id="inputOccupation" class="form-input" value="Managing Partner, Mansour Capital">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputEmail">
+                  <span>Primary Email Address</span>
+                  <span class="form-hint">Used for purchase notices</span>
+                </label>
+                <div class="form-input-wrap">
+                  <input type="email" id="inputEmail" class="form-input" value="tarek.mansour@investments.eg">
+                  <span class="input-badge-inside">Verified</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputPhone">
+                  <span>Primary WhatsApp & Mobile</span>
+                  <span class="form-hint">Advisor direct channel</span>
+                </label>
+                <div class="form-input-wrap">
+                  <input type="tel" id="inputPhone" class="form-input" value="+20 100 284 9102">
+                  <span class="input-badge-inside">Verified</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Regional & Localization Preferences</h2>
+                <p class="card-desc">Configure your preferred interface language, local timezone, and secondary currency display references.</p>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Interface Language</label>
+                <div class="radio-pill-group">
+                  <label class="radio-pill-label active" id="langEnLabel" onclick="setLanguage('en')">
+                    <input type="radio" name="prefLang" value="en" checked>
+                    <span>English (Default)</span>
+                  </label>
+                  <label class="radio-pill-label" id="langArLabel" onclick="setLanguage('ar')">
+                    <input type="radio" name="prefLang" value="ar">
+                    <span>العربية (Arabic)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectTimezone">Timezone</label>
+                <select id="selectTimezone" class="form-select">
+                  <option value="Cairo" selected>Africa/Cairo (CLT, GMT+2) - Local Egyptian Time</option>
+                  <option value="Dubai">Asia/Dubai (GST, GMT+4) - Gulf Standard Time</option>
+                  <option value="London">Europe/London (BST, GMT+1) - UK Time</option>
+                  <option value="NewYork">America/New_York (EDT, GMT-4) - Eastern Time</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="selectCurrency">
+                  <span>Secondary Currency Reference</span>
+                  <span class="form-hint">Contracts always in EGP</span>
+                </label>
+                <select id="selectCurrency" class="form-select">
+                  <option value="USD" selected>USD ($ - United States Dollar)</option>
+                  <option value="EUR">EUR (€ - Euro)</option>
+                  <option value="GBP">GBP (£ - British Pound)</option>
+                  <option value="AED">AED (AED - UAE Dirham)</option>
+                  <option value="SAR">SAR (SAR - Saudi Riyal)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Default Landing Corridor</label>
+                <select id="selectDefaultCorridor" class="form-select">
+                  <option value="golden-square" selected>New Cairo · Golden Square</option>
+                  <option value="sheikh-zayed">Sheikh Zayed & 6th of October</option>
+                  <option value="north-coast">North Coast (Marassi & Ras El Hekma)</option>
+                  <option value="all">All Prime Egyptian Corridors</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Investment Focus Corridors</h2>
+                <p class="card-desc">Select target destinations to personalize your market intelligence radar and automated developer matching.</p>
+              </div>
+            </div>
+
+            <div class="corridor-tags-wrap">
+              <label class="corridor-tag selected" onclick="toggleCorridorTag(this)">
+                <input type="checkbox" checked>
+                <span>New Cairo (Golden Square)</span>
+              </label>
+              <label class="corridor-tag selected" onclick="toggleCorridorTag(this)">
+                <input type="checkbox" checked>
+                <span>Katameya Dunes</span>
+              </label>
+              <label class="corridor-tag selected" onclick="toggleCorridorTag(this)">
+                <input type="checkbox" checked>
+                <span>Sheikh Zayed & October</span>
+              </label>
+              <label class="corridor-tag selected" onclick="toggleCorridorTag(this)">
+                <input type="checkbox" checked>
+                <span>North Coast (Ras El Hekma & Marassi)</span>
+              </label>
+              <label class="corridor-tag" onclick="toggleCorridorTag(this)">
+                <input type="checkbox">
+                <span>New Administrative Capital</span>
+              </label>
+              <label class="corridor-tag" onclick="toggleCorridorTag(this)">
+                <input type="checkbox">
+                <span>El Gouna (Red Sea)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: VERIFICATION & KYC -->
+        <div class="tab-pane" id="pane-verification">
+          <div class="tier-broad-card">
+            <div class="tier-broad-info">
+              <div class="tier-medal-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+              </div>
+              <div class="tier-broad-details">
+                <span class="tier-broad-title">Tier-1 High-Net-Worth Verified Buyer</span>
+                <span class="tier-broad-desc">Enables instant 1-click viewing appointments, priority offer dispatching, and direct off-market developer allocations up to EGP 60,000,000.</span>
+              </div>
+            </div>
+            <button class="btn btn-outline" onclick="showToast('Your verification is active through December 2029')">
+              <span>View Privileges</span>
+            </button>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Verified Identity Documents</h2>
+                <p class="card-desc">Official government and financial records cross-referenced by Settly legal counsel for compliance.</p>
+              </div>
+              <button class="btn btn-primary" onclick="window.location.href='documents.html'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Upload Document</span>
+              </button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div class="kyc-doc-row">
+                <div class="kyc-doc-main">
+                  <div class="doc-icon-box">ID</div>
+                  <div class="kyc-doc-meta">
+                    <span class="kyc-doc-name">Egyptian National ID Card</span>
+                    <span class="kyc-doc-detail">ID: 2840912010**** · Valid through Dec 2029 · Verified</span>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span class="buyer-tier-badge" style="background-color: var(--sage-bg); color: var(--sage);">Verified</span>
+                  <a href="documents.html" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;">View File</a>
+                </div>
+              </div>
+
+              <div class="kyc-doc-row">
+                <div class="kyc-doc-main">
+                  <div class="doc-icon-box">POF</div>
+                  <div class="kyc-doc-meta">
+                    <span class="kyc-doc-name">CIB Egypt Private Banking Attestation</span>
+                    <span class="kyc-doc-detail">Proof of Funds capacity up to EGP 60,000,000 · Issued Sep 2026</span>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span class="buyer-tier-badge" style="background-color: var(--sage-bg); color: var(--sage);">Verified</span>
+                  <a href="documents.html" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;">View File</a>
+                </div>
+              </div>
+
+              <div class="kyc-doc-row">
+                <div class="kyc-doc-main">
+                  <div class="doc-icon-box">CR</div>
+                  <div class="kyc-doc-meta">
+                    <span class="kyc-doc-name">Commercial Register & Tax Card (Mansour Capital)</span>
+                    <span class="kyc-doc-detail">Corporate acquisition authorization · Under review</span>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span class="buyer-tier-badge" style="background-color: rgba(180, 83, 9, 0.12); color: var(--warning);">Under Review</span>
+                  <a href="documents.html" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;">View File</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: SECURITY & SESSIONS -->
+        <div class="tab-pane" id="pane-security">
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Change Password</h2>
+                <p class="card-desc">Update your account password. Strong passwords protect your property offers and document vault.</p>
+              </div>
+            </div>
+
+            <form onsubmit="updatePassword(event)" style="display: flex; flex-direction: column; gap: 18px; max-width: 580px;">
+              <div class="form-group">
+                <label class="form-label" for="currentPass">Current Password</label>
+                <input type="password" id="currentPass" class="form-input" placeholder="••••••••••••" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="newPass">New Password</label>
+                <input type="password" id="newPass" class="form-input" placeholder="Enter new strong password" oninput="checkPasswordStrength(this.value)" required>
+                <div class="password-strength-wrap">
+                  <div class="strength-meter-bar">
+                    <div class="strength-segment" id="seg1"></div>
+                    <div class="strength-segment" id="seg2"></div>
+                    <div class="strength-segment" id="seg3"></div>
+                    <div class="strength-segment" id="seg4"></div>
+                  </div>
+                  <div class="strength-criteria-list">
+                    <div class="criteria-item" id="critLen"><span class="criteria-dot"></span><span>8+ characters</span></div>
+                    <div class="criteria-item" id="critUpper"><span class="criteria-dot"></span><span>Uppercase letter</span></div>
+                    <div class="criteria-item" id="critNum"><span class="criteria-dot"></span><span>At least 1 number</span></div>
+                    <div class="criteria-item" id="critSpecial"><span class="criteria-dot"></span><span>Special symbol</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="confirmPass">Confirm New Password</label>
+                <input type="password" id="confirmPass" class="form-input" placeholder="Confirm new strong password" required>
+              </div>
+
+              <div>
+                <button type="submit" class="btn btn-primary">Update Password</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Two-Factor Authentication (2FA)</h2>
+                <p class="card-desc">Add an extra layer of protection when signing purchase offers or authorizing reservation deposits.</p>
+              </div>
+              <span class="buyer-tier-badge" style="background-color: var(--sage-bg); color: var(--sage);">Enabled</span>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div class="doc-icon-box" style="background-color: var(--sage-bg); color: var(--sage);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div>
+                  <div style="font-weight: 700; color: var(--navy-900); font-size: 0.9375rem;">Authenticator App (TOTP) + WhatsApp Backup</div>
+                  <div style="font-size: 0.75rem; color: var(--ink-2);">Secured via 6-digit one-time code on Authenticator or verified WhatsApp channel.</div>
+                </div>
+              </div>
+
+              <button class="btn btn-outline" onclick="showToast('2FA settings confirmed and operational')">
+                <span>Manage 2FA</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Active Device Sessions</h2>
+                <p class="card-desc">Devices currently logged into your Settly account. If you see an unrecognized device, sign out immediately.</p>
+              </div>
+              <button class="btn btn-danger" onclick="openRevokeSessionsModal()">
+                <span>Sign Out All Other Sessions</span>
+              </button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;" id="sessionsList">
+              <div class="session-item">
+                <div class="session-info">
+                  <div class="session-device-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                  </div>
+                  <div class="session-details">
+                    <div class="session-name">
+                      <span>Chrome 128 on macOS</span>
+                      <span class="session-tag-current">This Device</span>
+                    </div>
+                    <span class="session-meta-line">Cairo, Egypt · IP: 197.38.14.22 · Active now</span>
+                  </div>
+                </div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--sage); font-family: var(--font-mono);">Online</span>
+              </div>
+
+              <div class="session-item" id="session-iphone">
+                <div class="session-info">
+                  <div class="session-device-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                  </div>
+                  <div class="session-details">
+                    <div class="session-name">
+                      <span>Safari 17 on iPhone 15 Pro</span>
+                    </div>
+                    <span class="session-meta-line">Cairo, Egypt · IP: 156.204.88.91 · Active 2 hours ago</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;" onclick="revokeSingleSession('session-iphone')">Revoke</button>
+              </div>
+
+              <div class="session-item" id="session-windows">
+                <div class="session-info">
+                  <div class="session-device-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                  </div>
+                  <div class="session-details">
+                    <div class="session-name">
+                      <span>Chrome 127 on Windows 11</span>
+                    </div>
+                    <span class="session-meta-line">Alexandria, Egypt · IP: 41.233.102.15 · Active 3 days ago</span>
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;" onclick="revokeSingleSession('session-windows')">Revoke</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: NOTIFICATION CHANNELS -->
+        <div class="tab-pane" id="pane-notifications">
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Delivery Channels & Activity Matrix</h2>
+                <p class="card-desc">Choose how you receive real-time updates across WhatsApp, verified email, and SMS.</p>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table class="notif-matrix-table">
+                <thead>
+                  <tr>
+                    <th>Event Category</th>
+                    <th class="col-channel">WhatsApp</th>
+                    <th class="col-channel">Email</th>
+                    <th class="col-channel">SMS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="notif-topic-title">Purchase Offers & Counter-Offers</div>
+                      <div class="notif-topic-desc">Immediate alerts when a seller or developer responds, accepts, or submits a counter-offer.</div>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="notif-topic-title">Private Viewing Schedule & Gate Passes</div>
+                      <div class="notif-topic-desc">Compound security access QR codes, advisor confirmation, and calendar reminders.</div>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox"><span class="switch-slider"></span></label>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="notif-topic-title">Price Reduction Alerts on Saved Searches</div>
+                      <div class="notif-topic-desc">When a monitored villa or penthouse drops in price across your target corridors.</div>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox"><span class="switch-slider"></span></label>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="notif-topic-title">Document Vault & Digital Signature Requests</div>
+                      <div class="notif-topic-desc">Urgent notices when bilateral contracts, deposit receipts, or deeds require review.</div>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="notif-topic-title">Off-Market Releases & Curated Drops</div>
+                      <div class="notif-topic-desc">Exclusive pre-launch inventory from verified developers (Emaar, Palm Hills, SODIC).</div>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox"><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+                    </td>
+                    <td class="col-channel">
+                      <label class="switch-toggle"><input type="checkbox"><span class="switch-slider"></span></label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Quiet Hours Window</h2>
+                <p class="card-desc">Suppresses non-urgent market intelligence and promotional alerts during your quiet time (Cairo Local Time).</p>
+              </div>
+              <label class="switch-toggle"><input type="checkbox" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="quietStart">Quiet Hours Start</label>
+                <select id="quietStart" class="form-select">
+                  <option value="21:00">21:00 CLT (9:00 PM)</option>
+                  <option value="22:00" selected>22:00 CLT (10:00 PM)</option>
+                  <option value="23:00">23:00 CLT (11:00 PM)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="quietEnd">Quiet Hours End</label>
+                <select id="quietEnd" class="form-select">
+                  <option value="07:00">07:00 CLT (7:00 AM)</option>
+                  <option value="08:00" selected>08:00 CLT (8:00 AM)</option>
+                  <option value="09:00">09:00 CLT (9:00 AM)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: DEPOSIT REFUND & PAYMENT -->
+        <div class="tab-pane" id="pane-payment">
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Bank Account for Reservation Deposit Restitution</h2>
+                <p class="card-desc">Under Settly's 48-hour cooling-off refund policy, returned reservation deposits (5% capped at 50,000 EGP) are wired directly to your designated Egyptian commercial bank account.</p>
+              </div>
+              <button class="btn btn-outline" onclick="openEditBankModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <span>Edit Account Details</span>
+              </button>
+            </div>
+
+            <div class="bank-account-card">
+              <div class="bank-card-top">
+                <div class="bank-brand-block">
+                  <div class="bank-initials-box">CIB</div>
+                  <div class="bank-info-meta">
+                    <span class="bank-name" id="displayBankName">Commercial International Bank (CIB Egypt)</span>
+                    <span class="bank-account-holder">Account Beneficiary: <strong id="displayBeneficiary">Tarek Mansour</strong> · Currency: EGP</span>
+                  </div>
+                </div>
+                <span class="buyer-tier-badge" style="background-color: var(--sage-bg); color: var(--sage);">Verified for 48h Wire Refunds</span>
+              </div>
+
+              <div class="iban-box">
+                <div>
+                  <div style="font-size: 0.6875rem; text-transform: uppercase; color: var(--ink-3); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 2px;">Egyptian International Bank Account Number (IBAN)</div>
+                  <div class="iban-value" id="displayIban">EG38 0010 0001 0000 0128 4910 281</div>
+                </div>
+                <button class="iban-copy-btn" onclick="copyIban()" title="Copy IBAN to clipboard">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); flex-wrap: wrap; gap: 8px;">
+                <span>Swift / BIC Code: <strong style="color: var(--navy-900);" id="displaySwift">CIBEEGCAXXX</strong></span>
+                <span>Branch: <strong>Golden Square Commercial Branch, New Cairo</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-head-row">
+              <div class="card-title-wrap">
+                <h2 class="card-title">Saved Payment Cards</h2>
+                <p class="card-desc">Tokenized payment methods used exclusively for paying reservation deposits up to the 50,000 EGP statutory cap.</p>
+              </div>
+              <button class="btn btn-primary" onclick="openAddCardModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Payment Card</span>
+              </button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;" id="cardsList">
+              <div class="card-item">
+                <div class="card-brand-wrap">
+                  <div class="card-chip-box">VISA</div>
+                  <div class="card-meta-line">
+                    <span class="card-number-mask">Visa ending in 8841</span>
+                    <span class="card-expiry-tag">Expires 08/28 · Tarek Mansour</span>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span class="buyer-tier-badge" style="background-color: var(--sage-bg); color: var(--sage);">Default Card</span>
+                  <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;" onclick="showToast('Card updated successfully')">Manage</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone (Bottom of all tabs) -->
+        <section class="danger-zone-card">
+          <div class="danger-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Account Security & Data Sovereignty</span>
+          </div>
+
+          <div class="danger-row">
+            <div>
+              <div class="danger-info-title">Export Personal Data Archive</div>
+              <div class="danger-info-desc">Download a complete .zip archive of your offers, viewing itineraries, saved searches, and verified contracts.</div>
+            </div>
+            <button class="btn btn-outline" onclick="exportDataArchive()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export Archive (.zip)</span>
+            </button>
+          </div>
+
+          <div class="danger-row">
+            <div>
+              <div class="danger-info-title">Deactivate Settly Account</div>
+              <div class="danger-info-desc">Temporarily pause your account or request complete erasure under applicable Egyptian data protection policies.</div>
+            </div>
+            <button class="btn btn-danger" onclick="openDeactivateModal()">
+              <span>Deactivate Account</span>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Edit Bank Account Details -->
+  <div class="modal-backdrop" id="modalEditBank">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Bank Details for Deposit Restitution</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalEditBank')" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form onsubmit="saveBankDetails(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editBankName">Bank Name</label>
+            <input type="text" id="editBankName" class="form-input" value="Commercial International Bank (CIB Egypt)" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editBeneficiary">Account Beneficiary Name</label>
+            <input type="text" id="editBeneficiary" class="form-input" value="Tarek Mansour" required>
+            <span class="form-hint">Must match your verified government identification</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editIban">Egyptian IBAN</label>
+            <input type="text" id="editIban" class="form-input" value="EG38 0010 0001 0000 0128 4910 281" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editSwift">Swift / BIC Code</label>
+            <input type="text" id="editSwift" class="form-input" value="CIBEEGCAXXX" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalEditBank')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Bank Details</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Payment Card -->
+  <div class="modal-backdrop" id="modalAddCard">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Reservation Payment Card</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalAddCard')" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form onsubmit="saveNewCard(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="cardHolder">Cardholder Name</label>
+            <input type="text" id="cardHolder" class="form-input" placeholder="Tarek Mansour" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" class="form-input" placeholder="4000 1234 5678 9010" required maxlength="19">
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="cardExp">Expiry Date</label>
+              <input type="text" id="cardExp" class="form-input" placeholder="MM/YY" required maxlength="5">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cardCvv">CVV</label>
+              <input type="password" id="cardCvv" class="form-input" placeholder="•••" required maxlength="4">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalAddCard')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Secure Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Sign Out All Other Sessions -->
+  <div class="modal-backdrop" id="modalRevokeSessions">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Sign Out Other Sessions</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalRevokeSessions')" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink-2); line-height: 1.5;">
+          This will immediately invalidate all active sessions on your iPhone, other laptops, and browsers. Only your current session on macOS will remain active.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalRevokeSessions')">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="confirmRevokeAllSessions()">Sign Out All Other Devices</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Deactivate Account -->
+  <div class="modal-backdrop" id="modalDeactivate">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--error);">Deactivate Account</h3>
+        <button class="modal-close-btn" onclick="closeModal('modalDeactivate')" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.875rem; color: var(--ink-2); line-height: 1.5;">
+          Are you sure you want to request account deactivation? Any active offers or viewing appointments will be paused. To confirm, type your current password below.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="deactivatePass">Current Password</label>
+          <input type="password" id="deactivatePass" class="form-input" placeholder="••••••••••••">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalDeactivate')">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="executeDeactivation()">Request Deactivation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Core JavaScript Interactions -->
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId, btnElement) {
+      document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        var targetBtn = document.getElementById('tab-' + tabId);
+        if (targetBtn) targetBtn.classList.add('active');
+      }
+
+      document.querySelectorAll('.tab-pane').forEach(function(pane) { pane.classList.remove('active'); });
+      var targetPane = document.getElementById('pane-' + tabId);
+      if (targetPane) {
+        targetPane.classList.add('active');
+      }
+    }
+
+    // Language Toggle
+    function setLanguage(lang) {
+      document.getElementById('langEnLabel').classList.toggle('active', lang === 'en');
+      document.getElementById('langArLabel').classList.toggle('active', lang === 'ar');
+      showToast(lang === 'en' ? 'Language set to English' : 'Language set to Arabic (English default active)');
+    }
+
+    // Corridor Tag Toggle
+    function toggleCorridorTag(tagElement) {
+      tagElement.classList.toggle('selected');
+      var input = tagElement.querySelector('input');
+      if (input) input.checked = tagElement.classList.contains('selected');
+    }
+
+    // Password Strength Meter
+    function checkPasswordStrength(val) {
+      var lenMet = val.length >= 8;
+      var upperMet = /[A-Z]/.test(val);
+      var numMet = /[0-9]/.test(val);
+      var specialMet = /[^A-Za-z0-9]/.test(val);
+
+      document.getElementById('critLen').classList.toggle('met', lenMet);
+      document.getElementById('critUpper').classList.toggle('met', upperMet);
+      document.getElementById('critNum').classList.toggle('met', numMet);
+      document.getElementById('critSpecial').classList.toggle('met', specialMet);
+
+      var score = 0;
+      if (lenMet) score++;
+      if (upperMet) score++;
+      if (numMet) score++;
+      if (specialMet) score++;
+
+      var segs = [
+        document.getElementById('seg1'),
+        document.getElementById('seg2'),
+        document.getElementById('seg3'),
+        document.getElementById('seg4')
+      ];
+
+      segs.forEach(function(s, idx) {
+        s.className = 'strength-segment';
+        if (idx < score) {
+          if (score <= 2) s.classList.add('active-weak');
+          else if (score === 3) s.classList.add('active-medium');
+          else s.classList.add('active-strong');
+        }
+      });
+    }
+
+    // Update Password Form
+    function updatePassword(e) {
+      e.preventDefault();
+      var newP = document.getElementById('newPass').value;
+      var confP = document.getElementById('confirmPass').value;
+      if (newP !== confP) {
+        showToast('New passwords do not match. Please verify.');
+        return;
+      }
+      showToast('Password updated securely.');
+      e.target.reset();
+      checkPasswordStrength('');
+    }
+
+    // Session Revocations
+    function openRevokeSessionsModal() {
+      openModal('modalRevokeSessions');
+    }
+
+    function confirmRevokeAllSessions() {
+      var iphone = document.getElementById('session-iphone');
+      var windows = document.getElementById('session-windows');
+      if (iphone) iphone.remove();
+      if (windows) windows.remove();
+      closeModal('modalRevokeSessions');
+      showToast('All other device sessions have been signed out.');
+    }
+
+    function revokeSingleSession(sessionId) {
+      var el = document.getElementById(sessionId);
+      if (el) el.remove();
+      showToast('Session revoked successfully.');
+    }
+
+    // Bank Details Modal & Save
+    function openEditBankModal() {
+      openModal('modalEditBank');
+    }
+
+    function saveBankDetails(e) {
+      e.preventDefault();
+      var bName = document.getElementById('editBankName').value;
+      var bHolder = document.getElementById('editBeneficiary').value;
+      var bIban = document.getElementById('editIban').value;
+      var bSwift = document.getElementById('editSwift').value;
+
+      document.getElementById('displayBankName').textContent = bName;
+      document.getElementById('displayBeneficiary').textContent = bHolder;
+      document.getElementById('displayIban').textContent = bIban;
+      document.getElementById('displaySwift').textContent = bSwift;
+
+      closeModal('modalEditBank');
+      showToast('Bank details updated for 48h restitution.');
+    }
+
+    // Copy IBAN
+    function copyIban() {
+      var iban = document.getElementById('displayIban').textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(iban).then(function() {
+          showToast('IBAN copied to clipboard: ' + iban);
+        }).catch(function() {
+          showToast('IBAN copied: ' + iban);
+        });
+      } else {
+        showToast('IBAN copied: ' + iban);
+      }
+    }
+
+    // Add Card Modal & Save
+    function openAddCardModal() {
+      openModal('modalAddCard');
+    }
+
+    function saveNewCard(e) {
+      e.preventDefault();
+      var num = document.getElementById('cardNumber').value;
+      var last4 = num.slice(-4) || '1122';
+      var exp = document.getElementById('cardExp').value || '12/29';
+
+      var cardsList = document.getElementById('cardsList');
+      var newCardItem = document.createElement('div');
+      newCardItem.className = 'card-item';
+      newCardItem.innerHTML = '<div class="card-brand-wrap"><div class="card-chip-box">CARD</div><div class="card-meta-line"><span class="card-number-mask">Card ending in ' + last4 + '</span><span class="card-expiry-tag">Expires ' + exp + ' · Tarek Mansour</span></div></div><div style="display: flex; align-items: center; gap: 10px;"><span class="buyer-tier-badge" style="background-color: var(--canvas-2); color: var(--navy-800);">Saved Card</span><button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;" onclick="showToast(\'Card updated\')">Manage</button></div>';
+      cardsList.appendChild(newCardItem);
+      closeModal('modalAddCard');
+      showToast('New reservation card saved securely.');
+      e.target.reset();
+    }
+
+    // Deactivation Modal
+    function openDeactivateModal() {
+      openModal('modalDeactivate');
+    }
+
+    function executeDeactivation() {
+      closeModal('modalDeactivate');
+      showToast('Deactivation request dispatched to Settly compliance desk.');
+    }
+
+    // Data Export
+    function exportDataArchive() {
+      showToast('Compiling data archive (.zip)... Download will begin shortly.');
+      setTimeout(function() {
+        showToast('Archive downloaded: Settly_Account_Export_TM2026.zip');
+      }, 1500);
+    }
+
+    // Save All Settings Button
+    function saveAllSettings() {
+      showToast('All profile and preference changes saved.');
+    }
+
+    // Confirm Sign Out
+    function confirmSignOut() {
+      showToast('Signing out of Settly Buyer Portal...');
+      setTimeout(function() {
+        window.location.href = '../auth/login.html';
+      }, 1000);
+    }
+
+    // Avatar Upload Trigger
+    function triggerAvatarUpload() {
+      showToast('Photo upload dialog opened. Select square image (JPG/PNG).');
+    }
+
+    // Modal Helpers
+    function openModal(modalId) {
+      var m = document.getElementById(modalId);
+      if (m) m.classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      var m = document.getElementById(modalId);
+      if (m) m.classList.remove('active');
+    }
+
+    // Toast Engine
+    function showToast(msg) {
+      var container = document.getElementById('toastContainer');
+      var toast = document.createElement('div');
+      toast.className = 'toast-pill';
+      toast.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg><span>' + msg + '</span>';
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.style.transition = 'all 0.25s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(function() { toast.remove(); }, 250);
+      }, 3000);
+    }
+
+    // Mobile Sidebar Toggle
+    var mobileTrigger = document.getElementById('mobileMenuTrigger');
+    var portalSidebar = document.getElementById('portalSidebar');
+    var sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+    if (mobileTrigger && portalSidebar) {
+      mobileTrigger.addEventListener('click', function() {
+        portalSidebar.classList.add('mobile-open');
+      });
+    }
+
+    if (sidebarCloseBtn && portalSidebar) {
+      sidebarCloseBtn.addEventListener('click', function() {
+        portalSidebar.classList.remove('mobile-open');
+      });
+    }
+
+    // Live Cairo Clock
+    function updateClock() {
+      var clockEl = document.getElementById('liveClock');
+      if (!clockEl) return;
+      var now = new Date();
+      var hours = String(now.getHours()).padStart(2, '0');
+      var mins = String(now.getMinutes()).padStart(2, '0');
+      clockEl.textContent = hours + ':' + mins + ' CLT · Africa/Cairo';
+    }
+    setInterval(updateClock, 30000);
+    updateClock();
+  </script>
+  <script src="../shared/settly-assistant-widget.js"></script>
+<script>
+    // Mobile Navigation & Live Clock Universal Connector
+    (function() {
+      const mobBtn = document.getElementById('mobileMenuBtn') || document.getElementById('mobileMenuTrigger');
+      const sidebar = document.getElementById('portalSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          if (backdrop) backdrop.classList.toggle('active');
+        });
+      }
+      if (backdrop && sidebar) {
+        backdrop.addEventListener('click', function() {
+          sidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        });
+      }
+      function tickLiveClock() {
+        const el = document.getElementById('liveCairoClock') || document.getElementById('liveClock') || document.getElementById('cairoTimeDisplay');
+        if (!el) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = hrs + ':' + mins + ' CLT · Africa/Cairo';
+      }
+      tickLiveClock();
+      setInterval(tickLiveClock, 10000);
+    })();
+</script>
+</body>
+</html>

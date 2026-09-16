@@ -1,0 +1,536 @@
+/* ============================================================================
+   SETTLY — SCREEN 05: AREA LIST (DISCOVERY & SPATIAL INTELLIGENCE)
+   Crafted per /impeccable standards:
+   - Deep Navy (#131D36, #1E2A4A), Settly Brass (#C69749), Bone Canvas (#F7F6F3)
+   - Spectral Serif headlines, JetBrains Mono for measured spatial & financial data
+   - Synchronized Leaflet GIS Map with district telemetry cards
+   ========================================================================= */
+
+.areas-page-wrapper {
+  background: var(--canvas);
+  color: var(--navy-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Editorial Hero & Corridor Deck */
+.area-hero {
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  padding: 3rem 0 2rem;
+}
+
+.area-hero-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.area-hero-title h1 {
+  font-family: var(--serif-display);
+  font-size: clamp(2.1rem, 3.4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--navy-900);
+  margin-bottom: 0.6rem;
+}
+
+.area-hero-title p {
+  font-size: 14.5px;
+  color: var(--ink-2);
+  max-width: 620px;
+  line-height: 1.6;
+}
+
+/* Macro Telemetry Chips */
+.macro-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.macro-stat-card {
+  background: var(--canvas);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.macro-stat-val {
+  font-family: var(--mono-ui);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.macro-stat-lbl {
+  font-size: 11px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+/* Search & Regional Filter Bar */
+.area-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.area-search-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+  max-width: 480px;
+}
+
+.area-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.area-search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px 0 40px;
+  border-radius: 9px;
+  border: 1px solid var(--line-2);
+  background: var(--canvas);
+  font-family: var(--sans-body);
+  font-size: 13.5px;
+  color: var(--navy-900);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.area-search-input:focus {
+  border-color: var(--navy-800);
+  background: #fff;
+}
+
+.region-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.region-tab-btn {
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: var(--canvas);
+  font-family: var(--sans-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.region-tab-btn:hover {
+  background: #fff;
+  color: var(--navy-900);
+}
+
+.region-tab-btn.active {
+  background: var(--navy-900);
+  color: #fff;
+  border-color: var(--navy-900);
+}
+
+.area-sort-select {
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: #fff;
+  font-family: var(--sans-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-900);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Spatial Radar Section */
+.area-map-section {
+  padding: 2.5rem 0 1.5rem;
+}
+
+.area-map-container {
+  position: relative;
+  height: 420px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+}
+
+.area-gis-map-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.area-map-legend {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 400;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  font-size: 11.5px;
+  font-family: var(--mono-ui);
+  color: var(--navy-900);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Leaflet Custom Area Pin */
+.area-pin {
+  background: #131d36;
+  color: #fff;
+  border: 1.5px solid var(--brass);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.area-pin:hover,
+.area-pin.on {
+  background: var(--brass);
+  color: #131d36;
+  border-color: #131d36;
+  transform: scale(1.08);
+}
+
+/* Main Districts Grid */
+.districts-section {
+  padding: 2rem 0 5rem;
+}
+
+.districts-grid-hdr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.districts-count-badge {
+  font-family: var(--mono-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.districts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+/* District Card Anatomy */
+.district-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.district-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--brass-600);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.08);
+}
+
+.district-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #0b111f;
+  overflow: hidden;
+}
+
+.district-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.district-card:hover .district-img {
+  transform: scale(1.04);
+}
+
+.district-tag-pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(19, 29, 54, 0.88);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.district-growth-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(22, 101, 52, 0.92);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+}
+
+.district-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1rem;
+}
+
+.district-title-wrap h3 {
+  font-family: var(--serif-display);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--navy-900);
+  margin-bottom: 4px;
+}
+
+.district-title-wrap p {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.45;
+}
+
+/* District Key Metric Matrix */
+.district-metrics-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--canvas);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+}
+
+.district-metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.dist-metric-val {
+  font-family: var(--mono-ui);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.dist-metric-lbl {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+/* Developer Presence Tags */
+.dist-devs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dist-dev-chip {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #fff;
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+}
+
+/* Highlights bullet list */
+.dist-highlights {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dist-hl-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dist-hl-item svg {
+  color: var(--brass-600);
+  flex: none;
+}
+
+/* Action footer link */
+.district-card-footer {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dist-explore-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brass-600);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+
+.dist-explore-link:hover {
+  color: var(--navy-900);
+}
+
+.dist-active-units {
+  font-family: var(--mono-ui);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+/* Market Comparative Table Section */
+.corridor-table-section {
+  background: #fff;
+  border-top: 1px solid var(--line);
+  padding: 4rem 0 5rem;
+}
+
+.corridor-sec-hdr {
+  margin-bottom: 2rem;
+}
+
+.corridor-sec-hdr h2 {
+  font-family: var(--serif-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--navy-900);
+  margin-bottom: 0.4rem;
+}
+
+.corridor-sec-hdr p {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.corridor-table-wrap {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.corridor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.corridor-table th {
+  background: var(--canvas);
+  padding: 12px 16px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.corridor-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--navy-900);
+  vertical-align: middle;
+}
+
+.corridor-table tr:last-child td {
+  border-bottom: none;
+}
+
+.corridor-table tr:hover td {
+  background: #faf8f2;
+}
+
+@media (max-width: 900px) {
+  .area-hero-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

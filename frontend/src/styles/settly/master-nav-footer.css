@@ -1,0 +1,693 @@
+@import url('./settly-assistant-widget.css');
+
+/* ============================================================================
+   SETTLY — MASTER GLOBAL NAVIGATION & LUXURY FOOTER
+   Simplified luxury design system for all Public screens (Screens 01–09).
+   Tokens adhere strictly to Settly Design Directive:
+     Navy (#131D36, #1E2A4A), Brass (#C69749), Canvas (#F7F6F3), Sage (#3D5A4C).
+   ========================================================================= */
+
+:root {
+  --settly-navy-950: #0B111F;
+  --settly-navy-900: #131D36;
+  --settly-navy-800: #1E2A4A;
+  --settly-navy-700: #2B3A61;
+  --settly-brass: #C69749;
+  --settly-brass-600: #AE8033;
+  --settly-brass-200: #E7D3AB;
+  --settly-brass-050: #F6EEDE;
+  --settly-canvas: #F7F6F3;
+  --settly-canvas-2: #EDE9DF;
+  --settly-ink-1: #16203A;
+  --settly-ink-2: #4C5878;
+  --settly-ink-3: #646D88;
+  --settly-line: rgba(30, 42, 74, 0.1);
+  --settly-line-2: rgba(30, 42, 74, 0.18);
+  --settly-sage: #3D5A4C;
+  --settly-serif: "Spectral", Georgia, serif;
+  --settly-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --settly-mono: "JetBrains Mono", monospace;
+}
+
+/* ============================================================================
+   1. SIMPLIFIED STICKY MASTER HEADER
+   ========================================================================= */
+.settly-master-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--settly-line);
+  font-family: var(--settly-sans);
+  color: var(--settly-ink-1);
+  width: 100%;
+}
+
+.settly-master-header.header-dark {
+  background: rgba(11, 17, 31, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.settly-nav-shell {
+  max-width: var(--max, 1380px);
+  margin-inline: auto;
+  padding-inline: var(--gut, clamp(1rem, 2.5vw, 2.5rem));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 74px;
+  gap: 16px;
+  position: relative;
+}
+
+/* Brand Link & Title (Settly Standard) */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+  z-index: 2;
+}
+.brand img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+.brand span {
+  font-family: var(--settly-sans);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--settly-navy-900);
+}
+.settly-master-header.header-dark .brand span {
+  color: #FFFFFF;
+}
+
+/* White Backing Plate for Dark Navbar (e.g. Market Insights, Area Detail) */
+.settly-master-header.header-dark .brand img {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px 6px;
+  height: 38px;
+  width: auto;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+.ftr-logo-plate {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px 6px;
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+/* Primary Main Navigation (Fluid Center Flow — Zero Overlap) */
+.settly-main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 1vw, 12px);
+  margin-inline: auto;
+  z-index: 1;
+}
+
+.settly-nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--settly-ink-2);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+  position: relative;
+  padding: 7px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.settly-nav-link:hover {
+  color: var(--settly-navy-900);
+  background: rgba(30, 42, 74, 0.04);
+}
+.settly-nav-link.active {
+  color: var(--settly-navy-900);
+  font-weight: 600;
+}
+.settly-nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: var(--settly-brass);
+  border-radius: 2px;
+}
+.settly-master-header.header-dark .settly-nav-link {
+  color: #9AA7C4;
+}
+.settly-master-header.header-dark .settly-nav-link:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+}
+.settly-master-header.header-dark .settly-nav-link.active {
+  color: #FFFFFF;
+}
+
+/* Header Right Actions */
+.settly-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+html[dir="rtl"] .settly-header-actions,
+[dir="rtl"] .settly-header-actions {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.settly-fx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--settly-mono);
+  font-size: 12px;
+  background: var(--settly-canvas);
+  border: 1px solid var(--settly-line);
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--settly-ink-2);
+}
+.settly-master-header.header-dark .settly-fx-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #94A3B8;
+}
+.settly-fx-pill strong {
+  color: var(--settly-navy-900);
+}
+.settly-master-header.header-dark .settly-fx-pill strong {
+  color: #fff;
+}
+
+.btn-settly-signin {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--settly-navy-800);
+  text-decoration: none;
+  padding: 7px 12px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-settly-signin:hover {
+  background: var(--settly-canvas);
+}
+.settly-master-header.header-dark .btn-settly-signin {
+  color: #E2E8F0;
+}
+.settly-master-header.header-dark .btn-settly-signin:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.btn-settly-getstarted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  background: var(--settly-navy-800);
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+.btn-settly-getstarted:hover {
+  background: var(--settly-brass);
+  color: #0B111F;
+  transform: translateY(-1px);
+}
+.settly-master-header.header-dark .btn-settly-getstarted {
+  background: var(--settly-brass);
+  color: #0B111F;
+}
+.settly-master-header.header-dark .btn-settly-getstarted:hover {
+  background: var(--settly-brass-600);
+  color: #FFFFFF;
+}
+
+/* ============================================================================
+   1B. SEARCH WORKSPACE HEADER VARIANT (search.html)
+   ========================================================================= */
+.settly-nav-shell.settly-nav-search-mode {
+  max-width: 1720px;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 1.8vw, 1.75rem);
+  height: 74px;
+  position: relative;
+}
+
+.settly-nav-search-mode .brand {
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* Refactored Impeccable Luxury Search Console */
+.settly-hdr-search {
+  flex: 1;
+  max-width: 440px;
+  min-width: 280px;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid var(--settly-line-2);
+  border-radius: 10px;
+  padding: 0 10px 0 14px;
+  height: 44px;
+  box-shadow: 0 1px 3px rgba(19, 29, 54, 0.04), 0 4px 12px -2px rgba(19, 29, 54, 0.06);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+  position: relative;
+  z-index: 3;
+}
+
+.settly-hdr-search:hover {
+  border-color: rgba(30, 42, 74, 0.28);
+}
+
+.settly-hdr-search:focus-within {
+  border-color: var(--settly-brass);
+  box-shadow: 0 0 0 3px rgba(198, 151, 73, 0.16), 0 4px 16px rgba(19, 29, 54, 0.08);
+  background: #FFFFFF;
+}
+
+.settly-hdr-search .search-icon {
+  color: var(--settly-ink-3);
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.settly-hdr-search:focus-within .search-icon {
+  color: var(--settly-brass-600);
+}
+
+.settly-hdr-search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--settly-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--settly-navy-900);
+  width: 100%;
+  padding: 0 8px;
+}
+
+.settly-hdr-search input::placeholder {
+  color: var(--settly-ink-3);
+  font-weight: 400;
+}
+
+.settly-hdr-search .hdr-search-clear {
+  border: none;
+  background: transparent;
+  color: var(--settly-ink-3);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settly-hdr-search .hdr-search-clear:hover {
+  background: var(--settly-canvas-2);
+  color: var(--settly-navy-900);
+}
+
+.settly-hdr-search .hdr-search-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--settly-line);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+.settly-hdr-search .hdr-search-kbd {
+  font-family: var(--settly-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--settly-ink-3);
+  background: var(--settly-canvas);
+  border: 1px solid var(--settly-line);
+  border-bottom: 2px solid var(--settly-line-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+/* In Search Mode: Navigation sits cleanly between search and actions */
+.settly-nav-search-mode .settly-main-nav {
+  position: static;
+  transform: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(4px, 0.9vw, 10px);
+  margin-left: auto;
+  z-index: 2;
+}
+
+.settly-nav-search-mode .settly-header-actions {
+  margin-left: 0;
+  z-index: 2;
+}
+
+/* ============================================================================
+   2. UNIFIED 4-COLUMN LUXURY FOOTER
+   ========================================================================= */
+.settly-master-footer {
+  background: #0B111F;
+  color: #fff;
+  padding: clamp(3.5rem, 6vw, 4.75rem) 0 2rem;
+  position: relative;
+  font-family: var(--settly-sans);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settly-master-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(198, 151, 73, 0.5), transparent);
+}
+
+.settly-footer-shell {
+  max-width: var(--max, 1320px);
+  margin-inline: auto;
+  padding-inline: var(--gut, clamp(1rem, 4vw, 3.5rem));
+}
+
+.settly-footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1.1fr 1.1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: 3.5rem;
+}
+
+/* Brand Link in Footer */
+.settly-ftr-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-bottom: 1.25rem;
+}
+.settly-ftr-logo {
+  height: 38px;
+  width: auto;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px;
+  display: block;
+}
+.settly-ftr-brand-name {
+  font-family: var(--settly-sans);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+}
+
+.settly-ftr-desc {
+  font-size: 13px;
+  color: #9AA7C4;
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+  max-width: 340px;
+}
+
+.settly-trust-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settly-trust-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--settly-mono);
+  font-size: 11px;
+  color: #7482A0;
+}
+.settly-trust-badge-row svg {
+  color: var(--settly-brass);
+  flex-shrink: 0;
+}
+
+/* Footer Navigation Columns */
+.settly-ftr-col h4 {
+  font-family: var(--settly-serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.settly-ftr-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.settly-ftr-links li a {
+  font-size: 13px;
+  color: #9AA7C4;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.settly-ftr-links li a:hover {
+  color: var(--settly-brass-200);
+}
+
+/* Private Client Desk & Social Icons */
+.settly-ftr-advisory {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settly-ftr-advisory p {
+  font-size: 12.5px;
+  color: #9AA7C4;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.btn-ftr-concierge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  background: var(--settly-brass);
+  color: #0B111F;
+  font-weight: 700;
+  font-size: 12.5px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-ftr-concierge:hover {
+  background: var(--settly-brass-600);
+  color: #fff;
+}
+
+.settly-ftr-hours {
+  font-family: var(--settly-mono);
+  font-size: 10.5px;
+  color: #7482A0;
+}
+
+/* Social Media Strip Under Private Client Desk */
+.settly-socials-block {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.settly-socials-label {
+  font-family: var(--settly-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7E8DAA;
+  font-weight: 600;
+}
+.settly-socials-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.settly-social-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #9AA7C4;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.settly-social-icon:hover {
+  background: var(--settly-brass);
+  border-color: var(--settly-brass);
+  color: #0B111F;
+  transform: translateY(-2px);
+}
+
+/* Footer Bottom Bar */
+.settly-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #6C7A9C;
+}
+
+.settly-ftr-legal {
+  font-family: var(--settly-mono);
+  font-size: 11px;
+}
+
+.settly-ftr-socials {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.settly-ftr-socials a {
+  color: #9AA7C4;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.15s;
+}
+.settly-ftr-socials a:hover {
+  color: var(--settly-brass);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .settly-nav-search-mode .settly-hdr-search {
+    max-width: 340px;
+  }
+  .settly-nav-search-mode .settly-main-nav {
+    gap: 4px;
+  }
+  .settly-nav-search-mode .settly-nav-link {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .settly-footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .settly-main-nav {
+    position: static;
+    transform: none;
+    margin: 0 auto;
+    gap: 4px;
+  }
+  .settly-nav-link {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+  .settly-header-actions {
+    gap: 8px;
+  }
+  .settly-nav-search-mode .settly-main-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .settly-fx-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .settly-nav-shell {
+    display: flex;
+    justify-content: space-between;
+  }
+  .settly-main-nav {
+    display: none;
+  }
+  .settly-footer-grid {
+    grid-template-columns: 1fr;
+  }
+  .settly-nav-search-mode .settly-hdr-search {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1;
+  }
+  .settly-hdr-search .hdr-search-kbd,
+  .settly-hdr-search .hdr-search-divider {
+    display: none;
+  }
+  .settly-hdr-search input {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settly-nav-shell {
+    padding-inline: 0.75rem;
+    gap: 8px;
+  }
+  .settly-nav-search-mode .brand span {
+    display: none;
+  }
+  .settly-hdr-search {
+    height: 40px;
+    padding: 0 8px 0 10px;
+  }
+  .settly-hdr-search input {
+    padding: 0 4px;
+    font-size: 11.5px;
+  }
+}

@@ -69,8 +69,35 @@ export const AreaListResponseSchema = z
       description: "Array of geographic areas matching query criteria",
     }),
   })
-  .openapi("AreaListResponse");
+export const AreaInsightsResponseSchema = z
+  .object({
+    area: AreaItemSchema,
+    metrics: z.object({
+      activePropertiesCount: z.number().openapi({ example: 12 }),
+      compoundsCount: z.number().openapi({ example: 4 }),
+      averagePricePerSqm: z.number().openapi({ example: 68500 }),
+      minPrice: z.string().openapi({ example: "12500000" }),
+      maxPrice: z.string().openapi({ example: "45000000" }),
+      averageYieldPercentage: z.number().openapi({ example: 8.4 }),
+      capitalAppreciationYoY: z.number().openapi({ example: 28.5 }),
+    }),
+    propertyTypesDistribution: z.record(z.string(), z.number()).openapi({
+      description: "Inventory count grouped by property type",
+      example: { VILLA: 8, APARTMENT: 4 },
+    }),
+    historicalPriceTrend: z
+      .array(
+        z.object({
+          period: z.string().openapi({ example: "Q1 2025" }),
+          avgPricePerSqm: z.number().openapi({ example: 52000 }),
+          changePercent: z.number().openapi({ example: 14.2 }),
+        })
+      )
+      .openapi({ description: "Quarterly historical price per sqm telemetry" }),
+  })
+  .openapi("AreaInsightsResponse");
 
 export type AreaItem = z.infer<typeof AreaItemSchema>;
 export type AreaQuery = z.infer<typeof AreaQuerySchema>;
 export type AreaListResponse = z.infer<typeof AreaListResponseSchema>;
+export type AreaInsightsResponse = z.infer<typeof AreaInsightsResponseSchema>;

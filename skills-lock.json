@@ -13,6 +13,24 @@
       "skillPath": "skills/aider-delegate/SKILL.md",
       "computedHash": "066610f8f1d86a26e81f396efb4c28fbc7bd477fced9878057cfec2e9ed77693"
     },
+    "ask-sonner": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/ask-sonner/SKILL.md",
+      "computedHash": "0168a6a129ba0a3561ccbda3a3d8d0dc0af1d556f373e315e9479e3364420dd3"
+    },
+    "better-auth-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "better-auth/best-practices/SKILL.md",
+      "computedHash": "f35281e7a0c07b3fd3c4e96c7833dafb294a3a8662cb68a8544f4225008d6568"
+    },
+    "better-auth-security-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "security/SKILL.md",
+      "computedHash": "087c1094fa5f1834af4785c058dcc8c9abe4c1321b853883c76ea46c93a21cfe"
+    },
     "brandkit": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
@@ -49,6 +67,12 @@
       "skillPath": "skills/copilot-delegate/SKILL.md",
       "computedHash": "4353aa5f4f43bd7620f1d5ad55b1273a1697851ddce37fb54f24c873aadcf279"
     },
+    "create-auth": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "better-auth/create-auth/SKILL.md",
+      "computedHash": "d101953fda9452eb4e59d4eb50aa829c1961cdd7d0587d26a2b1871abe885e07"
+    },
     "cursor-delegate": {
       "source": "amElnagdy/delegate-skills",
       "sourceType": "github",
@@ -60,6 +84,12 @@
       "sourceType": "github",
       "skillPath": "skills/delegate-setup/SKILL.md",
       "computedHash": "ffdc998edffa50e4d3e942af0a5697f6619d86b5e92b2175539ecca69225843d"
+    },
+    "email-and-password-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "better-auth/emailAndPassword/SKILL.md",
+      "computedHash": "ac9f9b0a549390f157ec62f5421a0bc90ac622c7e425af13155953847e0b68ea"
     },
     "full-output-enforcement": {
       "source": "Leonxlnx/taste-skill",
@@ -163,6 +193,12 @@
       "skillPath": "skills/opencode-delegate/SKILL.md",
       "computedHash": "ccdad0962ec839f028fa506e96f607792dae6ed51d58144b3b3e58b45d5abad3"
     },
+    "organization-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "better-auth/organization/SKILL.md",
+      "computedHash": "f03e41bc2995c4fceec98f3db85f9638d71cc391fb10f9d85460304d6642efc2"
+    },
     "pi-delegate": {
       "source": "amElnagdy/delegate-skills",
       "sourceType": "github",
@@ -186,6 +222,12 @@
       "sourceType": "github",
       "skillPath": "skills/stitch-skill/SKILL.md",
       "computedHash": "c96b580192b34167efa01f460bbc669ff4315cf97f3cf6ff85ded8029aa720b8"
+    },
+    "two-factor-authentication-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "skillPath": "better-auth/twoFactor/SKILL.md",
+      "computedHash": "ca66fbdc0281f43065a6c890a9982afba774565085e773863ce31280324d9425"
     },
     "vibe-delegate": {
       "source": "amElnagdy/delegate-skills",

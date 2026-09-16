@@ -30,3 +30,13 @@ Whenever building, designing, refactoring, or modifying any frontend screens, pa
 4. **Mandatory Environment & Credentials Protocol**:
    - Whenever any feature, integration, or service requires `.env` credentials, API keys, secrets, or provider configuration (e.g., Resend API key, Cloudinary credentials, MapTiler key, Paymob secrets, Upstash Redis, Firebase/FCM, etc.), you MUST explicitly ask the user for them before implementing or proceeding.
    - Never invent placeholder keys for live integrations without user consent.
+
+5. **Mandatory Performance & Rendering Strategy (App Router Hybrid Architecture)**:
+   - **Never trigger destructive full-page loading screens on user mutations**: User interactions (filtering, sorting, column removal/addition, tab switching, and modal selections) MUST use **Optimistic Client State (CSR)** with discrete local feedback or skeletons. Never unmount an entire interactive workspace or show full-screen blockers on sub-actions.
+   - **Strict Strategy Matrix Across Screens**:
+     - **Landing (`/`)**: SSG + ISR with streaming components for instant 0ms TTFB.
+     - **Property Detail (`/properties/[slug]`) & Area Guides (`/areas`)**: ISR with on-demand tag revalidation (`generateStaticParams`). Public property and area views must be served instantly from cache.
+     - **Search Results (`/search`)**: Streaming SSR for initial cards + CSR for interactive map & filter sliders.
+     - **Compare Properties (`/compare`)**: Server shell for initial IDs + Optimistic CSR for all column additions, removals, and toggles (sync URL via `window.history.replaceState` without route reload cascades).
+     - **Auth Screens**: Static SSG shell + CSR form submissions.
+     - **Buyer / Agent / Admin Dashboards**: Authenticated SSR + granular `<Suspense>` skeletons for instant sub-navigation + CSR for realtime sockets/data tables.

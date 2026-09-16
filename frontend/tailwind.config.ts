@@ -52,6 +52,15 @@ const config: Config = {
         settly: "rgba(22, 32, 43, 0.04) 0 1px 2px, rgba(22, 32, 43, 0.06) 0 6px 18px -8px",
         brass: "rgba(198, 151, 73, 0.18) 0 4px 12px -4px",
       },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        marquee: "marquee 35s linear infinite",
+      },
     },
   },
   plugins: [],

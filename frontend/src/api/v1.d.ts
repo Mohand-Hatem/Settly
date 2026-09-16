@@ -33,7 +33,10 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AreaListResponse"];
+                        "application/json": {
+                            /** @description Array of geographic areas matching query criteria */
+                            items: components["schemas"]["AreaItem"][];
+                        };
                     };
                 };
                 /** @description Validation failed for query parameters */
@@ -102,6 +105,56 @@ export interface paths {
                     };
                     content: {
                         "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/areas/{identifier}/insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get market insights and telemetry for an area
+         * @description Retrieve price per m² averages, historical trend telemetry, compound counts, and property distributions for an area by slug or UUID.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    identifier: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Area market insights and historical trend telemetry */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AreaInsightsResponse"];
+                    };
+                };
+                /** @description Area not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
                     };
                 };
             };
@@ -1666,6 +1719,189 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/catalog/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare multiple properties
+         * @description Retrieve side-by-side architectural and financial specifications for between 2 and 4 residences.
+         */
+        get: {
+            parameters: {
+                query: {
+                    ids: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Comparison specifications matrix */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CompareResponse"];
+                    };
+                };
+                /** @description Validation failed (e.g. fewer than 2 or more than 4 properties specified) */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analytics/market-pulse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get prime Egyptian real estate market telemetry and macroeconomic indicators
+         * @description Returns live sovereign economic indicators, currency benchmarks (USD/EGP, EUR/EGP), corridor annual capital appreciation rates, and quarterly real estate transaction volume.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Macroeconomic telemetry and corridor price benchmarks */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MarketPulseResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/identity/agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List verified certified advisors and brokers
+         * @description Retrieve the public directory of certified real estate advisors with licensing transparency and active listing counts.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    brokerage?: string;
+                    page?: number;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Collection of certified advisors */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentDirectoryResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/identity/agents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get public profile and active exclusive listings for an advisor
+         * @description Retrieve verified broker profile, FRA/REA registration badges, biography, and active published residences.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Advisor public profile and published listings */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentProfileDetailResponse"];
+                    };
+                };
+                /** @description Advisor not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1907,9 +2143,43 @@ export interface components {
              */
             updatedAt: string;
         };
-        AreaListResponse: {
-            /** @description Array of geographic areas matching query criteria */
-            items: components["schemas"]["AreaItem"][];
+        AreaInsightsResponse: {
+            area: components["schemas"]["AreaItem"];
+            metrics: {
+                /** @example 12 */
+                activePropertiesCount: number;
+                /** @example 4 */
+                compoundsCount: number;
+                /** @example 68500 */
+                averagePricePerSqm: number;
+                /** @example 12500000 */
+                minPrice: string;
+                /** @example 45000000 */
+                maxPrice: string;
+                /** @example 8.4 */
+                averageYieldPercentage: number;
+                /** @example 28.5 */
+                capitalAppreciationYoY: number;
+            };
+            /**
+             * @description Inventory count grouped by property type
+             * @example {
+             *       "VILLA": 8,
+             *       "APARTMENT": 4
+             *     }
+             */
+            propertyTypesDistribution: {
+                [key: string]: number;
+            };
+            /** @description Quarterly historical price per sqm telemetry */
+            historicalPriceTrend: {
+                /** @example Q1 2025 */
+                period: string;
+                /** @example 52000 */
+                avgPricePerSqm: number;
+                /** @example 14.2 */
+                changePercent: number;
+            }[];
         };
         /** @enum {string} */
         PropertyType: "APARTMENT" | "VILLA" | "DUPLEX" | "PENTHOUSE" | "TOWNHOUSE" | "CHALET";
@@ -2277,6 +2547,150 @@ export interface components {
             bioEn?: string | null;
             /** @description Arabic biography */
             bioAr?: string | null;
+        };
+        CompareItem: {
+            id: string;
+            slug: string;
+            titleEn: string | null;
+            titleAr: string | null;
+            propertyType: string;
+            listingIntent: string;
+            price: string;
+            rentalPeriod: string | null;
+            bedrooms: number;
+            bathrooms: number;
+            areaSqm: number;
+            pricePerSqm: number;
+            latitude: number;
+            longitude: number;
+            coverImage: string | null;
+            images: string[];
+            area: {
+                id: string;
+                slug: string;
+                nameEn: string;
+                nameAr: string;
+            };
+            amenities: {
+                id: string;
+                slug: string;
+                nameEn: string;
+                nameAr: string;
+                category: string;
+            }[];
+        };
+        CompareResponse: {
+            /** @description Array of compared residences with aligned specifications */
+            items: components["schemas"]["CompareItem"][];
+            /** @description Number of properties compared (2 to 4) */
+            count: number;
+        };
+        MarketPulseResponse: {
+            currencyRates: {
+                usdEgp: {
+                    /** @example 48.85 */
+                    official: number;
+                    /** @example 49.1 */
+                    market: number;
+                    /** @example -0.15 */
+                    change24h: number;
+                };
+                eurEgp: {
+                    /** @example 48.85 */
+                    official: number;
+                    /** @example 49.1 */
+                    market: number;
+                    /** @example -0.15 */
+                    change24h: number;
+                };
+            };
+            macroIndicators: {
+                /** @example 25.7 */
+                inflationRate: number;
+                /** @example 8.8 */
+                primeYieldAverage: number;
+                /** @example 6.2 */
+                quarterlyAppreciationRate: number;
+                /** @example 28.4 */
+                annualAppreciationRate: number;
+                /** @example 145000000000 */
+                quarterlyVolumeEgp: string;
+            };
+            corridorsBenchmark: {
+                /** @example East Cairo / New Cairo & Katameya */
+                corridor: string;
+                /** @example 72500 */
+                avgPricePerSqm: number;
+                /** @example 31.4 */
+                appreciationYoY: number;
+                /** @example 8.9 */
+                rentalYield: number;
+            }[];
+            /**
+             * Format: date-time
+             * @description ISO 8601 timestamp of telemetry snapshot
+             */
+            lastUpdated: string;
+        };
+        AgentDirectoryItem: {
+            /** @description AgentProfile UUID */
+            id: string;
+            /** @description User ID */
+            userId: string;
+            /** @example Hana K. */
+            name: string;
+            /** @example /images/hana.jpg */
+            image: string | null;
+            /** @example CAI-2024-8841 */
+            licenseNumber: string;
+            /** @example Sotheby's International Realty Egypt */
+            brokerageName: string | null;
+            /** @example Prime Cairo & Katameya advisory specialist. */
+            bioEn: string | null;
+            /** @example مستشارة عقارية متخصصة في عقارات التجمع الخامس والقطامية. */
+            bioAr: string | null;
+            /** @example true */
+            isVerified: boolean;
+            /** Format: date-time */
+            verifiedAt: string | null;
+            /** @example 6 */
+            activeListingsCount: number;
+            /**
+             * @example [
+             *       "New Cairo",
+             *       "Katameya Dunes"
+             *     ]
+             */
+            primaryCorridors: string[];
+        };
+        AgentDirectoryResponse: {
+            items: components["schemas"]["AgentDirectoryItem"][];
+            /** @example 1 */
+            total: number;
+            /** @example 1 */
+            page: number;
+            /** @example 12 */
+            limit: number;
+        };
+        AgentProfileDetailResponse: {
+            agent: components["schemas"]["AgentDirectoryItem"];
+            listings: {
+                id: string;
+                slug: string;
+                titleEn: string | null;
+                titleAr: string | null;
+                propertyType: string;
+                price: string;
+                bedrooms: number;
+                bathrooms: number;
+                areaSqm: number;
+                coverImage: string | null;
+                area: {
+                    nameEn: string;
+                    nameAr: string;
+                    slug: string;
+                };
+            }[];
         };
     };
     responses: never;

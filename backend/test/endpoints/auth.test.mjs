@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { server } from "../../dist/settly-api.js";
 import { prisma } from "../../dist/shared/database/prisma.js";
 
@@ -241,6 +242,56 @@ async function run() {
     assert.ok(bannedData.detail.includes("Compliance policy violation"));
     console.log("  ✅ Passed: Banned user immediately blocked with RFC 9457 403.\n");
 
+    // --------------------------------------------------------------------------
+    // 8. Former master OTP '882194' is rejected without a matching verification row
+    // --------------------------------------------------------------------------
+    console.log("Test 8: POST /api/v1/identity/verify-otp rejects former master code '882194'...");
+    await prisma.verification.deleteMany({ where: { identifier: buyerEmail } });
+    await prisma.user.update({ where: { id: buyerUserId }, data: { emailVerified: false } });
+
+    const bypassRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: buyerEmail, code: "882194" }),
+    });
+    assert.equal(bypassRes.status, 400);
+    const bypassUser = await prisma.user.findUnique({ where: { id: buyerUserId } });
+    assert.equal(bypassUser.emailVerified, false, "Bypass code must not verify the email");
+    console.log("  ✅ Passed: '882194' rejected with 400 and emailVerified stays false.\n");
+
+    // --------------------------------------------------------------------------
+    // 9. A real, unexpired OTP verifies the email and is consumed (single use)
+    // --------------------------------------------------------------------------
+    console.log("Test 9: POST /api/v1/identity/verify-otp accepts a valid OTP once...");
+    const validCode = "418027";
+    await prisma.verification.create({
+      data: {
+        id: randomUUID(),
+        identifier: buyerEmail,
+        value: validCode,
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+      },
+    });
+
+    const otpRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: buyerEmail.toUpperCase(), code: validCode }),
+    });
+    assert.equal(otpRes.status, 200);
+    const verifiedUser = await prisma.user.findUnique({ where: { id: buyerUserId } });
+    assert.equal(verifiedUser.emailVerified, true);
+    const remaining = await prisma.verification.count({ where: { identifier: buyerEmail } });
+    assert.equal(remaining, 0, "Used OTP must be deleted");
+
+    const replayRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: buyerEmail, code: validCode }),
+    });
+    assert.equal(replayRes.status, 400);
+    console.log("  ✅ Passed: Valid OTP verified the email and cannot be replayed.\n");
+
     console.log("===============================================================================");
     console.log("All Better Auth & RBAC Tests Passed Successfully! ✅");
     console.log("===============================================================================\n");
@@ -259,6 +310,7 @@ async function run() {
     }
     if (buyerUserId) {
       try {
+        await prisma.verification.deleteMany({ where: { identifier: buyerEmail } });
         await prisma.session.deleteMany({ where: { userId: buyerUserId } });
         await prisma.account.deleteMany({ where: { userId: buyerUserId } });
         await prisma.user.deleteMany({ where: { id: buyerUserId } });

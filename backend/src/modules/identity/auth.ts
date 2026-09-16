@@ -4,7 +4,9 @@ import { admin } from "better-auth/plugins";
 import { prisma } from "../../shared/database/prisma.js";
 import { env } from "../../config/index.js";
 
+import { uuidv7 } from "uuidv7";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../../shared/email/resend.js";
+import { logger } from "../../shared/logger/index.js";
 
 /**
  * Authoritative Better Auth Server Configuration
@@ -35,12 +37,39 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
+      // Generate 6-digit numeric OTP code
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+      try {
+        await prisma.verification.create({
+          data: {
+            id: uuidv7(),
+            identifier: user.email.toLowerCase(),
+            value: otpCode,
+            expiresAt: new Date(Date.now() + 15 * 60 * 1000), // 15 mins TTL
+          },
+        });
+      } catch (err) {
+        logger.error({ err, email: user.email }, "Failed to save verification OTP to database");
+      }
+
       await sendVerificationEmail({
         to: user.email,
         name: user.name,
         url,
+        code: otpCode,
       });
     },
+  },
+  socialProviders: {
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {}),
   },
   plugins: [
     admin({

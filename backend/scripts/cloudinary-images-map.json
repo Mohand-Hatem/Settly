@@ -1,0 +1,178 @@
+{
+  "1.jpg": {
+    "filename": "1.jpg",
+    "originalSizeKB": 155,
+    "optimizedSizeKB": 139,
+    "reductionPercent": "10.2%",
+    "publicId": "settly/catalog/1",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576635/settly/catalog/1.jpg",
+    "width": 1400,
+    "height": 800,
+    "format": "jpg"
+  },
+  "10.jpg": {
+    "filename": "10.jpg",
+    "originalSizeKB": 166,
+    "optimizedSizeKB": 126,
+    "reductionPercent": "24.5%",
+    "publicId": "settly/catalog/10",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576641/settly/catalog/10.jpg",
+    "width": 1600,
+    "height": 1067,
+    "format": "jpg"
+  },
+  "11.jpg": {
+    "filename": "11.jpg",
+    "originalSizeKB": 128,
+    "optimizedSizeKB": 103,
+    "reductionPercent": "19.3%",
+    "publicId": "settly/catalog/11",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576646/settly/catalog/11.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "2.jpg": {
+    "filename": "2.jpg",
+    "originalSizeKB": 256,
+    "optimizedSizeKB": 257,
+    "reductionPercent": "-0.4%",
+    "publicId": "settly/catalog/2",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576651/settly/catalog/2.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "3.jpg": {
+    "filename": "3.jpg",
+    "originalSizeKB": 310,
+    "optimizedSizeKB": 347,
+    "reductionPercent": "-11.9%",
+    "publicId": "settly/catalog/3",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576656/settly/catalog/3.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "4.jpg": {
+    "filename": "4.jpg",
+    "originalSizeKB": 103,
+    "optimizedSizeKB": 73,
+    "reductionPercent": "29.5%",
+    "publicId": "settly/catalog/4",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576662/settly/catalog/4.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "5.jpg": {
+    "filename": "5.jpg",
+    "originalSizeKB": 133,
+    "optimizedSizeKB": 104,
+    "reductionPercent": "21.9%",
+    "publicId": "settly/catalog/5",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576665/settly/catalog/5.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "6.jpg": {
+    "filename": "6.jpg",
+    "originalSizeKB": 107,
+    "optimizedSizeKB": 75,
+    "reductionPercent": "30.1%",
+    "publicId": "settly/catalog/6",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576667/settly/catalog/6.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "7.jpg": {
+    "filename": "7.jpg",
+    "originalSizeKB": 164,
+    "optimizedSizeKB": 121,
+    "reductionPercent": "25.8%",
+    "publicId": "settly/catalog/7",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576670/settly/catalog/7.jpg",
+    "width": 1800,
+    "height": 1200,
+    "format": "jpg"
+  },
+  "8.jpg": {
+    "filename": "8.jpg",
+    "originalSizeKB": 131,
+    "optimizedSizeKB": 104,
+    "reductionPercent": "20.5%",
+    "publicId": "settly/catalog/8",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576673/settly/catalog/8.jpg",
+    "width": 1400,
+    "height": 795,
+    "format": "jpg"
+  },
+  "9.jpg": {
+    "filename": "9.jpg",
+    "originalSizeKB": 139,
+    "optimizedSizeKB": 107,
+    "reductionPercent": "23.1%",
+    "publicId": "settly/catalog/9",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576676/settly/catalog/9.jpg",
+    "width": 1400,
+    "height": 933,
+    "format": "jpg"
+  },
+  "hero.jpg": {
+    "filename": "hero.jpg",
+    "originalSizeKB": 525,
+    "optimizedSizeKB": 407,
+    "reductionPercent": "22.4%",
+    "publicId": "settly/catalog/hero",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576682/settly/catalog/hero.jpg",
+    "width": 2048,
+    "height": 1170,
+    "format": "jpg"
+  },
+  "horizontal.jfif": {
+    "filename": "horizontal.jfif",
+    "originalSizeKB": 3457,
+    "optimizedSizeKB": 385,
+    "reductionPercent": "88.9%",
+    "publicId": "settly/catalog/horizontal",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576686/settly/catalog/horizontal.jpg",
+    "width": 2048,
+    "height": 1143,
+    "format": "jpg"
+  },
+  "logo.png": {
+    "filename": "logo.png",
+    "originalSizeKB": 22,
+    "optimizedSizeKB": 13,
+    "reductionPercent": "38.7%",
+    "publicId": "settly/catalog/logo",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576687/settly/catalog/logo.png",
+    "width": 280,
+    "height": 351,
+    "format": "png"
+  },
+  "panoramic.jfif": {
+    "filename": "panoramic.jfif",
+    "originalSizeKB": 3482,
+    "optimizedSizeKB": 304,
+    "reductionPercent": "91.3%",
+    "publicId": "settly/catalog/panoramic",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576690/settly/catalog/panoramic.jpg",
+    "width": 2048,
+    "height": 869,
+    "format": "jpg"
+  },
+  "phone.jpg": {
+    "filename": "phone.jpg",
+    "originalSizeKB": 140,
+    "optimizedSizeKB": 100,
+    "reductionPercent": "28.0%",
+    "publicId": "settly/catalog/phone",
+    "secureUrl": "https://res.cloudinary.com/dmzcnnxzp/image/upload/v1789576692/settly/catalog/phone.jpg",
+    "width": 1400,
+    "height": 1400,
+    "format": "jpg"
+  }
+}

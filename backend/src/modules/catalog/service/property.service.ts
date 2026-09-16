@@ -57,6 +57,14 @@ export async function getPropertyById(id: string): Promise<PropertyResponse> {
   return prop;
 }
 
+export async function getPropertyOwnerOrThrow(id: string) {
+  const prop = await propertyRepo.getPropertyOwner(id);
+  if (!prop) {
+    throw notFoundError("Property", id);
+  }
+  return prop;
+}
+
 export async function getPropertyBySlug(slug: string): Promise<PropertyResponse> {
   const prop = await propertyRepo.getPropertyBySlug(slug);
   if (!prop) {
@@ -137,7 +145,7 @@ export async function submitForReview(
   }
 
   // Guard 3: Minimum 3 images required per BUSINESS_RULES.md P2
-  const imageCount = await propertyRepo.countPropertyImages(propertyId);
+  const imageCount = raw._count?.images ?? 0;
   if (imageCount < 3) {
     throw new ProblemError({
       type: "/errors/insufficient-images",
@@ -151,12 +159,6 @@ export async function submitForReview(
     });
   }
 
-  // Guard 4: Area resolves to valid Area node
-  const area = await areaService.getAreaById(raw.areaId);
-  if (!area) {
-    throw notFoundError("Area", raw.areaId);
-  }
-
   const action = raw.status === "REJECTED" ? "PROPERTY_RESUBMITTED" : "PROPERTY_SUBMITTED";
 
   return await propertyRepo.transitionPropertyStatus({
@@ -165,6 +167,8 @@ export async function submitForReview(
     actorId: agentId,
     actorType: "AGENT",
     action,
+    expectedStatus: ["DRAFT", "REJECTED"],
+    previousStatus: raw.status,
   });
 }
 
@@ -195,6 +199,9 @@ export async function approveProperty(
     actorId: adminId,
     actorType: "ADMIN",
     action: "PROPERTY_APPROVED",
+    expectedStatus: "PENDING_REVIEW",
+    previousStatus: "PENDING_REVIEW",
+    setPublishedAt: !raw.publishedAt,
   });
 }
 
@@ -223,6 +230,8 @@ export async function rejectProperty(
     actorType: "ADMIN",
     action: "PROPERTY_REJECTED",
     reason,
+    expectedStatus: "PENDING_REVIEW",
+    previousStatus: "PENDING_REVIEW",
   });
 }
 
@@ -278,7 +287,14 @@ export async function editProperty(
     }
   }
 
-  return await propertyRepo.updateProperty(propertyId, agentId, data, newStatus);
+  return await propertyRepo.updateProperty(
+    propertyId,
+    agentId,
+    data,
+    newStatus,
+    raw.status,
+    raw.price
+  );
 }
 
 // ==============================================================================
@@ -322,6 +338,8 @@ export async function archiveProperty(
     actorId: agentId,
     actorType: "AGENT",
     action: "PROPERTY_ARCHIVED",
+    expectedStatus: "PUBLISHED",
+    previousStatus: "PUBLISHED",
   });
 }
 
@@ -356,6 +374,8 @@ export async function markSold(
     actorId: agentId,
     actorType: "AGENT",
     action: "PROPERTY_SOLD_CONFIRMED",
+    expectedStatus: "RESERVED",
+    previousStatus: "RESERVED",
   });
 }
 
@@ -388,6 +408,8 @@ export async function offlineSale(
     actorType: "AGENT",
     action: "PROPERTY_OFFLINE_SALE",
     reason,
+    expectedStatus: "PUBLISHED",
+    previousStatus: "PUBLISHED",
   });
 }
 
@@ -425,6 +447,8 @@ export async function fallThrough(
     actorType,
     action: "PROPERTY_FELL_THROUGH",
     reason,
+    expectedStatus: "RESERVED",
+    previousStatus: "RESERVED",
   });
 }
 
@@ -457,6 +481,16 @@ export async function suspendProperty(
     actorType: "ADMIN",
     action: "PROPERTY_SUSPENDED",
     reason,
+    expectedStatus: [
+      "DRAFT",
+      "PENDING_REVIEW",
+      "REJECTED",
+      "PUBLISHED",
+      "RESERVED",
+      "RENTED",
+      "ARCHIVED",
+    ],
+    previousStatus: raw.status,
   });
 }
 
@@ -484,6 +518,8 @@ export async function unsuspendProperty(
     actorId: adminId,
     actorType: "ADMIN",
     action: "PROPERTY_UNSUSPENDED",
+    expectedStatus: "SUSPENDED",
+    previousStatus: "SUSPENDED",
   });
 }
 
@@ -518,6 +554,8 @@ export async function relistProperty(
     actorId: agentId,
     actorType: "AGENT",
     action: "PROPERTY_RELISTED",
+    expectedStatus: "ARCHIVED",
+    previousStatus: "ARCHIVED",
   });
 }
 

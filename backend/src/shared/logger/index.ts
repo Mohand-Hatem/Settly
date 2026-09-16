@@ -10,7 +10,12 @@ export const logger = pino({
   transport:
     env.NODE_ENV !== "production"
       ? {
-          target: "pino/file",
+          target: "pino-pretty",
+          options: {
+            colorize: true,
+            translateTime: "HH:MM:ss.l",
+            ignore: "pid,hostname",
+          },
         }
       : undefined,
 });

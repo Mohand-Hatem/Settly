@@ -4,6 +4,7 @@ import {
   AreaListResponseSchema,
   AreaQuerySchema,
   AreaItemSchema,
+  AreaInsightsResponseSchema,
 } from "../schema/area.schema.js";
 import { areaService } from "../service/area.service.js";
 import { registry, ValidationProblemSchema, NotFoundProblemSchema } from "../../../shared/openapi/registry.js";
@@ -83,6 +84,40 @@ registry.registerPath({
   },
 });
 
+registry.registerPath({
+  method: "get",
+  path: "/api/v1/areas/{identifier}/insights",
+  tags: ["Catalog"],
+  summary: "Get market insights and telemetry for an area",
+  description:
+    "Retrieve price per m² averages, historical trend telemetry, compound counts, and property distributions for an area by slug or UUID.",
+  request: {
+    params: z.object({
+      identifier: z
+        .string()
+        .openapi({ description: "Area unique slug (e.g. new-cairo) or UUIDv7 identifier" }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Area market insights and historical trend telemetry",
+      content: {
+        "application/json": {
+          schema: AreaInsightsResponseSchema,
+        },
+      },
+    },
+    404: {
+      description: "Area not found",
+      content: {
+        "application/problem+json": {
+          schema: NotFoundProblemSchema,
+        },
+      },
+    },
+  },
+});
+
 // ==============================================================================
 // 2. Express Route Handlers
 // ==============================================================================
@@ -91,6 +126,16 @@ areaRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedQuery = AreaQuerySchema.parse(req.query);
     const result = await areaService.listAreas(validatedQuery);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+areaRouter.get("/:identifier/insights", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { identifier } = z.object({ identifier: z.string() }).parse(req.params);
+    const result = await areaService.getAreaInsights(identifier);
     res.json(result);
   } catch (error) {
     next(error);

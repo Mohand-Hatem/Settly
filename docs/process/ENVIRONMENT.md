@@ -84,8 +84,8 @@ See `../architecture/INFRASTRUCTURE.md` Section 3 — Vercel/Railway/Supabase/Re
 setup requirement.
 
 ## 10. Pending verification
-
-V6 (Prisma over Supavisor transaction mode) · V32 (CI service-container extension support).
+ 
+ V32 (CI service-container extension support). V6 verified (2026-09-16, Neon PgBouncer supports protocol-level prepared statements; `pgbouncer=true` omitted).
 
 ## 11. Rejected / do not add
 

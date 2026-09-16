@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { Menu, X, User, LogOut } from "lucide-react";
 
 interface NavbarProps {
   dark?: boolean;
@@ -15,10 +16,11 @@ export function Navbar({ dark = false }: NavbarProps) {
   const { data: session, isPending } = authClient.useSession();
 
   const navLinks = [
-    { label: "Properties", href: "/search" },
-    { label: "Areas", href: "/areas" },
+    { label: "Buy", href: "/search" },
+    { label: "Districts", href: "/areas" },
+    { label: "Compare", href: "/compare" },
     { label: "Market Insights", href: "/market-insights" },
-    { label: "Advisors", href: "/agents" },
+    { label: "Agents", href: "/agents" },
   ];
 
   const handleSignOut = async () => {
@@ -26,44 +28,90 @@ export function Navbar({ dark = false }: NavbarProps) {
     window.location.href = "/";
   };
 
+  const getDashboardHref = () => {
+    if (!session?.user) return "/login";
+    if (session.user.role === "ADMIN") return "/admin/verification";
+    if (session.user.role === "AGENT") return "/agent/overview";
+    return "/buyer/overview";
+  };
+
+  const isSearchMode = pathname === "/search";
+  const isDarkHeader =
+    dark ||
+    pathname === "/market-insights" ||
+    (pathname.startsWith("/areas/") && pathname !== "/areas");
+
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-colors duration-200 backdrop-blur-md ${
-        dark
-          ? "bg-navy-950/95 border-b border-white/10 text-white"
-          : "bg-white/95 border-b border-line text-ink"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[74px] flex items-center justify-between gap-4">
-        {/* Brand Mark */}
-        <Link href="/" className="inline-flex items-center gap-3 shrink-0 group">
-          <div className="w-9 h-9 rounded-sm bg-navy-900 border border-brass/40 flex items-center justify-center font-display text-brass font-bold text-lg shadow-sm group-hover:border-brass transition-colors">
-            S
-          </div>
-          <span
-            className={`font-sans text-xl font-bold tracking-tight ${
-              dark ? "text-white" : "text-navy-900"
-            }`}
-          >
-            Settly<span className="text-brass">.</span>
-          </span>
+    <header className={`settly-master-header ${isDarkHeader ? "header-dark" : ""}`}>
+      <div className={`settly-nav-shell ${isSearchMode ? "settly-nav-search-mode" : ""}`}>
+        {/* Brand Mark & Title */}
+        <Link href="/" className="brand">
+          <img
+            src="/images/logo.png"
+            alt="Settly Logo"
+            width={38}
+            height={38}
+          />
+          <span>Settly</span>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* Refactored Impeccable Luxury Search Console on Search Page */}
+        {isSearchMode && (
+          <div className="settly-hdr-search" id="hdrSearchConsole">
+            <svg
+              className="search-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              type="text"
+              className="hdr-search-input"
+              id="globalSearchInput"
+              placeholder="Search district, compound, or developer (e.g. Golden Square, Palm Hills)..."
+              defaultValue="Golden Square, New Cairo"
+              autoComplete="off"
+              aria-label="Search properties in Egypt"
+            />
+            <button
+              type="button"
+              className="hdr-search-clear"
+              id="hdrSearchClear"
+              aria-label="Clear search"
+              title="Clear query"
+              onClick={() => {
+                const input = document.getElementById(
+                  "globalSearchInput"
+                ) as HTMLInputElement;
+                if (input) input.value = "";
+              }}
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+            </button>
+            <span className="hdr-search-divider" />
+            <kbd className="hdr-search-kbd" title="Press ⌘K or Ctrl+K to search">
+              ⌘K
+            </kbd>
+          </div>
+        )}
+
+        {/* Primary Geometric Centered Navigation (Desktop) */}
+        <nav className="settly-main-nav">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-brass ${
-                  isActive
-                    ? "text-brass font-semibold"
-                    : dark
-                    ? "text-white/80"
-                    : "text-ink-2"
-                }`}
+                className={`settly-nav-link ${isActive ? "active" : ""}`}
               >
                 {link.label}
               </Link>
@@ -71,116 +119,148 @@ export function Navbar({ dark = false }: NavbarProps) {
           })}
         </nav>
 
-        {/* Right CTA / Auth Status */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Right Header Actions */}
+        <div className="settly-header-actions">
+          {/* Sovereign CBE Exchange Rate Pill */}
           <div
-            className={`text-xs font-mono font-medium px-2.5 py-1 rounded border ${
-              dark
-                ? "border-white/15 text-white/70"
-                : "border-line text-ink-3"
-            }`}
+            className="settly-fx-pill"
+            title="Central Bank of Egypt Sovereign Exchange Rate"
           >
-            EN <span className="opacity-40">|</span> ع
+            <span>USD/EGP:</span>
+            <strong>48.85</strong>
           </div>
 
+          {/* AI Assistant Workspace Launcher */}
+          <Link
+            href="/assistant"
+            className="settly-header-ai-btn hidden sm:inline-flex"
+            title="Settly AI Assistant — Dedicated Advisory Workspace"
+          >
+            <span className="header-ai-logo-plate">
+              <img
+                src="/images/logo.png"
+                alt="Settly Logo"
+                className="header-ai-logo-img"
+              />
+            </span>
+            <span className="header-ai-label">AI Assistant</span>
+            <span className="header-ai-pulse-dot" aria-label="Live" />
+          </Link>
+
+          {/* Auth State CTAs */}
           {!isPending && session?.user ? (
-            <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2">
               <Link
-                href={session.user.role === "AGENT" ? "/agent/dashboard" : "/buyer/dashboard"}
-                className="text-xs font-mono font-semibold text-brass hover:underline uppercase tracking-wider"
+                href={getDashboardHref()}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs font-semibold text-navy-900 bg-canvas border border-line"
               >
-                {session.user.name.split(" ")[0]}
+                <User className="w-3.5 h-3.5 text-brass" />
+                <span>{session.user.name?.split(" ")[0] || "Dashboard"}</span>
               </Link>
               <button
+                type="button"
                 onClick={handleSignOut}
-                className="text-xs font-sans font-medium px-3 py-1.5 rounded border border-line hover:border-red-400 hover:text-red-500 transition-colors"
+                title="Sign Out"
+                className="p-1.5 rounded-md text-ink-3 hover:text-red-600 transition-colors"
               >
-                Sign Out
+                <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/login"
-                className={`text-xs font-semibold uppercase tracking-wider transition-colors hover:text-brass ${
-                  dark ? "text-white/90" : "text-navy-900"
-                }`}
-              >
-                Sign In
+            <div className="hidden sm:flex items-center gap-2">
+              <Link href="/login" className="btn-settly-signin">
+                Sign in
               </Link>
-              <Link
-                href="/register"
-                className="text-xs font-semibold uppercase tracking-wider px-4 py-2 rounded-sm bg-brass text-navy-950 hover:bg-brass-600 hover:text-white transition-all shadow-sm"
-              >
-                Private Access
+              <Link href="/register" className="btn-settly-getstarted">
+                Get Started
               </Link>
             </div>
           )}
-        </div>
 
-        {/* Mobile Hamburger Toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 rounded text-ink-2 hover:text-navy-900 focus:outline-none"
-          aria-label="Toggle navigation menu"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            {mobileOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
+          {/* Mobile Menu Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className={`md:hidden p-2 rounded-md transition-colors ${
+              isDarkHeader ? "text-white hover:bg-white/10" : "text-navy-900 hover:bg-canvas"
+            }`}
+            aria-label="Toggle navigation menu"
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-line bg-white px-4 pt-3 pb-6 space-y-3">
-          {navLinks.map((link) => (
+        <div className="md:hidden border-t border-line bg-white px-4 py-6 space-y-4 shadow-xl">
+          <nav className="flex flex-col space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === link.href
+                    ? "bg-brass/10 text-brass font-bold"
+                    : "text-navy-900 hover:bg-canvas"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="pt-4 border-t border-line flex flex-col gap-3">
+            <div className="flex items-center justify-between font-mono text-xs text-ink-3 py-1">
+              <span>Sovereign CBE Rate:</span>
+              <strong className="text-navy-900 font-bold">USD/EGP: 48.85</strong>
+            </div>
+
             <Link
-              key={link.href}
-              href={link.href}
+              href="/assistant"
               onClick={() => setMobileOpen(false)}
-              className="block py-2 text-sm font-medium text-ink-2 hover:text-brass"
+              className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-line bg-canvas font-sans font-semibold text-sm text-navy-900"
             >
-              {link.label}
+              <img src="/images/logo.png" alt="AI" width={16} height={16} />
+              <span>Settly AI Advisory Assistant</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             </Link>
-          ))}
-          <div className="pt-4 border-t border-line flex flex-col gap-2">
+
             {!isPending && session?.user ? (
-              <>
+              <div className="flex flex-col gap-2 pt-2">
                 <Link
-                  href={session.user.role === "AGENT" ? "/agent/dashboard" : "/buyer/dashboard"}
+                  href={getDashboardHref()}
                   onClick={() => setMobileOpen(false)}
-                  className="w-full text-center py-2.5 text-xs font-semibold uppercase tracking-wider bg-navy-900 text-white rounded-sm"
+                  className="w-full py-2.5 text-center rounded-lg bg-navy-900 text-white font-semibold text-sm"
                 >
-                  Dashboard ({session.user.name})
+                  Go to Dashboard ({session.user.name?.split(" ")[0]})
                 </Link>
                 <button
+                  type="button"
                   onClick={handleSignOut}
-                  className="w-full text-center py-2 text-xs font-semibold text-red-600"
+                  className="w-full py-2 text-center text-xs text-red-600 font-medium hover:underline"
                 >
                   Sign Out
                 </button>
-              </>
+              </div>
             ) : (
-              <>
+              <div className="grid grid-cols-2 gap-3 pt-2">
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="w-full text-center py-2.5 text-xs font-semibold uppercase tracking-wider border border-line text-navy-900 rounded-sm"
+                  className="py-2.5 text-center rounded-lg border border-line text-navy-900 font-semibold text-sm hover:bg-canvas"
                 >
-                  Sign In
+                  Sign in
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileOpen(false)}
-                  className="w-full text-center py-2.5 text-xs font-semibold uppercase tracking-wider bg-brass text-navy-950 rounded-sm"
+                  className="py-2.5 text-center rounded-lg bg-navy-800 text-white font-semibold text-sm hover:bg-brass hover:text-navy-950"
                 >
-                  Private Access
+                  Get Started
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>

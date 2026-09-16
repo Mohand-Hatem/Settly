@@ -1,0 +1,987 @@
+/* ============================================================================
+   SETTLY — SCREEN 09: AGENT PUBLIC PROFILE (CERTIFIED FIDUCIARY DOSSIER)
+   Strictly adheres to /impeccable standards:
+   - Deep Navy (#131D36, #1E2A4A, #0B111F), Settly Brass (#C69749), Bone Canvas (#F7F6F3), Sage (#3D5A4C)
+   - Spectral Serif for luxury broadsheet typography; JetBrains Mono for measured values
+   - Single elevation declaration (hairline border OR subtle shadow, zero colored halos)
+   - Zero kickers, zero gradient text, zero nested cards
+   ========================================================================= */
+
+.profile-page-wrapper {
+  background: var(--canvas);
+  color: var(--navy-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--sans-body);
+}
+
+/* ============================================================================
+   1. SUB-HEADER BREADCRUMB & QUICK SWITCHER STRIP
+   ========================================================================= */
+.profile-sub-strip {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--line);
+  padding-block: 0.85rem;
+}
+
+.profile-sub-inner {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.profile-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono-ui);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.profile-breadcrumbs a {
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.profile-breadcrumbs a:hover {
+  color: var(--navy-900);
+}
+
+.profile-breadcrumbs .sep {
+  color: var(--line-2);
+}
+
+.profile-breadcrumbs .current {
+  color: var(--navy-900);
+  font-weight: 700;
+}
+
+.advisor-switcher-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.advisor-switcher-label {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+.advisor-switcher-select {
+  height: 34px;
+  padding-inline: 10px 26px;
+  background: var(--canvas) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  font-family: var(--sans-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--navy-900);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* ============================================================================
+   2. EXECUTIVE DOSSIER HEADER STAGE
+   ========================================================================= */
+.dossier-hero {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.dossier-hero-inner {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+.dossier-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1.75rem, 3.5vw, 3rem);
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+/* Advisor Portrait Box */
+.dossier-avatar-box {
+  position: relative;
+  width: 170px;
+  height: 210px;
+  background: var(--canvas);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.dossier-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.dossier-badge-verified {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(19, 29, 54, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+.dossier-badge-verified svg {
+  color: var(--sage);
+}
+
+.dossier-license-tag {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(19, 29, 54, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-family: var(--mono-ui);
+  font-size: 9.5px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 2;
+}
+
+/* Advisor Header Meta */
+.dossier-meta {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dossier-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.dossier-name {
+  font-family: var(--serif-display);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.dossier-rating-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--mono-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.dossier-rating-chip svg {
+  color: var(--brass);
+}
+
+.dossier-role-line {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brass-600);
+  margin-bottom: 4px;
+}
+
+.dossier-desk-line {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  margin-bottom: 1.25rem;
+}
+
+.dossier-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.dossier-pill {
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--canvas);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+
+.dossier-pill.dev-accredited {
+  background: var(--brass-050);
+  color: var(--brass-600);
+  border-color: rgba(198, 151, 73, 0.35);
+}
+
+.dossier-cta-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-dossier-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--navy-900);
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-dossier-primary:hover {
+  background: var(--brass);
+  color: #241A06;
+}
+
+.btn-dossier-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #FFFFFF;
+  color: var(--navy-900);
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid var(--line-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-dossier-secondary:hover {
+  background: var(--canvas);
+  border-color: var(--navy-800);
+}
+
+/* Audited Telemetry Bar */
+.dossier-telemetry-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.dossier-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dossier-metric-val {
+  font-family: var(--mono-ui);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  letter-spacing: -0.02em;
+}
+
+.dossier-metric-lbl {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-3);
+}
+
+/* ============================================================================
+   3. MAIN 2-COLUMN WORKSPACE (68% Content / 32% Sticky Console)
+   ========================================================================= */
+.dossier-workspace {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+  padding-block: 3rem 6rem;
+  width: 100%;
+}
+
+.dossier-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2.75rem;
+  align-items: start;
+}
+
+/* Left Column Content */
+.dossier-main-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  min-width: 0;
+}
+
+.dossier-section-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dossier-section-block h2 {
+  font-family: var(--serif-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.dossier-section-block p {
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+/* Executive Bio Pillars */
+.bio-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.bio-pillar-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bio-pillar-card h3 {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--brass-600);
+  margin: 0;
+}
+
+.bio-pillar-card p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-1);
+  margin: 0;
+}
+
+/* Active Exclusive Portfolio Cards */
+.portfolio-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.portfolio-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-2);
+  box-shadow: 0 12px 24px -12px var(--line-2);
+}
+
+.portfolio-img-box {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  background: var(--canvas);
+  overflow: hidden;
+}
+
+.portfolio-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.portfolio-card:hover .portfolio-img-box img {
+  transform: scale(1.05);
+}
+
+.portfolio-price-chip {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(19, 29, 54, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.portfolio-details {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.portfolio-loc {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.portfolio-title {
+  font-family: var(--serif-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--navy-900);
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.portfolio-specs-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  color: var(--ink-2);
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+
+/* Audited Historical Transaction Ledger */
+.history-table-wrap {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.history-table th {
+  background: var(--canvas);
+  padding: 12px 16px;
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.history-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tr:hover td {
+  background: rgba(247, 246, 243, 0.5);
+}
+
+.table-mono {
+  font-family: var(--mono-ui);
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.status-pill-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-family: var(--mono-ui);
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(61, 90, 76, 0.1);
+  color: var(--sage);
+}
+
+/* Client Testimonials */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.testimonial-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.testimonial-quote {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.58;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.testimonial-client {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.client-name {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: var(--navy-900);
+}
+
+.client-meta {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+/* ============================================================================
+   4. RIGHT COLUMN: STICKY ADVISORY CONSOLE
+   ========================================================================= */
+.dossier-console {
+  position: sticky;
+  top: 90px;
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 8px 24px -12px rgba(19, 29, 54, 0.14);
+  overflow: hidden;
+}
+
+.console-hdr {
+  padding: 1.35rem 1.5rem;
+  background: var(--canvas);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.console-hdr h3 {
+  font-family: var(--serif-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.console-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sage);
+}
+
+.console-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+
+.console-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* WhatsApp Quick Action Button */
+.btn-console-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: var(--sage);
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.btn-console-whatsapp:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.console-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono-ui);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.console-divider::before, .console-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* Scheduler Widget */
+.scheduler-title {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--navy-900);
+  margin-bottom: 8px;
+}
+
+.scheduler-days {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.scheduler-day-btn {
+  padding: 8px 4px;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  text-align: center;
+  color: var(--ink-2);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: all 0.15s ease;
+}
+
+.scheduler-day-btn:hover {
+  border-color: var(--brass);
+}
+
+.scheduler-day-btn.active {
+  background: var(--navy-900);
+  color: #FFFFFF;
+  border-color: var(--navy-900);
+}
+
+.scheduler-day-btn strong {
+  font-size: 13px;
+}
+
+.scheduler-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 1.25rem;
+}
+
+.scheduler-slot-btn {
+  padding: 8px;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--navy-900);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.scheduler-slot-btn:hover {
+  border-color: var(--brass);
+}
+
+.scheduler-slot-btn.active {
+  background: var(--brass);
+  color: #241A06;
+  border-color: var(--brass);
+}
+
+/* Console Form Controls */
+.console-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.console-label {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--navy-900);
+}
+
+.console-input, .console-select {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--canvas);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  font-family: var(--sans-body);
+  font-size: 13px;
+  color: var(--navy-900);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.console-input:focus, .console-select:focus {
+  border-color: var(--navy-800);
+  background: #FFFFFF;
+}
+
+.btn-console-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--navy-900);
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  margin-top: 4px;
+}
+
+.btn-console-submit:hover {
+  background: var(--brass);
+  color: #241A06;
+  transform: translateY(-1px);
+}
+
+/* Responsive Adaptations */
+@media (max-width: 1040px) {
+  .dossier-grid-layout {
+    grid-template-columns: 1fr;
+  }
+  .dossier-console {
+    position: static;
+  }
+}
+
+@media (max-width: 680px) {
+  .dossier-card-top {
+    flex-direction: column;
+  }
+  .dossier-avatar-box {
+    width: 100%;
+    height: 240px;
+  }
+  .dossier-telemetry-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ============================================================================
+   Advisory Briefing Modal
+   ========================================================================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(19, 29, 54, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-header h3 {
+  font-family: var(--serif-heading);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--navy-900);
+  margin: 0 0 4px;
+}
+
+.modal-header p {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.modal-close-btn {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--canvas);
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background: var(--line-2);
+  color: var(--navy-900);
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.modal-success-state {
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--brass-050);
+  color: var(--brass-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}

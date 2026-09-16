@@ -17,6 +17,8 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional(),
   PAYMOB_API_KEY: z.string().optional(),
   PAYMOB_HMAC_SECRET: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);

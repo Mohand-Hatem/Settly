@@ -1,0 +1,761 @@
+/* ============================================================================
+   SETTLY — SCREEN 08: AGENT DIRECTORY (CERTIFIED FIDUCIARY DESK)
+   Strictly adheres to /impeccable standards:
+   - Deep Navy (#131D36, #1E2A4A, #0B111F), Settly Brass (#C69749), Bone Canvas (#F7F6F3), Sage (#3D5A4C)
+   - Spectral Serif for broadsheet typography; JetBrains Mono for measured values
+   - Single elevation declaration (hairline border OR subtle shadow, never colored halos)
+   - Zero kickers, zero gradient text, zero nested cards
+   ========================================================================= */
+
+.agents-page-wrapper {
+  background: var(--canvas);
+  color: var(--navy-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--sans-body);
+}
+
+/* ============================================================================
+   1. BROADSHEET HERO SECTION
+   ========================================================================= */
+.dir-hero {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(3rem, 6vw, 4.5rem) clamp(2.5rem, 5vw, 3.5rem);
+  position: relative;
+}
+
+.dir-hero-inner {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+.dir-hero-content {
+  max-width: 920px;
+}
+
+.dir-hero h1 {
+  font-family: var(--serif-display);
+  font-size: clamp(2.25rem, 4.5vw, 3.65rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--navy-900);
+  margin: 0 0 1.25rem;
+}
+
+.dir-hero p {
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  line-height: 1.62;
+  color: var(--ink-2);
+  margin: 0 0 2rem;
+  max-width: 780px;
+}
+
+/* Live Telemetry Ribbon */
+.dir-telemetry-ribbon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.telemetry-val {
+  font-family: var(--mono-ui);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.telemetry-val .telemetry-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: inline-block;
+}
+
+.telemetry-lbl {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-3);
+}
+
+/* ============================================================================
+   2. INTERACTIVE WORKBENCH / CONTROLS (STICKY)
+   ========================================================================= */
+.dir-workbench {
+  position: sticky;
+  top: 74px;
+  z-index: 100;
+  background: rgba(247, 246, 243, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  padding-block: 1rem;
+}
+
+.dir-workbench-inner {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.workbench-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* Search Bar */
+.dir-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+  max-width: 460px;
+}
+
+.dir-search-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.dir-search-input {
+  width: 100%;
+  height: 44px;
+  padding-left: 42px;
+  padding-right: 36px;
+  background: #FFFFFF;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  font-family: var(--sans-body);
+  font-size: 14px;
+  color: var(--navy-900);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dir-search-input:focus {
+  border-color: var(--navy-800);
+  box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+}
+
+.dir-search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--ink-3);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.dir-search-clear:hover {
+  color: var(--navy-900);
+}
+
+/* Filters Group */
+.workbench-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dir-select {
+  height: 44px;
+  padding-inline: 12px 28px;
+  background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234C5878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  font-family: var(--sans-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--navy-900);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease;
+}
+
+.dir-select:focus {
+  border-color: var(--navy-800);
+}
+
+/* View Mode Toggle */
+.view-mode-toggle {
+  display: inline-flex;
+  background: #FFFFFF;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-family: var(--sans-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-btn.active {
+  background: var(--navy-900);
+  color: #FFFFFF;
+}
+
+/* Territory Filter Chips Bar */
+.territory-pills-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.territory-pills-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.territory-pill {
+  padding: 6px 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.territory-pill:hover {
+  border-color: var(--brass);
+  color: var(--navy-900);
+}
+
+.territory-pill.active {
+  background: var(--navy-900);
+  border-color: var(--navy-900);
+  color: #FFFFFF;
+}
+
+.territory-pill .pill-count {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ============================================================================
+   3. DIRECTORY CONTENT BODY & GRID VIEW
+   ========================================================================= */
+.dir-body {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+  padding-block: 2.5rem 5rem;
+  flex: 1;
+  width: 100%;
+}
+
+.dir-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.dir-status-bar strong {
+  color: var(--navy-900);
+  font-family: var(--mono-ui);
+}
+
+/* Cards Grid */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.75rem;
+}
+
+/* Individual Advisor Card */
+.agent-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.agent-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 12px 28px -12px rgba(19, 29, 54, 0.16);
+  border-color: rgba(30, 42, 74, 0.2);
+}
+
+/* Card Media / Portrait Header */
+.agent-media-box {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: var(--canvas-2);
+  overflow: hidden;
+  border-radius: 14px 14px 0 0;
+}
+
+.agent-media-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transition: transform 0.5s ease;
+}
+
+.agent-card:hover .agent-media-box img {
+  transform: scale(1.04);
+}
+
+/* Badges on Image */
+.agent-badge-verified {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(19, 29, 54, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+.agent-badge-verified svg {
+  color: var(--sage);
+}
+
+.agent-license-tag {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(19, 29, 54, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-family: var(--mono-ui);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 2;
+}
+
+/* Card Details */
+.agent-info {
+  padding: 1.35rem 1.35rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.agent-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.agent-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy-900);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.agent-name:hover {
+  color: var(--brass);
+}
+
+.agent-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono-ui);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--navy-900);
+  background: var(--canvas);
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.agent-rating svg {
+  color: var(--brass);
+}
+
+.agent-role {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brass-600);
+  margin-bottom: 2px;
+}
+
+.agent-agency {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-bottom: 1rem;
+}
+
+/* Territory & Specialization Badges */
+.agent-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.25rem;
+}
+
+.agent-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 9999px;
+  background: var(--canvas);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+
+.agent-tag.dev-partner {
+  background: var(--brass-050);
+  color: var(--brass-600);
+  border-color: rgba(198, 151, 73, 0.3);
+}
+
+/* Measured Metrics Strip */
+.agent-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--canvas);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  margin-bottom: 1.25rem;
+}
+
+.metric-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-num {
+  font-family: var(--mono-ui);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.metric-label {
+  font-family: var(--mono-ui);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+/* Card Actions */
+.agent-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.btn-agent-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  background: var(--navy-900);
+  color: #FFFFFF;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.btn-agent-primary:hover {
+  background: var(--brass);
+  color: #241A06;
+}
+
+.btn-agent-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  background: #FFFFFF;
+  color: var(--navy-900);
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid var(--line-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-agent-secondary:hover {
+  background: var(--canvas);
+  border-color: var(--navy-800);
+}
+
+/* ============================================================================
+   4. INSTITUTIONAL DOSSIER TABLE VIEW (TABLE MODE)
+   ========================================================================= */
+.agents-table-wrap {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.agents-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.agents-table th {
+  background: var(--canvas);
+  padding: 14px 18px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.agents-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+
+.agents-table tr:last-child td {
+  border-bottom: none;
+}
+
+.agents-table tr:hover td {
+  background: rgba(247, 246, 243, 0.6);
+}
+
+.table-agent-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.table-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line-2);
+  flex-shrink: 0;
+}
+
+.table-agent-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-agent-name {
+  font-weight: 700;
+  color: var(--navy-900);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.table-agent-name:hover {
+  color: var(--brass);
+}
+
+.table-agent-sub {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.table-mono-num {
+  font-family: var(--mono-ui);
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+/* ============================================================================
+   5. SETTLY 5-STAGE FIDUCIARY VERIFICATION STANDARD
+   ========================================================================= */
+.fiduciary-standard-section {
+  background: #FFFFFF;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.fiduciary-inner {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+.fiduciary-header {
+  max-width: 820px;
+  margin-bottom: 3rem;
+}
+
+.fiduciary-header h2 {
+  font-family: var(--serif-display);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+  color: var(--navy-900);
+  margin: 0 0 1rem;
+}
+
+.fiduciary-header p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.fiduciary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.fiduciary-step {
+  padding: 1.5rem;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fiduciary-step-num {
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brass-600);
+  letter-spacing: 0.05em;
+}
+
+.fiduciary-step h3 {
+  font-family: var(--serif-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.fiduciary-step p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+/* ============================================================================
+   RESPONSIVE STYLES
+   ========================================================================= */
+@media (max-width: 900px) {
+  .dir-telemetry-ribbon {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .dir-telemetry-ribbon {
+    grid-template-columns: 1fr;
+  }
+  .workbench-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dir-search-wrap {
+    max-width: 100%;
+  }
+}

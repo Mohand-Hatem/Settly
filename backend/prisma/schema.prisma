@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -253,6 +254,7 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   impersonatedBy String?
 
+  @@index([userId])
   @@map("session")
 }
 
@@ -273,6 +275,7 @@ model Account {
   updatedAt             DateTime  @updatedAt
 
   @@unique([providerId, accountId])
+  @@index([userId])
   @@map("account")
 }
 
@@ -407,6 +410,7 @@ model PropertyAmenity {
   amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
 
   @@id([propertyId, amenityId])
+  @@index([amenityId])
 }
 
 model Area {
@@ -427,6 +431,8 @@ model Area {
 
   properties Property[]
   articles   KnowledgeArticle[]
+
+  @@index([parentId])
 }
 
 model PropertyPriceHistory {
@@ -469,6 +475,7 @@ model CollectionItem {
   addedAt      DateTime   @default(now())
 
   @@unique([collectionId, propertyId])
+  @@index([propertyId])
 }
 
 model SavedSearch {
@@ -496,6 +503,7 @@ model SavedSearchMatch {
   matchedAt  DateTime    @default(now())
 
   @@unique([searchId, propertyId])
+  @@index([propertyId])
 }
 
 // ==============================================================================

@@ -34,19 +34,40 @@ import {
   uploadRouter,
 } from "./modules/catalog/routes/index.js";
 import { problemDetailsMiddleware, notFoundHandler } from "./shared/errors/problem-details.js";
+import { warmupDatabase, disconnectDatabase } from "./shared/database/prisma.js";
 
 import { logger } from "./shared/logger/index.js";
 export { logger };
 
 const app = express();
 
-// 1. Inbound Request Correlation ID Middleware
+// 1. Inbound Request Correlation ID & DB Metrics Middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   const headerId = req.headers["x-request-id"];
   const requestId = typeof headerId === "string" && headerId.length > 0 ? headerId : uuidv7();
   res.setHeader("X-Request-Id", requestId);
 
-  requestContext.run({ requestId }, () => {
+  const startTime = Date.now();
+  const store: RequestContext = { requestId, dbQueryCount: 0, dbTimeMs: 0 };
+
+  if (env.NODE_ENV === "development") {
+    res.on("finish", () => {
+      const durationMs = Date.now() - startTime;
+      logger.info(
+        {
+          method: req.method,
+          path: req.originalUrl,
+          status: res.statusCode,
+          durationMs,
+          dbQueryCount: store.dbQueryCount ?? 0,
+          dbTimeMs: store.dbTimeMs ?? 0,
+        },
+        "HTTP Request Completed"
+      );
+    });
+  }
+
+  requestContext.run(store, () => {
     next();
   });
 });
@@ -130,8 +151,24 @@ wss.on("connection", (ws, req) => {
 export function startServer(port: number = env.PORT) {
   return server.listen(port, () => {
     logger.info({ port, env: env.NODE_ENV }, "Settly API started successfully");
+    warmupDatabase().catch((err) => {
+      logger.warn({ err }, "Database warmup notice");
+    });
   });
 }
+
+// Graceful shutdown handling (mirroring settly-worker.ts)
+const shutdown = (signal: string) => {
+  logger.info({ signal }, "Settly API shutting down gracefully...");
+  wss.close();
+  server.close(async () => {
+    await disconnectDatabase();
+    process.exit(0);
+  });
+};
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
 
 // Start Server if executed directly
 const scriptPath = process.argv[1]?.replace(/\\/g, "/") || "";

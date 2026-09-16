@@ -539,19 +539,97 @@
           "updatedAt"
         ]
       },
-      "AreaListResponse": {
+      "AreaInsightsResponse": {
         "type": "object",
         "properties": {
-          "items": {
+          "area": {
+            "$ref": "#/components/schemas/AreaItem"
+          },
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "activePropertiesCount": {
+                "type": "number",
+                "example": 12
+              },
+              "compoundsCount": {
+                "type": "number",
+                "example": 4
+              },
+              "averagePricePerSqm": {
+                "type": "number",
+                "example": 68500
+              },
+              "minPrice": {
+                "type": "string",
+                "example": "12500000"
+              },
+              "maxPrice": {
+                "type": "string",
+                "example": "45000000"
+              },
+              "averageYieldPercentage": {
+                "type": "number",
+                "example": 8.4
+              },
+              "capitalAppreciationYoY": {
+                "type": "number",
+                "example": 28.5
+              }
+            },
+            "required": [
+              "activePropertiesCount",
+              "compoundsCount",
+              "averagePricePerSqm",
+              "minPrice",
+              "maxPrice",
+              "averageYieldPercentage",
+              "capitalAppreciationYoY"
+            ]
+          },
+          "propertyTypesDistribution": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Inventory count grouped by property type",
+            "example": {
+              "VILLA": 8,
+              "APARTMENT": 4
+            }
+          },
+          "historicalPriceTrend": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AreaItem"
+              "type": "object",
+              "properties": {
+                "period": {
+                  "type": "string",
+                  "example": "Q1 2025"
+                },
+                "avgPricePerSqm": {
+                  "type": "number",
+                  "example": 52000
+                },
+                "changePercent": {
+                  "type": "number",
+                  "example": 14.2
+                }
+              },
+              "required": [
+                "period",
+                "avgPricePerSqm",
+                "changePercent"
+              ]
             },
-            "description": "Array of geographic areas matching query criteria"
+            "description": "Quarterly historical price per sqm telemetry"
           }
         },
         "required": [
-          "items"
+          "area",
+          "metrics",
+          "propertyTypesDistribution",
+          "historicalPriceTrend"
         ]
       },
       "PropertyType": {
@@ -1498,6 +1576,482 @@
         "required": [
           "licenseNumber"
         ]
+      },
+      "CompareItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "titleEn": {
+            "type": "string",
+            "nullable": true
+          },
+          "titleAr": {
+            "type": "string",
+            "nullable": true
+          },
+          "propertyType": {
+            "type": "string"
+          },
+          "listingIntent": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "rentalPeriod": {
+            "type": "string",
+            "nullable": true
+          },
+          "bedrooms": {
+            "type": "number"
+          },
+          "bathrooms": {
+            "type": "number"
+          },
+          "areaSqm": {
+            "type": "number"
+          },
+          "pricePerSqm": {
+            "type": "number"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "coverImage": {
+            "type": "string",
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "area": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "nameEn": {
+                "type": "string"
+              },
+              "nameAr": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "nameEn",
+              "nameAr"
+            ]
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "nameEn": {
+                  "type": "string"
+                },
+                "nameAr": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "nameEn",
+                "nameAr",
+                "category"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "titleEn",
+          "titleAr",
+          "propertyType",
+          "listingIntent",
+          "price",
+          "rentalPeriod",
+          "bedrooms",
+          "bathrooms",
+          "areaSqm",
+          "pricePerSqm",
+          "latitude",
+          "longitude",
+          "coverImage",
+          "images",
+          "area",
+          "amenities"
+        ]
+      },
+      "CompareResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompareItem"
+            },
+            "description": "Array of compared residences with aligned specifications"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of properties compared (2 to 4)"
+          }
+        },
+        "required": [
+          "items",
+          "count"
+        ]
+      },
+      "MarketPulseResponse": {
+        "type": "object",
+        "properties": {
+          "currencyRates": {
+            "type": "object",
+            "properties": {
+              "usdEgp": {
+                "type": "object",
+                "properties": {
+                  "official": {
+                    "type": "number",
+                    "example": 48.85
+                  },
+                  "market": {
+                    "type": "number",
+                    "example": 49.1
+                  },
+                  "change24h": {
+                    "type": "number",
+                    "example": -0.15
+                  }
+                },
+                "required": [
+                  "official",
+                  "market",
+                  "change24h"
+                ]
+              },
+              "eurEgp": {
+                "type": "object",
+                "properties": {
+                  "official": {
+                    "type": "number",
+                    "example": 48.85
+                  },
+                  "market": {
+                    "type": "number",
+                    "example": 49.1
+                  },
+                  "change24h": {
+                    "type": "number",
+                    "example": -0.15
+                  }
+                },
+                "required": [
+                  "official",
+                  "market",
+                  "change24h"
+                ]
+              }
+            },
+            "required": [
+              "usdEgp",
+              "eurEgp"
+            ]
+          },
+          "macroIndicators": {
+            "type": "object",
+            "properties": {
+              "inflationRate": {
+                "type": "number",
+                "example": 25.7
+              },
+              "primeYieldAverage": {
+                "type": "number",
+                "example": 8.8
+              },
+              "quarterlyAppreciationRate": {
+                "type": "number",
+                "example": 6.2
+              },
+              "annualAppreciationRate": {
+                "type": "number",
+                "example": 28.4
+              },
+              "quarterlyVolumeEgp": {
+                "type": "string",
+                "example": "145000000000"
+              }
+            },
+            "required": [
+              "inflationRate",
+              "primeYieldAverage",
+              "quarterlyAppreciationRate",
+              "annualAppreciationRate",
+              "quarterlyVolumeEgp"
+            ]
+          },
+          "corridorsBenchmark": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "corridor": {
+                  "type": "string",
+                  "example": "East Cairo / New Cairo & Katameya"
+                },
+                "avgPricePerSqm": {
+                  "type": "number",
+                  "example": 72500
+                },
+                "appreciationYoY": {
+                  "type": "number",
+                  "example": 31.4
+                },
+                "rentalYield": {
+                  "type": "number",
+                  "example": 8.9
+                }
+              },
+              "required": [
+                "corridor",
+                "avgPricePerSqm",
+                "appreciationYoY",
+                "rentalYield"
+              ]
+            }
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of telemetry snapshot"
+          }
+        },
+        "required": [
+          "currencyRates",
+          "macroIndicators",
+          "corridorsBenchmark",
+          "lastUpdated"
+        ]
+      },
+      "AgentDirectoryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "AgentProfile UUID"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "Hana K."
+          },
+          "image": {
+            "type": "string",
+            "nullable": true,
+            "example": "/images/hana.jpg"
+          },
+          "licenseNumber": {
+            "type": "string",
+            "example": "CAI-2024-8841"
+          },
+          "brokerageName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Sotheby's International Realty Egypt"
+          },
+          "bioEn": {
+            "type": "string",
+            "nullable": true,
+            "example": "Prime Cairo & Katameya advisory specialist."
+          },
+          "bioAr": {
+            "type": "string",
+            "nullable": true,
+            "example": "مستشارة عقارية متخصصة في عقارات التجمع الخامس والقطامية."
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": true
+          },
+          "verifiedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "activeListingsCount": {
+            "type": "number",
+            "example": 6
+          },
+          "primaryCorridors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "New Cairo",
+              "Katameya Dunes"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "name",
+          "image",
+          "licenseNumber",
+          "brokerageName",
+          "bioEn",
+          "bioAr",
+          "isVerified",
+          "verifiedAt",
+          "activeListingsCount",
+          "primaryCorridors"
+        ]
+      },
+      "AgentDirectoryResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentDirectoryItem"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 1
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 12
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ]
+      },
+      "AgentProfileDetailResponse": {
+        "type": "object",
+        "properties": {
+          "agent": {
+            "$ref": "#/components/schemas/AgentDirectoryItem"
+          },
+          "listings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "titleEn": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "titleAr": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "propertyType": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "string"
+                },
+                "bedrooms": {
+                  "type": "number"
+                },
+                "bathrooms": {
+                  "type": "number"
+                },
+                "areaSqm": {
+                  "type": "number"
+                },
+                "coverImage": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "area": {
+                  "type": "object",
+                  "properties": {
+                    "nameEn": {
+                      "type": "string"
+                    },
+                    "nameAr": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "nameEn",
+                    "nameAr",
+                    "slug"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "titleEn",
+                "titleAr",
+                "propertyType",
+                "price",
+                "bedrooms",
+                "bathrooms",
+                "areaSqm",
+                "coverImage",
+                "area"
+              ]
+            }
+          }
+        },
+        "required": [
+          "agent",
+          "listings"
+        ]
       }
     },
     "parameters": {}
@@ -1543,7 +2097,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AreaListResponse"
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AreaItem"
+                      },
+                      "description": "Array of geographic areas matching query criteria"
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ]
                 }
               }
             }
@@ -1607,6 +2173,48 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/areas/{identifier}/insights": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Get market insights and telemetry for an area",
+        "description": "Retrieve price per m² averages, historical trend telemetry, compound counts, and property distributions for an area by slug or UUID.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "Area unique slug (e.g. new-cairo) or UUIDv7 identifier"
+            },
+            "required": true,
+            "name": "identifier",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Area market insights and historical trend telemetry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AreaInsightsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Area not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
                 }
               }
             }
@@ -3208,6 +3816,177 @@
           },
           "404": {
             "description": "Device token not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/catalog/compare": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Compare multiple properties",
+        "description": "Retrieve side-by-side architectural and financial specifications for between 2 and 4 residences.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Comma-separated list of 2 to 4 property UUIDs or slugs to compare",
+              "example": "0191eb45-8f67-73d8-9db8-bc234a9e51c8,0191eb45-9a12-74c1-8eb1-ca124b8d72e9"
+            },
+            "required": true,
+            "name": "ids",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comparison specifications matrix",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed (e.g. fewer than 2 or more than 4 properties specified)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/market-pulse": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get prime Egyptian real estate market telemetry and macroeconomic indicators",
+        "description": "Returns live sovereign economic indicators, currency benchmarks (USD/EGP, EUR/EGP), corridor annual capital appreciation rates, and quarterly real estate transaction volume.",
+        "responses": {
+          "200": {
+            "description": "Macroeconomic telemetry and corridor price benchmarks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketPulseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identity/agents": {
+      "get": {
+        "tags": [
+          "Identity"
+        ],
+        "summary": "List verified certified advisors and brokers",
+        "description": "Retrieve the public directory of certified real estate advisors with licensing transparency and active listing counts.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "Search by agent name or license number"
+            },
+            "required": false,
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Filter by brokerage firm name"
+            },
+            "required": false,
+            "name": "brokerage",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 12,
+              "example": 12
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection of certified advisors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentDirectoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identity/agents/{id}": {
+      "get": {
+        "tags": [
+          "Identity"
+        ],
+        "summary": "Get public profile and active exclusive listings for an advisor",
+        "description": "Retrieve verified broker profile, FRA/REA registration badges, biography, and active published residences.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "Agent Profile ID or User ID"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Advisor public profile and published listings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentProfileDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Advisor not found",
             "content": {
               "application/problem+json": {
                 "schema": {

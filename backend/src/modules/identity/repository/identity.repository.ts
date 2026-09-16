@@ -1,6 +1,6 @@
 import { uuidv7 } from "uuidv7";
 import { prisma } from "../../../shared/database/prisma.js";
-import type { User, AgentProfile } from "@prisma/client";
+import type { User, AgentProfile, Verification } from "@prisma/client";
 import type { CreateOrUpdateAgentProfile, UpdateUserProfile } from "../schema/profile.schema.js";
 
 export type UserRecord = User;
@@ -20,6 +20,33 @@ export class IdentityRepository {
         ...(data.name !== undefined && { name: data.name }),
         ...(data.preferredLocale !== undefined && { preferredLocale: data.preferredLocale }),
       },
+    });
+  }
+
+  async findUnexpiredVerification(
+    identifier: string,
+    value: string,
+    now: Date
+  ): Promise<Verification | null> {
+    return prisma.verification.findFirst({
+      where: {
+        identifier,
+        value,
+        expiresAt: { gt: now },
+      },
+    });
+  }
+
+  async markEmailVerified(email: string): Promise<void> {
+    await prisma.user.updateMany({
+      where: { email },
+      data: { emailVerified: true },
+    });
+  }
+
+  async deleteVerification(id: string): Promise<void> {
+    await prisma.verification.delete({
+      where: { id },
     });
   }
 

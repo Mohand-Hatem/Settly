@@ -1,0 +1,544 @@
+/* ============================================================================
+   SETTLY — SCREEN 06: AREA DETAIL (DEEP SPATIAL INTELLIGENCE)
+   Crafted per /impeccable standards:
+   - Deep Navy (#131D36, #1E2A4A), Settly Brass (#C69749), Bone Canvas (#F7F6F3)
+   - Spectral Serif headlines, JetBrains Mono for measured spatial & financial telemetry
+   - Interactive SVG price curves, synchronized Leaflet GIS map, and advisor sidebar
+   ========================================================================= */
+
+.corridor-page-wrapper {
+  background: var(--canvas);
+  color: var(--navy-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Breadcrumb & Action Strip */
+.corridor-sub-strip {
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  padding: 0.85rem 0;
+}
+
+.corridor-sub-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-trail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.breadcrumb-trail a {
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.breadcrumb-trail a:hover {
+  color: var(--navy-900);
+}
+
+.breadcrumb-trail .sep {
+  color: var(--line-2);
+}
+
+.breadcrumb-trail .current {
+  color: var(--navy-900);
+  font-weight: 600;
+}
+
+.corridor-actions-grp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.corridor-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  background: var(--canvas);
+  font-family: var(--sans-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy-900);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.corridor-action-btn:hover {
+  background: #fff;
+  border-color: var(--navy-800);
+}
+
+/* Hero Panoramic Dossier Showcase */
+.corridor-hero {
+  position: relative;
+  background: #0b111f;
+  color: #fff;
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0 3rem;
+  overflow: hidden;
+}
+
+.corridor-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.32;
+  filter: saturate(1.1);
+}
+
+.corridor-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 17, 31, 0.45) 0%, rgba(11, 17, 31, 0.96) 100%);
+}
+
+.corridor-hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 860px;
+}
+
+.corridor-hero-content h1 {
+  font-family: var(--serif-display);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 0.8rem;
+}
+
+.corridor-hero-content p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+  max-width: 720px;
+}
+
+/* 4-Metric Telemetry Ribbon */
+.telemetry-ribbon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.telemetry-tile {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.telemetry-val {
+  font-family: var(--mono-ui);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.telemetry-lbl {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+/* Main Content Layout */
+.corridor-main-section {
+  padding: 3rem 0 5rem;
+}
+
+.corridor-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Section Container */
+.detail-sec-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.sec-card-hdr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sec-card-hdr h2 {
+  font-family: var(--serif-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+.sec-card-hdr span {
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* Price Trajectory Chart Box */
+.chart-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.time-pill-box {
+  display: inline-flex;
+  background: var(--canvas);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.time-pill {
+  border: none;
+  background: transparent;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.time-pill.active {
+  background: #fff;
+  color: var(--navy-900);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.chart-svg-wrap {
+  background: var(--canvas);
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  padding: 1.5rem 1rem 0.5rem;
+  position: relative;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 220px;
+  overflow: visible;
+}
+
+.chart-inflection-labels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  text-align: center;
+  margin-top: 10px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* Leaflet GIS Map Section */
+.gis-canvas-box {
+  position: relative;
+  height: 380px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.area-detail-gis-map-frame {
+  width: 100%;
+  height: 100%;
+}
+
+/* Master Developers & Compound Clusters */
+.compound-clusters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.compound-cluster-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.compound-cluster-card:hover {
+  background: #fff;
+  border-color: var(--brass-600);
+}
+
+.cluster-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cluster-dev {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--brass-600);
+  text-transform: uppercase;
+}
+
+.cluster-rate {
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.cluster-name {
+  font-family: var(--serif-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+.cluster-specs {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* Commute & Infrastructure Radar */
+.commute-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.commute-node {
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+.commute-node-time {
+  font-family: var(--mono-ui);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.commute-node-dest {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-top: 2px;
+}
+
+.commute-node-dist {
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+/* Sticky Right Sidebar */
+.corridor-sidebar {
+  position: sticky;
+  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.specialist-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.specialist-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.specialist-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--brass);
+}
+
+.specialist-info b {
+  display: block;
+  font-size: 15px;
+  color: var(--navy-900);
+}
+
+.specialist-info span {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.specialist-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #e8f2ec;
+  color: #166534;
+  font-size: 11.5px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.btn-specialist-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px;
+  background: #25d366;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: filter 0.15s;
+}
+
+.btn-specialist-wa:hover {
+  filter: brightness(0.95);
+}
+
+.btn-tour-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 11px;
+  background: var(--navy-900);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+
+.btn-tour-cta:hover {
+  background: var(--navy-800);
+}
+
+/* Quick Whitepaper Download Card */
+.whitepaper-card {
+  background: #111a2e;
+  color: #fff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.whitepaper-card h4 {
+  font-family: var(--serif-display);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.whitepaper-card p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.btn-whitepaper-dl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-whitepaper-dl:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Responsive Rules */
+@media (max-width: 1024px) {
+  .corridor-layout {
+    grid-template-columns: 1fr;
+  }
+  .corridor-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .telemetry-ribbon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .compound-clusters-grid {
+    grid-template-columns: 1fr;
+  }
+  .commute-matrix-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

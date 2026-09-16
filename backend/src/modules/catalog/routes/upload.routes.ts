@@ -116,7 +116,7 @@ uploadRouter.post(
 
       // If propertyId provided, check agent ownership
       if (parsed.data.propertyId) {
-        const prop = await propertyService.getPropertyById(parsed.data.propertyId);
+        const prop = await propertyService.getPropertyOwnerOrThrow(parsed.data.propertyId);
         if (prop.agentId !== req.user!.id && req.user!.role !== "ADMIN") {
           return next(forbiddenError("You do not own this property.", req.originalUrl));
         }
@@ -156,7 +156,7 @@ uploadRouter.post(
 
       const propertyId = query.data.propertyId;
       if (propertyId) {
-        const prop = await propertyService.getPropertyById(propertyId);
+        const prop = await propertyService.getPropertyOwnerOrThrow(propertyId);
         if (prop.agentId !== req.user!.id && req.user!.role !== "ADMIN") {
           return next(forbiddenError("You do not own this property.", req.originalUrl));
         }

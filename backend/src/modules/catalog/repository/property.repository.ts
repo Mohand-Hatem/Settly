@@ -1,6 +1,8 @@
 import { prisma } from "../../../shared/database/prisma.js";
 import { uuidv7 } from "uuidv7";
 import { Prisma, type PropertyStatus, type PropertyType, type ListingIntent, type RentalPeriod, type ActorType } from "@prisma/client";
+import { conflictError } from "../../../shared/errors/problem-details.js";
+import { reorderPropertyImagesSql } from "../sql/index.js";
 import type {
   CreatePropertyInput,
   UpdatePropertyInput,
@@ -27,6 +29,24 @@ const propertyInclude = {
     orderBy: { changedAt: "desc" as const },
   },
 } as const;
+
+/**
+ * Optimized slim projection for multi-item list views (search cards, directory tables).
+ * Omits expensive price histories and amenity joins, and caps image count to top 3.
+ */
+const propertyCardInclude = {
+  images: {
+    orderBy: { order: "asc" as const },
+    take: 3,
+  },
+  area: true,
+  agent: {
+    include: {
+      agentProfile: true,
+    },
+  },
+} as const;
+
 
 function slugify(text: string): string {
   return text
@@ -155,16 +175,17 @@ export async function createProperty(
           latitude: input.latitude,
           longitude: input.longitude,
           status: "DRAFT",
-          amenities:
-            input.amenityIds && input.amenityIds.length > 0
-              ? {
-                  create: input.amenityIds.map((amenityId) => ({
-                    amenity: { connect: { id: amenityId } },
-                  })),
-                }
-              : undefined,
         },
       });
+
+      if (input.amenityIds && input.amenityIds.length > 0) {
+        await tx.propertyAmenity.createMany({
+          data: input.amenityIds.map((amenityId) => ({
+            propertyId,
+            amenityId,
+          })),
+        });
+      }
 
       // Record AuditLog
       await tx.auditLog.create({
@@ -194,6 +215,7 @@ export async function createProperty(
 export async function getPropertyById(id: string): Promise<PropertyResponse | null> {
   const property = await prisma.property.findUnique({
     where: { id },
+    relationLoadStrategy: "join",
     include: propertyInclude,
   });
 
@@ -203,22 +225,48 @@ export async function getPropertyById(id: string): Promise<PropertyResponse | nu
 export async function getPropertyBySlug(slug: string): Promise<PropertyResponse | null> {
   const property = await prisma.property.findUnique({
     where: { slug },
+    relationLoadStrategy: "join",
     include: propertyInclude,
   });
 
   return property ? formatProperty(property) : null;
 }
 
+export async function getPropertyOwner(
+  id: string
+): Promise<{ id: string; agentId: string; status: PropertyStatus } | null> {
+  return await prisma.property.findUnique({
+    where: { id },
+    select: { id: true, agentId: true, status: true },
+  });
+}
+
 export async function getRawPropertyById(id: string) {
   return await prisma.property.findUnique({
     where: { id },
-    include: {
-      images: true,
-      amenities: true,
-      area: true,
+    relationLoadStrategy: "join",
+    select: {
+      id: true,
+      agentId: true,
+      areaId: true,
+      status: true,
+      publishedAt: true,
+      titleEn: true,
+      titleAr: true,
+      descriptionEn: true,
+      descriptionAr: true,
+      price: true,
       offers: {
         where: {
           status: { in: ["RESERVED", "ACCEPTED"] },
+        },
+        select: {
+          status: true,
+        },
+      },
+      _count: {
+        select: {
+          images: true,
         },
       },
     },
@@ -231,11 +279,12 @@ export async function listPropertiesByAgent(
 ): Promise<{ items: PropertyResponse[]; nextCursor: string | null }> {
   const limit = options?.limit ?? 20;
   const properties = await prisma.property.findMany({
+    relationLoadStrategy: "join",
     where: { agentId },
     take: limit + 1,
     cursor: options?.cursor ? { id: options.cursor } : undefined,
-    orderBy: { updatedAt: "desc" },
-    include: propertyInclude,
+    orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+    include: propertyCardInclude,
   });
 
   let nextCursor: string | null = null;
@@ -256,13 +305,14 @@ export async function listPublishedProperties(options?: {
 }): Promise<{ items: PropertyResponse[]; nextCursor: string | null }> {
   const limit = options?.limit ?? 20;
   const properties = await prisma.property.findMany({
+    relationLoadStrategy: "join",
     where: {
       status: { in: ["PUBLISHED", "RESERVED"] },
     },
     take: limit + 1,
     cursor: options?.cursor ? { id: options.cursor } : undefined,
-    orderBy: { publishedAt: "desc" },
-    include: propertyInclude,
+    orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+    include: propertyCardInclude,
   });
 
   let nextCursor: string | null = null;
@@ -281,15 +331,25 @@ export async function updateProperty(
   propertyId: string,
   actorId: string,
   data: UpdatePropertyInput,
-  newStatus?: PropertyStatus
+  newStatus?: PropertyStatus,
+  existingStatus?: PropertyStatus,
+  existingPrice?: bigint
 ): Promise<PropertyResponse> {
   await prisma.$transaction(async (tx) => {
-    const existing = await tx.property.findUnique({
-      where: { id: propertyId },
-    });
+    let currentStatus = existingStatus;
+    let currentPrice = existingPrice;
 
-    if (!existing) {
-      throw new Error(`Property ${propertyId} not found`);
+    if (!currentStatus || currentPrice === undefined) {
+      const existing = await tx.property.findUnique({
+        where: { id: propertyId },
+        select: { status: true, price: true },
+      });
+
+      if (!existing) {
+        throw new Error(`Property ${propertyId} not found`);
+      }
+      currentStatus = existing.status;
+      currentPrice = existing.price;
     }
 
     const updatePayload: Prisma.PropertyUpdateInput = {};
@@ -312,7 +372,7 @@ export async function updateProperty(
     // Track price change in PropertyPriceHistory (P6)
     if (data.price !== undefined) {
       const newPriceBigInt = BigInt(data.price);
-      if (newPriceBigInt !== existing.price) {
+      if (newPriceBigInt !== currentPrice) {
         updatePayload.price = newPriceBigInt;
         await tx.propertyPriceHistory.create({
           data: {
@@ -340,10 +400,25 @@ export async function updateProperty(
       }
     }
 
-    await tx.property.update({
-      where: { id: propertyId },
-      data: updatePayload,
-    });
+    // Conditional CAS update
+    if (currentStatus) {
+      const updateResult = await tx.property.updateMany({
+        where: { id: propertyId, status: currentStatus },
+        data: updatePayload,
+      });
+      if (updateResult.count === 0) {
+        throw conflictError(
+          "/errors/invalid-lifecycle-transition",
+          "Invalid Property Transition",
+          `Property ${propertyId} update failed: status changed concurrently.`
+        );
+      }
+    } else {
+      await tx.property.update({
+        where: { id: propertyId },
+        data: updatePayload,
+      });
+    }
 
     // Record AuditLog
     await tx.auditLog.create({
@@ -356,7 +431,7 @@ export async function updateProperty(
         entityId: propertyId,
         metadata: {
           updatedFields: Object.keys(data),
-          statusTransition: newStatus ? `${existing.status} -> ${newStatus}` : undefined,
+          statusTransition: newStatus ? `${currentStatus} -> ${newStatus}` : undefined,
         },
       },
     });
@@ -373,6 +448,9 @@ export async function transitionPropertyStatus({
   actorType,
   action,
   reason,
+  expectedStatus,
+  previousStatus,
+  setPublishedAt,
 }: {
   propertyId: string;
   newStatus: PropertyStatus;
@@ -380,29 +458,60 @@ export async function transitionPropertyStatus({
   actorType: ActorType;
   action: string;
   reason?: string;
+  expectedStatus?: PropertyStatus | PropertyStatus[];
+  previousStatus?: PropertyStatus;
+  setPublishedAt?: boolean;
 }): Promise<PropertyResponse> {
   await prisma.$transaction(async (tx) => {
-    const existing = await tx.property.findUnique({
-      where: { id: propertyId },
-    });
+    let resolvedPrevStatus = previousStatus;
 
-    if (!existing) {
-      throw new Error(`Property ${propertyId} not found`);
+    if (!expectedStatus || !resolvedPrevStatus) {
+      const existing = await tx.property.findUnique({
+        where: { id: propertyId },
+        select: { status: true, publishedAt: true },
+      });
+
+      if (!existing) {
+        throw new Error(`Property ${propertyId} not found`);
+      }
+
+      resolvedPrevStatus = existing.status;
+      if (setPublishedAt === undefined && newStatus === "PUBLISHED" && !existing.publishedAt) {
+        setPublishedAt = true;
+      }
     }
 
     const updateData: Prisma.PropertyUpdateInput = {
       status: newStatus,
     };
 
-    // If transitioning to PUBLISHED for the first time, set publishedAt
-    if (newStatus === "PUBLISHED" && !existing.publishedAt) {
+    if (setPublishedAt) {
       updateData.publishedAt = new Date();
     }
 
-    await tx.property.update({
-      where: { id: propertyId },
-      data: updateData,
-    });
+    if (expectedStatus) {
+      const expectedArr = Array.isArray(expectedStatus) ? expectedStatus : [expectedStatus];
+      const result = await tx.property.updateMany({
+        where: {
+          id: propertyId,
+          status: { in: expectedArr },
+        },
+        data: updateData,
+      });
+
+      if (result.count === 0) {
+        throw conflictError(
+          "/errors/invalid-lifecycle-transition",
+          "Invalid Property Transition",
+          `Property ${propertyId} transition failed: status changed concurrently.`
+        );
+      }
+    } else {
+      await tx.property.update({
+        where: { id: propertyId },
+        data: updateData,
+      });
+    }
 
     // Record AuditLog
     await tx.auditLog.create({
@@ -414,7 +523,7 @@ export async function transitionPropertyStatus({
         entityType: "Property",
         entityId: propertyId,
         metadata: {
-          previousStatus: existing.status,
+          previousStatus: resolvedPrevStatus,
           newStatus,
           reason: reason || null,
         },
@@ -479,43 +588,48 @@ export async function addPropertyImage({
   captionAr?: string;
   isCover?: boolean;
 }): Promise<PropertyImage> {
-  const count = await prisma.propertyImage.count({
-    where: { propertyId },
-  });
+  return await prisma.$transaction(
+    async (tx) => {
+      const count = await tx.propertyImage.count({
+        where: { propertyId },
+      });
 
-  const shouldBeCover = isCover ?? count === 0;
+      const shouldBeCover = isCover ?? count === 0;
 
-  if (shouldBeCover) {
-    await prisma.propertyImage.updateMany({
-      where: { propertyId, isCover: true },
-      data: { isCover: false },
-    });
-  }
+      if (shouldBeCover) {
+        await tx.propertyImage.updateMany({
+          where: { propertyId, isCover: true },
+          data: { isCover: false },
+        });
+      }
 
-  const img = await prisma.propertyImage.create({
-    data: {
-      id: uuidv7(),
-      propertyId,
-      cloudinaryPublicId,
-      url,
-      captionEn: captionEn || null,
-      captionAr: captionAr || null,
-      isCover: shouldBeCover,
-      order: count,
+      const img = await tx.propertyImage.create({
+        data: {
+          id: uuidv7(),
+          propertyId,
+          cloudinaryPublicId,
+          url,
+          captionEn: captionEn || null,
+          captionAr: captionAr || null,
+          isCover: shouldBeCover,
+          order: count,
+        },
+      });
+
+      return {
+        id: img.id,
+        propertyId: img.propertyId,
+        cloudinaryPublicId: img.cloudinaryPublicId,
+        url: img.url,
+        captionEn: img.captionEn,
+        captionAr: img.captionAr,
+        isCover: img.isCover,
+        order: img.order,
+        createdAt: img.createdAt.toISOString(),
+      };
     },
-  });
-
-  return {
-    id: img.id,
-    propertyId: img.propertyId,
-    cloudinaryPublicId: img.cloudinaryPublicId,
-    url: img.url,
-    captionEn: img.captionEn,
-    captionAr: img.captionAr,
-    isCover: img.isCover,
-    order: img.order,
-    createdAt: img.createdAt.toISOString(),
-  };
+    { timeout: 10000, maxWait: 5000 }
+  );
 }
 
 export async function deletePropertyImage(propertyId: string, imageId: string): Promise<boolean> {
@@ -529,14 +643,8 @@ export async function reorderPropertyImages(
   propertyId: string,
   imageIds: string[]
 ): Promise<void> {
-  await prisma.$transaction(
-    imageIds.map((id, index) =>
-      prisma.propertyImage.updateMany({
-        where: { id, propertyId },
-        data: { order: index },
-      })
-    )
-  );
+  if (imageIds.length === 0) return;
+  await reorderPropertyImagesSql(prisma, propertyId, imageIds);
 }
 
 export async function countPropertyImages(propertyId: string): Promise<number> {

@@ -38,12 +38,11 @@ from a closed server-side allowlist — never string interpolation (#33).
 
 | Purpose | Connection |
 |---|---|
-| Application (Prisma Client) | **Pooled** (Supabase Supavisor, transaction mode, port 6543) |
-| Migrations | **Direct** (port 5432) |
-| Local development | Both point at the same local Docker Postgres |
+| Application (Prisma Client) | **Pooled** (Neon pooler, transaction mode, protocol-level prepared statements; no `pgbouncer=true`) |
+| Migrations | **Direct** (Neon direct host / port 5432) |
+| Local development | Configured to Neon development database (or local Docker Postgres) |
 
-PENDING — V6: Prisma over Supavisor transaction mode (prepared statements disabled) needs
-verification before first deploy.
+V6 Verified (2026-09-16): Neon PgBouncer transaction pooler supports protocol-level prepared statements (`max_prepared_statements`). `pgbouncer=true` is omitted to avoid prepared-statements-disabled round-trip overhead.
 
 ## 5. Generated columns
 
@@ -111,9 +110,9 @@ transaction inventory (T1-T7).
 
 | | Local | Production |
 |---|---|---|
-| Engine | Docker `postgis/postgis` + pgvector + pg_trgm + btree_gist | Supabase |
-| TLS | Not required | Required |
-| Backups | None | Supabase-managed |
+| Engine | Neon Serverless PostgreSQL 18 or Docker `postgis/postgis` | Neon Serverless PostgreSQL 18 |
+| TLS | Required for Neon | Required |
+| Backups | None | Neon-managed |
 
 ## 11. Least-privilege role — optional
 
@@ -122,7 +121,7 @@ mandatory dependency** — do not let it block normal development (#33).
 
 ## 12. Pending verification
 
-V1, V2, V5, V6, V11, V12, V20, V21, V22, V32, V33 all touch this document. None are verified.
+V1, V2, V5, V11, V12, V20, V21, V22, V32, V33 all touch this document. V6 is verified (2026-09-16).
 See `../DECISIONS.md` Section 2 for the authoritative tracker — do not treat any as settled here.
 
 ## 13. Rejected / do not add

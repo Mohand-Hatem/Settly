@@ -86,24 +86,21 @@ environment — Vercel previews + one-click Railway rollback are the mitigation.
 ## 8. Explicitly excluded
 
 Kubernetes · Terraform · ECS · service mesh · multi-region deployment · a staging environment ·
-Neon (declined in favour of Supabase) · any enterprise infrastructure not justified by a stated
-requirement.
+any enterprise infrastructure not justified by a stated requirement. Note: Neon was originally declined but subsequently selected for the database per the 2026-09-14 user directive (DECISIONS.md #22).
 
 ## 9. Demo reliability risk
 
-Supabase's free tier can suspend an inactive project — the single biggest threat to a portfolio
-demo staying reachable. **Resolution deferred to pre-launch**: revisit the Supabase tier (Pro, or
-accept a documented resume step) before the public demo — not a current blocker.
+Neon Serverless PostgreSQL (PostgreSQL 18, `eu-central-1`) provides the database layer. Inactivity scale-to-zero settings are managed in Neon compute configuration.
 
 ## 10. Pending verification
 
-**V8** (Supabase tier decision before demo) · **V11** (btree_gist on Supabase) · **V13** (Vercel
+**V8** (revisited for Neon compute sizing) · **V13** (Vercel
 stable preview-domain aliasing for CORS) · **V17** (Railway healthcheck/restart config) · **V32**
 (GitHub Actions service containers with the required Postgres extensions).
 
 ## 11. Rejected / do not add
 
-Kubernetes, Terraform, ECS, service mesh, multi-region, staging infrastructure, Neon, any
+Kubernetes, Terraform, ECS, service mesh, multi-region, staging infrastructure, any
 scale-to-zero host for the API/worker.
 
 ## 12. Related documents

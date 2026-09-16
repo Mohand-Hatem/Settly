@@ -11,6 +11,9 @@ import "../src/modules/catalog/routes/upload.routes.js";
 import "../src/modules/identity/routes/profile.routes.js";
 import "../src/modules/identity/routes/admin-agent.routes.js";
 import "../src/modules/identity/routes/device.routes.js";
+import "../src/modules/catalog/routes/compare.routes.js";
+import "../src/modules/analytics/routes/market.routes.js";
+import "../src/modules/identity/routes/agent-directory.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -15,6 +15,7 @@ export async function listAgents(filters?: { isVerified?: boolean }): Promise<Ag
   }
 
   const profiles = await prisma.agentProfile.findMany({
+    relationLoadStrategy: "join",
     where: whereClause,
     include: {
       user: {
@@ -50,6 +51,7 @@ export async function listAgents(filters?: { isVerified?: boolean }): Promise<Ag
 
 export async function getAgentProfileById(id: string): Promise<AgentListItem | null> {
   const profile = await prisma.agentProfile.findUnique({
+    relationLoadStrategy: "join",
     where: { id },
     include: {
       user: {
@@ -86,6 +88,7 @@ export async function getAgentProfileById(id: string): Promise<AgentListItem | n
 
 export async function getAgentProfileByUserId(userId: string): Promise<AgentListItem | null> {
   const profile = await prisma.agentProfile.findUnique({
+    relationLoadStrategy: "join",
     where: { userId },
     include: {
       user: {

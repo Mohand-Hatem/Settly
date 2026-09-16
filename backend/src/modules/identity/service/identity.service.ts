@@ -64,6 +64,21 @@ export class IdentityService {
     return mapUserToProfile(updated);
   }
 
+  /**
+   * Consumes a 6-digit email verification OTP. Returns false when no unexpired
+   * matching verification row exists; there is no bypass code.
+   */
+  async verifyEmailOtp(email: string, code: string): Promise<boolean> {
+    const record = await this.repo.findUnexpiredVerification(email, code, new Date());
+    if (!record) {
+      return false;
+    }
+
+    await this.repo.markEmailVerified(email);
+    await this.repo.deleteVerification(record.id);
+    return true;
+  }
+
   async getAgentProfile(userId: string): Promise<AgentProfileResponse> {
     const profile = await this.repo.findAgentProfileByUserId(userId);
     if (!profile) {

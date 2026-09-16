@@ -336,12 +336,19 @@ registry.registerPath({
 // 2. Express Route Handlers
 // ==============================================================================
 
+const ListPropertiesQuerySchema = z.object({
+  cursor: z.string().uuid().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+});
+
 // Public routes
 propertyRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cursor = typeof req.query.cursor === "string" ? req.query.cursor : undefined;
-    const limit = req.query.limit ? Number(req.query.limit) : undefined;
-    const result = await propertyService.listPublicProperties({ cursor, limit });
+    const parsed = ListPropertiesQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return next(validationError(parsed.error, req.originalUrl));
+    }
+    const result = await propertyService.listPublicProperties(parsed.data);
     res.status(200).json(result);
   } catch (err) {
     next(err);
@@ -526,7 +533,7 @@ propertyRouter.delete(
       const id = req.params.id as string;
       const imageId = req.params.imageId as string;
 
-      const prop = await propertyService.getPropertyById(id);
+      const prop = await propertyService.getPropertyOwnerOrThrow(id);
       if (prop.agentId !== req.user!.id && req.user!.role !== "ADMIN") {
         return next(forbiddenError("You do not own this property."));
       }
@@ -550,7 +557,7 @@ propertyRouter.patch(
         return next(validationError(parsed.error, req.originalUrl));
       }
 
-      const prop = await propertyService.getPropertyById(id);
+      const prop = await propertyService.getPropertyOwnerOrThrow(id);
       if (prop.agentId !== req.user!.id && req.user!.role !== "ADMIN") {
         return next(forbiddenError("You do not own this property."));
       }
@@ -632,9 +639,11 @@ myPropertyRouter.use(requireRole("AGENT", "ADMIN"));
 
 myPropertyRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cursor = typeof req.query.cursor === "string" ? req.query.cursor : undefined;
-    const limit = req.query.limit ? Number(req.query.limit) : undefined;
-    const result = await propertyService.listAgentProperties(req.user!.id, { cursor, limit });
+    const parsed = ListPropertiesQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return next(validationError(parsed.error, req.originalUrl));
+    }
+    const result = await propertyService.listAgentProperties(req.user!.id, parsed.data);
     res.status(200).json(result);
   } catch (err) {
     next(err);

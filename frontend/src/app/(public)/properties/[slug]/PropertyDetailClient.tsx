@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { toast } from "@/components/ui/Toaster";
 import {
   Share2,
   Heart,
@@ -204,12 +203,18 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
       navigator.clipboard.writeText(window.location.href);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
+      toast.success("Residence Dossier Copied", {
+        description: "Direct URL copied to clipboard.",
+      });
     }
   };
 
   const handleBookingClick = () => {
     setBookingToast(true);
     setTimeout(() => setBookingToast(false), 4000);
+    toast.success("Viewing Request Transmitted", {
+      description: `Advisor notified for Day ${selectedDay} at ${selectedTime}.`,
+    });
   };
 
   const pricePerSqm = useMemo(() => {
@@ -267,8 +272,6 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
 
   return (
     <div className="property-detail-page selection:bg-brass-200 selection:text-navy-950">
-      <Navbar />
-
       {/* Sub-header Breadcrumb Bar */}
       <section className="breadcrumb-bar">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -305,7 +308,19 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
 
               <button
                 type="button"
-                onClick={() => setIsFavorited(!isFavorited)}
+                onClick={() => {
+                  const nextState = !isFavorited;
+                  setIsFavorited(nextState);
+                  if (nextState) {
+                    toast.success("Saved to Collection", {
+                      description: `${property.titleEn} added to your saved properties.`,
+                    });
+                  } else {
+                    toast.info("Removed from Collection", {
+                      description: `${property.titleEn} removed from your saved properties.`,
+                    });
+                  }
+                }}
                 className={`cluster-btn ${isFavorited ? "favorited" : ""}`}
                 title={isFavorited ? "Saved to favorites" : "Save to favorites"}
               >
@@ -366,6 +381,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     src={img.url}
                     alt={`${property.titleEn} - View ${idx + 2}`}
                     fill
+                    loading="lazy"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Subtle active border indicator */}
@@ -388,7 +404,11 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
               </button>
               <button
                 type="button"
-                onClick={() => alert("3D Virtual Reality Tour loading from Matterport engine.")}
+                onClick={() =>
+                  toast.info("Spatial Virtual Tour", {
+                    description: "Initializing Matterport 3D digital twin spatial environment...",
+                  })
+                }
                 className="gallery-trigger-btn hidden sm:inline-flex"
               >
                 <Sparkles className="w-3.5 h-3.5 text-brass" />
@@ -842,7 +862,9 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                 <h2 className="detail-card-title">
                   <span>Location Context & District Map</span>
                   <span className="text-xs font-mono text-ink-3">
-                    {property.latitude.toFixed(4)}°N {property.longitude.toFixed(4)}°E
+                    {Number.isFinite(Number(property.latitude)) && Number.isFinite(Number(property.longitude))
+                      ? `${Number(property.latitude).toFixed(4)}°N ${Number(property.longitude).toFixed(4)}°E`
+                      : "30.0155°N 31.4880°E"}
                   </span>
                 </h2>
 
@@ -1029,9 +1051,18 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                 <button
                   type="button"
                   onClick={() =>
-                    alert(
-                      "Settly Sovereign Escrow: To place a binding allocation offer, please complete identity verification."
-                    )
+                    toast.warning("Sovereign Escrow Allocation", {
+                      description:
+                        "To place a binding allocation offer, please complete buyer identity verification.",
+                      action: {
+                        label: "Verify ID",
+                        onClick: () => {
+                          if (typeof window !== "undefined") {
+                            window.location.href = "/register";
+                          }
+                        },
+                      },
+                    })
                   }
                   className="btn-submit-offer"
                 >
@@ -1191,8 +1222,6 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
           </div>
         </div>
       </section>
-
-      <Footer />
 
       {/* Lightbox Modal */}
       {lightboxOpen && (

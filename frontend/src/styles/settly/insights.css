@@ -1,0 +1,1477 @@
+/* ============================================================================
+   SETTLY — SCREEN 07: MARKET INSIGHTS (IMPECCABLE CRAFT REFACTOR)
+   Adhering strictly to Settly Design Directive & /impeccable standards:
+   - Zero kickers, zero colored top lines, zero nested card slop
+   - Deep Navy (#131D36, #1E2A4A, #0B111F), Settly Brass (#C69749), Bone Canvas (#F7F6F3), Sage (#3D5A4C)
+   - Spectral Serif for broadsheet luxury headlines, JetBrains Mono for measured values
+   - Pure CSS hardware-accelerated infinite marquee ticker
+   ========================================================================= */
+
+.insights-page-wrapper {
+  background: var(--canvas);
+  color: var(--navy-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--sans-body);
+}
+
+/* Live Econometric Telemetry Bar (Continuous Marquee) */
+.mi-ticker-bar {
+  background: #0B111F;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.65rem 0;
+  color: #E2E8F0;
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.mi-marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+}
+
+.mi-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: max-content;
+  will-change: transform;
+  animation: settlyMarquee 38s linear infinite;
+}
+
+.mi-marquee-wrapper:hover .mi-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes settlyMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.mi-ticker-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.mi-ticker-dim {
+  color: #7E8DAA;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mi-ticker-bright {
+  color: #fff;
+  font-weight: 600;
+}
+
+.mi-ticker-gain {
+  color: #4ADE80;
+  font-weight: 700;
+}
+
+.mi-ticker-sep {
+  color: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+}
+
+/* ============================================================================
+   1. ATMOSPHERIC ARCHITECTURAL HERO & EXECUTIVE REPORT DECK
+   ========================================================================= */
+.mi-hero-panoramic {
+  position: relative;
+  background: #0B111F;
+  color: #fff;
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0 4rem;
+  overflow: hidden;
+}
+
+.mi-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.32;
+  filter: saturate(0.85);
+}
+
+.mi-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    95deg,
+    rgba(11, 17, 31, 0.98) 0%,
+    rgba(11, 17, 31, 0.92) 42%,
+    rgba(11, 17, 31, 0.65) 75%,
+    rgba(11, 17, 31, 0.45) 100%
+  );
+}
+
+.mi-hero-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+}
+
+.mi-hero-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-family: var(--mono-ui);
+  color: var(--brass-200);
+  margin-bottom: 1.25rem;
+}
+
+.mi-hero-breadcrumbs a {
+  color: #9AA7C4;
+  text-decoration: none;
+}
+
+.mi-hero-breadcrumbs a:hover {
+  color: #fff;
+}
+
+.mi-hero-headline {
+  font-family: var(--serif-display);
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0 0 1.25rem;
+  color: #fff;
+}
+
+.mi-hero-standfirst {
+  font-size: clamp(15px, 1.15vw, 17px);
+  color: #C3CBE0;
+  line-height: 1.65;
+  max-width: 640px;
+  margin: 0 0 2rem;
+}
+
+.mi-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 24px;
+  background: var(--brass);
+  color: #101728;
+  font-weight: 700;
+  font-size: 13.5px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-hero-primary:hover {
+  background: #d4a759;
+  transform: translateY(-1px);
+}
+
+.btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13.5px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: background 0.15s;
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Executive Telemetry Cockpit (Hero Right) */
+.mi-hero-cockpit {
+  background: rgba(16, 23, 40, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cockpit-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cockpit-title {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brass-200);
+  font-weight: 700;
+}
+
+.cockpit-badge {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  padding: 3px 8px;
+  background: rgba(61, 90, 76, 0.4);
+  color: #A7F3D0;
+  border-radius: 4px;
+  border: 1px solid rgba(61, 90, 76, 0.6);
+}
+
+.cockpit-metrics-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cockpit-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cockpit-label {
+  font-size: 13px;
+  color: #98A5C2;
+  line-height: 1.4;
+}
+
+.cockpit-label strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.cockpit-val-box {
+  text-align: right;
+}
+
+.cockpit-val-num {
+  font-family: var(--mono-ui);
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.cockpit-val-sub {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  color: #4ADE80;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   2. EDITORIAL MEMO & MACRO SIGNALS GRID (BROADSHEET REGISTER)
+   ========================================================================= */
+.mi-broadsheet-strip {
+  padding: clamp(3rem, 5vw, 4.5rem) 0;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.mi-memo-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.mi-economist-memo {
+  display: flex;
+  flex-direction: column;
+}
+
+.memo-author-strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.memo-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--line-2);
+}
+
+.memo-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.memo-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--navy-900);
+}
+
+.memo-role {
+  font-size: 12px;
+  font-family: var(--mono-ui);
+  color: var(--ink-3);
+}
+
+.memo-headline {
+  font-family: var(--serif-display);
+  font-size: clamp(1.6rem, 2.3vw, 2.2rem);
+  font-weight: 600;
+  color: var(--navy-900);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.25rem;
+}
+
+.memo-prose {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.memo-prose p {
+  margin: 0 0 1.25rem;
+}
+
+.memo-prose p:first-of-type::first-letter {
+  font-family: var(--serif-display);
+  font-size: 3.6rem;
+  float: left;
+  line-height: 0.85;
+  margin-right: 0.75rem;
+  color: var(--navy-900);
+  font-weight: 600;
+}
+
+.memo-quote {
+  border-left: 2px solid var(--brass);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-family: var(--serif-display);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--navy-900);
+  line-height: 1.45;
+}
+
+/* Macro Signals Rail (Right Side) */
+.mi-signals-rail {
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.signals-rail-hdr {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--navy-800);
+  font-weight: 700;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+}
+
+.signal-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.signal-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.signal-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signal-corridor {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy-900);
+}
+
+.signal-badge-val {
+  font-family: var(--mono-ui);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.signal-subtext {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.45;
+}
+
+/* ============================================================================
+   3. ECONOMETRIC TIME-SERIES APPRECIATION CHART
+   ========================================================================= */
+.mi-chart-section {
+  padding: clamp(3.5rem, 6vw, 5rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.mi-section-head {
+  margin-bottom: 2rem;
+  max-width: 800px;
+}
+
+.mi-section-h2 {
+  font-family: var(--serif-display);
+  font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+  font-weight: 600;
+  color: var(--navy-900);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.mi-section-lead {
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.chart-workbench {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.25rem;
+}
+
+.chart-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chart-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy-900);
+  letter-spacing: -0.01em;
+}
+
+.chart-card-desc {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.chart-actions-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.corridor-legend-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy-900);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.legend-pill:hover {
+  background: var(--canvas);
+  border-color: var(--line-2);
+}
+
+.legend-pill.inactive {
+  opacity: 0.38;
+  background: var(--canvas);
+  border-color: transparent;
+}
+
+.legend-circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.circle-gold { background: #C69749; }
+.circle-sahel { background: #3D5A4C; }
+.circle-zayed { background: #1E2A4A; }
+.circle-gouna { background: #64748B; }
+
+.timeframe-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--canvas);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
+.tf-btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  font-family: var(--mono-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tf-btn:hover {
+  color: var(--navy-900);
+}
+
+.tf-btn.active {
+  background: #fff;
+  color: var(--navy-900);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.svg-canvas-container {
+  width: 100%;
+  height: 360px;
+  position: relative;
+  cursor: crosshair;
+}
+
+.svg-canvas-container svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.chart-hover-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(11, 17, 31, 0.94);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35);
+  min-width: 220px;
+  transition: opacity 0.1s ease;
+  z-index: 10;
+}
+
+.chart-hover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  color: var(--brass-200);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+}
+
+.chart-hover-rows-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chart-hover-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chart-hover-label-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #94A3B8;
+  font-size: 11.5px;
+}
+
+.chart-hover-swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.chart-hover-val {
+  font-family: var(--mono-ui);
+  font-weight: 600;
+  font-size: 12px;
+  color: #fff;
+}
+
+.chart-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.chart-sum-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-sum-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 0.25rem;
+}
+
+.chart-sum-price {
+  font-family: var(--mono-ui);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 0.15rem;
+}
+
+.chart-sum-delta {
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  color: var(--sage);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   4. INSTITUTIONAL YIELD ARBITRAGE TERMINAL
+   ========================================================================= */
+.yield-terminal-box {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 2.25rem;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 2.5rem;
+}
+
+.terminal-controls-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-right: 2rem;
+  border-right: 1px solid var(--line);
+}
+
+.term-control-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.term-control-title {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+.term-stepped-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.step-pill {
+  flex: 1;
+  padding: 8px 4px;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy-900);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.step-pill.active {
+  background: var(--navy-900);
+  color: #fff;
+  border-color: var(--navy-900);
+}
+
+.term-currency-toggle {
+  display: flex;
+  background: var(--canvas);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
+.term-curr-btn {
+  flex: 1;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.term-curr-btn.active {
+  background: #fff;
+  color: var(--navy-900);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.term-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--navy-900);
+  cursor: pointer;
+  outline: none;
+}
+
+.terminal-sheet-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sheet-grid-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.sheet-card {
+  border-radius: 10px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-card.mode-primary {
+  background: var(--canvas);
+  border: 1px solid var(--line);
+}
+
+.sheet-card.mode-resale {
+  background: #111A2E;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sheet-header-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.sheet-card-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sheet-badge {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.badge-neutral {
+  background: #E2E8F0;
+  color: var(--navy-900);
+}
+
+.badge-brass {
+  background: rgba(198, 151, 73, 0.25);
+  color: var(--brass-200);
+}
+
+.sheet-main-number {
+  font-family: var(--mono-ui);
+  font-size: clamp(1.8rem, 2.2vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
+}
+
+.sheet-main-label {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-bottom: 1.5rem;
+}
+
+.sheet-card.mode-resale .sheet-main-label {
+  color: #94A3B8;
+}
+
+.sheet-rows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  font-size: 13px;
+}
+
+.sheet-card.mode-resale .sheet-rows-list {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sheet-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sheet-data-row .val {
+  font-family: var(--mono-ui);
+  font-weight: 600;
+}
+
+.terminal-footer-note {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: rgba(198, 151, 73, 0.08);
+  border: 1px solid rgba(198, 151, 73, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--navy-900);
+  line-height: 1.55;
+}
+
+/* ============================================================================
+   5. AUDITED MASTER DEVELOPER LEAGUE TABLE
+   ========================================================================= */
+.mi-table-box {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-toolbar-row {
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.table-tab-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tbl-tab-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tbl-tab-btn.active {
+  background: var(--navy-900);
+  color: #fff;
+  border-color: var(--navy-900);
+}
+
+.league-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.league-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13.5px;
+}
+
+.league-table th {
+  background: var(--canvas);
+  padding: 12px 18px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--line);
+}
+
+.league-table td {
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.league-table tr:hover td {
+  background: #FAFAFA;
+}
+
+.dev-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.dev-monogram {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy-800);
+}
+
+.pct-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 140px;
+}
+
+.pct-track {
+  flex: 1;
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pct-fill {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 999px;
+}
+
+.escrow-verified-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+/* ============================================================================
+   6. FOREIGN CAPITAL ORIGIN & SOVEREIGN TELEMETRY
+   ========================================================================= */
+.capital-telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.cap-panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cap-panel-head h3 {
+  font-family: var(--serif-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--navy-900);
+  margin: 0 0 0.5rem;
+}
+
+.cap-panel-head p {
+  font-size: 13px;
+  color: var(--ink-2);
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.inflow-rows-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inflow-item-line {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inflow-meta-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+}
+
+.inflow-name {
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+.inflow-num {
+  font-family: var(--mono-ui);
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.inflow-bar-slot {
+  height: 7px;
+  background: var(--canvas);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.inflow-bar-level {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.level-gcc { background: var(--brass); }
+.level-expat { background: var(--navy-800); }
+.level-europe { background: var(--sage); }
+.level-domestic { background: #94A3B8; }
+
+.currency-distribution-bar {
+  display: flex;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.bar-usd {
+  width: 58%;
+  background: #0B111F;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono-ui);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.bar-egp {
+  width: 34%;
+  background: var(--brass);
+  color: #0B111F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono-ui);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.bar-other {
+  width: 8%;
+  background: var(--sage);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono-ui);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.escrow-mandate-card {
+  margin-top: 1.5rem;
+  padding: 1.15rem;
+  background: var(--canvas);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+/* ============================================================================
+   7. INSTITUTIONAL RESEARCH LIBRARY & DOSSIERS
+   ========================================================================= */
+.mi-dossiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem;
+}
+
+.mi-dossier-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mi-dossier-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.12);
+}
+
+.dossier-media-frame {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  background: #0B111F;
+}
+
+.dossier-edition-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(11, 17, 31, 0.88);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.dossier-content-body {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.dossier-meta-date {
+  font-family: var(--mono-ui);
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-bottom: 0.5rem;
+}
+
+.dossier-card-title {
+  font-family: var(--serif-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--navy-900);
+  line-height: 1.3;
+  margin: 0 0 0.75rem;
+}
+
+.dossier-summary-text {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.dossier-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.btn-download-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy-900);
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.btn-download-trigger:hover {
+  color: var(--brass-600);
+}
+
+/* Modal Window */
+.dossier-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 17, 31, 0.78);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.dossier-modal-window {
+  background: #fff;
+  border-radius: 14px;
+  max-width: 500px;
+  width: 100%;
+  padding: 2.25rem;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);
+}
+
+.dossier-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--ink-3);
+  padding: 4px 8px;
+}
+
+/* ============================================================================
+   8. PRE-FOOTER PRIVATE ADVISORY STRIP
+   ========================================================================= */
+.pre-ftr-strip {
+  background: #111A2E;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2.5rem 0;
+  color: #fff;
+}
+
+.pre-ftr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.pre-ftr-text h3 {
+  font-family: var(--serif-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.4rem;
+}
+
+.pre-ftr-text p {
+  font-size: 14px;
+  color: #98A5C2;
+  max-width: 600px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.pre-ftr-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-pre-ftr-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: #25D366;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: filter 0.15s;
+}
+
+.btn-pre-ftr-wa:hover {
+  filter: brightness(0.95);
+}
+
+.btn-pre-ftr-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13.5px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: background 0.15s;
+}
+
+.btn-pre-ftr-call:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Responsive Adaptations */
+@media (max-width: 1080px) {
+  .mi-hero-content {
+    grid-template-columns: 1fr;
+  }
+  .mi-memo-layout {
+    grid-template-columns: 1fr;
+  }
+  .yield-terminal-box {
+    grid-template-columns: 1fr;
+  }
+  .terminal-controls-col {
+    padding-right: 0;
+    border-right: none;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .capital-telemetry-grid {
+    grid-template-columns: 1fr;
+  }
+  .mi-dossiers-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .sheet-grid-columns {
+    grid-template-columns: 1fr;
+  }
+  .chart-summary-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mi-dossiers-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -84,7 +84,7 @@ Lifecycle: `PENDING VERIFICATION → Verified → Decision updated → Related d
 | V3 | **Arabic retrieval quality** against the evaluation set and the thresholds in §Decision 27 | The entire bilingual search design (#14, #15) | ☐ Open |
 | V4 | Paymob: HMAC field list and ordering, partial-refund availability on the account tier, current fee schedule | Webhook verification (#13) | ☐ Open |
 | V5 | Better Auth: `bearer` plugin built-in; `advanced.database.generateId` overrides IDs with UUIDv7 cleanly for all models (`user`, `session`, `account`, `verification`); Expo plugin not required for web | First auth migration (#9) | ✅ **Verified** (2026-09-14) |
-| V6 | Prisma over Supabase's pooler (transaction mode, prepared statements disabled) | Connection configuration | ☐ Open |
+| V6 | Prisma over Neon's PgBouncer pooler: Neon supports protocol-level prepared statements (`max_prepared_statements`); removing `pgbouncer=true` eliminates 4–5 round trips and repeated `DEALLOCATE ALL`, reducing statement latency from ~494ms to ~85ms | Connection configuration | ✅ **Verified** (2026-09-16) |
 | V7 | Next.js fetch-caching semantics for the installed major version | ISR behaviour (#23) | ☐ Open |
 | V8 | Supabase tier before the public demo — free-tier inactivity suspension | Demo reliability (#22) | ☐ Open |
 | V9 | Gemini data-use terms if real user content ever reaches a prompt | Privacy posture (#24) | ☐ Open |
@@ -809,6 +809,7 @@ Per user directive, the project database is hosted directly on **Neon Serverless
 - Both pooled `DATABASE_URL` and direct `DIRECT_URL` configured for runtime queries and Prisma migrations.
 - Full parity confirmed on Neon for all 5 extensions (`postgis` 3.6.4, `vector` 0.8.6, `pg_trgm` 1.6, `btree_gist` 1.8, `uuid-ossp` 1.1).
 - Complete 39-table schema and all constraints (AuditLog append-only trigger, Viewing exclusion constraint, Invariant I1 deposit race partial unique index, bilingual FTS generated columns, and PostGIS location sync trigger) migrated and verified in production.
+- Neon PgBouncer transaction pooler verified to support protocol-level prepared statements (`max_prepared_statements`). Removing `pgbouncer=true` eliminates artificial `DEALLOCATE ALL` statements and disables Prisma's fallback round-trip mode, lowering warm per-statement latency from ~494ms to ~85ms.
 
 ---
 

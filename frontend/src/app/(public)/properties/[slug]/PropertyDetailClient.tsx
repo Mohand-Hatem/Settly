@@ -721,7 +721,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="55"
                       y="70"
-                      fontFamily="Plus Jakarta Sans, sans-serif"
+                      style={{ fontFamily: "var(--sans)" }}
                       fontWeight="700"
                       fontSize="13"
                       fill="#131D36"
@@ -735,7 +735,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="55"
                       y="92"
-                      fontFamily="JetBrains Mono, monospace"
+                      style={{ fontFamily: "var(--mono-ui)" }}
                       fontSize="11"
                       fill="#646D88"
                     >
@@ -756,7 +756,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="305"
                       y="70"
-                      fontFamily="Plus Jakarta Sans, sans-serif"
+                      style={{ fontFamily: "var(--sans)" }}
                       fontWeight="700"
                       fontSize="13"
                       fill="#131D36"
@@ -770,7 +770,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="305"
                       y="92"
-                      fontFamily="JetBrains Mono, monospace"
+                      style={{ fontFamily: "var(--mono-ui)" }}
                       fontSize="11"
                       fill="#646D88"
                     >
@@ -784,7 +784,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="55"
                       y="245"
-                      fontFamily="Plus Jakarta Sans, sans-serif"
+                      style={{ fontFamily: "var(--sans)" }}
                       fontWeight="700"
                       fontSize="13"
                       fill="#131D36"
@@ -798,7 +798,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="55"
                       y="267"
-                      fontFamily="JetBrains Mono, monospace"
+                      style={{ fontFamily: "var(--mono-ui)" }}
                       fontSize="11"
                       fill="#646D88"
                     >
@@ -819,7 +819,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="305"
                       y="235"
-                      fontFamily="Plus Jakarta Sans, sans-serif"
+                      style={{ fontFamily: "var(--sans)" }}
                       fontWeight="700"
                       fontSize="13"
                       fill="#131D36"
@@ -833,7 +833,7 @@ export function PropertyDetailClient({ initialProperty }: PropertyDetailClientPr
                     <text
                       x="305"
                       y="257"
-                      fontFamily="JetBrains Mono, monospace"
+                      style={{ fontFamily: "var(--mono-ui)" }}
                       fontSize="11"
                       fill="#646D88"
                     >

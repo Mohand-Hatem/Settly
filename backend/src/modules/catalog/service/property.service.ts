@@ -13,6 +13,7 @@ import type {
   PropertyResponse,
   PropertyListResponse,
 } from "../schema/property.schema.js";
+import type { CompareItem } from "../schema/compare.schema.js";
 
 /**
  * Structural field list governed by BUSINESS_RULES.md Section 2.1 (Two-Tier Edit Moderation)
@@ -585,4 +586,56 @@ export async function deleteProperty(
   }
 
   await propertyRepo.deleteProperty(propertyId, agentId);
+}
+
+// ==============================================================================
+// Compare (2–4 published residences side by side)
+// ==============================================================================
+
+const MIN_COMPARE = 2;
+const MAX_COMPARE = 4;
+
+/**
+ * Resolves the requested ids/slugs to published properties, returned in the order they
+ * were requested (the comparison columns follow that order). A property referenced twice
+ * (by id and by slug) appears once.
+ */
+export async function compareProperties(refs: string[]): Promise<CompareItem[]> {
+  if (refs.length < MIN_COMPARE || refs.length > MAX_COMPARE) {
+    throw new ProblemError({
+      type: "/errors/validation-failed",
+      title: "Validation Failed",
+      status: 422,
+      detail: `Property comparison requires between ${MIN_COMPARE} and ${MAX_COMPARE} property IDs.`,
+      errors: [
+        {
+          path: "ids",
+          code: "invalid_count",
+          message: `Must provide between ${MIN_COMPARE} and ${MAX_COMPARE} IDs to compare.`,
+        },
+      ],
+    });
+  }
+
+  const found = await propertyRepo.findPublishedForCompare(refs);
+  const seen = new Set<string>();
+  const ordered: CompareItem[] = [];
+  for (const ref of refs) {
+    const item = found.find((p) => p.id === ref || p.slug === ref);
+    if (item && !seen.has(item.id)) {
+      seen.add(item.id);
+      ordered.push(item);
+    }
+  }
+
+  if (ordered.length < MIN_COMPARE) {
+    throw new ProblemError({
+      type: "/errors/validation-failed",
+      title: "Insufficient Properties Found",
+      status: 422,
+      detail: `Found ${ordered.length} published properties matching the provided IDs. At least ${MIN_COMPARE} published properties are required for comparison.`,
+    });
+  }
+
+  return ordered;
 }

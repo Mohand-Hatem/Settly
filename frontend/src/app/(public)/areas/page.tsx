@@ -1,8 +1,8 @@
 "use client";
 
-import React, { Suspense, useEffect, useState, useMemo } from "react";
+import React, { Suspense, useCallback, useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { 
   Search, 
@@ -10,6 +10,8 @@ import {
   ArrowRight, 
   Sparkles 
 } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { areasQuery } from "@/lib/query/catalog";
 import type { DistrictMapItem } from "@/components/areas/AreaRadarMap";
 import "@/styles/settly/areas.css";
 
@@ -62,7 +64,7 @@ const DEFAULT_DISTRICTS: DistrictCardItem[] = [
     rentalYield: 8.9,
     appreciationYoY: 31.4,
     activePropertiesCount: 142,
-    coverImage: "/images/properties/property-1.jpg",
+    coverImage: "/images/1.jpg",
     anchorDevelopers: ["Palm Hills", "Emaar Misr", "Mountain View", "SODIC"],
     highlights: ["Direct Monorail & Middle Ring Road links", "Golden Square signature country clubs", "Highest institutional capital inflow"],
     lat: 30.025,
@@ -80,7 +82,7 @@ const DEFAULT_DISTRICTS: DistrictCardItem[] = [
     rentalYield: 8.2,
     appreciationYoY: 26.8,
     activePropertiesCount: 98,
-    coverImage: "/images/properties/property-2.jpg",
+    coverImage: "/images/5.jpg",
     anchorDevelopers: ["SODIC", "Emaar Misr", "Ora Developers", "Badr El Din"],
     highlights: ["26th of July Corridor & Dahshour Axis", "Prestigious private schools & sports clubs", "High long-term capital preservation"],
     lat: 30.055,
@@ -98,7 +100,7 @@ const DEFAULT_DISTRICTS: DistrictCardItem[] = [
     rentalYield: 9.4,
     appreciationYoY: 38.5,
     activePropertiesCount: 84,
-    coverImage: "/images/properties/property-3.jpg",
+    coverImage: "/images/8.jpg",
     anchorDevelopers: ["Modon", "Talaat Moustafa Group", "Hassan Allam", "Emaar Misr"],
     highlights: ["Direct Mediterranean coastal frontline", "Sovereign ADQ master development zone", "Peak summer gross yield premiums"],
     lat: 31.05,
@@ -116,7 +118,7 @@ const DEFAULT_DISTRICTS: DistrictCardItem[] = [
     rentalYield: 7.8,
     appreciationYoY: 24.1,
     activePropertiesCount: 65,
-    coverImage: "/images/properties/property-4.jpg",
+    coverImage: "/images/7.jpg",
     anchorDevelopers: ["Orascom Development", "Soma Bay Community"],
     highlights: ["100% interconnected lagoon channels", "Direct international flight connectivity", "Year-round foreign currency rental flows"],
     lat: 27.395,
@@ -125,36 +127,27 @@ const DEFAULT_DISTRICTS: DistrictCardItem[] = [
 ];
 
 function AreasContent() {
-  const [districts, setDistricts] = useState<DistrictCardItem[]>(DEFAULT_DISTRICTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string>("ALL");
   const [sortMetric, setSortMetric] = useState<string>("APPRECIATION_DESC");
   const [activePinSlug, setActivePinSlug] = useState<string | null>(null);
 
-  // Fetch areas from backend to augment with DB records if available
-  useEffect(() => {
-    async function loadAreas() {
-      try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiBase}/api/v1/areas`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.items && data.items.length > 0) {
-            // Augment existing rich items with real DB IDs if slugs match
-            setDistricts((prev) =>
-              prev.map((d) => {
-                const match = data.items.find((dbItem: { slug: string; id: string }) => dbItem.slug === d.slug);
-                return match ? { ...d, id: match.id } : d;
-              })
-            );
-          }
-        }
-      } catch (err) {
-        console.error("Could not fetch remote areas, using local defaults:", err);
-      }
-    }
-    loadAreas();
+  const handleSelectDistrict = useCallback((slug: string) => {
+    setActivePinSlug(slug);
+    document
+      .getElementById(`district-card-${slug}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
+
+  // Editorial district cards, linked to their database records by slug when available
+  const { data: areas } = useQuery(areasQuery());
+  const districts = useMemo(() => {
+    const idBySlug = new Map((areas?.items ?? []).map((a) => [a.slug, a.id]));
+    return DEFAULT_DISTRICTS.map((d) => {
+      const id = idBySlug.get(d.slug);
+      return id ? { ...d, id } : d;
+    });
+  }, [areas]);
 
   // Filtered & Sorted districts list
   const filteredDistricts = useMemo(() => {
@@ -286,13 +279,7 @@ function AreasContent() {
           <AreaRadarMap
             districts={mapItems}
             selectedSlug={activePinSlug}
-            onSelectDistrict={(slug) => {
-              setActivePinSlug(slug);
-              const cardEl = document.getElementById(`district-card-${slug}`);
-              if (cardEl) {
-                cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
-              }
-            }}
+            onSelectDistrict={handleSelectDistrict}
           />
         </div>
       </section>
@@ -314,13 +301,13 @@ function AreasContent() {
               const isHighlighted = activePinSlug === d.slug;
               return (
                 <article
-                  key={d.id}
+                  key={d.slug}
                   id={`district-card-${d.slug}`}
                   className={`district-card ${isHighlighted ? "ring-2 ring-[#C69749]" : ""}`}
                 >
                   {/* Card Media Header */}
                   <div className="district-media">
-                    <Image
+                    <ImageWithFallback
                       src={d.coverImage}
                       alt={d.nameEn}
                       fill

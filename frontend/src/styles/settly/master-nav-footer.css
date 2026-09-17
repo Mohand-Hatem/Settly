@@ -24,9 +24,9 @@
   --settly-line: rgba(30, 42, 74, 0.1);
   --settly-line-2: rgba(30, 42, 74, 0.18);
   --settly-sage: #3D5A4C;
-  --settly-serif: "Spectral", Georgia, serif;
-  --settly-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-  --settly-mono: "JetBrains Mono", monospace;
+  --settly-serif: var(--display);
+  --settly-sans: var(--sans);
+  --settly-mono: var(--mono-ui);
 }
 
 /* ============================================================================

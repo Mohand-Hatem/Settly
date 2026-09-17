@@ -1,11 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { PropertyListResponse } from "@/api/catalog";
+import { propertyListQuery } from "@/lib/query/catalog";
 import dynamic from "next/dynamic";
 import { PropertyItem } from "./PropertyCard";
 import { DiscoveryBar, ViewMode } from "./DiscoveryBar";
 import { FacetRail } from "./FacetRail";
 import { PropertyStream } from "./PropertyStream";
+import { toPropertyItem } from "./mapProperty";
 
 // Dynamic import of Leaflet map to guarantee zero SSR hydration issues
 const DynamicSearchMap = dynamic(
@@ -267,129 +271,16 @@ const INITIAL_PROPERTIES: PropertyItem[] = [
   },
 ];
 
-function inferDeveloper(title: string = "", desc: string = "", areaName: string = ""): string {
-  const combined = `${title} ${desc} ${areaName}`.toLowerCase();
-  if (combined.includes("palm hills") || combined.includes("lake view") || combined.includes("palm court")) {
-    return "Palm Hills";
-  }
-  if (combined.includes("sodic") || combined.includes("villette") || combined.includes("karmell")) {
-    return "SODIC";
-  }
-  if (combined.includes("emaar") || combined.includes("mivida") || combined.includes("marassi") || combined.includes("azure")) {
-    return "Emaar Misr";
-  }
-  if (combined.includes("ora") || combined.includes("zed")) {
-    return "Ora Developers";
-  }
-  if (combined.includes("katameya")) {
-    return "Katameya";
-  }
-  return "Settly Verified";
-}
+// Module-level so TanStack Query can memoize the mapped result between renders
+const selectPropertyItems = (res: PropertyListResponse) => res.items.map(toPropertyItem);
 
 export function SearchWorkspace() {
-  const [properties, setProperties] = useState<PropertyItem[]>(INITIAL_PROPERTIES);
-
-  useEffect(() => {
-    let isSubscribed = true;
-    const controller = new AbortController();
-
-    async function fetchLiveCatalog() {
-      try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiBase}/api/v1/properties`, {
-          headers: { Accept: "application/json" },
-          signal: controller.signal,
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const items = data.items;
-        if (!isSubscribed || !Array.isArray(items) || items.length === 0) return;
-
-        interface BackendProperty {
-          id: string;
-          slug: string;
-          titleEn?: string | null;
-          descriptionEn?: string | null;
-          price: string;
-          propertyType: string;
-          bedrooms: number;
-          bathrooms: number;
-          areaSqm: number;
-          latitude: number;
-          longitude: number;
-          area?: { nameEn?: string };
-          agent?: { brokerageName?: string };
-          images?: { url: string }[];
-          amenities?: { nameEn: string }[];
-        }
-
-        const mapped: PropertyItem[] = items.map((p: BackendProperty, idx: number) => {
-          const priceNum = p.price ? Number(BigInt(p.price) / 100n) : 30000000;
-          const priceShort =
-            priceNum >= 1000000
-              ? `${(priceNum / 1000000).toFixed(1)}M`
-              : `${(priceNum / 1000).toFixed(0)}K`;
-          const sqmPriceNum = p.areaSqm ? Math.round(priceNum / p.areaSqm) : 60000;
-          const areaName = p.area?.nameEn || "Golden Square";
-          const downNum = (priceNum * 0.1) / 1000000;
-          const installmentNum = Math.round((priceNum * 0.9) / 28);
-          const rawType = (p.propertyType || "villa").toLowerCase();
-          const propType = rawType === "townhouse" ? "town" : rawType;
-          const devName = inferDeveloper(p.titleEn || "", p.descriptionEn || "", areaName);
-
-          return {
-            id: p.id || String(idx),
-            slug: p.slug,
-            dev: devName,
-            title: p.titleEn || "Luxury Residence",
-            specs: `${areaName} · ${p.areaSqm || 500} m² · ${p.bedrooms || 4} beds · EGP ${sqmPriceNum.toLocaleString()}/m²`,
-            price: `EGP ${priceNum.toLocaleString()}`,
-            priceNum,
-            priceShort,
-            sqmPrice: `EGP ${sqmPriceNum.toLocaleString()} / m²`,
-            img: p.images?.[0]?.url || `/images/${(idx % 12) + 1}.jpg`,
-            lat: Number.isFinite(Number(p.latitude)) && Math.abs(Number(p.latitude)) > 1 ? Number(p.latitude) : 30.0155,
-            lng: Number.isFinite(Number(p.longitude)) && Math.abs(Number(p.longitude)) > 1 ? Number(p.longitude) : 31.488,
-            inGoldenSquare: areaName.toLowerCase().includes("golden square"),
-            type: propType,
-            location:
-              areaName.includes("Cairo") || areaName.includes("Square")
-                ? `${areaName}, New Cairo`
-                : areaName,
-            finish: "Fully Finished",
-            plan: "7-Yr Plan",
-            downPayment: `10% (${downNum.toFixed(2)}M)`,
-            installment: `EGP ${installmentNum.toLocaleString()} / qtr`,
-            interest: "0% Int.",
-            beds: p.bedrooms || 4,
-            baths: p.bathrooms || 5,
-            bua: p.areaSqm || 500,
-            plotOrTerrace: `${Math.round((p.areaSqm || 500) * 1.3)} m²`,
-            handover: "Q4 2026",
-            amenities: p.amenities?.length
-              ? p.amenities.map((a: { nameEn: string }) => a.nameEn)
-              : ["Private Pool", "Smart Home"],
-            subLocation: areaName,
-          };
-        });
-
-        setProperties(mapped);
-        if (mapped.length > 0) {
-          setSelectedId((prev) => (prev && mapped.some((m) => m.id === prev) ? prev : mapped[0].id));
-        }
-      } catch {
-        // Fallback to INITIAL_PROPERTIES gracefully if backend is unreachable
-      }
-    }
-
-    fetchLiveCatalog();
-
-    return () => {
-      isSubscribed = false;
-      controller.abort();
-    };
-  }, []);
+  // Live catalog; the curated demo set stays on screen until it arrives or if the API is down
+  const { data: liveProperties } = useQuery({
+    ...propertyListQuery(),
+    select: selectPropertyItems,
+  });
+  const properties = liveProperties?.length ? liveProperties : INITIAL_PROPERTIES;
 
   // Filters State - Default to full coverage so live properties appear immediately
   const [selectedLocations, setSelectedLocations] = useState<string[]>([
@@ -423,7 +314,8 @@ export function SearchWorkspace() {
   // View and UI State
   const [sortValue, setSortValue] = useState<string>("verified");
   const [viewMode, setViewMode] = useState<ViewMode>("split");
-  const [selectedId, setSelectedId] = useState<string | null>("0");
+  // undefined = the user has not picked yet; null = the user dismissed the selection
+  const [selectedId, setSelectedId] = useState<string | null | undefined>(undefined);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
@@ -438,6 +330,15 @@ export function SearchWorkspace() {
       document.body.style.overflow = "";
     };
   }, [isMobileFilterOpen]);
+
+  // Default to the first listing until the user picks one, or when their pick is no
+  // longer in the catalog (e.g. demo data replaced by the live catalog)
+  const effectiveSelectedId =
+    selectedId === null
+      ? null
+      : selectedId !== undefined && properties.some((p) => p.id === selectedId)
+        ? selectedId
+        : (properties[0]?.id ?? null);
 
   // Memoized selection handler to avoid child re-render churn
   const handleSelectProperty = useCallback((id: string | null) => {
@@ -674,7 +575,7 @@ export function SearchWorkspace() {
         {/* Center Property Stream */}
         <PropertyStream
           properties={filteredProperties}
-          selectedId={selectedId}
+          selectedId={effectiveSelectedId}
           onHoverProperty={handleSelectProperty}
           onClickProperty={handleSelectProperty}
           favorites={favorites}
@@ -685,7 +586,7 @@ export function SearchWorkspace() {
         {/* Right Map Discovery Column */}
         <DynamicSearchMap
           properties={filteredProperties}
-          selectedId={selectedId}
+          selectedId={effectiveSelectedId}
           onSelectProperty={handleSelectProperty}
           isMapOnlyMode={viewMode === "map"}
         />

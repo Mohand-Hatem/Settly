@@ -18,7 +18,7 @@
   border: 1px solid rgba(198, 151, 73, 0.40);
   color: var(--settly-navy-900, #131D36);
   text-decoration: none;
-  font-family: var(--settly-sans, 'Plus Jakarta Sans', system-ui, sans-serif);
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -167,7 +167,7 @@
   border: 1px solid rgba(198, 151, 73, 0.35);
   padding: 2px 7px;
   border-radius: 9999px;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -296,7 +296,7 @@
   transform: translateY(-50%) translateX(6px);
   background-color: #131D36;
   color: #FFFFFF;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -350,7 +350,7 @@
   transform: translateX(100%);
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   border-left: 1px solid rgba(30, 42, 74, 0.18);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: var(--sans);
   color: #16203A;
 }
 
@@ -400,7 +400,7 @@
 }
 
 .settly-assistant-overlay .hdr-assistant-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: var(--display);
   font-size: 1.05rem;
   font-weight: 700;
   color: #FFFFFF;
@@ -411,7 +411,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   color: #C69749;
 }
@@ -474,7 +474,7 @@
   color: #AE8033;
   font-weight: 700;
   text-decoration: none;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   transition: color 0.15s;
 }
@@ -506,7 +506,7 @@
 
 .settly-assistant-overlay .overlay-pill-btn {
   padding: 4px 10px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 0.6875rem;
   font-weight: 600;
   border: none;
@@ -523,7 +523,7 @@
 }
 
 .settly-assistant-overlay .overlay-context-tag {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   color: #646D88;
   white-space: nowrap;
@@ -584,7 +584,7 @@
   background-color: #131D36;
   border: 1px solid #C69749;
   color: #C69749;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   display: flex;
@@ -600,7 +600,7 @@
 }
 
 .ovl-verified-tag {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   color: #3D5A4C;
   background-color: #EAF0EC;
@@ -611,7 +611,7 @@
 
 .ovl-meta-time {
   margin-left: auto;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   color: #646D88;
 }
@@ -640,7 +640,7 @@
   border: 1px solid rgba(30, 42, 74, 0.18);
   padding: 2px 6px;
   border-radius: 8px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   font-weight: 600;
   text-decoration: none;
@@ -676,7 +676,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -685,7 +685,7 @@
 }
 
 .ovl-action-status {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   background-color: #FAF5EB;
   color: #AE8033;
@@ -695,7 +695,7 @@
 }
 
 .ovl-action-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: var(--display);
   font-size: 0.95rem;
   font-weight: 700;
   color: #131D36;
@@ -725,13 +725,13 @@
 }
 
 .ovl-action-specs .lbl {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.5625rem;
   color: #646D88;
 }
 
 .ovl-action-specs .val {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   font-weight: 700;
   color: #131D36;
@@ -750,7 +750,7 @@
   border: 1px solid rgba(30, 42, 74, 0.18);
   background-color: #FFFFFF;
   color: #4C5878;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: 8px;
@@ -769,7 +769,7 @@
   border: none;
   background-color: #C69749;
   color: #131D36;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 0.75rem;
   font-weight: 700;
   border-radius: 8px;
@@ -805,7 +805,7 @@
 }
 
 .ovl-agent-banner .agent-tag {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   color: #C69749;
@@ -813,7 +813,7 @@
 }
 
 .ovl-agent-banner .agent-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: var(--display);
   font-size: 1.15rem;
   font-weight: 700;
   line-height: 1.25;
@@ -823,7 +823,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   color: #EAF0EC;
 }
@@ -841,7 +841,7 @@
 .plan-card-hdr {
   display: flex;
   justify-content: space-between;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   color: #646D88;
@@ -880,7 +880,7 @@
 }
 
 .plan-step .step-val {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   color: #AE8033;
   font-weight: 600;
@@ -928,7 +928,7 @@
   background-color: rgba(19, 29, 54, 0.85);
   color: #C69749;
   border: 1px solid #C69749;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   padding: 2px 7px;
@@ -943,7 +943,7 @@
 }
 
 .ovl-mini-card .mini-loc {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.625rem;
   font-weight: 700;
   color: #AE8033;
@@ -951,21 +951,21 @@
 }
 
 .ovl-mini-card .mini-name {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: var(--display);
   font-size: 0.95rem;
   font-weight: 700;
   color: #131D36;
 }
 
 .ovl-mini-card .mini-price {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 1rem;
   font-weight: 700;
   color: #131D36;
 }
 
 .ovl-mini-card .mini-specs {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.6875rem;
   color: #4C5878;
   margin-bottom: 6px;
@@ -977,7 +977,7 @@
   color: #FFFFFF;
   border: 1px solid #C69749;
   border-radius: 8px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -1023,7 +1023,7 @@
   border: none;
   background: none;
   outline: none;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 0.8125rem;
   color: #16203A;
 }
@@ -1065,7 +1065,7 @@
 
 .ovl-composer-disclaimer {
   text-align: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono-ui);
   font-size: 0.5625rem;
   color: #646D88;
 }

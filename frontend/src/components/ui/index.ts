@@ -5,3 +5,4 @@ export * from "./Skeleton";
 export * from "./EmptyState";
 export * from "./Modal";
 export * from "./Toaster";
+export * from "./ImageWithFallback";

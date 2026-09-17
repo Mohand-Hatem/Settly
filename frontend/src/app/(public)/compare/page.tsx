@@ -1,9 +1,11 @@
 "use client";
 
-import React, { Suspense, useEffect, useState, useMemo, useCallback, useRef } from "react";
+import React, { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
 import {
   Building2,
   MapPin,
@@ -19,38 +21,23 @@ import {
 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { toast } from "@/components/ui/Toaster";
+import { ApiError } from "@/api/errors";
+import type { CompareItem, CompareResponse } from "@/api/catalog";
+import { compareQuery, marketPulseQuery, propertyListQuery } from "@/lib/query/catalog";
+import { formatMoney, piastresToEgp, type Currency, type FxRates } from "@/lib/money";
+import { isValidLatLng } from "@/lib/geo";
 import "@/styles/settly/compare.css";
 
-interface CompareProperty {
-  id: string;
-  slug: string;
+// Columns shown side by side; the backend enforces the same 2–4 range
+const MIN_COMPARE = 2;
+const MAX_COMPARE = 4;
+const DEFAULT_FX: FxRates = { USD: 48.85, EUR: 53.2 };
+
+/** A compared residence with prices already converted from piastres to EGP. */
+interface CompareProperty extends Omit<CompareItem, "titleEn" | "price" | "pricePerSqm"> {
   titleEn: string;
-  titleAr: string;
-  propertyType: string;
-  listingIntent: string;
-  price: string;
-  rentalPeriod: string | null;
-  bedrooms: number;
-  bathrooms: number;
-  areaSqm: number;
+  price: number;
   pricePerSqm: number;
-  latitude: number;
-  longitude: number;
-  coverImage: string | null;
-  images: string[];
-  area: {
-    id: string;
-    slug: string;
-    nameEn: string;
-    nameAr: string;
-  };
-  amenities: Array<{
-    id: string;
-    slug: string;
-    nameEn: string;
-    nameAr: string;
-    category: string;
-  }>;
 }
 
 interface CatalogPickItem {
@@ -58,347 +45,208 @@ interface CatalogPickItem {
   slug: string;
   titleEn: string;
   propertyType: string;
-  price: string;
+  price: number;
   areaSqm: number;
   coverImage: string | null;
   areaName: string;
 }
 
-type Currency = "EGP" | "USD" | "EUR";
-
-// The backend's /catalog/compare endpoint has no ORDER BY matching the requested `ids`,
-// so it can return residences in a different order than they were requested/added in.
-// Re-sort every response to the requested id order before it reaches state, so columns
-// never visibly reshuffle.
-function sortByRequestedIds<T extends { id: string }>(records: T[], requestedIds: string[]): T[] {
-  const byId = new Map(records.map((r) => [r.id, r]));
-  return requestedIds.map((id) => byId.get(id)).filter((r): r is T => Boolean(r));
+/** The `ids` URL param is the single source of truth for which residences are compared. */
+function parseCompareIds(raw: string | null): string[] {
+  const unique = new Set(
+    (raw || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+  );
+  return [...unique].slice(0, MAX_COMPARE);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizeCompareProperty(item: any): CompareProperty {
-  const rawPrice = item.price ? BigInt(item.price) : 0n;
-  // Settly backend stores and returns prices in piastres (e.g. 2720000000 for 27.2M EGP)
-  const priceEgp = rawPrice > 100000000n ? (rawPrice / 100n).toString() : item.price?.toString() || "0";
-  const rawPricePerSqm = Number(item.pricePerSqm) || 0;
-  const pricePerSqmEgp = rawPricePerSqm > 100000 ? Math.round(rawPricePerSqm / 100) : rawPricePerSqm;
+// The only writer of the compare URL. Next.js syncs history.replaceState into
+// useSearchParams without a server round-trip.
+function replaceCompareIds(ids: readonly string[]) {
+  window.history.replaceState(null, "", `/compare?ids=${ids.join(",")}`);
+}
 
+// The URL may reference a residence by id or by slug (the API accepts both)
+function matchesRef(item: { id: string; slug: string }, ref: string) {
+  return item.id === ref || item.slug === ref;
+}
+
+function toCompareProperty(item: CompareItem): CompareProperty {
   return {
     ...item,
-    price: priceEgp,
-    pricePerSqm: pricePerSqmEgp,
+    titleEn: item.titleEn || "Untitled residence",
+    price: piastresToEgp(item.price),
+    // The API derives price per m² from the piastre price
+    pricePerSqm: Math.round(item.pricePerSqm / 100),
   };
 }
 
 function CompareContent() {
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+  const idsParam = searchParams.get("ids");
+  const ids = useMemo(() => parseCompareIds(idsParam), [idsParam]);
 
-  const [properties, setProperties] = useState<CompareProperty[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [addingPropertyId, setAddingPropertyId] = useState<string | null>(null);
-
-  // Cache ref to track loaded IDs and prevent redundant double-fetch loops when URL updates
-  const lastLoadedIdsRef = useRef<string>("");
-  const initialFetchDoneRef = useRef<boolean>(false);
-
-  // Currency engine
   const [currency, setCurrency] = useState<Currency>("EGP");
-  const [fxRates, setFxRates] = useState<{ USD: number; EUR: number }>({
-    USD: 48.85,
-    EUR: 53.20,
-  });
-
-  // Differences toggle
   const [diffsOnly, setDiffsOnly] = useState(false);
-
-  // Add Residence modal
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [availableCatalog, setAvailableCatalog] = useState<CatalogPickItem[]>([]);
-  const [loadingCatalog, setLoadingCatalog] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
 
-  // 1. Fetch live FX rates from market pulse
+  // 1. Live FX rates (falls back to defaults if the pulse is unavailable)
+  const { data: fxRates = DEFAULT_FX } = useQuery({
+    ...marketPulseQuery(),
+    select: (pulse): FxRates => ({
+      USD: pulse.currencyRates.usdEgp.official || DEFAULT_FX.USD,
+      EUR: pulse.currencyRates.eurEgp.official || DEFAULT_FX.EUR,
+    }),
+  });
+
+  // 2. Compared residences, keyed by the URL ids and returned in URL order
+  const selectCompared = useCallback(
+    (res: CompareResponse) =>
+      ids
+        .map((ref) => res.items.find((item) => matchesRef(item, ref)))
+        .filter((item): item is CompareItem => Boolean(item))
+        .map(toCompareProperty),
+    [ids]
+  );
+  const compared = useQuery({
+    ...compareQuery(ids),
+    enabled: ids.length >= MIN_COMPARE,
+    select: selectCompared,
+    placeholderData: keepPreviousData,
+  });
+  const properties = useMemo(() => compared.data ?? [], [compared.data]);
+
+  // 3. Without a usable id set (none given, or the API rejected them), seed the
+  //    comparison with the latest published residences
+  const needsSeed =
+    ids.length < MIN_COMPARE ||
+    (compared.error instanceof ApiError && compared.error.status === 422);
+  const seed = useQuery({
+    ...propertyListQuery({ limit: 4 }),
+    enabled: needsSeed,
+  });
+  const seedIds = useMemo(
+    () => (seed.data?.items ?? []).slice(0, 3).map((p) => p.id),
+    [seed.data]
+  );
+  const seedUnavailable = seed.isError || (seed.isSuccess && seedIds.length < MIN_COMPARE);
   useEffect(() => {
-    async function loadFx() {
-      try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiBase}/api/v1/analytics/market-pulse`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.currencyRates?.usdEgp?.official && data.currencyRates?.eurEgp?.official) {
-            setFxRates({
-              USD: data.currencyRates.usdEgp.official,
-              EUR: data.currencyRates.eurEgp.official,
-            });
-          }
-        }
-      } catch {
-        // Fallback default rates
-      }
+    if (needsSeed && seedIds.length >= MIN_COMPARE && seedIds.join(",") !== ids.join(",")) {
+      replaceCompareIds(seedIds);
     }
-    loadFx();
-  }, []);
+  }, [needsSeed, seedIds, ids]);
 
-  // 2. Fetch compared properties based on query params (Initial Load & Cold Hydration)
-  const loadProperties = useCallback(async () => {
-    const idsParam = searchParams.get("ids");
-    let targetIds: string[] = [];
+  const hasNoColumns = properties.length === 0;
+  const errorMessage = !hasNoColumns
+    ? null
+    : needsSeed
+      ? seedUnavailable
+        ? "Unable to retrieve residences for comparison. Please try selecting other units."
+        : null
+      : compared.isError
+        ? "An unexpected network error occurred while loading property comparisons."
+        : null;
+  const isLoading = hasNoColumns && !errorMessage;
+  const retry = () => (needsSeed ? seed.refetch() : compared.refetch());
 
-    if (idsParam) {
-      targetIds = idsParam
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-    }
-
-    const currentKey = targetIds.join(",");
-    // If the requested IDs already match our loaded state, skip redundant fetch
-    if (currentKey && currentKey === lastLoadedIdsRef.current && properties.length >= 2) {
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-
-    try {
-      if (targetIds.length >= 2) {
-        const res = await fetch(
-          `${apiBase}/api/v1/catalog/compare?ids=${targetIds.join(",")}`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          if (data.items && data.items.length >= 2) {
-            const normalized = sortByRequestedIds<CompareProperty>(
-              data.items.map(normalizeCompareProperty),
-              targetIds
-            );
-            lastLoadedIdsRef.current = targetIds.join(",");
-            setProperties(normalized);
-            setLoading(false);
-            return;
-          }
-        }
-      }
-
-      // If no valid IDs or fewer than 2 properties in query, fetch latest published properties
-      const fallbackRes = await fetch(`${apiBase}/api/v1/properties?limit=4`);
-      if (fallbackRes.ok) {
-        const catalogData = await fallbackRes.json();
-        const items = catalogData.items || [];
-        if (items.length >= 2) {
-          const pickIds = items.slice(0, 3).map((p: { id: string }) => p.id);
-          const compRes = await fetch(
-            `${apiBase}/api/v1/catalog/compare?ids=${pickIds.join(",")}`
-          );
-          if (compRes.ok) {
-            const compData = await compRes.json();
-            const normalized = sortByRequestedIds<CompareProperty>(
-              (compData.items || []).map(normalizeCompareProperty),
-              pickIds
-            );
-            const newKey = pickIds.join(",");
-            lastLoadedIdsRef.current = newKey;
-            setProperties(normalized);
-            setLoading(false);
-            if (typeof window !== "undefined") {
-              window.history.replaceState(null, "", `/compare?ids=${newKey}`);
-            }
-            return;
-          }
-        }
-      }
-
-      setError("Unable to retrieve residences for comparison. Please try selecting other units.");
-    } catch (err) {
-      console.error("Failed to load comparison data:", err);
-      setError("An unexpected network error occurred while loading property comparisons.");
-    } finally {
-      setLoading(false);
-    }
-  }, [searchParams, properties.length]);
-
-  useEffect(() => {
-    const idsParam = searchParams.get("ids") || "";
-    if (!initialFetchDoneRef.current || (idsParam && idsParam !== lastLoadedIdsRef.current)) {
-      initialFetchDoneRef.current = true;
-      loadProperties();
-    }
-  }, [searchParams, loadProperties]);
-
-  // 3. Remove column - Optimistic CSR (0ms latency, zero reload)
-  const handleRemoveProperty = (indexToRemove: number) => {
-    if (properties.length <= 2) {
-      toast.warning("Comparison Minimum Reached", {
-        description: "At least 2 residences are required for side-by-side comparison.",
+  // 4. Add a residence: fetch the enlarged set into the cache first, then point the
+  //    URL at it, so the next render reads a warm cache and columns never flicker
+  const addMutation = useMutation({
+    mutationFn: async (item: CatalogPickItem) => {
+      const next = [...ids, item.id];
+      await queryClient.fetchQuery(compareQuery(next));
+      return next;
+    },
+    onSuccess: (next, item) => {
+      replaceCompareIds(next);
+      toast.success("Residence Added", {
+        description: `${item.titleEn} added to parametric comparison.`,
       });
-      return;
-    }
-    const removedItem = properties[indexToRemove];
-    const updated = properties.filter((_, idx) => idx !== indexToRemove);
-    const updatedIds = updated.map((p) => p.id).join(",");
-    lastLoadedIdsRef.current = updatedIds;
-    setProperties(updated);
+    },
+    onError: () => {
+      toast.error("Addition Failed", {
+        description: "Unable to retrieve specifications for the selected residence.",
+      });
+    },
+  });
 
-    toast.info("Residence Removed", {
-      description: `${removedItem?.titleEn || "Residence"} removed from comparison.`,
-    });
-
-    // Update URL cleanly without triggering Next.js route navigation
-    if (typeof window !== "undefined") {
-      window.history.replaceState(null, "", `/compare?ids=${updatedIds}`);
-    }
-  };
-
-  // 4. Open Add Residence Catalog Drawer
-  const handleOpenAddModal = async () => {
-    setIsAddModalOpen(true);
-    setLoadingCatalog(true);
-    try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(`${apiBase}/api/v1/properties?limit=12`);
-      if (res.ok) {
-        const data = await res.json();
-        const existingIds = new Set(properties.map((p) => p.id));
-        type RawApiProperty = {
-          id: string;
-          slug: string;
-          titleEn: string;
-          propertyType: string;
-          price: string;
-          areaSqm: number | string;
-          images?: Array<{ url: string; isCover?: boolean }>;
-          area?: { nameEn?: string };
-        };
-        const available = (data.items || [])
-          .filter((p: { id: string }) => !existingIds.has(p.id))
-          .map((p: RawApiProperty) => {
-            const rawPrice = p.price ? BigInt(p.price) : 0n;
-            const priceEgp = rawPrice > 100000000n ? (rawPrice / 100n).toString() : p.price;
-            return {
-              id: p.id,
-              slug: p.slug,
-              titleEn: p.titleEn,
-              propertyType: p.propertyType,
-              price: priceEgp,
-              areaSqm: Number(p.areaSqm),
-              coverImage: p.images?.find((img) => img.isCover)?.url || p.images?.[0]?.url || "/images/properties/property-1.jpg",
-              areaName: p.area?.nameEn || "Cairo Corridor",
-            };
-          });
-        setAvailableCatalog(available);
-      }
-    } catch (err) {
-      console.error("Failed to fetch available catalog:", err);
-    } finally {
-      setLoadingCatalog(false);
-    }
-  };
-
-  // 5. Select a property to add - Non-destructive inline addition
-  const handleSelectPropertyToAdd = async (item: CatalogPickItem) => {
-    if (properties.length >= 4) {
+  const handleSelectPropertyToAdd = (item: CatalogPickItem) => {
+    if (properties.length >= MAX_COMPARE) {
       toast.info("Comparison Maximum", {
-        description: "A maximum of 4 residences can be evaluated side-by-side.",
+        description: `A maximum of ${MAX_COMPARE} residences can be evaluated side-by-side.`,
       });
       return;
     }
     setIsAddModalOpen(false);
-    setAddingPropertyId(item.id);
+    addMutation.mutate(item);
+  };
 
-    const newIds = [...properties.map((p) => p.id), item.id];
-    const newIdsKey = newIds.join(",");
-
-    try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(
-        `${apiBase}/api/v1/catalog/compare?ids=${newIdsKey}`
-      );
-      if (res.ok) {
-        const data = await res.json();
-        const normalized = (data.items || []).map(normalizeCompareProperty);
-        const newItem = normalized.find((p: CompareProperty) => p.id === item.id);
-        lastLoadedIdsRef.current = newIdsKey;
-        // Append only the newly fetched residence and keep existing columns' object
-        // references untouched, so React skips re-rendering (and re-flashing the
-        // images of) the residences that were already in the comparison.
-        setProperties((prev) => (newItem ? [...prev, newItem] : normalized));
-
-        toast.success("Residence Added", {
-          description: `${item.titleEn} added to parametric comparison.`,
-        });
-
-        // Update URL cleanly without triggering Next.js route navigation
-        if (typeof window !== "undefined") {
-          window.history.replaceState(null, "", `/compare?ids=${newIdsKey}`);
-        }
-      } else {
-        toast.error("Addition Failed", {
-          description: "Unable to retrieve specifications for the selected residence.",
-        });
-      }
-    } catch (err) {
-      console.error("Failed to add property to comparison:", err);
-      toast.error("Network Error", {
-        description: "Could not connect to Settly catalog services.",
+  // 5. Remove a residence: derive the smaller set from cached data (no request),
+  //    then point the URL at it
+  const handleRemoveProperty = (property: CompareProperty) => {
+    if (addMutation.isPending) return;
+    if (properties.length <= MIN_COMPARE) {
+      toast.warning("Comparison Minimum Reached", {
+        description: `At least ${MIN_COMPARE} residences are required for side-by-side comparison.`,
       });
-    } finally {
-      setAddingPropertyId(null);
+      return;
     }
+    const next = ids.filter((ref) => !matchesRef(property, ref));
+    const current = queryClient.getQueryData(compareQuery(ids).queryKey);
+    if (current) {
+      const items = current.items.filter((item) => item.id !== property.id);
+      queryClient.setQueryData(compareQuery(next).queryKey, {
+        ...current,
+        items,
+        count: items.length,
+      });
+    }
+    replaceCompareIds(next);
+    toast.info("Residence Removed", {
+      description: `${property.titleEn} removed from comparison.`,
+    });
   };
 
-  // 6. Currency Formatter (Safe for EGP or Piastres)
-  const formatPrice = (egpAmount: number | string) => {
-    let num = Number(egpAmount);
-    if (isNaN(num)) return "N/A";
-    // Safeguard: if amount is in piastres (> 100M for Egyptian luxury residences), convert to EGP
-    if (num > 100000000) {
-      num = Math.round(num / 100);
-    }
+  // 6. Catalog picker, fetched when the modal opens; current columns are excluded at render
+  const catalog = useQuery({
+    ...propertyListQuery({ limit: 12 }),
+    enabled: isAddModalOpen,
+  });
+  const availableCatalog = useMemo<CatalogPickItem[]>(() => {
+    const comparedIds = new Set(properties.map((p) => p.id));
+    return (catalog.data?.items ?? [])
+      .filter((p) => !comparedIds.has(p.id))
+      .map((p) => ({
+        id: p.id,
+        slug: p.slug,
+        titleEn: p.titleEn || "Untitled residence",
+        propertyType: p.propertyType,
+        price: piastresToEgp(p.price),
+        areaSqm: p.areaSqm,
+        coverImage: p.images.find((img) => img.isCover)?.url || p.images[0]?.url || null,
+        areaName: p.area?.nameEn || "Cairo Corridor",
+      }));
+  }, [catalog.data, properties]);
 
-    if (currency === "USD") {
-      const usdVal = Math.round(num / (fxRates.USD || 48.85));
-      return `$${usdVal.toLocaleString("en-US")}`;
-    }
-    if (currency === "EUR") {
-      const eurVal = Math.round(num / (fxRates.EUR || 53.20));
-      return `€${eurVal.toLocaleString("en-US")}`;
-    }
-    return `${num.toLocaleString("en-US")} EGP`;
-  };
+  const formatPrice = (egp: number) => formatMoney(egp, currency, fxRates);
+  const formatPricePerSqm = (egp: number) =>
+    egp > 0 ? `${formatMoney(egp, currency, fxRates)} / m²` : "N/A";
 
-  // 7. Format Price / m² (Safe for EGP or Piastres)
-  const formatPricePerSqm = (egpAmount: number) => {
-    let val = egpAmount;
-    if (isNaN(val) || val <= 0) return "N/A";
-    if (val > 100000) {
-      val = Math.round(val / 100);
-    }
-    if (currency === "USD") {
-      const usdVal = Math.round(val / (fxRates.USD || 48.85));
-      return `$${usdVal.toLocaleString("en-US")} / m²`;
-    }
-    if (currency === "EUR") {
-      const eurVal = Math.round(val / (fxRates.EUR || 53.20));
-      return `€${eurVal.toLocaleString("en-US")} / m²`;
-    }
-    return `${val.toLocaleString("en-US")} EGP / m²`;
-  };
-
-  // 8. Share link action
+  // 7. Share link action
   const handleShare = () => {
-    if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
-      setShareCopied(true);
-      setTimeout(() => setShareCopied(false), 2500);
-      toast.success("Comparison Link Copied", {
-        description: "Direct link to this parametric comparison is copied to clipboard.",
-      });
-    }
+    navigator.clipboard.writeText(window.location.href);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2500);
+    toast.success("Comparison Link Copied", {
+      description: "Direct link to this parametric comparison is copied to clipboard.",
+    });
   };
 
-  // 9. Consolidate all amenities across residences
+  // 8. Consolidate all amenities across residences
   const allAmenities = useMemo(() => {
     const map = new Map<string, { id: string; nameEn: string; category: string }>();
     properties.forEach((p) => {
@@ -420,7 +268,7 @@ function CompareContent() {
 
   // Grid class template
   const tableGridClass = useMemo(() => {
-    const totalCols = properties.length + (properties.length < 4 ? 1 : 0);
+    const totalCols = properties.length + (properties.length < MAX_COMPARE ? 1 : 0);
     if (totalCols === 2) return "cols-2";
     if (totalCols === 3) return "cols-3";
     return "cols-4";
@@ -507,7 +355,7 @@ function CompareContent() {
       {/* Main Comparison Matrix */}
       <main className="comp-workspace">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {loading && properties.length === 0 && (
+          {isLoading && (
             <div className="bg-white p-12 rounded-2xl border border-[rgba(30,42,74,0.12)] text-center">
               <div className="inline-block w-8 h-8 border-3 border-[#C69749] border-t-transparent rounded-full animate-spin mb-4" />
               <p className="font-serif text-lg text-navy-900 font-medium">Assembling parametric comparison matrix...</p>
@@ -515,12 +363,12 @@ function CompareContent() {
             </div>
           )}
 
-          {error && properties.length === 0 && (
+          {errorMessage && (
             <div className="bg-white p-10 rounded-2xl border border-red-200 text-center">
-              <p className="text-red-700 font-medium mb-3">{error}</p>
+              <p className="text-red-700 font-medium mb-3">{errorMessage}</p>
               <button
                 type="button"
-                onClick={() => loadProperties()}
+                onClick={() => retry()}
                 className="px-5 py-2.5 bg-navy-900 text-white rounded-lg text-sm font-semibold hover:bg-navy-800 transition"
               >
                 Retry Comparison
@@ -528,7 +376,7 @@ function CompareContent() {
             </div>
           )}
 
-          {properties.length >= 2 && (
+          {properties.length >= MIN_COMPARE && (
             <div className="comp-table-container">
               <div className="comp-table-scroll">
                 <div className={`comp-table ${tableGridClass}`}>
@@ -540,13 +388,13 @@ function CompareContent() {
                       Residences Selected ({properties.length}/4)
                     </div>
 
-                    {properties.map((p, idx) => {
-                      const cover = p.coverImage || (p.images && p.images[0]) || "/images/properties/property-1.jpg";
+                    {properties.map((p) => {
+                      const cover = p.coverImage || (p.images && p.images[0]) || PLACEHOLDER_PROPERTY_IMAGE;
                       return (
                         <div key={p.id} className="cell-prop">
                           <div className="prop-header-card">
                             <div className="prop-hdr-top">
-                              <Image
+                              <ImageWithFallback
                                 src={cover}
                                 alt={p.titleEn}
                                 fill
@@ -557,7 +405,8 @@ function CompareContent() {
                               <button
                                 type="button"
                                 className="btn-remove-col"
-                                onClick={() => handleRemoveProperty(idx)}
+                                onClick={() => handleRemoveProperty(p)}
+                                disabled={addMutation.isPending}
                                 title="Remove residence from comparison"
                                 aria-label={`Remove ${p.titleEn} from comparison`}
                               >
@@ -593,9 +442,9 @@ function CompareContent() {
                     })}
 
                     {/* Empty Slot if less than 4 properties */}
-                    {properties.length < 4 && (
+                    {properties.length < MAX_COMPARE && (
                       <div className="cell-prop">
-                        {addingPropertyId ? (
+                        {addMutation.isPending ? (
                           <div className="prop-header-empty animate-pulse">
                             <div className="empty-slot-icon">
                               <div className="w-5 h-5 border-2 border-[#C69749] border-t-transparent rounded-full animate-spin" />
@@ -613,7 +462,7 @@ function CompareContent() {
                             <button
                               type="button"
                               className="btn-add-unit"
-                              onClick={handleOpenAddModal}
+                              onClick={() => setIsAddModalOpen(true)}
                             >
                               + Select from Catalog
                             </button>
@@ -648,7 +497,7 @@ function CompareContent() {
                             <span className="val-sub">Gross contract value</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -667,14 +516,14 @@ function CompareContent() {
                             <span className="val-sub">{p.area.nameEn} market rate</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
 
                   {/* Row: Estimated Down Payment (10%) */}
                   {(() => {
-                    const values = properties.map((p) => Math.round(Number(p.price) * 0.1));
+                    const values = properties.map((p) => Math.round(p.price * 0.1));
                     const hasDiff = isRowDifferent(values);
                     if (diffsOnly && !hasDiff) return null;
                     return (
@@ -683,26 +532,26 @@ function CompareContent() {
                         {properties.map((p) => (
                           <div key={`down-${p.id}`} className="cell-prop">
                             <span className="val-mono">
-                              {formatPrice(Math.round(Number(p.price) * 0.1))}
+                              {formatPrice(Math.round(p.price * 0.1))}
                             </span>
                             <span className="val-sub">10% standard contract reservation</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
 
                   {/* Row: Quarterly Installment (7 Years / 28 Quarters) */}
                   {(() => {
-                    const values = properties.map((p) => Math.round((Number(p.price) * 0.8) / 28));
+                    const values = properties.map((p) => Math.round((p.price * 0.8) / 28));
                     const hasDiff = isRowDifferent(values);
                     if (diffsOnly && !hasDiff) return null;
                     return (
                       <div className={`comp-row ${hasDiff ? "has-diff" : "is-identical"}`}>
                         <div className="cell-attr">Quarterly Installment (Est.)</div>
                         {properties.map((p) => {
-                          const quarterly = Math.round((Number(p.price) * 0.8) / 28);
+                          const quarterly = Math.round((p.price * 0.8) / 28);
                           return (
                             <div key={`qtr-${p.id}`} className="cell-prop">
                               <span className="val-mono">{formatPrice(quarterly)} / qtr</span>
@@ -710,7 +559,7 @@ function CompareContent() {
                             </div>
                           );
                         })}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -731,7 +580,7 @@ function CompareContent() {
                             <span className="val-sub">Registered title</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -761,7 +610,7 @@ function CompareContent() {
                             <span className="val-sub">Gross architectural interior</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -780,7 +629,7 @@ function CompareContent() {
                             <span className="val-sub">Master en-suite layouts</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -799,7 +648,7 @@ function CompareContent() {
                             <span className="val-sub">Luxury marble finish</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -818,7 +667,7 @@ function CompareContent() {
                             <span className="val-sub">Prime structural typology</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -848,7 +697,7 @@ function CompareContent() {
                             <span className="val-sub">Tier-1 master development corridor</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -864,14 +713,14 @@ function CompareContent() {
                         {properties.map((p) => (
                           <div key={`geo-${p.id}`} className="cell-prop">
                             <span className="val-mono text-xs">
-                              {Number.isFinite(Number(p.latitude)) && Number.isFinite(Number(p.longitude))
-                                ? `${Number(p.latitude).toFixed(4)}° N, ${Number(p.longitude).toFixed(4)}° E`
-                                : "30.0155° N, 31.4880° E"}
+                              {isValidLatLng(p.latitude, p.longitude)
+                                ? `${p.latitude.toFixed(4)}° N, ${p.longitude.toFixed(4)}° E`
+                                : "—"}
                             </span>
                             <span className="val-sub">High precision geodetic pin</span>
                           </div>
                         ))}
-                        {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                        {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                       </div>
                     );
                   })()}
@@ -916,7 +765,7 @@ function CompareContent() {
                               </div>
                             );
                           })}
-                          {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                          {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                         </div>
                       );
                     })
@@ -928,7 +777,7 @@ function CompareContent() {
                           <span className="val-sub">Private compound amenities included</span>
                         </div>
                       ))}
-                      {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                      {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                     </div>
                   )}
 
@@ -963,7 +812,7 @@ function CompareContent() {
                         </div>
                       </div>
                     ))}
-                    {properties.length < 4 && <div className="cell-prop bg-canvas" />}
+                    {properties.length < MAX_COMPARE && <div className="cell-prop bg-canvas" />}
                   </div>
                 </div>
               </div>
@@ -973,7 +822,7 @@ function CompareContent() {
       </main>
 
       {/* Sticky Bottom Floating Quick-Bar */}
-      {!loading && !error && properties.length >= 2 && (
+      {properties.length >= MIN_COMPARE && (
         <aside className="comp-bottom-bar" aria-label="Quick comparison summary">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="comp-bottom-row">
@@ -1019,7 +868,7 @@ function CompareContent() {
         maxWidth="lg"
       >
         <div className="max-h-[60vh] overflow-y-auto space-y-3 pr-1">
-          {loadingCatalog ? (
+          {catalog.isPending ? (
             <div className="py-12 text-center">
               <div className="inline-block w-6 h-6 border-2 border-[#C69749] border-t-transparent rounded-full animate-spin mb-2" />
               <p className="text-xs text-ink-3">Loading available residences...</p>
@@ -1037,8 +886,8 @@ function CompareContent() {
                 onClick={() => handleSelectPropertyToAdd(item)}
               >
                 <div className="relative w-20 h-14 rounded-md overflow-hidden flex-none bg-navy-950">
-                  <Image
-                    src={item.coverImage || "/images/properties/property-1.jpg"}
+                  <ImageWithFallback
+                    src={item.coverImage || PLACEHOLDER_PROPERTY_IMAGE}
                     alt={item.titleEn}
                     fill
                     className="object-cover"

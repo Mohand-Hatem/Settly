@@ -13,6 +13,14 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import { PropertyItem } from "./PropertyCard";
+import { isValidLatLng } from "@/lib/geo";
+import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
+
+// Swap a broken listing photo for the placeholder once (the guard prevents a loop)
+function handleImgError(e: React.SyntheticEvent<HTMLImageElement>) {
+  const img = e.currentTarget;
+  if (!img.src.endsWith(PLACEHOLDER_PROPERTY_IMAGE)) img.src = PLACEHOLDER_PROPERTY_IMAGE;
+}
 
 interface SearchMapProps {
   properties: PropertyItem[];
@@ -31,6 +39,13 @@ const GOLDEN_SQUARE_COORDS: [number, number][] = [
   [30.014, 31.461],
   [30.032, 31.468],
 ];
+
+// Leaflet's flyTo/flyToBounds divide by the container size, so animating a map whose
+// container is hidden (display:none → 0×0) yields NaN coordinates and throws.
+function hasSize(map: L.Map): boolean {
+  const size = map.getSize();
+  return size.x > 0 && size.y > 0;
+}
 
 // Child Controller component to handle map events, auto-resize, pan/zoom & coordinate tracking
 function MapEventsController({
@@ -53,6 +68,8 @@ function MapEventsController({
   onMapReady: (map: L.Map) => void;
 }) {
   const map = useMap();
+  const activePropertyRef = React.useRef(activeProperty);
+  activePropertyRef.current = activeProperty;
 
   // Expose map instance to parent once mounted
   useEffect(() => {
@@ -73,8 +90,16 @@ function MapEventsController({
   useEffect(() => {
     const container = map.getContainer();
     if (!container || typeof ResizeObserver === "undefined") return;
+    let wasHidden = !hasSize(map);
     const ro = new ResizeObserver(() => {
       map.invalidateSize();
+      const isVisible = hasSize(map);
+      // Camera moves are skipped while hidden, so catch up on the selection when revealed
+      const target = activePropertyRef.current;
+      if (wasHidden && isVisible && target && isValidLatLng(target.lat, target.lng)) {
+        map.setView([target.lat, target.lng], 14.5, { animate: false });
+      }
+      wasHidden = !isVisible;
     });
     ro.observe(container);
     return () => ro.disconnect();
@@ -84,15 +109,12 @@ function MapEventsController({
   const syncInspectCardPosition = React.useCallback(() => {
     if (
       !activeProperty ||
-      !Number.isFinite(Number(activeProperty.lat)) ||
-      !Number.isFinite(Number(activeProperty.lng))
+      !isValidLatLng(activeProperty.lat, activeProperty.lng)
     ) {
       setInspectPos(null);
       return;
     }
-    const lat = Number(activeProperty.lat);
-    const lng = Number(activeProperty.lng);
-    const pt = map.latLngToContainerPoint([lat, lng]);
+    const pt = map.latLngToContainerPoint([activeProperty.lat, activeProperty.lng]);
     const size = map.getSize();
     const halfCard = 145;
     const padding = 14;
@@ -184,6 +206,11 @@ export function SearchMap({
     });
   }, [selectedId, properties]);
 
+  // Markers added after the effect above ran (e.g. when live data replaces the demo set)
+  // pick up the highlight when Leaflet inserts their element
+  const selectedIdRef = React.useRef(selectedId);
+  selectedIdRef.current = selectedId;
+
   // New Cairo Golden Square default center
   const cairoCenter: [number, number] = [30.0155, 31.492];
 
@@ -192,13 +219,11 @@ export function SearchMap({
     if (
       activeProperty &&
       mapInstance &&
-      Number.isFinite(Number(activeProperty.lat)) &&
-      Number.isFinite(Number(activeProperty.lng))
+      hasSize(mapInstance) &&
+      isValidLatLng(activeProperty.lat, activeProperty.lng)
     ) {
-      const lat = Number(activeProperty.lat);
-      const lng = Number(activeProperty.lng);
       setIsFlying(true);
-      mapInstance.flyTo([lat, lng], 14.5, {
+      mapInstance.flyTo([activeProperty.lat, activeProperty.lng], 14.5, {
         animate: true,
         duration: 1.1,
         easeLinearity: 0.22,
@@ -222,15 +247,10 @@ export function SearchMap({
 
   // Smooth cinematic flight back to Golden Square overview
   const handleResetBounds = () => {
-    if (!mapInstance || properties.length === 0) return;
+    if (!mapInstance || !hasSize(mapInstance) || properties.length === 0) return;
     const validCoords = properties
-      .filter(
-        (p) =>
-          Number.isFinite(Number(p.lat)) &&
-          Number.isFinite(Number(p.lng)) &&
-          Math.abs(Number(p.lat)) > 1,
-      )
-      .map((p) => [Number(p.lat), Number(p.lng)] as [number, number]);
+      .filter((p) => isValidLatLng(p.lat, p.lng))
+      .map((p) => [p.lat, p.lng] as [number, number]);
 
     if (validCoords.length === 0) return;
     setIsFlying(true);
@@ -293,18 +313,19 @@ export function SearchMap({
 
             {/* Custom Interactive HTML Pin Markers with Stable Icons */}
             {properties
-              .filter(
-                (p) =>
-                  Number.isFinite(Number(p.lat)) &&
-                  Number.isFinite(Number(p.lng)) &&
-                  markerIcons[p.id],
-              )
+              .filter((p) => isValidLatLng(p.lat, p.lng) && markerIcons[p.id])
               .map((p) => (
                 <Marker
                   key={p.id}
-                  position={[Number(p.lat), Number(p.lng)]}
+                  position={[p.lat, p.lng]}
                   icon={markerIcons[p.id]}
                   eventHandlers={{
+                    add: (e) => {
+                      e.target
+                        .getElement()
+                        ?.querySelector(".pin")
+                        ?.classList.toggle("on", p.id === selectedIdRef.current);
+                    },
                     click: (e) => {
                       L.DomEvent.stopPropagation(e);
                       onSelectProperty(p.id);
@@ -391,10 +412,8 @@ export function SearchMap({
           </div>
           <div className="map-cockpit-coords">
             <div className="coords-value">
-              {activeProperty &&
-              Number.isFinite(Number(activeProperty.lat)) &&
-              Number.isFinite(Number(activeProperty.lng))
-                ? `${Number(activeProperty.lat).toFixed(4)}° N · ${Number(activeProperty.lng).toFixed(4)}° E`
+              {activeProperty && isValidLatLng(activeProperty.lat, activeProperty.lng)
+                ? `${activeProperty.lat.toFixed(4)}° N · ${activeProperty.lng.toFixed(4)}° E`
                 : "30.0155° N · 31.4920° E"}
             </div>
           </div>
@@ -458,6 +477,7 @@ export function SearchMap({
                   src={activeProperty.img}
                   alt={activeProperty.title}
                   loading="lazy"
+                  onError={handleImgError}
                 />
               </div>
               <div className="map-pop-body">
@@ -523,7 +543,7 @@ export function SearchMap({
                 id={`tray-card-${p.id}`}
                 onClick={() => onSelectProperty(p.id)}
               >
-                <img src={p.img} alt={p.title} loading="lazy" />
+                <img src={p.img} alt={p.title} loading="lazy" onError={handleImgError} />
                 <div className="map-tray-info">
                   <b>{p.title}</b>
                   <span>

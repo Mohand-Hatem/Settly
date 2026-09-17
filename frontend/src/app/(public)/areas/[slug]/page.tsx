@@ -719,7 +719,7 @@ export default function AreaDetailPage({
                       x="602"
                       y="18"
                       fill="#fff"
-                      fontFamily="JetBrains Mono, monospace"
+                      style={{ fontFamily: "var(--mono-ui)" }}
                       fontSize="11"
                       fontWeight="700"
                       textAnchor="middle"

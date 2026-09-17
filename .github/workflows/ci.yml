@@ -28,9 +28,9 @@ jobs:
       BETTER_AUTH_URL: http://localhost:4000
       FRONTEND_URL: http://localhost:3000
       RESEND_API_KEY: re_ci_placeholder
-      CLOUDINARY_CLOUD_NAME: dmzcnnxzp
-      CLOUDINARY_API_KEY: 659475829112882
-      CLOUDINARY_API_SECRET: bZ8jb2AovpZlYgCds6DySzAly0E
+      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
     steps:
       - name: Checkout Code
@@ -139,9 +139,9 @@ jobs:
           BETTER_AUTH_URL: http://localhost:4005
           FRONTEND_URL: http://localhost:3000
           RESEND_API_KEY: re_ci_placeholder
-          CLOUDINARY_CLOUD_NAME: dmzcnnxzp
-          CLOUDINARY_API_KEY: 659475829112882
-          CLOUDINARY_API_SECRET: bZ8jb2AovpZlYgCds6DySzAly0E
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
       - name: Security Audit (Critical Only)
         run: npm --prefix backend audit --audit-level=critical

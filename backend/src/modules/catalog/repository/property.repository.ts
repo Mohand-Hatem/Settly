@@ -9,6 +9,7 @@ import type {
   PropertyResponse,
   PropertyImage,
 } from "../schema/property.schema.js";
+import type { CompareItem } from "../schema/compare.schema.js";
 
 const propertyInclude = {
   images: {
@@ -650,5 +651,72 @@ export async function reorderPropertyImages(
 export async function countPropertyImages(propertyId: string): Promise<number> {
   return await prisma.propertyImage.count({
     where: { propertyId },
+  });
+}
+
+// ==============================================================================
+// Compare
+// ==============================================================================
+
+const propertyCompareInclude = {
+  area: true,
+  images: {
+    orderBy: { order: "asc" as const },
+  },
+  amenities: {
+    include: {
+      amenity: true,
+    },
+  },
+} as const;
+
+/**
+ * Published properties matching any of the given ids or slugs, in database order.
+ * Prices stay in piastres; pricePerSqm is piastres per m².
+ */
+export async function findPublishedForCompare(refs: string[]): Promise<CompareItem[]> {
+  const properties = await prisma.property.findMany({
+    relationLoadStrategy: "join",
+    where: {
+      OR: [{ id: { in: refs } }, { slug: { in: refs } }],
+      status: "PUBLISHED",
+    },
+    include: propertyCompareInclude,
+  });
+
+  return properties.map((p) => {
+    const areaSqm = Number(p.areaSqm);
+    const cover = p.images.find((img) => img.isCover) ?? p.images[0];
+    return {
+      id: p.id,
+      slug: p.slug,
+      titleEn: p.titleEn,
+      titleAr: p.titleAr,
+      propertyType: p.propertyType,
+      listingIntent: p.listingIntent,
+      price: p.price.toString(),
+      rentalPeriod: p.rentalPeriod,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      areaSqm,
+      pricePerSqm: areaSqm > 0 ? Math.round(Number(p.price) / areaSqm) : 0,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      coverImage: cover?.url ?? null,
+      images: p.images.map((img) => img.url),
+      area: {
+        id: p.area.id,
+        slug: p.area.slug,
+        nameEn: p.area.nameEn,
+        nameAr: p.area.nameAr,
+      },
+      amenities: p.amenities.map((pa) => ({
+        id: pa.amenity.id,
+        slug: pa.amenity.slug,
+        nameEn: pa.amenity.nameEn,
+        nameAr: pa.amenity.nameAr,
+        category: pa.amenity.category,
+      })),
+    };
   });
 }

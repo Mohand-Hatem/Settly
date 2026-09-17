@@ -2171,3 +2171,67 @@ operation, not a workflow) · deleting AuditLog entries on user deletion (destro
 > zero application code. **Next phase: Tier-B Documentation update & verification spikes.**
 
 ---
+
+## 5. Proposed decisions (awaiting approval)
+
+Raised during implementation, recorded under CLAUDE.md rule 3. **Not locked.** Each needs an
+explicit decision before it is treated as settled; the topic documents are unchanged until then.
+
+### P1 — Map library drift: Leaflet in code vs MapLibre locked
+`2026-09-17` · **PROPOSED** · Frontend · Affects: `architecture/FRONTEND.md` §11
+
+**Context.** FRONTEND.md §11 locks **MapLibre + MapTiler** for display. The search map
+(`components/search/SearchMap.tsx`, `react-leaflet`) and the area maps
+(`components/areas/AreaRadarMap.tsx`, `AreaDetailMap.tsx`, plain Leaflet) use **Leaflet**,
+with MapTiler raster tiles on search and CARTO tiles on areas. Leaflet is not on the rejected list,
+but it is not the locked choice either. Map bugs (NaN camera flights on hidden maps, marker label
+overflow) were fixed in Leaflet on 2026-09-17 to avoid mixing a migration into a bug fix.
+
+**Options.** (a) Migrate the three maps to MapLibre GL (vector tiles, RTL work under V26).
+(b) Amend §11 to accept Leaflet + MapTiler raster tiles, and move V26's map concern accordingly.
+
+**Also noted.** The MapTiler key is hard-coded in `SearchMap.tsx` although
+`NEXT_PUBLIC_MAPTILER_KEY` exists; the area maps use CARTO tiles, which no document lists.
+
+### P2 — Frontend server state: TanStack Query adoption started; nuqs and Zustand not yet
+`2026-09-17` · **IN PROGRESS** (implements locked FRONTEND.md §3) · Frontend · Affects: `architecture/FRONTEND.md` §3
+
+**Context.** FRONTEND.md §3 locks TanStack Query (server state), nuqs (URL state) and Zustand
+(client UI state), but the pages were built with ad-hoc `fetch` + `useState`. The Compare page
+glitched on add/remove because server data was duplicated in component state and re-synchronised
+from the URL by an effect.
+
+**Implemented.** `@tanstack/react-query` with a root `QueryProvider`, query-key factories
+(`lib/query/keys.ts`) and shared query definitions (`lib/query/catalog.ts`) on the generated
+`openapi-fetch` client. Compare, Search and Areas are migrated. On Compare, the `ids` URL param is
+the single source of truth and is written through one `history.replaceState` helper.
+
+**Still open.** Adopting **nuqs** for URL state (Compare ids, search filters), **Zustand** for the
+compare tray, and migrating the remaining pages (agents, area detail, market insights, property
+detail client parts).
+
+### P3 — Fonts are self-hosted with `next/font/local`
+`2026-09-17` · **PROPOSED** · Frontend · Affects: `design/DESIGN_SYSTEM.md` (typography)
+
+**Context.** `next/font/google` downloads font files at dev start and build time, and silently
+substitutes a metric fallback (Arial) for a whole family if any download fails. On the
+development network some `fonts.gstatic.com` connections from Node time out, so Plus Jakarta Sans
+rendered as Arial.
+
+**Implemented.** The Latin (Spectral, Plus Jakarta Sans, JetBrains Mono) and Arabic (IBM Plex Sans
+Arabic, Noto Naskh Arabic) woff2 subsets are committed under `frontend/src/fonts/` (SIL OFL 1.1),
+with Google's `unicode-range`, so builds make no network requests for fonts. The font tokens
+(`--display`, `--sans`, `--mono-ui`) are defined once in `app/globals.css`, with the Arabic
+companions listed first (their `unicode-range` keeps them off Latin text).
+
+### P4 — Open product/API questions
+`2026-09-17` · **OPEN** · Catalog
+
+1. **Area cover images.** `Area` has no image field; the areas directory uses static editorial
+   images from `frontend/public/images`. Should area covers become admin-managed (schema + API
+   change)?
+2. **Compare with unpublished ids.** `GET /api/v1/catalog/compare` returns 422 when fewer than two
+   of the requested ids are published. Should it instead return the published subset and report
+   the missing ids? (The frontend currently falls back to the latest listings on 422.)
+3. **Seed image URLs.** `backend/scripts/seed-catalog.ts` falls back to relative `/images/...`
+   URLs when the Cloudinary map is missing, which violates `PropertyImage.url` (`z.string().url()`).

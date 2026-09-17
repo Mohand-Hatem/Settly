@@ -1,5 +1,11 @@
 # Phase 08: Search Intelligence, pgvector & Shortlist AI Agent
 
+> **⚠️ Non-authoritative (Decision #48, 2026-09-17).** V1 order and scope are defined by
+> `../process/ROADMAP.md` and `../process/IMPLEMENTATION_PLAN.md`. This file is kept as a screen
+> inventory and progress record; where it disagrees with those documents or with
+> `../DECISIONS.md`, they win. Its "luxury / escrow" framing is superseded by #45 and #47.
+
+
 > **Status**: ⬜ Not Started  
 > **Milestone**: 4-Arm Hybrid Search Engine & Gemini Shortlist AI Agent  
 > **Governing Specifications**: `docs/architecture/SEARCH.md`, `docs/architecture/AGENT.md`, `docs/architecture/RAG.md`  

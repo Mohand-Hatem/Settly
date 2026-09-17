@@ -1,14 +1,18 @@
 # Search Architecture
 
     Status:       LOCKED
-    Last Updated: 2026-09-05
-    Derived From: Decisions #14, #15, #24, #26, #27, #39, #40
+    Last Updated: 2026-09-17
+    Derived From: Decisions #14, #15, #24, #26, #27, #39, #40, #99
     Related:      DATABASE.md, AI.md, API.md Section 9, ../process/SEED_DATA.md
 
 ## 1. Purpose
 
-The complete search system: three execution paths, one service, two HTTP projections, bilingual
-retrieval, and the evaluation gate that governs its quality.
+The complete search system: three execution paths, one service, two HTTP projections, language
+scope, and the evaluation gate that governs its quality.
+
+**V1 language scope (#99): English only.** Queries, indexed content and results are English. The
+Arabic parts of this document (the Arabic tsvector, Arabic normalisation, cross-language retrieval,
+AR rows of the evaluation gate) are **Future / Optional** and not built or measured in V1.
 
 ## 2. Three execution paths, one endpoint's worth of logic
 
@@ -57,7 +61,7 @@ Parses are cached.
 |---|---|---|
 | Structured | SQL predicates | Always |
 | Geographic | PostGIS (`ST_DWithin`, bbox, KNN) | Point/bounds present |
-| Lexical | Two generated tsvectors (`searchVectorEn`/`Ar`) + `pg_trgm` | Free text present |
+| Lexical | Generated tsvector `searchVectorEn` + `pg_trgm` (V1); `searchVectorAr` stays in the schema for future compatibility but is not queried in V1 (#99, #101) | Free text present |
 | Semantic | pgvector, one multilingual embedding column | Residual intent text present |
 
 **Selectivity switch:** under ~1000 candidates, exact distance (no index); above, HNSW iterative
@@ -68,7 +72,10 @@ incomparable scales. Business boosts (freshness, completeness, agent responsiven
 after, additively, **capped** so they reorder near-equivalents but never surface an irrelevant
 result above a relevant one.
 
-## 6. Bilingual retrieval (Decision #39 — supersedes the earlier canonical-English design)
+## 6. Bilingual retrieval (Decision #39) — deferred for V1 (#99)
+
+> **Not a V1 requirement.** V1 search is English only. This section is kept as the design for a
+> future Arabic phase.
 
 **No canonical English text.** Cross-language retrieval (AR→EN, EN→AR) is carried **entirely by
 the multilingual embedding model** — this is the highest-stakes dependency in the system (V23).
@@ -82,7 +89,7 @@ the evaluation thresholds below.
 ## 7. Embedding composition
 
 One vector per `Property`, a column, partial HNSW `WHERE status='PUBLISHED'`. Composed from
-whichever authored language content exists (both when both present) plus structured attributes
+the English content in V1 (#99; both languages only in a future Arabic phase) plus structured attributes
 (type, bedrooms as words, area name, amenity names). **Excluded**: price numerals, coordinates,
 agent identity, the full area guide (would homogenise same-area listings).
 
@@ -100,16 +107,17 @@ it. Past 500, prompt refinement rather than deepening. Expired context → `410`
 
 ## 10. Retrieval evaluation gate (Decision #27, thresholds locked in #32)
 
-| Metric | Threshold |
-|---|---|
-| Recall@10, same-language (EN→EN, AR→AR) | >= 0.80 |
-| Recall@10, cross-language (EN→AR, AR→EN) | >= 0.65 |
-| Zero-result rate | <= 10% |
-| Relevant result in top 3 | >= 0.70 |
+| Metric | Threshold | V1 |
+|---|---|---|
+| Recall@10, EN→EN | >= 0.80 | **Applies** |
+| Recall@10, AR→AR | >= 0.80 | Deferred (#99) |
+| Recall@10, cross-language (EN→AR, AR→EN) | >= 0.65 | Deferred (#99) |
+| Zero-result rate | <= 10% | **Applies** |
+| Relevant result in top 3 | >= 0.70 | **Applies** |
 
-**Pre-committed, not tuned after seeing results.** If cross-language Recall@10 falls below ~0.50,
-the bilingual semantic-search assumption is materially unsuccessful and the embedding decision
-(#24) must be revisited. Runs as a CI **report**, never a gate (#41) — evaluated against the
+**Pre-committed, not tuned after seeing results.** In a future Arabic phase: if cross-language
+Recall@10 falls below ~0.50, the bilingual semantic-search assumption is materially unsuccessful and
+the embedding decision (#24) must be revisited. Runs as a CI **report**, never a gate (#41) — evaluated against the
 seed corpus, never against production traffic directly.
 
 ## 11. Degradation
@@ -120,8 +128,8 @@ Lexical fails → semantic + structured continue.
 
 ## 12. SEO vs. interactive search — a deliberate separation
 
-`/[locale]/properties` (interactive, SSR, `noindex` when filtered) is a tool, not a landing page.
-Organic discovery comes from curated ISR facet pages (`/[locale]/properties/[facet]`) — a finite,
+`/properties` (interactive, SSR, `noindex` when filtered; no locale segment in V1, #99) is a tool,
+not a landing page. Organic discovery comes from curated ISR facet pages (`/properties/[facet]`) — a finite,
 indexed set. See `FRONTEND.md`.
 
 ## 13. Never exposed through the public contract
@@ -130,8 +138,8 @@ Arm timings, RRF scores, ranking internals — those go to `SearchEvent` and log
 
 ## 14. Pending verification
 
-**V23** (Gemini AR<->EN cross-lingual retrieval quality — the highest-stakes item in the project)
-· **V24** (Arabic normalisation quality) · V1/V2 (embedding dimensions, pgvector limits).
+V1/V2 (embedding dimensions, pgvector limits). **Deferred by #99:** V23 (AR↔EN cross-lingual
+retrieval quality) and V24 (Arabic normalisation quality).
 
 ## 15. Rejected / do not add
 

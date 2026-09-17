@@ -1,5 +1,11 @@
 # Phase 09: Governance, Trust & Administration
 
+> **⚠️ Non-authoritative (Decision #48, 2026-09-17).** V1 order and scope are defined by
+> `../process/ROADMAP.md` and `../process/IMPLEMENTATION_PLAN.md`. This file is kept as a screen
+> inventory and progress record; where it disagrees with those documents or with
+> `../DECISIONS.md`, they win. Its "luxury / escrow" framing is superseded by #45 and #47.
+
+
 > **Status**: ⬜ Not Started  
 > **Milestone**: 4 Admin Command Screens (Screens 30–33) & Fiduciary Governance  
 > **Governing Candidates**: `docs/design/candidates/settly-landing/admin/`  

@@ -14,8 +14,8 @@ simplify or reinterpret it; see `../DECISIONS.md` entry #41 for full rationale.
 
 | Layer | Environment | Contains | Must NOT contain |
 |---|---|---|---|
-| **1 Unit** | None | RRF, Arabic normalisation, cursor codec, guard predicates, chunking, prompt composition, money arithmetic | Prisma, HTTP, wall-clock time |
-| **2 Service** | Real Postgres | Every transition/guard/invariant/policy function — every state-machine transition in BUSINESS_RULES.md Sections 2-5 (Property 14, Viewing 11, Offer 15, Payment 7) | HTTP concerns, external calls |
+| **1 Unit** | None | RRF, cursor codec, guard predicates, chunking, prompt composition, money arithmetic | Prisma, HTTP, wall-clock time |
+| **2 Service** | Real Postgres | Every transition/guard/invariant/policy function — every state-machine transition in BUSINESS_RULES.md Sections 2-5 (Property 17 after #77/#78/#81, Viewing 11, Offer 15, Payment 7; revocation and sale-review transitions from #58/#82 once designed) | HTTP concerns, external calls |
 | **3 Database** | Real Postgres | Raw SQL in `sql/`, PostGIS, pgvector recall, FTS+trigram, generated columns, every constraint, migrations up/down | Business logic |
 | **4 Concurrency** | Real Postgres, **serial, no wrapping transaction** | I9/I11/I12 advisory locks, viewing overlap, deposit race, idempotency races, offer CAS | Anything not racing |
 | **5 API/contract** | Postgres + Redis | Status codes, RFC 9457 shapes, idempotency semantics, cursor round-trip, rate-limit headers, SSE framing, the 404-vs-403 leak rule | Business rules already covered at layer 2 |
@@ -77,8 +77,8 @@ Playwright traces + database snapshots captured on failure.
 
 ## 8. Frontend and E2E
 
-Component tests for bilingual rendering, RTL under `dir="rtl"`, `dir="auto"` on mixed content,
-localized validation error mapping, URL-state round-trips, SSE-triggered TanStack Query
+Component tests for validation error mapping (V1 is English only, #99; bilingual, RTL, `dir="auto"`
+and Arabic-normalisation tests are deferred with Arabic), URL-state round-trips, SSE-triggered TanStack Query
 invalidation, axe accessibility assertions — no E2E duplication at component level.
 
 **~12 E2E journeys**: browse+search · property detail · favourite · saved search · verification

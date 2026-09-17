@@ -1,8 +1,8 @@
 # Implementation Plan
 
     Status:       LOCKED (step order and boundaries) · task-level detail may be refined during execution
-    Last Updated: 2026-09-05
-    Derived From: ROADMAP.md, DECISIONS.md Section 2.1, all architecture/ documents
+    Last Updated: 2026-09-17
+    Derived From: ROADMAP.md, DECISIONS.md Section 2.1, all architecture/ documents, discovery decisions #45–#83
     Related:      ROADMAP.md, ../DECISIONS.md, ../design/DESIGN_SYSTEM.md
 
 ## 1. Purpose
@@ -89,19 +89,19 @@ demonstrable end to end.
 | **5** | API skeleton: Zod schemas → OpenAPI generation → CI drift gate; RFC 9457 error middleware; `X-Request-Id`/Pino correlation | `API.md`, `BACKEND.md` §7-9, `OBSERVABILITY.md` | A schema change regenerates the spec and fails CI if uncommitted |
 | **6** | Better Auth wired: sessions, cookie config, `emailVerified`, `role`/`banned`, `preferredLocale` | `AUTH.md` | Register/login/logout work locally with real verification email via Resend; a banned user is rejected immediately |
 | **7** | Identity module: `AgentProfile`, `UserDevice`, agent verification flow | `AUTH.md`, `DOMAIN_MODEL.md` §3 | An agent can register and await verification; an admin can verify them |
-| **8** | Catalog module: `Property` CRUD, two-tier edit moderation, image upload via Cloudinary | `BUSINESS_RULES.md` §2, `STORAGE.md` | Full P1-P14 lifecycle testable at the service layer |
+| **8** | Catalog module: `Property` CRUD, two-tier edit moderation, image upload via Cloudinary | `BUSINESS_RULES.md` §2, `STORAGE.md` | Full property lifecycle (P1–P16 as of #77/#78/#81) testable at the service layer. Whether the listing quota (#80) is enforced in this step: **OPEN** |
 | **9** | Filter search: structured + geo (PostGIS), cursor pagination | `SEARCH.md` §2-3, §9 (filter path only — defer lexical/semantic to Phase 3) | `/search/properties` returns correct results with a stable cursor under concurrent inserts |
-| **10** | Property detail page contract: bilingual fields, `searchVectorEn/Ar` generated columns present (unused until Phase 3) | `DOMAIN_MODEL.md` §4, `FRONTEND.md` §5 | A bilingual property record round-trips correctly |
+| **10** | Property detail page contract: English content fields (V1 is English only, #99), `searchVectorEn` generated column present (unused until Phase 3) | `DOMAIN_MODEL.md` §4, `FRONTEND.md` §5 | A bilingual property record round-trips correctly |
 | **11** | Uploads: authorize/complete flow, magic-byte verification, EXIF stripping | `STORAGE.md`, pending V16 | A malicious-extension upload is rejected; a real image is re-encoded and served without EXIF |
-| **12** | Pipeline module: `Lead`, `AgentAvailability`, `Viewing` — the full V1-V11 state machine including the exclusion constraint and I9 advisory lock | `BUSINESS_RULES.md` §3, `CONCURRENCY_AND_IDEMPOTENCY.md` | Two overlapping confirmations race correctly (layer 4 test); a 4th open request is rejected |
+| **12** | Pipeline module: `Lead` (created on first contact, hybrid pipeline — #75, #83), `AgentAvailability`, `Viewing` — the full V1-V11 state machine including the exclusion constraint and I9 advisory lock | `BUSINESS_RULES.md` §3, `CONCURRENCY_AND_IDEMPOTENCY.md` | Two overlapping confirmations race correctly (layer 4 test); a 4th open request is rejected |
 | **13** | Email verification gate wired to V1 (and O1/O3/O5/Y2 stubbed for Phase 2) | `AUTH.md` §6, `BUSINESS_RULES.md` §9.1 | An unverified user is blocked at viewing-request creation with `email-not-verified` |
 
-**Frontend, in step with the backend (not a separate phase):** `/en`/`/ar` shell, auth pages,
+**Frontend, in step with the backend (not a separate phase):** English-only app shell (no locale segment, #99), auth pages,
 property search + detail (SSR/ISR per `FRONTEND.md` §2), viewing-request flow, generated API
 client wired end to end. This is where Design (Section 8) must have delivered at least the core
 screens — see the dependency note in Section 9.
 
-**Phase 1 exit criteria:** a user can register, verify their email, browse bilingual listings,
+**Phase 1 exit criteria:** a user can register, verify their email, browse English listings,
 search by filter, view a property, and request a viewing — all through the real UI, against the
 real API, with zero mocked business logic.
 
@@ -114,14 +114,17 @@ mandatory Paymob sandbox test for V4) → Messaging (`COMMUNICATION.md` §8) →
 `CONCURRENCY_AND_IDEMPOTENCY.md`'s hardest mechanisms (the deposit race, idempotency keys) get
 built and proven.
 
+Also governed by the discovery decisions: two-party sale completion and its admin review (#77, #82).
+Transaction revenue and subscription billing (#79, #80) are **not placed in any phase yet — OPEN**.
+
 **Exit criteria:** a buyer can submit an offer, have it accepted, pay a deposit through the fake
 adapter with a real webhook signature check, and see the reservation succeed — with a second
 concurrent buyer correctly superseded and refunded.
 
 ## 9. Phase 3 — Intelligence
 
-Lexical + semantic search arms and RRF fusion (`SEARCH.md` §4-6) — **this is where V23/V24 must
-be resolved**, before building on top of an unverified bilingual-retrieval assumption. RAG
+Lexical + semantic search arms and RRF fusion (`SEARCH.md` §4-6) — English only in V1 (#99); V23/V24
+(Arabic and cross-language retrieval) are deferred with Arabic. RAG
 ingestion and the visibility-filtered retrieval pipeline (`RAG.md`). The AI assistant tool-calling
 loop (`AI.md`). The Property Shortlist Agent (`AGENT.md`), built last since it composes the
 others. Seed data (`SEED_DATA.md`) is built and the evaluation gate run **as part of this phase**,
@@ -154,8 +157,8 @@ how to run it.
 
 ## 13. What this document does not do
 
-It does not re-litigate scope (`product/OVERVIEW.md` Section 6 is final), does not re-open any of
-Decisions #1-#42, and does not specify exact file names, class names, or line-level tasks —
+It does not re-litigate scope (`product/OVERVIEW.md` Section 6, as amended by the discovery decisions
+#45–#83), does not re-open any locked decision, and does not specify exact file names, class names, or line-level tasks —
 that granularity belongs to whoever executes each step, constrained by `process/CONVENTIONS.md`.
 
 ## 14. Related documents

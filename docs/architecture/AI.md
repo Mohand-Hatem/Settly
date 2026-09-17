@@ -49,10 +49,13 @@ confirmation** — the model proposes, a human commits. Max ~5 tool iterations p
 
 ## 5. Language behaviour
 
-Detect language per message; `preferredLocale`/UI locale is a **tiebreaker only**; respond in the
-detected language; **no conversation-level language state** — code-switching mid-conversation is
-common and a locked language would be wrong within three messages. An Arabic query legitimately
-retrieves English sources and the assistant answers in Arabic citing them — correct, not a bug.
+**V1 (#99): the assistant and all AI-generated answers are English only.** Per-message language
+detection is not a V1 requirement, and the assistant never produces Arabic output in V1. How a
+non-English message is handled is an AI-spec detail.
+
+*Future / Optional (Arabic phase, #39 §8):* detect language per message; `preferredLocale`/UI locale
+is a tiebreaker only; respond in the detected language; no conversation-level language state; an
+Arabic query may retrieve English sources and be answered in Arabic.
 
 ## 6. Cost and quota controls
 
@@ -98,7 +101,7 @@ decides which path a request takes — see `AGENT.md` Section on the router.
 ## 11. Pending verification
 
 **V1** (Gemini embedding model/dimensions) · **V2** (pgvector/halfvec limits) · **V9** (Gemini
-data-use terms) · **V23** (AR<->EN retrieval quality — see SEARCH.md) · V28 (Zod→OpenAPI for
+data-use terms) · V23 (AR<->EN retrieval quality — deferred by #99) · V28 (Zod→OpenAPI for
 structured output/streaming). None verified — do not implement as final.
 
 ## 12. Rejected / do not add

@@ -32,9 +32,16 @@ row delete (#39, #42).
 
 ## 4. Catalog (6)
 
+> **V1 language scope (#99, #101):** V1 is English only end to end. The `…Ar` columns below (and on
+> `AgentProfile`, `PropertyImage` and `KnowledgeArticle`) **remain in the schema for future
+> compatibility, but are optional and unused in V1**. V1 never requires Arabic data, and no
+> placeholder Arabic is written. *Implementation pending (#101 F1):* `Area.nameAr`, `Amenity.nameAr`
+> and `KnowledgeArticle.titleAr`/`bodyAr` are still `NOT NULL` in the current migration and are to
+> become nullable.
+
 | Table | Purpose | Key fields | Visibility | Deletion |
 |---|---|---|---|---|
-| **`Property`** | The listing | `titleEn/Ar`, `descriptionEn/Ar` (at least one pair required), `searchVectorEn/Ar` (generated), `embedding` (one multilingual vector), status (8-state machine) | Public when `PUBLISHED`/`RESERVED` | Only DRAFT-and-never-published may be hard-deleted (Section 2.2, BUSINESS_RULES); else ARCHIVED/SUSPENDED |
+| **`Property`** | The listing | `titleEn/Ar`, `descriptionEn/Ar` (V1: English pair used; Arabic pair optional and unused, #101), `searchVectorEn/Ar` (generated), `embedding` (one multilingual vector), status (8-state machine) | Public when `PUBLISHED`/`RESERVED` | Only DRAFT-and-never-published may be hard-deleted (Section 2.2, BUSINESS_RULES); else ARCHIVED/SUSPENDED |
 | `PropertyImage` | Ordered media, cover flag | Cloudinary refs | Follows property | Deleted with never-published DRAFT only |
 | `Amenity` | Controlled vocabulary, `nameEn`/`nameAr` | Reference data | Public | Admin-managed |
 | `PropertyAmenity` | Join | — | — | Follows Property row lifecycle |
@@ -61,6 +68,10 @@ row delete (#39, #42).
 | `OfferRevision` | Append-only proposed terms | One per O1/O2/O3/O1b |
 
 ## 7. Payments (5)
+
+> **Designed, not yet implemented (#105):** four subscription tables join this module:
+> `AgentSubscription`, `SubscriptionPeriod`, `SubscriptionPayment` and `SubscriptionPaymentAttempt`.
+> The deposit tables below are unchanged, and `WebhookEvent` and `IdempotencyKey` are shared.
 
 | Table | Purpose | Notes |
 |---|---|---|
@@ -109,6 +120,26 @@ row delete (#39, #42).
 - **`Embedding`** lifecycle is transactional with its source; drift sweeper alerts on any mismatch
 - **`AuditLog`** restricted to ids/enums so anonymisation is never blocked by immutability
 
+## 11a. Pending data-model changes from discovery (2026-09-17) — NOT yet designed
+
+Decisions #49–#83 require data this 39-table model does not hold. They are listed here so nobody
+assumes the inventory above is complete; **the design happens in the discovery data-model step, and
+the table count will change.** The schema and migrations are unchanged.
+
+| Need | Decisions | Notes |
+|---|---|---|
+| Agent application lifecycle (identity + professional proof, review, rejection reason, one pending per user) | #49, #55–#57, #74 | Documents in private storage only |
+| Phone number on `user` | #53, #60 | Visibility computed per request (#66, #72) |
+| Resale completion status, expected delivery, remaining instalments (total, count, frequency, end date) | #54, #61, #68, #73 | |
+| Suspension reason and pre-suspension state; revocation freeze start and remaining time | #58, #63, #65, #69 | |
+| Admin-maintained public-holiday list | #70 | |
+| Two-party sale confirmation and review state | #77, #82 | |
+| `RENTED` relisting with preserved history | #81 | New record vs same record: TBD |
+| `LeadStatus` gains **`WON`** | #83 | Current enum: NEW, CONTACTED, QUALIFIED, LOST |
+| Subscription: exactly three plans (Free, Pro, Enterprise), each agent's plan and paid period, subscription payments and receipts — **designed in #105** (`AgentSubscription`, `SubscriptionPeriod`, `SubscriptionPayment`, `SubscriptionPaymentAttempt`; 39 → 43 tables when implemented) | #80, #88–#93, #103–#105 | Prices $0 / $20 / $50 per month, **USD base** (#89). **Subscription payments are charged in EGP** at the fixed rate 48.98 (#103). Each payment stores the USD base amount (cents), the EGP charged amount (piastres, whole pounds), currency `EGP` and the rate used. It is a separate record from the deposit `Payment`, which requires an offer (#105). **No exchange-rate table.** **No separate quota-counter model** — monthly usage is counted from first publications under the per-user lock (#95) |
+| "Approved, Waiting for Quota" sub-state of `PENDING_REVIEW`, with approval time for FIFO; original review-queue time kept across revocation | #93, #94 | Not a new property state |
+| Transaction revenue / payouts | #79 | TBD |
+
 ## 12. Rejected / do not add
 
 `PropertyTranslation` · `AreaAlias` · `BuyerProfile` · a parallel `User`/`UserProfile` ·
@@ -117,7 +148,8 @@ strings) · `NotificationTemplate` · `CheckoutHold` (columns on `Property` inst
 `NotificationDelivery` (JSON instead) · `PropertyStatusHistory`/`PropertyRevision` ·
 `AiToolCall`/`AgentStep` (JSON instead) · `DailyPropertyStat` (materialized view instead) ·
 `OutboxEvent` (durable status + sweeper instead) · `City`/`District`/`Compound` · `Favorite` ·
-`ConversationParticipant` · a double-entry ledger · agency/organization models. All explicitly
+`ConversationParticipant` · a double-entry ledger · agency/organization models · subscription tiers
+beyond Free/Pro/Enterprise (#80). All explicitly
 evaluated and rejected in Decisions #3, #6, #12, #39 — do not reintroduce because a pattern is
 familiar.
 

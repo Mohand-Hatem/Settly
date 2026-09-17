@@ -1,5 +1,11 @@
 # Phase 07: Financial Escrow, Paymob & Concurrency Controls
 
+> **⚠️ Non-authoritative (Decision #48, 2026-09-17).** V1 order and scope are defined by
+> `../process/ROADMAP.md` and `../process/IMPLEMENTATION_PLAN.md`. This file is kept as a screen
+> inventory and progress record; where it disagrees with those documents or with
+> `../DECISIONS.md`, they win. Its "luxury / escrow" framing is superseded by #45 and #47.
+
+
 > **Status**: ⬜ Not Started  
 > **Milestone**: 15-Minute Reservation Hold, Paymob Gateway, Escrow State Machine  
 > **Governing Specifications**: `docs/architecture/PAYMENTS.md`, `docs/product/BUSINESS_RULES.md`  

@@ -20,6 +20,13 @@ RAG, a bounded agent, two worker classes, nine scheduled jobs, and a seed corpus
 solo part-time work. The failure mode for a project this size is not bad architecture — it is
 months of foundation with nothing to show before motivation runs out.
 
+## 2a. Current position (2026-09-17, Decision #48)
+
+This document and `IMPLEMENTATION_PLAN.md` are the V1 source of truth. `../SETTLY_MASTER_PLAN.md`
+and `../phases/*` are non-authoritative. Application code now exists (identity, catalog and
+public discovery pages, partially); see `../discovery/01-system-audit.md`. The next work is to
+finish the **vertical slice** below.
+
 ## 3. Phase order
 
 | Phase | Status | Scope |
@@ -35,10 +42,14 @@ months of foundation with nothing to show before motivation runs out.
 
 ## 4. Explicitly excluded from any phase
 
-Rental lifecycle, agency organizations, agent subscription billing, escrow/e-signature,
-multi-currency, mobile apps, a public/partner API, ML-trained recommendations, a
+Rental lifecycle, agency organizations, escrow/e-signature,
+multi-currency (subscriptions: USD price, EGP charge at a fixed rate, #103; no toggle), mobile apps, a public/partner API, ML-trained recommendations, a
 search-analytics dashboard, advanced admin analytics — all out of scope per `../product/OVERVIEW.md`
 Section 6, not deferred features.
+
+**No longer excluded (#79, #80):** transaction revenue and the agent listing subscription (exactly
+three plans: Free, Pro, Enterprise). **Their place in the phase order is OPEN** — to be decided
+before any of it is built. Nothing about them changes the vertical-slice definition below.
 
 ## 5. Verification items as pre-work
 

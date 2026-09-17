@@ -80,7 +80,9 @@ faithfully rather than approximating it.
 GitHub Actions: lint, strict `tsc`, tests (against ephemeral Postgres/Redis service containers),
 OpenAPI drift gate, migration validation, destructive-migration detection, module-boundary
 enforcement, `npm audit` (critical only), gitleaks, generated-client freshness. Protected `main`,
-least-privilege workflow permissions, third-party actions pinned to commit SHAs. No staging
+least-privilege workflow permissions, third-party actions pinned to commit SHAs. **Credentials in
+workflows come only from GitHub Actions secrets** (e.g. `CLOUDINARY_CLOUD_NAME`,
+`CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`) — never plaintext in the YAML (#98). No staging
 environment — Vercel previews + one-click Railway rollback are the mitigation.
 
 ## 8. Explicitly excluded

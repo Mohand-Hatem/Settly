@@ -1,5 +1,11 @@
 # Phase 01: Catalog & Discovery Foundation
 
+> **⚠️ Non-authoritative (Decision #48, 2026-09-17).** V1 order and scope are defined by
+> `../process/ROADMAP.md` and `../process/IMPLEMENTATION_PLAN.md`. This file is kept as a screen
+> inventory and progress record; where it disagrees with those documents or with
+> `../DECISIONS.md`, they win. Its "luxury / escrow" framing is superseded by #45 and #47.
+
+
 > **Status**: ✅ Completed & Verified  
 > **Milestone**: Core Public Discovery, Listings Catalog & GIS Mapping  
 > **Completion Date**: 2026-09-15  
@@ -16,7 +22,7 @@ Establish the architectural foundation, database schema, and public discovery po
 ### Frontend
 - **Screen 01 — Landing Page (`/`)**: 13 candidate sections ported 1:1 from `docs/design/candidates/settly-landing/public/index.html`.
 - **Screen 02 — Search & Interactive Leaflet GIS (`/search`)**: Interactive filter bar, dynamic price pins, and responsive inspection cards.
-- **Screen 03 — Property Detail Page (`/properties/[slug]`)**: Bilingual specs, CAD floorplan tabs, financial schedule calculator, verified broker contact.
+- **Screen 03 — Property Detail Page (`/properties/[slug]`)**: English specs (V1 is English only, #99), CAD floorplan tabs, financial schedule calculator, verified broker contact.
 
 ### Backend
 - Express 5 REST API foundation with RFC 9457 Problem Details error handling.

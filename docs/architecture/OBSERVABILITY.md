@@ -30,7 +30,7 @@ the logging boundary.
 
 ## 4. Scheduled-job monitoring
 
-**Sentry Crons** — each of the nine scheduled jobs checks in; a missed check-in alerts. Answers
+**Sentry Crons** — each scheduled job (the original nine, plus the #69 and #77 deadline jobs) checks in; a missed check-in alerts. Answers
 "did reconciliation quietly die?" with zero new infrastructure. Availability/quota — PENDING V14.
 
 ## 5. Health / readiness / degraded — three distinct endpoints

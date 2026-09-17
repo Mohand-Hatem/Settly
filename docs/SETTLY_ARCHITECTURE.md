@@ -135,5 +135,5 @@ Buyer Initiates Reservation
 Settly combines four query modalities into a single Reciprocal Rank Fusion (RRF) result:
 1. **Structured**: Property type, pricing limits, bedroom count, completion date.
 2. **Spatial**: PostGIS `ST_DWithin` calculating geodesic distance from corridor centers or landmarks.
-3. **Lexical**: PostgreSQL `ts_rank` evaluated against English and Arabic `tsvector` generated columns.
+3. **Lexical**: PostgreSQL `ts_rank` evaluated against the English `tsvector` generated column (V1 is English only, #99; the Arabic vector is deferred).
 4. **Vector**: Cosine distance (`<=>`) against 1536-dimensional Gemini embeddings stored in `pgvector`.

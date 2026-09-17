@@ -220,8 +220,22 @@
   border-radius: 50%;
 }
 
-/* Leaflet Custom Area Pin */
+/* Leaflet Custom Area Pin
+   The marker icon is a zero-size box anchored on the coordinate (iconSize [0,0]);
+   the pill positions itself around that point, so its width never depends on a
+   fixed Leaflet icon size (same pattern as .settly-leaflet-pin in search.css). */
+.custom-area-pin-wrapper {
+  background: none;
+  border: none;
+}
+
 .area-pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  max-width: 220px;
   background: #131d36;
   color: #fff;
   border: 1.5px solid var(--brass);
@@ -239,12 +253,22 @@
   gap: 6px;
 }
 
+.area-pin span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.area-pin b {
+  flex-shrink: 0;
+}
+
 .area-pin:hover,
 .area-pin.on {
   background: var(--brass);
   color: #131d36;
   border-color: #131d36;
-  transform: scale(1.08);
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
 /* Main Districts Grid */

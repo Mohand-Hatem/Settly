@@ -27,17 +27,7 @@
         --line-2: rgba(30, 42, 74, 0.18);
         --sage: #3d5a4c;
         --sage-bg: #eaf0ec;
-        /* type — three families, three jobs.
-     display = headings · sans = UI and body · mono = anything measured.
-     Each Latin face carries an Arabic companion behind it, since Spectral and
-     JetBrains Mono have no Arabic coverage of their own. */
-        --display:
-          "Spectral", "Noto Naskh Arabic", Georgia, "Times New Roman", serif;
-        --sans:
-          "Plus Jakarta Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
-        --mono-ui:
-          "JetBrains Mono", "IBM Plex Sans Arabic", ui-monospace, "Courier New",
-          monospace;
+        /* type tokens (--display, --sans, --mono-ui) live in app/globals.css */
         /* rhythm */
         --gut: clamp(1rem, 4vw, 3.5rem);
         --max: 1320px;

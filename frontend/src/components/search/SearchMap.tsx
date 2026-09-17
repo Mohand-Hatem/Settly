@@ -13,6 +13,13 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import { PropertyItem } from "./PropertyCard";
+import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
+
+// Swap a broken listing photo for the placeholder once (the guard prevents a loop)
+function handleImgError(e: React.SyntheticEvent<HTMLImageElement>) {
+  const img = e.currentTarget;
+  if (!img.src.endsWith(PLACEHOLDER_PROPERTY_IMAGE)) img.src = PLACEHOLDER_PROPERTY_IMAGE;
+}
 
 interface SearchMapProps {
   properties: PropertyItem[];
@@ -31,6 +38,13 @@ const GOLDEN_SQUARE_COORDS: [number, number][] = [
   [30.014, 31.461],
   [30.032, 31.468],
 ];
+
+// Leaflet's flyTo/flyToBounds divide by the container size, so animating a map whose
+// container is hidden (display:none → 0×0) yields NaN coordinates and throws.
+function hasSize(map: L.Map): boolean {
+  const size = map.getSize();
+  return size.x > 0 && size.y > 0;
+}
 
 // Child Controller component to handle map events, auto-resize, pan/zoom & coordinate tracking
 function MapEventsController({
@@ -53,6 +67,8 @@ function MapEventsController({
   onMapReady: (map: L.Map) => void;
 }) {
   const map = useMap();
+  const activePropertyRef = React.useRef(activeProperty);
+  activePropertyRef.current = activeProperty;
 
   // Expose map instance to parent once mounted
   useEffect(() => {
@@ -73,8 +89,22 @@ function MapEventsController({
   useEffect(() => {
     const container = map.getContainer();
     if (!container || typeof ResizeObserver === "undefined") return;
+    let wasHidden = !hasSize(map);
     const ro = new ResizeObserver(() => {
       map.invalidateSize();
+      const isVisible = hasSize(map);
+      // Camera moves are skipped while hidden, so catch up on the selection when revealed
+      const target = activePropertyRef.current;
+      if (
+        wasHidden &&
+        isVisible &&
+        target &&
+        Number.isFinite(target.lat) &&
+        Number.isFinite(target.lng)
+      ) {
+        map.setView([target.lat, target.lng], 14.5, { animate: false });
+      }
+      wasHidden = !isVisible;
     });
     ro.observe(container);
     return () => ro.disconnect();
@@ -192,6 +222,7 @@ export function SearchMap({
     if (
       activeProperty &&
       mapInstance &&
+      hasSize(mapInstance) &&
       Number.isFinite(Number(activeProperty.lat)) &&
       Number.isFinite(Number(activeProperty.lng))
     ) {
@@ -222,7 +253,7 @@ export function SearchMap({
 
   // Smooth cinematic flight back to Golden Square overview
   const handleResetBounds = () => {
-    if (!mapInstance || properties.length === 0) return;
+    if (!mapInstance || !hasSize(mapInstance) || properties.length === 0) return;
     const validCoords = properties
       .filter(
         (p) =>
@@ -458,6 +489,7 @@ export function SearchMap({
                   src={activeProperty.img}
                   alt={activeProperty.title}
                   loading="lazy"
+                  onError={handleImgError}
                 />
               </div>
               <div className="map-pop-body">
@@ -523,7 +555,7 @@ export function SearchMap({
                 id={`tray-card-${p.id}`}
                 onClick={() => onSelectProperty(p.id)}
               >
-                <img src={p.img} alt={p.title} loading="lazy" />
+                <img src={p.img} alt={p.title} loading="lazy" onError={handleImgError} />
                 <div className="map-tray-info">
                   <b>{p.title}</b>
                   <span>

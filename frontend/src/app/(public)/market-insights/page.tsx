@@ -716,7 +716,7 @@ export default function MarketInsightsPage() {
                 </g>
 
                 {/* Y-Axis Labels */}
-                <g fill="#94A3B8" fontFamily="var(--mono-ui)" fontSize="11" textAnchor="end">
+                <g fill="#94A3B8" style={{ fontFamily: "var(--mono-ui)" }} fontSize="11" textAnchor="end">
                   <text x="50" y="44">120k</text>
                   <text x="50" y="109">95k</text>
                   <text x="50" y="174">70k</text>
@@ -725,7 +725,7 @@ export default function MarketInsightsPage() {
                 </g>
 
                 {/* X-Axis Labels */}
-                <g fill="#94A3B8" fontFamily="var(--mono-ui)" fontSize="11" textAnchor="middle">
+                <g fill="#94A3B8" style={{ fontFamily: "var(--mono-ui)" }} fontSize="11" textAnchor="middle">
                   {currentDataset.labels.map((lbl, idx) => (
                     <text key={idx} x={xMin + idx * stepX} y="325">
                       {lbl}

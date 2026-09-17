@@ -41,9 +41,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-spectral)", "Spectral", "Georgia", "serif"],
-        sans: ["var(--font-plus-jakarta)", "Plus Jakarta Sans", "system-ui", "sans-serif"],
-        mono: ["var(--font-jetbrains-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
+        display: ["var(--font-noto-naskh-arabic)", "var(--font-spectral)", "Georgia", "serif"],
+        serif: ["var(--font-noto-naskh-arabic)", "var(--font-spectral)", "Georgia", "serif"],
+        sans: ["var(--font-ibm-plex-arabic)", "var(--font-plus-jakarta)", "system-ui", "sans-serif"],
+        mono: ["var(--font-ibm-plex-arabic)", "var(--font-jetbrains-mono)", "ui-monospace", "monospace"],
       },
       aspectRatio: {
         card: "4 / 4.65",

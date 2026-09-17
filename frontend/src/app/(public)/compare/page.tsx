@@ -3,7 +3,8 @@
 import React, { Suspense, useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
 import {
   Building2,
   MapPin,
@@ -283,7 +284,7 @@ function CompareContent() {
               propertyType: p.propertyType,
               price: priceEgp,
               areaSqm: Number(p.areaSqm),
-              coverImage: p.images?.find((img) => img.isCover)?.url || p.images?.[0]?.url || "/images/properties/property-1.jpg",
+              coverImage: p.images?.find((img) => img.isCover)?.url || p.images?.[0]?.url || PLACEHOLDER_PROPERTY_IMAGE,
               areaName: p.area?.nameEn || "Cairo Corridor",
             };
           });
@@ -541,12 +542,12 @@ function CompareContent() {
                     </div>
 
                     {properties.map((p, idx) => {
-                      const cover = p.coverImage || (p.images && p.images[0]) || "/images/properties/property-1.jpg";
+                      const cover = p.coverImage || (p.images && p.images[0]) || PLACEHOLDER_PROPERTY_IMAGE;
                       return (
                         <div key={p.id} className="cell-prop">
                           <div className="prop-header-card">
                             <div className="prop-hdr-top">
-                              <Image
+                              <ImageWithFallback
                                 src={cover}
                                 alt={p.titleEn}
                                 fill
@@ -1037,8 +1038,8 @@ function CompareContent() {
                 onClick={() => handleSelectPropertyToAdd(item)}
               >
                 <div className="relative w-20 h-14 rounded-md overflow-hidden flex-none bg-navy-950">
-                  <Image
-                    src={item.coverImage || "/images/properties/property-1.jpg"}
+                  <ImageWithFallback
+                    src={item.coverImage || PLACEHOLDER_PROPERTY_IMAGE}
                     alt={item.titleEn}
                     fill
                     className="object-cover"

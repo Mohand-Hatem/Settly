@@ -316,7 +316,7 @@ export function SpatialMapShowcase() {
               />
 
               <g
-                fontFamily="IBM Plex Sans, sans-serif"
+                style={{ fontFamily: "var(--sans)" }}
                 fontSize="12.5"
                 fill="#6E7690"
                 letterSpacing="1.4"

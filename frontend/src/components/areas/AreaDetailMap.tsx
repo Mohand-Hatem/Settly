@@ -67,17 +67,17 @@ export function AreaDetailMap({
         // Add Custom Pin
         const pinIcon = L.divIcon({
           className: "settly-corridor-pin-wrapper",
-          html: `<div style="background:#131D36; color:#fff; border:1.5px solid #C69749; border-radius:16px; padding:3px 9px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,0.22); cursor:pointer;"><b>${comp.name}</b> · ${comp.rate}</div>`,
+          html: `<div style="background:#131D36; color:#fff; border:1.5px solid #C69749; border-radius:16px; padding:3px 9px; font-family:var(--mono-ui); font-size:11px; font-weight:700; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,0.22); cursor:pointer;"><b>${comp.name}</b> · ${comp.rate}</div>`,
           iconSize: [140, 28],
           iconAnchor: [70, 14],
         });
 
         const marker = L.marker(comp.coords, { icon: pinIcon }).addTo(map);
         marker.bindPopup(`
-          <div style="font-family:'Plus Jakarta Sans',sans-serif; padding:4px 2px;">
+          <div style="font-family:var(--sans); padding:4px 2px;">
             <b style="font-size:13px; color:#131D36; display:block; margin-bottom:2px;">${comp.name}</b>
             <span style="font-size:11px; color:#64748B; display:block;">Master Developer: ${comp.developer}</span>
-            <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; color:#C69749; display:block; margin-top:4px;">${comp.rate} Benchmark</span>
+            <span style="font-family:var(--mono-ui); font-size:11.5px; font-weight:700; color:#C69749; display:block; margin-top:4px;">${comp.rate} Benchmark</span>
           </div>
         `);
       });

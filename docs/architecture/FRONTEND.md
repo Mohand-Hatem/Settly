@@ -1,24 +1,31 @@
 # Frontend Architecture
 
     Status:       LOCKED
-    Last Updated: 2026-09-14
-    Derived From: Decisions #4, #10, #21, #23, #39, #40, #43, #44
+    Last Updated: 2026-09-17
+    Derived From: Decisions #4, #10, #21, #23, #39, #40, #43, #44, #96, #97, #99, #100
     Related:      API.md, ../design/DESIGN_SYSTEM.md, ../GLOSSARY.md Section 11
 
 ## 1. Purpose
 
-Rendering strategy, state ownership, the bilingual/RTL requirement, and the language distinctions
-that must never be conflated.
+Rendering strategy, state ownership, portal routes, the V1 language scope (English only, #99), and
+the language distinctions that must never be conflated.
+
+**V1 scope (#99, #100).** The V1 frontend is **English only**: no `/ar/*` routes, no `/[locale]`
+segment, no RTL implementation. Portals live under **`/buyer/*`**, **`/agent/*`** and **`/admin/*`**.
 
 ## 2. Five rendering modes — never collapsed into fewer
 
 | Mode | Routes | Revalidation |
 |---|---|---|
-| **SSG** (build-time only) | `/[locale]/about`, `/contact`, `/how-it-works`, `/privacy`, `/terms`, auth shells | Deploy |
-| **Static + on-demand** | `/[locale]/areas`, `/areas/[slug]`, `/insights` (revalidated by the nightly matview refresh job) | Backend-triggered |
-| **ISR + on-demand** | `/[locale]/properties/[slug]`, `/properties/[facet]`, `/agents`, `/agents/[slug]`, `/` | Publish/price/status change — **both locales invalidated together** |
-| **SSR** | `/[locale]/properties` **only** — reads `searchParams`, dynamic automatically; `noindex` when filtered | None |
-| **Static shell + CSR** | `/[locale]/map`, `/compare`, `/dashboard/*`, `/agent/*`, `/admin/*`, `/assistant` | Client fetch |
+| **SSG** (build-time only) | `/about`, `/contact`, `/how-it-works`, `/privacy`, `/terms`, auth shells | Deploy |
+| **Static + on-demand** | `/areas`, `/areas/[slug]`, `/insights` (revalidated by the nightly matview refresh job) | Backend-triggered |
+| **ISR + on-demand** | `/properties/[slug]`, `/properties/[facet]`, `/agents`, `/agents/[slug]`, `/` | Publish/price/status change |
+| **SSR** | `/properties` **only** — reads `searchParams`, dynamic automatically; `noindex` when filtered | None |
+| **Static shell + CSR** | `/map`, `/compare`, `/buyer/*`, `/agent/*`, `/admin/*`, `/assistant` | Client fetch |
+
+Public route names above are the architectural baseline. The implemented app currently uses
+`/search`, `/market-insights` and `/agents/[id]`; the V1 screen inventory
+(`../discovery/05-final-frontend-screen-inventory.md` §E) tracks these differences for confirmation.
 
 **⚠️ Locked rule: public ISR pages must not read per-user cookies/session in Server Components.**
 Favourites, viewed state, saved-search state are client-side only, or the route becomes dynamic
@@ -39,39 +46,61 @@ cookies to the API.
 ## 4. The five language concepts — never conflated
 
 ```
-  UI LOCALE (/en, /ar)  ⊥  CONTENT LANGUAGE  ⊥  QUERY LANGUAGE  ⊥  AI RESPONSE LANG.  ⊥  EMBEDDING SPACE
+  UI LOCALE (V1: English only)  ⊥  CONTENT LANGUAGE  ⊥  QUERY LANGUAGE  ⊥  AI RESPONSE LANG.  ⊥  EMBEDDING SPACE
 ```
 
 UI locale is chrome only — navigation, buttons, forms, errors, notifications. Content language is
-what the agent authored (never machine-translated for display). See `../GLOSSARY.md` Section 11.
+what the agent authored (never machine-translated for display). **In V1 all five are English (#99):**
+English UI, English listing content, English search queries, English AI answers and English
+embeddings. The separation is kept so that a future Arabic phase needs no redesign. See
+`../GLOSSARY.md` Section 11.
 
-## 5. Bilingual UI and RTL (Decision #39 — reverses the earlier English-only/LTR position)
+## 5. Language scope — English only in V1, end to end (#99)
 
-Full `/en` + `/ar`, first-class RTL:
+- The V1 product is **English only**: UI text, listing content, search, AI answers and system
+  messages. `<html lang="en" dir="ltr">`.
+- **No Arabic/RTL implementation is required in V1**: no RTL layout, mirrored icons, reversed
+  table/form/navigation order or Arabic UI catalog.
+- UI strings still live in code (no `Translation` model).
+- **Arabic/RTL is a Future / Optional Feature**, reconsidered only after the core project is
+  completed and only through a new decision. The earlier bilingual requirement (#39 §8) is **not a
+  current requirement**. If Arabic/RTL is ever resumed, the #39 §8 design (logical CSS properties,
+  mirrored icons, `hreflang`, locale middleware) is the starting point, together with V25–V27.
+- **No mixed-direction handling in V1:** no `dir="auto"` for Arabic content (#99).
+- **Arabic content, Arabic search and Arabic AI answers** are deferred together with the Arabic UI.
+  API responses may still carry optional Arabic fields (#101); V1 screens never render them.
 
-- `dir` on `<html>` from the locale
-- **Logical CSS properties throughout** (`margin-inline-start`, never `margin-left`)
-- Mirrored directional icons; reversed table/form/navigation order
-- `dir="auto"` still applies to user-generated content **in both directions** — an English
-  description inside an RTL page needs LTR rendering, and vice versa
-- Charts (Recharts) and maps (MapLibre) need RTL-aware axis/control placement — PENDING V26
-- No `Translation` model for UI strings — static message catalogs versioned with code
+Numeral convention (V27) is deferred with the Arabic UI.
 
-Numeral convention (Western vs. Arabic-Indic) is explicitly **not an architectural blocker** —
-deferred to the Stitch design phase (V27).
+## 6. Routes
 
-## 6. Localized routes
+**No locale segment in V1 (#99).** There are no `/ar/*` or `/en/*` routes, and middleware does no
+locale resolution.
 
-Every public route gains a `/[locale]` segment. `generateStaticParams` becomes locale × params.
-Middleware resolves locale (cookie → `Accept-Language` → default) alongside the existing
-cookie-presence auth check; redirects preserve the locale segment.
+**Portal prefixes (#100):**
+
+| Portal | Canonical prefix | Who may use it (#97) |
+|---|---|---|
+| Buyer | **`/buyer/*`** | USER, AGENT, ADMIN |
+| Agent | **`/agent/*`** | AGENT (verified) |
+| Admin | **`/admin/*`** | ADMIN |
+
+Dashboards live at the prefix root (`/buyer`, `/agent`, `/admin`), and the Google phone step is `/complete-profile` (#106).
+`/dashboard/*`, `/buyer-dashboard/*` and `/agent-dashboard/*` are **not** canonical. The routes
+inside each prefix are set with the screen specifications; the conceptual structure is in
+`../discovery/05-final-frontend-screen-inventory.md` §E.
+
+**Known code mismatches (implementation follow-ups, #100):**
+- the auth pages redirect to `/buyer-dashboard/overview` and `/agent-dashboard/overview`;
+- the navbar landing links (`/buyer/overview`, `/agent/overview`, `/admin/verification`) must match
+  the approved screen specifications;
+- the middleware redirects agents away from `/buyer/*` (see §10).
 
 ## 7. SEO
 
-One shared Latin slug across locales (percent-encoded Arabic URLs look broken on WhatsApp, the
-dominant Egyptian sharing channel) · `hreflang` (`en`, `ar`, `x-default`) · each locale
-self-canonical · localized metadata and `inLanguage` · one sitemap with alternates. Filtered
-search is `noindex`; curated ISR facet pages carry organic discovery.
+One Latin slug per listing. English metadata only in V1 — no `hreflang` alternates (#99). Pages are
+self-canonical, with one sitemap. Filtered search is `noindex`; curated ISR facet pages carry
+organic discovery.
 
 ## 8. API consumption
 
@@ -90,25 +119,34 @@ OpenAPI snapshot (`openapi-typescript` + `openapi-fetch`) — see `API.md` Secti
 > **Next middleware checks cookie PRESENCE only, for a fast redirect. It is NOT the authorization
 > boundary.** The API is. Role-based UI hiding is presentational only.
 
+**Portals (#97):** one login per account. Agents and admins also use the **buyer** portal; the UI
+offers a switch between the portals the account may use (Buyer, Agent, Admin). Middleware must not
+redirect agents or admins away from buyer routes. (Recorded decision; not yet implemented.)
+
 ## 11. Maps and libraries
 
-MapLibre + MapTiler for display; Google Geocoding server-side at listing creation only (better
+**Leaflet + MapTiler for display (#96)** — Leaflet is the approved V1 map library and MapTiler the
+only tile provider (no CARTO). The MapTiler key comes from `NEXT_PUBLIC_MAPTILER_KEY` (never
+hard-coded) and is **domain-restricted** in the MapTiler dashboard, since `NEXT_PUBLIC_*` values are
+visible in the browser. Google Geocoding server-side at listing creation only (better
 Egypt data quality, low volume). Tailwind + shadcn/ui (Radix) · TanStack Table · Recharts ·
 Motion (respects `prefers-reduced-motion`).
 
 ## 12. Pending verification
 
-**V25** (Next.js App Router i18n routing × ISR × `generateStaticParams`) · **V26** (RTL maturity
-of shadcn/Radix, MapLibre, Recharts) · V27 (numerals — deferred, not blocking) · V29 (generated
-client's RFC 9457 error handling).
+V29 (generated client's RFC 9457 error handling). **Deferred by #99, not needed in V1:** V25
+(i18n routing × ISR), V26 (RTL maturity of shadcn/Radix, Leaflet, Recharts), V27 (numerals).
 
 ## 13. Rejected / do not add
 
+MapLibre migration in V1 (#96) · CARTO or other tile providers (#96) · hard-coded map keys (#96) ·
 Cookie forwarding from the Next server · Next-as-proxy · Socket.IO (native WebSockets used for chat) · Firestore chat · Mapbox/
 Google Maps for display · locale-specific slugs (v1) · a fake design system invented before
-Stitch.
+Stitch · **`/ar/*` or `/[locale]` routes and RTL work in V1 (#99)** · **`/dashboard/*`,
+`/buyer-dashboard/*`, `/agent-dashboard/*` portal prefixes (#100)**.
 
 ## 14. Related documents
 
 `API.md` for the contract consumed here · `../design/DESIGN_SYSTEM.md` and `UX_PATTERNS.md` for
-visual/behavioural detail · `../GLOSSARY.md` Section 11 for the full multilingual model.
+visual/behavioural detail · `../GLOSSARY.md` Section 11 for the multilingual model (UI locale parts
+deferred by #99) · `../discovery/05-final-frontend-screen-inventory.md` for the V1 screens and routes.

@@ -1,8 +1,8 @@
 # Seed Data & Retrieval Evaluation
 
     Status:       LOCKED
-    Last Updated: 2026-09-05
-    Derived From: Decisions #27, #32, #39
+    Last Updated: 2026-09-17
+    Derived From: Decisions #27, #32, #39, #99
     Related:      ../architecture/SEARCH.md, ../architecture/RAG.md, TESTING.md
 
 ## 1. Purpose
@@ -14,9 +14,9 @@ a handful of listings.
 ## 2. Corpus scope
 
 ~500-1,000 realistic Egyptian properties across real areas (New Cairo, Sheikh Zayed, Maadi, North
-Coast, ...) with plausible prices correlated to area/size, realistic amenities, and **genuinely
-bilingual descriptions** — the Arabic must be real Arabic, not translated word salad, or the
-bilingual design (`FRONTEND.md`, `SEARCH.md`) is untested. Real area hierarchy, real
+Coast, ...) with plausible prices correlated to area/size, realistic amenities, and **English descriptions** (V1 is
+English only, #99). **Arabic fields are left empty — no placeholder Arabic (#101).** Genuinely bilingual descriptions — real Arabic, not translated word salad — are
+needed only when the future Arabic phase is built. Real area hierarchy, real
 price-per-square-metre bands per area; content is synthetic, structure is real.
 
 Also: 10-20 trusted `KnowledgeArticle` sources for RAG · demo accounts (buyer/agent/admin) with
@@ -25,25 +25,28 @@ payment · a safe demo-reset job so a public demo cannot be permanently vandalis
 
 ## 3. Deliberate hard cases
 
-Near-duplicate listings · a listing whose description contradicts its structured fields ·
-Arabic-only listings · English-only listings · areas with no `KnowledgeArticle` guide · ambiguous
-semantic queries. These are what prove hybrid search works rather than merely runs.
+Near-duplicate listings · a listing whose description contradicts its structured fields · areas
+with no `KnowledgeArticle` guide · ambiguous semantic queries. (Arabic-only and mixed-language
+listings are deferred with Arabic, #99.) These are what prove hybrid search works rather than merely runs.
 
 ## 4. Retrieval evaluation gate — pre-committed thresholds (Decision #32)
 
-| Metric | Threshold |
-|---|---|
-| Recall@10, same-language (EN→EN, AR→AR) | >= 0.80 |
-| Recall@10, cross-language (EN→AR, AR→EN) | >= 0.65 |
-| Zero-result rate | <= 10% |
-| Relevant result in top 3 | >= 0.70 |
+| Metric | Threshold | V1 |
+|---|---|---|
+| Recall@10, EN→EN | >= 0.80 | **Applies** |
+| Recall@10, AR→AR | >= 0.80 | Deferred (#99) |
+| Recall@10, cross-language (EN→AR, AR→EN) | >= 0.65 | Deferred (#99) |
+| Zero-result rate | <= 10% | **Applies** |
+| Relevant result in top 3 | >= 0.70 | **Applies** |
 
-**Fixed before the corpus is built; not tuned after seeing results.** If cross-language Recall@10
-falls below ~0.50, the bilingual semantic-search assumption is materially unsuccessful and the
-embedding decision (#24) must be revisited — "the API returns 200" is not success.
+**Fixed before the corpus is built; not tuned after seeing results** — "the API returns 200" is not
+success. In a future Arabic phase: if cross-language Recall@10 falls below ~0.50, the bilingual
+semantic-search assumption is materially unsuccessful and the embedding decision (#24) must be
+revisited.
 
-20-30 benchmark queries: Arabic, English, cross-language, difficult semantic queries,
-terminology/area synonyms — each with expected relevant results.
+20-30 English benchmark queries in V1: difficult semantic queries and terminology/area synonyms,
+each with expected relevant results. Arabic and cross-language queries are added in the future
+Arabic phase.
 
 ## 5. Script requirements
 
@@ -59,9 +62,8 @@ as a report, never a CI gate.
 
 ## 7. Pending verification
 
-**V23** (Gemini AR<->EN retrieval quality — this corpus is what it's measured against) · **V24**
-(Arabic normalisation quality) · V1/V2 (embedding model/dimensions, affecting corpus regeneration
-cost if changed).
+V1/V2 (embedding model/dimensions, affecting corpus regeneration cost if changed). V23 and V24
+(Arabic retrieval and normalisation) are deferred by #99.
 
 ## 8. Rejected / do not add
 

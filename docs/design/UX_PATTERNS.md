@@ -53,7 +53,10 @@ Thin SSE events (`{entityType, entityId, at}`) trigger a TanStack Query invalida
 never a direct state patch from the event payload (`../architecture/COMMUNICATION.md`). On
 reconnect, the client refetches; there is no event replay to reconcile.
 
-## 8. RTL/LTR behavioural differences
+## 8. RTL/LTR behavioural differences — deferred (#99)
+
+**Not a V1 requirement.** V1 is English only end to end (LTR, English content, no `dir="auto"` for
+Arabic, #99). The notes below are kept for a future Arabic/RTL phase.
 
 Directional icons (back/forward, chevrons) mirror under RTL. Form field order, table column
 order, and navigation order reverse. User-generated content keeps its own direction via
@@ -68,7 +71,7 @@ tests (`../process/TESTING.md`).
 
 ## 10. Pending verification
 
-**V26** (RTL behaviour of underlying component libraries affects some of the above).
+None for V1. V26 (RTL behaviour of component libraries) is deferred with §8 (#99).
 
 ## 11. Rejected / do not add
 

@@ -19,12 +19,12 @@ If you read nothing else, read these. Each pair is a mistake waiting to happen.
 
 | These are **not** the same thing | | |
 |---|---|---|
-| **`Lead`** — the pipeline anchor: one per (buyer, property), created on first contact, owns the agent-facing pipeline status | ≠ | **`Conversation`** — a two-party message thread. Messaging is a *channel*; the lead is the *pipeline*. A lead can exist with no messages at all, created by a viewing request |
+| **`Lead`** — the pipeline anchor: one per (buyer, property), created on first contact (message, viewing request or offer, #75), owns the agent-facing pipeline stage `NEW → CONTACTED → QUALIFIED → WON / LOST` (#83) | ≠ | **`Conversation`** — a two-party message thread. Messaging is a *channel*; the lead is the *pipeline*. A lead can exist with no messages at all, created by a viewing request |
 | **`Offer`** — the stateful negotiation thread for one buyer on one property. Owns the state machine. **One row** | ≠ | **`OfferRevision`** — one proposed set of terms from either side. **Append-only history.** An offer with five counters has one `Offer` row and six `OfferRevision` rows |
 | **`Payment`** — the *obligation*: what is owed, for which offer, with a deadline. Survives failures | ≠ | **`PaymentAttempt`** — one try at the provider. **Failure belongs to the attempt, not the obligation.** A declined card fails one attempt; the `Payment` returns to `PENDING` so the buyer can retry |
 | **Checkout hold** — a 15-minute *exclusive lock on starting checkout*. Grants **no rights**, reserves nothing legally, expires automatically | ≠ | **Reservation** — the property state after a deposit is **confirmed**. The actual commitment |
 | **`Area`** — a **self-referencing hierarchy** node: governorate → city → district → compound | ≠ | A city. **There is deliberately no `City` or `District` model.** Do not create one |
-| **UI locale** (`/en` or `/ar`) — chrome, labels, errors, emails | ≠ | **Content language** — what the agent actually authored. An Arabic-locale user viewing an English-only listing sees **English content in Arabic chrome**. Content is **never machine-translated** for display |
+| **UI locale** — chrome, labels, errors, emails. **V1: English only, no `/en`/`/ar` routes; V1 content is also English only (#99)** | ≠ | **Content language** — what the agent actually authored. An Arabic-locale user viewing an English-only listing sees **English content in Arabic chrome**. Content is **never machine-translated** for display |
 | **Tool calling** — the model picks tools; the call graph is predictable from the question | ≠ | **Agent** — the next action depends on what came back. Test: *can you draw the call graph before seeing results?* Yes ⇒ tool calling |
 | **Live offer** — a *defined subset* of four states: `PENDING_AGENT`, `PENDING_BUYER`, `ACCEPTED`, `RESERVED` | ≠ | An offer status. "Live" is **not** a value in the enum. Invariant I12 and rule O1 both depend on this exact set — see `product/BUSINESS_RULES.md` §4.1 |
 
@@ -77,7 +77,7 @@ which is why Better Auth's cookie cache is disabled.
 ## 3. Catalog
 
 **`Property`** — a listing. Owns status, price, geo point, type, listing intent, specs, **parallel
-bilingual content** (`titleEn`/`descriptionEn`/`titleAr`/`descriptionAr`, at least one pair required),
+bilingual content columns** (V1 uses English only; the Arabic columns are kept, optional and unused — #99, #101) (`titleEn`/`descriptionEn`/`titleAr`/`descriptionAr`, V1 requires English; the Arabic pair is optional and unused, #101),
 **two generated search vectors**, and **the embedding column**. **No `language` field** — it would
 contradict itself on a bilingual listing. **No `PropertyTranslation` model** — see §11.
 
@@ -92,7 +92,7 @@ reachable through the hierarchy.
 **`KnowledgeArticle`**, linked by `areaId`. `Area` is touched by every search filter and must stay
 narrow. (#3 described this content twice; #39 separated it.)
 
-**`Area.aliases`** — a text array powering the bilingual gazetteer: `New Cairo`, `5th Settlement`,
+**`Area.aliases`** — a text array powering the gazetteer (English aliases in V1; Arabic aliases are a future phase, #99): `New Cairo`, `5th Settlement`,
 `التجمع`, `التجمع الخامس` all resolve to one area. **There is no `AreaAlias` model.**
 
 **`Amenity`** — controlled vocabulary (pool, parking, security) with `nameEn` and `nameAr`. Reference
@@ -127,6 +127,16 @@ live and raises a **non-blocking recheck flag**.
 
 **`Lead`** — see §1.
 
+**Listing quota** — the number of **new** listings an agent may create/publish in a billing month
+(the **Cairo calendar month**, reset on the 1st — not the 30-day subscription period, #104),
+set by their plan (Free 2 · Pro 4 · Enterprise 8). Removing a listing never gives quota back (#80).
+
+**Subscription plan** — one of **exactly three** agent plans: **Free** ($0), **Pro** ($20/month),
+**Enterprise** ($50/month) (#80, #89). **Base prices are USD** and the plans UI shows USD only;
+the payment is **charged in EGP at the fixed V1 rate 1 USD = 48.98 EGP**, rounded up to a whole EGP
+(Pro 980, Enterprise 2,449 — #103). **Each paid period lasts 30 days from its start, at the full price,
+with no proration (#104).** Not to be confused with the reservation deposit, which is a buyer payment.
+
 **`AgentAvailability`** — recurring weekly availability windows and blackouts, stored as
 **local wall-clock** (day of week, local start, local end, timezone) and resolved to UTC instants
 per date. Storing instants would break twice a year at DST.
@@ -137,8 +147,8 @@ survive, enforced by an exclusion constraint over a time range.
 
 **`Offer`** / **`OfferRevision`** — see §1.
 
-**Superseded** — an offer closed automatically because a rival offer reached `RESERVED`, or the
-property sold offline. No fault, distinct from rejection.
+**Superseded** — an offer closed automatically because a rival offer reached `RESERVED`. No fault,
+distinct from rejection. (The "property sold offline" trigger was removed with P11, #102.)
 
 ---
 
@@ -170,7 +180,9 @@ provider.*
 *Inbound from our own client.* **Different concern from `WebhookEvent`.** Lives in Postgres, never
 Redis.
 
-**Piastres** — EGP minor units. **All money is stored as `BIGINT` piastres.** Never floats.
+**Piastres** — EGP minor units. **All real-estate and deposit money is stored as `BIGINT` piastres.**
+Never floats. Agent subscription base prices are USD (#89); their storage is part of the subscription
+data-model design.
 Paymob also transacts in minor units, so no conversion layer exists.
 
 **Gross / fee / net** — modelled explicitly on `Payment`, with `fee_returned` on `Refund`. A "full
@@ -350,6 +362,13 @@ configuration value. **Never an `if (isProduction)` branch around a security con
 
 ## 11. Multilingual architecture
 
+> **V1 is English only end to end (#99)** — UI, content, search, AI answers and system messages.
+> Everything Arabic below (Arabic columns in use, the Arabic search vector, Arabic normalisation,
+> cross-language retrieval, the display fallback rule, RTL, `dir="auto"` for Arabic content) is a
+> **Future / Optional Feature after core project completion**. The concepts are kept so that phase
+> needs no redesign. **Arabic data fields remain in the schema for future compatibility, but are
+> optional and unused in V1 (#101)** — no Arabic data is ever required or faked.
+
 **Five concepts, deliberately independent** — never force any two to be the same:
 
 ```
@@ -357,7 +376,7 @@ configuration value. **Never an `if (isProduction)` branch around a security con
 ```
 
 **Parallel language columns** — `titleEn` / `descriptionEn` / `titleAr` / `descriptionAr` on
-`Property` and `KnowledgeArticle`, all nullable, **at least one pair required**. Content may be
+`Property` and `KnowledgeArticle`, all nullable. **V1: English content only (#99, #101).** In a future Arabic phase, content may be
 Arabic-only, English-only, **or both** — and both are source of truth.
 
 > ⚠️ **`PropertyTranslation` was explicitly evaluated and rejected** (#39). It would place a join in
@@ -393,9 +412,9 @@ means retrieving the same property twice.
 (chunk), `AiMessage` (detected), `SearchEvent` (zero-result rate per language is a product signal).
 **Not** on `Property`, `KnowledgeArticle`, `Area`, `Amenity`, `Message` or `Notification`.
 
-**RTL is first-class** — `dir` on `<html>` from the locale, **logical CSS properties throughout**,
-mirrored directional icons, reversed table and form order. **`dir="auto"` on user content still
-applies, in both directions**: English content inside an RTL page needs LTR rendering, and vice versa.
+**RTL (deferred for V1 by #99 — Future / Optional Feature)** — when resumed: `dir` on `<html>` from the locale, **logical CSS properties throughout**,
+mirrored directional icons, reversed table and form order, and `dir="auto"` on user content in both
+directions. **None of this, including `dir="auto"`, is part of V1.**
 
 **No `Translation` model** for UI strings — static message catalogs versioned with code.
 **No `NotificationTemplate`** — `Notification` stores a `type` + `params` JSON and renders at display
@@ -437,8 +456,9 @@ would embed a domain into the wire contract that isn't yet established.
 
 **Language-neutral backend** — `title` and `detail` are developer-facing English, logged, never
 rendered. The frontend localizes from `type` + `params` + `errors[].code` + `errors[].params`.
-**Validation errors carry codes and parameters, never messages.** With `/en` and `/ar` both live,
-user-facing English crossing the wire is a defect.
+**Validation errors carry codes and parameters, never messages.** The V1 UI is English only (#99),
+but the rule stands so that a future Arabic UI needs no API change; user-facing English crossing the
+wire is a defect.
 
 **`state-conflict`** — one error type covering ~40 transitions, carrying
 `params: { entity, currentState, attemptedTransition }`. The alternative was forty types.

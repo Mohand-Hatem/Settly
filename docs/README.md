@@ -43,10 +43,19 @@ docs/
 ├── GLOSSARY.md                  domain vocabulary
 ├── DECISIONS.md                 decision history + pending-verification checklist
 │
+├── discovery/                  existing-system discovery (started 2026-09-17)
+│   ├── 01-system-audit.md        what the code actually does today, with evidence
+│   ├── 02-gap-analysis.md        implementation vs documented intent; open questions
+│   ├── 03-frontend-screen-audit.md  decisions → screens traceability; missing frontend work
+│   ├── 04-frontend-design-plan.md   design candidates review; contradictions C-1…C-22
+│   ├── 05-final-frontend-screen-inventory.md  final V1 screen inventory; routes; design order
+│   └── 06-slice-1-screen-specs.md   specs for the vertical slice (auth, shells, property detail, viewings)
+│
 ├── product/
 │   ├── OVERVIEW.md               vision, scope, roles, journeys
 │   ├── REQUIREMENTS.md           functional + non-functional requirements, traceability
 │   ├── BUSINESS_RULES.md         state machines, invariants, constants
+│   ├── ROLES_AND_PERMISSIONS.md  who can do what (discovery, #49–#53)
 │   └── ANALYTICS.md              what is captured, why, and what is NOT built
 │
 ├── architecture/
@@ -99,7 +108,7 @@ docs/
 | AI assistant, RAG, embeddings | `architecture/AI.md` → `architecture/RAG.md` |
 | The Property Shortlist Agent | `architecture/AGENT.md` → `architecture/AI.md` |
 | Authentication or sessions | `architecture/AUTH.md` → `architecture/SECURITY.md` |
-| Authorization / permissions | `architecture/AUTH.md` → `architecture/BACKEND.md` |
+| Authorization / permissions | `product/ROLES_AND_PERMISSIONS.md` → `architecture/AUTH.md` → `architecture/BACKEND.md` |
 | Frontend routes, rendering, caching, i18n | `architecture/FRONTEND.md` → `design/` |
 | Realtime, notifications, email, push | `architecture/COMMUNICATION.md` |
 | File and document uploads | `architecture/STORAGE.md` → `architecture/SECURITY.md` |

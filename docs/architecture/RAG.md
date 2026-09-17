@@ -32,8 +32,10 @@ property documents (`Document`) within the actor's visibility scope.
 Every stage writes a durable status on `Document`; a sweeper re-drives failures. Known gap: no
 OCR — scanned/image-only PDFs unsupported in v1.
 
-`KnowledgeArticle` uses the same parallel-language pattern as `Property` (titleEn/Ar, bodyEn/Ar) —
-chunked per populated language.
+`KnowledgeArticle` uses the same parallel-language pattern as `Property` (titleEn/Ar, bodyEn/Ar).
+**In V1 the RAG corpus and all RAG answers are English only (#99)**; only English content is chunked
+and embedded. The Arabic columns stay for future compatibility but are optional and unused in V1;
+no Arabic content is required (#101). Arabic RAG retrieval is deferred.
 
 ## 4. Retrieval
 
@@ -92,8 +94,8 @@ corpus and RAG unaffected.
 
 ## 9. Pending verification
 
-**V23** (Gemini AR<->EN retrieval quality) · **V24** (Arabic normalisation) · V1/V2 (embedding
-model/dimensions, pgvector limits). None verified.
+V1/V2 (embedding model/dimensions, pgvector limits). None verified. V23 and V24 (Arabic) are
+deferred by #99.
 
 ## 10. Rejected / do not add
 

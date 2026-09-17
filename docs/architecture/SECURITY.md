@@ -150,13 +150,13 @@ messages/payments/audit/admin data · PR10 outbound AI payloads are minimised.
 
 CSP lives on Vercel-served documents (only Vercel serves documents). **Ship `Report-Only` first**,
 collect violations, then enforce — an enforcing CSP deployed blind breaks Next hydration,
-MapLibre workers, or Cloudinary images. `frame-src 'none'` is available because Paymob is a
+Leaflet map tiles from MapTiler (#96), or Cloudinary images. `frame-src 'none'` is available because Paymob is a
 hosted redirect, never embedded.
 
 ## 18. Pending verification
 
 **V22** (Better Auth verification-token hashing at rest) · **V33** (does `prisma migrate`
-preserve the AuditLog append-only rule) · V26 (RTL CSP interaction, if any).
+preserve the AuditLog append-only rule) · V26 (RTL CSP interaction, if any — deferred by #99).
 
 ## 19. Rejected / do not add
 

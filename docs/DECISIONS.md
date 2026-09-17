@@ -1,7 +1,7 @@
 # Settly Decision Record
 
     Status:       LOCKED (entries #0–#31) · living document
-    Last Updated: 2026-09-05
+    Last Updated: 2026-09-17
     Decisions:    all
     Related:      README.md, GLOSSARY.md, product/BUSINESS_RULES.md
 
@@ -20,11 +20,11 @@ Append-oriented history of every architectural, product and process decision.
 | # | Category | Decision | Status |
 |---|---|---|---|
 | 0 | Process | Data platform decided before frontend; payment object treated as product scope | LOCKED |
-| 1 | Product | **Package B** — discovery → viewing → offer → reservation deposit. Sale-first; rent is discovery/viewing only; independent agents, no agency entity | LOCKED |
-| 2 | Product | Market **Egypt**, currency **EGP** | LOCKED |
+| 1 | Product | **Package B** — discovery → viewing → offer → reservation deposit. Sale-first; rent is discovery/viewing only; independent agents, no agency entity | LOCKED · **agent subscriptions: superseded in part by #79/#80** |
+| 2 | Product | Market **Egypt**, currency **EGP** | LOCKED · **agent subscription base prices are USD (#89)**; real-estate amounts stay EGP |
 | 3 | Domain | 8 core journeys; 36 models in 8 modules | **AMENDED by #39** |
-| 4 | Product | ~~English-only UI~~ -> **full bilingual UI (/en + /ar) with RTL** | **REVERSED by #39** |
-| 5 | Domain | Four lifecycle state machines: Property 8 · Viewing 8 · Offer 10 · Payment 7 states | LOCKED |
+| 4 | Product | ~~English-only UI~~ -> **full bilingual UI (/en + /ar) with RTL** | **REVERSED by #39** · **V1 UI English-only again by #99** (Arabic/RTL deferred) |
+| 5 | Domain | Four lifecycle state machines: Property 8 · Viewing 8 · Offer 10 · Payment 7 states | LOCKED · **Property amended to 9 states by #78; `RENTED` non-terminal by #81; `PUBLISHED → SOLD` escape hatch removed by #102** |
 | 6 | Data | **PostgreSQL 17** + PostGIS + pgvector + pg_trgm + FTS | **AMENDED by #39** (FTS) |
 | 7 | Data | **Prisma** ORM; custom SQL for PostGIS / pgvector / exclusion constraints / hybrid ranking | LOCKED |
 | 8 | Backend | Separate API + frontend; **Express 5** + Node 22 LTS + TS; 11 modules; REST `/api/v1`; Zod | LOCKED · **extended by #40** |
@@ -40,30 +40,92 @@ Append-oriented history of every architectural, product and process decision.
 | 18 | Process | **Separate projects**, one repo; OpenAPI as the contract | LOCKED |
 | 19 | AI | Exactly one bounded, read-only **Property Shortlist Agent** | LOCKED · **generalised by #41** |
 | 20 | Data | **`AgentRun`** added as model #38 | LOCKED |
-| 21 | Frontend | Next.js App Router; SEO server-rendered, dashboards CSR; SSE realtime | **AMENDED by #39** (RTL) & **#43** (WebSocket chat) |
+| 21 | Frontend | Next.js App Router; SEO server-rendered, dashboards CSR; SSE realtime | **AMENDED by #39** (RTL) & **#43** (WebSocket chat) · **maps superseded by #96** (Leaflet) · **RTL deferred for V1 by #99** |
 | 22 | Infra | Vercel + Railway (2 services) + Supabase; backend must be always-on | LOCKED · **refined by #44** |
-| 23 | Frontend | Five distinct rendering modes; only `/properties` is SSR | **AMENDED by #39** (locales) |
+| 23 | Frontend | Five distinct rendering modes; only `/properties` is SSR | **AMENDED by #39** (locales) · **no locale segment in V1 (#99)** |
 | 24 | AI | **Google Gemini** primary ecosystem; **no reranker in v1** *(amends #17)* | LOCKED · strengthened by #39 |
 | 25 | Storage | Cloudinary = public images; **Supabase Storage = private RAG documents** | LOCKED |
 | 26 | Reliability | Redis caching narrowed to the hybrid-search result list only *(clarifies #10)* | LOCKED · **refined by #44** |
-| 27 | Process | Seed data + retrieval evaluation as one first-class deliverable, with a pre-committed gate | LOCKED · **extended by #39** |
+| 27 | Process | Seed data + retrieval evaluation as one first-class deliverable, with a pre-committed gate | LOCKED · **extended by #39** · **Arabic/cross-language parts deferred for V1 by #99** |
 | 28 | Product | Admin scope reduced; no analytics dashboards in v1 | LOCKED |
 | 29 | Process | Reduce scope by **sequencing**, never by weakening architecture | LOCKED |
 | 30 | Process | Three-tier documentation lifecycle | LOCKED |
 | 31 | Process | Business constants have a single authoritative code definition | LOCKED |
-| 32 | Process | Pre-committed retrieval evaluation thresholds *(part of #27)* | LOCKED |
+| 32 | Process | Pre-committed retrieval evaluation thresholds *(part of #27)* | LOCKED · **V1 gate = English rows only (#99)** |
 | 33 | Security | Security & operations model — layered, proportionate, no security theater | LOCKED · **refined by #42** |
 | 34 | Ops | **Pino** for all logging — Morgan and Winston removed | LOCKED |
 | 35 | Domain | Email-verification guards + invariants **I11** and **I12** *(amends #5)* | LOCKED |
 | 36 | Ops | Email provider: **Resend** (all environments, Mailpit eliminated) | **LOCKED by #44** *(was provisional)* |
 | 37 | Process | Local-vs-production environment model + the substitution rule | LOCKED · **refined by #44** |
 | 38 | Domain | **The verification boundary** — a principle replacing the guard list; adds O3 and O5 *(amends #35)* | LOCKED |
-| 39 | Domain | **Domain model reconciliation** — Better Auth identity, document visibility, multilingual content. **39 tables** | LOCKED · **refined by #42** |
+| 39 | Domain | **Domain model reconciliation** — Better Auth identity, document visibility, multilingual content. **39 tables** | LOCKED · **refined by #42** · **language scope (§3 Arabic content, §5 Arabic FTS, §6 cross-language, §8 UI locale/RTL/AI language) deferred for V1 by #99** |
 | 40 | API | **API contract shape** — bare resources, action endpoints, error taxonomy, cursor contract | LOCKED |
 | 41 | Testing | **Testing architecture** — six layers, real Postgres/Redis, gates vs reports | LOCKED |
 | 42 | Privacy | **Privacy, retention & data lifecycle** — deletion model, retention windows, AI boundary | LOCKED |
 | 43 | Communication | **Real-time communication** — native **WebSocket** for 1-on-1 Chat, **SSE** for In-app notifications *(amends #21)* | LOCKED |
 | 44 | Infra | **Managed services** — **Upstash Redis** (BullMQ, rate limit, cache, WS pub/sub) & **Resend** (real email) *(locks #36)* | LOCKED |
+| 45 | Product | **Positioning:** the whole Egyptian residential market, with a premium brand feel (not a luxury-only marketplace) | LOCKED (discovery 2026-09-17) |
+| 46 | Product | **Project stage:** demo first, designed production-ready and launchable later | LOCKED (discovery 2026-09-17) |
+| 47 | Product | **V1 listing scope:** sale = **resale only**; rentals = discovery + viewing only; **off-plan deferred** to future scope. Reservation deposit (Paymob **sandbox**) for resale only; no rental payments. Refines #1, #13 | LOCKED (discovery 2026-09-17) |
+| 48 | Process | **Authoritative plan:** `process/ROADMAP.md` + `IMPLEMENTATION_PLAN.md` define V1; `SETTLY_MASTER_PLAN.md` and `phases/*` do not override them | LOCKED (discovery 2026-09-17) |
+| 49 | Identity | **Agent onboarding:** everyone signs up as a buyer; becoming an agent = an application with **identity verification (National ID + selfie)** and **professional verification**, approved by an admin | LOCKED (discovery 2026-09-17) · details open |
+| 50 | Identity | **Dual capability:** one account can be buyer and agent. An agent may buy, but **never make offers on their own listings** | LOCKED (discovery 2026-09-17) |
+| 51 | Product | **Listing creation:** verified agents only in V1; owner (FSBO) listings are future scope. Confirms #1 | LOCKED (discovery 2026-09-17) |
+| 52 | Governance | **Verification revocation:** an admin may revoke an agent's verification; the agent's listings become **SUSPENDED** and hidden from the public marketplace | LOCKED (discovery 2026-09-17) · cascade details open |
+| 53 | Identity | **Phone number:** collected for all users; **not verified** in V1 (no SMS/WhatsApp cost) | LOCKED (discovery 2026-09-17) |
+| 54 | Product | **Resale includes under-construction units**, with expected delivery date and remaining instalments when applicable. Amends #47 | LOCKED (discovery 2026-09-17) · price semantics open |
+| 55 | Identity | **Professional proof:** any admin-reviewable proof is accepted (broker/license document, employment or authorization letter, commercial registration/tax document, other) | LOCKED (discovery 2026-09-17) |
+| 56 | Identity | **Identity check:** an admin manually compares National ID and selfie; no paid KYC provider in V1 | LOCKED (discovery 2026-09-17) |
+| 57 | Identity | **Rejection:** a reason is mandatory; the applicant may re-apply; ID/selfie retention period to be set after legal review (V35) | LOCKED (discovery 2026-09-17) · period open |
+| 58 | Governance | **Revocation cascade:** every listing except `SOLD` is suspended; `RESERVED` listings go to admin review (no automatic refund); open offers and viewings are frozen; after re-verification, listings need admin review before going live. Amends #52 and BUSINESS_RULES §7 for this case | LOCKED (discovery 2026-09-17) · state-machine design open |
+| 59 | Identity | **Self-dealing and admin scope:** on their own listings an agent may not offer, request viewings, message as a buyer or be named in an offline offer. **Admins may buy as buyers but may not create listings.** Amends #50 | LOCKED (discovery 2026-09-17) |
+| 60 | Identity | **Phone rules:** required at sign-up; international numbers allowed; a buyer's phone is visible to the agent **only after an offer**; an agent's phone is **never public**. Amends #53 | LOCKED (discovery 2026-09-17) |
+| 61 | Product | **Under-construction price:** `price` = amount paid to the seller; remaining instalments are separate; the 5% deposit (cap 50,000 EGP) is computed on `price` only. Amends #54, confirms #13 | LOCKED (discovery 2026-09-17) |
+| 62 | Governance | **Frozen items:** buyers may withdraw offers or cancel viewings during a revocation freeze, **without penalty**. Consistent with BUSINESS_RULES §9.1 | LOCKED (discovery 2026-09-17) |
+| 63 | Reliability | **Expiry clocks pause while frozen** and resume with the remaining time | LOCKED (discovery 2026-09-17) |
+| 64 | Governance | **Reserved listing under revocation review:** admin decides within **5 business days**; buyer withdrawal during review = **100% refund**; outcomes = **release** the reservation or **cancel with full refund** | LOCKED (discovery 2026-09-17) · missed-deadline behaviour open |
+| 65 | Governance | **After re-verification:** listings that were `DRAFT`/`ARCHIVED` return to their previous state; listings that were `PUBLISHED`/`RESERVED` need admin review before becoming active | LOCKED (discovery 2026-09-17) · `PENDING_REVIEW`/`REJECTED` open |
+| 66 | Privacy | **Phone visibility:** the agent loses access to a buyer's phone when that offer is withdrawn, rejected or expires; buyers never see agent phones; admins may view phones for support/moderation, **audited** | LOCKED (discovery 2026-09-17) |
+| 67 | Governance | **Conflict of interest:** an admin may not review, approve, suspend or verify a case they are personally involved in; another admin must handle it | LOCKED (discovery 2026-09-17) · definition of "involved" open |
+| 68 | Product | **Remaining instalments** are stored as total remaining amount, number of instalments, frequency and end date | LOCKED (discovery 2026-09-17) · frequency values open |
+| 69 | Governance | **Revocation details:** after re-verification `PENDING_REVIEW` returns to the queue and `REJECTED` stays rejected; a missed 5-day review **auto-cancels with 100% refund**; a reservation can be released **only after re-verification** | LOCKED (discovery 2026-09-17) |
+| 70 | Governance | **Business days:** Sunday–Thursday, excluding Egyptian public holidays maintained by admins | LOCKED (discovery 2026-09-17) |
+| 71 | Governance | **"Personally involved"** = the admin has an offer, viewing or conversation on the listing or with that agent; another admin handles it; the demo is seeded with two admins | LOCKED (discovery 2026-09-17) |
+| 72 | Privacy | **Phone access lifecycle:** agent-recorded offers (O1b) grant access like buyer offers; access lasts while the offer is pending, accepted, reserved or completed and ends on withdrawal, rejection, expiry or cancellation | LOCKED (discovery 2026-09-17) |
+| 73 | Product | **Instalment frequency:** monthly, quarterly, semi-annual or annual; all instalment fields are required whenever a remaining amount exists | LOCKED (discovery 2026-09-17) |
+| 74 | Identity | **Agent applications:** no waiting period to re-apply; at most **one pending application** per user | LOCKED (discovery 2026-09-17) |
+| 75 | Product | **Leads:** any first real contact (message, viewing request or offer) creates the buyer–listing lead | LOCKED (discovery 2026-09-17) |
+| 76 | Payments | **Deposit is credited toward the sale price** and deducted from the final amount | LOCKED (discovery 2026-09-17) |
+| 77 | Product | **Sale completion:** `RESERVED` → `SOLD` needs confirmation from **both buyer and agent**; after **30 days** without completion the listing goes to admin review; the admin may request evidence, which is not mandatory for every sale. Amends P9 | LOCKED (discovery 2026-09-17) |
+| 78 | Product | **`RENTED` is an official listing state:** the agent moves a rental listing to `RENTED` when it is rented. Amends #5 (Property 8 → 9 states) | LOCKED (discovery 2026-09-17) · RENTED exits open |
+| 79 | Product | **Revenue model:** two streams — **transaction revenue** from successful sales (fee and payout rules TBD) and an **agent listing subscription**. Supersedes in part #1 | LOCKED (discovery 2026-09-17) · amounts TBD |
+| 80 | Product | **Agent listing subscription:** **exactly 3 plans** — **Free** (2 new listings/month), **Pro** (4), **Enterprise** (8). Quota counts listings created/published in the billing month; deleting, selling, suspending or archiving never restores it; resets at the next billing month. Prices set by #89 ($0 / $20 / $50, USD) | LOCKED (discovery 2026-09-17) · rules resolved by #85–#95 |
+| 81 | Product | **RENTED is not terminal:** relisting goes through `DRAFT → PENDING_REVIEW → PUBLISHED` as a new, reviewable listing lifecycle; rental history is preserved; never `RENTED → PUBLISHED`. Revocation applies to `RENTED` listings. Amends #78 | LOCKED (discovery 2026-09-17) |
+| 82 | Product | **Sale review outcomes:** at 30 days without both confirmations the case enters admin review automatically; the admin may **confirm SOLD**, **declare fell-through** (refund/cancellation rules apply) or **extend** with a justified reason. **A buyer–agent disagreement goes to admin review**, never resolved automatically. Conflict-of-interest rules apply. Refines #77 | LOCKED (discovery 2026-09-17) |
+| 83 | Product | **Lead pipeline (hybrid):** `NEW → CONTACTED → QUALIFIED → WON / LOST`; clear system events advance leads automatically (a completed sale → `WON`); agents may update stages manually and set `LOST`. Refines #75 | LOCKED (discovery 2026-09-17) |
+| 84 | Payments | **Late-withdrawal retention goes to the seller:** the 20% retained when a buyer withdraws after the 48-hour cooling-off goes **100% to the seller**; it is **not Settly revenue** and **not paid to the agent**. Resolves the TBD in #76/#79 | LOCKED (discovery 2026-09-17) |
+| 85 | Product | **Relisting consumes quota:** each relisting (P14 `ARCHIVED → DRAFT`, P16 `RENTED` relist) uses **1 listing** from the agent's current monthly plan quota, still follows `DRAFT → PENDING_REVIEW → PUBLISHED`, and can never bypass the monthly limit. Resolves part of #80/#81 | LOCKED (discovery 2026-09-17) |
+| 86 | Product | **Quota is consumed at first publication:** a listing uses quota when it is **first published**; drafts, submissions and rejected listings never consume it; once consumed it is never restored (sold, rented, suspended, archived or deleted); relistings follow the same rule. Resolves the consumption point left open in #80/#85 | LOCKED (discovery 2026-09-17) |
+| 87 | Product | **Exhausted quota blocks publication:** an admin approval must not publish a listing when the agent's quota is used up; the listing **stays `PENDING_REVIEW`** until quota is available after the billing-month reset; the limit is enforced **atomically** so concurrent approvals cannot exceed it (invariant I13) | LOCKED (discovery 2026-09-17) |
+| 88 | Product | **Billing month = calendar month (Cairo time)**; quota resets on the 1st for every agent. ~~A paid plan started mid-month has a first period ending at month end, with a **prorated** first payment~~ **(S2 superseded by #104: every paid period is 30 days from its start, full price)** (S1, S2) | LOCKED (discovery 2026-09-17) · S2 superseded by #104 |
+| 89 | Product | **Plan pricing (amended 2026-09-17):** **Free $0 · Pro $20 · Enterprise $50 per month**, billed per **30-day period** (#104; no annual option); **base prices in USD** (canonical). Real-estate amounts stay EGP (S3). *Currency display and charging: see #103* | LOCKED (discovery 2026-09-17) · amended by #103 |
+| 90 | Payments | **Subscription payment:** Paymob **hosted checkout for each 30-day period (#104)**; no saved card, no automatic renewal in V1; **simple receipt only**; VAT/e-invoicing checked before launch (V36) (S4, S5) | LOCKED (discovery 2026-09-17) |
+| 91 | Product | **Expiry, downgrade, cancellation:** unrenewed or failed paid plan → **Free immediately on the expiry date** (no grace period); published listings stay live after a downgrade; cancel any time, plan runs to the end of the paid period, **no refund** (S6–S8) | LOCKED (discovery 2026-09-17) |
+| 92 | Product | **Plan changes:** a **mid-period upgrade** is **immediate**; quota = new plan quota − publications already consumed this month; the agent pays the **full price of the new plan** and a **new 30-day billing period starts at the upgrade time** (no proration, #104). Downgrade takes effect **when the current paid period ends** (S9–S11) | LOCKED (discovery 2026-09-17) · period rules amended by #104 |
+| 93 | Product | **Starting plan and verification:** a newly verified agent starts on **Free** (no trial); revocation does **not** pause or cancel the subscription; listings returning to review after re-verification **keep their original queue position** (S12–S14) | LOCKED (discovery 2026-09-17) |
+| 94 | Product | **Listings waiting for quota:** admins review them anyway; approved content stays `PENDING_REVIEW` as **Approved, Waiting for Quota** and **publishes automatically, oldest approval first (FIFO)**, whenever quota becomes available (reset, upgrade, other approved increase); an edit invalidates the approval; no cap on waiting listings; agents see remaining quota, a submission warning and a publication notification (S15–S20) | LOCKED (discovery 2026-09-17) |
+| 95 | Reliability | **Quota enforcement:** reuse the **existing per-user advisory lock**, keyed on the listing's agent, in the approval/publication operation (invariant I13); **no new counter model**; the submission-time check is **warning-only** (S21, S22). Accepts P6 | LOCKED (discovery 2026-09-17) |
+| 96 | Frontend | **Maps:** **Leaflet** is the approved V1 map library (no MapLibre migration); **MapTiler** is the tile provider everywhere (area pages move off CARTO); the MapTiler key moves to `NEXT_PUBLIC_MAPTILER_KEY` and is **domain-restricted** in the MapTiler dashboard (S23–S25). Accepts P1 option (b); supersedes the map part of #21 | LOCKED (discovery 2026-09-17) |
+| 97 | Identity | **Role model:** one role per account — `USER` = buyer · `AGENT` = buyer + agent (after verification) · `ADMIN` = buyer + admin, no agent/listing powers; same login for all applicable portals (Buyer / Agent / Admin) with a switcher; **admins created only by seed or a controlled CLI/script**, no in-app promotion in V1 (S26–S28). Accepts P5 option (a) | LOCKED (discovery 2026-09-17) |
+| 98 | Security | **Cloudinary secret remediation:** the exposed secret has been **rotated**; plaintext credentials are removed from `ci.yml` in favour of **GitHub Actions secrets**; **git history is not rewritten** (S29–S31) | LOCKED (discovery 2026-09-17) |
+| 99 | Product / Frontend | **English-only V1, end to end:** UI, listing and editorial content, search, AI answers and system messages are **English only**; no `/ar/*` routes, no `/[locale]` segment, no RTL and no `dir="auto"` for Arabic in V1; **Arabic content, Arabic search, Arabic AI answers and Arabic/RTL are a Future / Optional Feature** after core completion. Defers for V1 the language parts of #39 §3/§5/§6/§8 and the Arabic/cross-language parts of #27/#32; V3, V23–V27 deferred | LOCKED (2026-09-17, amended same day) · Arabic schema/API fields: separate data-model decision OPEN |
+| 100 | Frontend | **Portal route prefixes:** Buyer **`/buyer/*`** · Agent **`/agent/*`** · Admin **`/admin/*`**; `/dashboard/*` and `/buyer-dashboard/*` are not canonical. Existing code mismatches (auth redirects, navbar landing links, middleware agent redirect) are implementation follow-ups. Refines #97 | LOCKED (2026-09-17) · code not yet aligned |
+| 101 | Data / API | **Arabic data fields in V1:** existing Arabic columns, API fields and `ar_normalize` are **kept for future compatibility but unused in V1**; Arabic fields required only for Arabic support become **nullable** (`Area.nameAr`, `Amenity.nameAr`, `KnowledgeArticle.titleAr`/`bodyAr`); **no placeholder Arabic data**; V1 flows, search, RAG and AI use English only. Resolves the data-model point of #99 | LOCKED (2026-09-17) · **implementation pending** (F1–F9) |
+| 102 | Product | **No agent-only SOLD:** a listing becomes `SOLD` only via accepted offer → deposit paid → cooling-off / sale process → **buyer + agent confirmation** → sale completed; admin review per #82 when P9a applies. **P11 removed**; O13 happens only with P9; O12 loses the offline-sale trigger; no new state. Accepts P7; #77 stays the governing rule | LOCKED (2026-09-17) · code follow-ups pending (`offline-sale`, `mark-sold`) |
+| 103 | Payments | **Subscription charge currency:** plans UI shows **USD only** (no toggle); payment charged in **EGP** at a **fixed V1 rate of 1 USD = 48.98 EGP** (not live, never auto-refreshed), **rounded up to a whole EGP** — Pro **980 EGP**, Enterprise **2,449 EGP** (always the full price, #104); the exact EGP amount is shown before the Paymob redirect; receipt shows EGP charged plus the USD reference and rate. Supersedes the #89 toggle and FX open items; the live-rate proposal (S158–S160) was withdrawn | LOCKED (2026-09-17) · Paymob confirmation (V37) and legal review (V36) pending |
+| 104 | Product / Payments | **Subscription periods:** every paid period (first subscription, re-subscription, upgrade, renewal) lasts **30 full days from its start time** at the **full plan price** — **no proration, no credit**; an upgrade starts a new 30-day period immediately; a downgrade applies when the current period ends. **The listing quota stays on the Cairo calendar month (reset on the 1st)**; the two cycles are never merged. Supersedes #88 S2; proration questions S161–S162 withdrawn | LOCKED (2026-09-17) · amended same day: early renewal stacks after the current period (last 7 days only, one queued period, no upgrade while queued); a period is exactly 720 hours from start (UTC) |
+| 105 | Data / Payments | **Subscription payment data model:** four new tables (`AgentSubscription`, `SubscriptionPeriod`, `SubscriptionPayment`, `SubscriptionPaymentAttempt`); deposit `Payment` untouched; `WebhookEvent`, idempotency, audit, provider port and advisory lock reused. Effective plan computed from the active period (else Free). No-overlap, one-queued-period and one-open-checkout constraints; USD cents + EGP piastres + fixed-rate snapshot. Paid downgrade = queued period; cancel keeps a paid queued period; 60-minute checkout; unapplicable success → admin review + manual refund | LOCKED (2026-09-17) · design only, implementation pending |
+| 106 | Product / Frontend | **Slice 1 defaults:** a viewing lasts **60 minutes** (availability split into 60-minute slots); requests up to **30 days ahead**; dashboards at `/buyer`, `/agent`, `/admin`; Google phone step at `/complete-profile`; unbuilt actions are not rendered; slice-1 agents/listings are seeded. Confirms: email verification by **link only** (#9), sessions **7 d sliding / 30 d absolute** (V12) | LOCKED (2026-09-17) |
 
 **Model count: 39 tables — 4 Better Auth-managed, 35 Settly-owned (#39).**
 **No application code exists yet.**
@@ -81,7 +143,7 @@ Lifecycle: `PENDING VERIFICATION → Verified → Decision updated → Related d
 |---|---|---|---|
 | V1 | Gemini embedding model: **`gemini-embedding-001`** (native 3072 dims; MRL `outputDimensionality: 1536`; mandatory post-truncation $L_2$ re-normalization; \$0.15/1M tokens; `text-embedding-004` deprecated/404) | **First migration** — it is a schema decision | ✅ **Verified** (2026-09-14) |
 | V2 | pgvector on Supabase: v0.7.0+; HNSW ceiling is 2,000 dims for standard `vector`; `vector(1536)` fits natively with `vector_cosine_ops`; `halfvec` (float16) verified up to 4,000 dims as 3072 fallback | First migration | ✅ **Verified** (2026-09-14) |
-| V3 | **Arabic retrieval quality** against the evaluation set and the thresholds in §Decision 27 | The entire bilingual search design (#14, #15) | ☐ Open |
+| V3 | **Arabic retrieval quality** against the evaluation set and the thresholds in §Decision 27 | The entire bilingual search design (#14, #15) | ⏸ **Deferred by #99** — no Arabic search in V1 |
 | V4 | Paymob: HMAC field list and ordering, partial-refund availability on the account tier, current fee schedule | Webhook verification (#13) | ☐ Open |
 | V5 | Better Auth: `bearer` plugin built-in; `advanced.database.generateId` overrides IDs with UUIDv7 cleanly for all models (`user`, `session`, `account`, `verification`); Expo plugin not required for web | First auth migration (#9) | ✅ **Verified** (2026-09-14) |
 | V6 | Prisma over Neon's PgBouncer pooler: Neon supports protocol-level prepared statements (`max_prepared_statements`); removing `pgbouncer=true` eliminates 4–5 round trips and repeated `DEALLOCATE ALL`, reducing statement latency from ~494ms to ~85ms | Connection configuration | ✅ **Verified** (2026-09-16) |
@@ -101,17 +163,21 @@ Lifecycle: `PENDING VERIFICATION → Verified → Decision updated → Related d
 | V20 | Better Auth admin plugin: exact columns are `role` (mapped to native PG `Role` enum `USER`/`AGENT`/`ADMIN`), `banned` (bool), `banReason` (text), `banExpires` (timestamp); immediate ban block verified | **First migration** (#39) | ✅ **Verified** (2026-09-14) |
 | V21 | Better Auth Prisma coexistence: CLI generation risks overwriting custom relations; resolution is maintaining Better Auth models explicitly in Settly's primary `schema.prisma` via `prismaAdapter` | **Migration workflow** (#39) | ✅ **Verified** (2026-09-14) |
 | V22 | Better Auth token hashing: default stores plaintext tokens; mandatory `verification: { storeIdentifier: "hashed" }` verified to store SHA-256 digests in `verification.identifier` at rest | Security posture (#39) | ✅ **Verified** (2026-09-14) |
-| **V23** ⭐ | **Gemini AR↔EN cross-lingual retrieval quality specifically** — not merely "handles Arabic". With canonical English removed, the model is *solely* responsible for cross-language retrieval | **The entire retrieval design** (#39) | ☐ Open |
-| **V24** ⭐ | **Arabic normalisation function** validated against the evaluation set — measure recall with and without | Arabic FTS quality (#39) | ☐ Open |
-| V25 | Next.js App Router i18n routing and its interaction with ISR + `generateStaticParams` across locales | Rendering (#39) | ☐ Open |
-| V26 | RTL maturity of shadcn/Radix, MapLibre controls and Arabic tile labels, Recharts axis orientation | Frontend components (#39) | ☐ Open |
-| V27 | Numeral convention for the Arabic UI — Western (`123`) vs Arabic-Indic (`١٢٣`). **Explicitly NOT an architectural blocker** — a product/design decision during Stitch | Design (#39) | ☐ Deferred |
+| **V23** ⭐ | **Gemini AR↔EN cross-lingual retrieval quality specifically** — not merely "handles Arabic". With canonical English removed, the model is *solely* responsible for cross-language retrieval | **The entire retrieval design** (#39) | ⏸ **Deferred by #99** — no cross-language retrieval in V1 |
+| **V24** ⭐ | **Arabic normalisation function** validated against the evaluation set — measure recall with and without | Arabic FTS quality (#39) | ⏸ **Deferred by #99** |
+| V25 | Next.js App Router i18n routing and its interaction with ISR + `generateStaticParams` across locales | Rendering (#39) | ⏸ **Deferred by #99** — not needed in V1 (no locale segment) |
+| V26 | RTL maturity of shadcn/Radix, **Leaflet** map controls (MapLibre until #96) and Arabic tile labels, Recharts axis orientation | Frontend components (#39) | ⏸ **Deferred by #99** — no RTL in V1 |
+| V27 | Numeral convention for the Arabic UI — Western (`123`) vs Arabic-Indic (`١٢٣`). **Explicitly NOT an architectural blocker** — a product/design decision during Stitch | Design (#39) | ☐ Deferred (no Arabic UI in V1, #99) |
 | **V28** ⭐ | **Zod → OpenAPI generator capability**: `@asteasolutions/zod-to-openapi` (v7 for Zod 3) empirically verified (`backend/test/spikes/v28-openapi.test.mjs`). Correctly expresses discriminated unions, `application/problem+json` oneOf error schemas, required header parameters (`idempotency-key`), and `text/event-stream` SSE endpoints | **The whole contract workflow** (#40) | ✅ **Verified** (2026-09-14) |
 | V29 | `openapi-typescript` / `openapi-fetch` handling of `application/problem+json` — does the generated client surface non-2xx bodies as a typed error union? | Frontend error handling (#40) | ☐ Open |
 | **V30** ⚠️ | **Express 5 + SSE vs compression middleware**: Empirically verified (`backend/test/spikes/v30-sse.test.mjs`) that Express 5 streams SSE chunks immediately without buffering. Compression middleware is explicitly omitted from streaming routes | SSE contract (#40) | ✅ **Verified** (2026-09-14) |
 | V31 | Better Auth mount-prefix flexibility: In Express 5 (`path-to-regexp` v8), mounting Better Auth via `app.use('/api/auth', toNodeHandler(auth))` correctly handles all subroutes without `path-to-regexp` wildcard errors, isolating library auth routes from `/api/v1/*` | Auth surface (#40) | ✅ **Verified** (2026-09-14) |
 | V32 | GitHub Actions CI Postgres with **PostGIS + pgvector + pg_trgm + btree_gist**: Stock `postgres` image lacks PostGIS and pgvector. Running `docker compose up -d postgres redis` on GitHub Actions runners builds `docker/Dockerfile.postgres` (`postgis/postgis:16-3.4` + `postgresql-16-pgvector`) and initializes all 5 extensions via `init-db.sql` in ~8s, providing 100% dev/CI parity without external registry rate limits or supply-chain drift | **CI setup** (#41) | ✅ **Verified** (2026-09-14) |
 | **V33** ⭐ | Prisma migrate custom triggers & rules: hand-written SQL migrations (AuditLog append-only trigger, Viewing exclusion constraints, custom tsvector expressions) persist untouched across subsequent migrations; Prisma migrate diffs only schema-defined objects and does not drop unmanaged triggers or rules | **First migration** (#41, #42) | ✅ **Verified** (2026-09-14) |
+| **V34** | **Legal/regulatory feasibility of Settly collecting reservation deposits on behalf of sellers** (CBE payment rules, Paymob merchant terms, who holds funds, payout timing, dispute handling). Not needed for the sandbox demo | **Real launch only** (#46, #47) | ☐ Open |
+| **V35** | **Egypt Personal Data Protection Law (151/2020) obligations for KYC data**: National ID numbers/images and selfies (lawful basis, consent wording, retention limits, storage region, registration/licensing duties) | **Before collecting real identity documents** (#49); the demo uses test documents only | ☐ Open |
+| **V37** | **Paymob acceptance of Settly-computed EGP subscription amounts** (980 / 2,449 EGP, no Paymob-side conversion) (#103). **Portfolio/demo scope (#46):** verified by the Paymob **sandbox** test during implementation; written confirmation from Paymob is needed **only before a real launch** | **Real launch only** (sandbox test during implementation) | ☐ Open |
+| **V36** | **Egyptian VAT and e-invoicing obligations for agent subscription payments** (and any other Settly revenue): whether invoices are required, VAT treatment, e-invoicing registration | **Real launch only** (#90); also covers showing USD plan prices while charging EGP (Law 194/2020, #103); V1 issues a simple receipt | ☐ Open |
 
 ### 2.1 When each item actually blocks
 
@@ -121,10 +187,11 @@ Lifecycle: `PENDING VERIFICATION → Verified → Decision updated → Related d
 | **Before the first endpoint** | **V28 · V30 · V31** |
 | **Before CI is wired** | **V32** |
 | **Now, as Cloudinary is wired** | V16 |
-| **Before the seed / AI phase** | **V3 — the retrieval gate** · **V23 · V24** |
-| **Before payment work is complete** | V4 (requires a sandbox test) |
+| **Before the seed / AI phase** | *(V3, V23, V24 deferred by #99 — English-only V1)* |
+| **Before payment work is complete** | V4 and V37 (both checked with a Paymob **sandbox** test) |
 | **During frontend work** | V7 · **V29** |
 | **Before deployment only** | V8 · V9 · V10 · V11 · V13 · V14 · V15 · V17 · V18 |
+| **Before a real (non-demo) launch** | **V34** · **V35** · **V36** · **V37** (written Paymob confirmation) |
 
 Four items gate the first migration. Everything else waits for the phase that needs it.
 
@@ -136,19 +203,19 @@ implement. **"It sounds plausible" is not verification.**
 
 ## 3. Decision index
 
-- **Product & domain:** #1, #2, #3, #4, #5, #28, **#35, #38, #39**
+- **Product & domain:** #1, #2, #3, #4, #5, #28, **#35, #38, #39**, **#45–#47, #49–#62, #64–#83, #97, #102**
 - **API contract:** **#40**
 - **Testing:** **#41**
 - **Privacy & retention:** **#42**
-- **Data & persistence:** #6, #7, #16, #20, #25
+- **Data & persistence:** #6, #7, #16, #20, #25, **#101, #105**
 - **Backend & auth:** #8, #9
-- **Reliability & concurrency:** #10, #11, #12, #26
-- **Payments:** #13
+- **Reliability & concurrency:** #10, #11, #12, #26, **#63**
+- **Payments & revenue:** #13, **#76, #79, #80, #84, #85, #86, #87, #88–#95, #103, #104, #105**
 - **Search & AI:** #14, #15, #17, #19, #24
-- **Frontend:** #21, #23
+- **Frontend:** #21, #23, **#96, #99, #100, #106**
 - **Infrastructure:** #22, **#37**
-- **Security & operations:** **#33, #34, #36**
-- **Process:** #0, #18, #27, #29, #30, #31, #32
+- **Security & operations:** **#33, #34, #36, #98**
+- **Process:** #0, #18, #27, #29, #30, #31, #32, **#48**
 
 ---
 
@@ -171,6 +238,10 @@ because it determines the payment state machine, refund rules and several models
 
 ### #1 — Product scope: Package B (high impact)
 `2026-09-05` · **LOCKED** · Product · Affects: `product/OVERVIEW.md`, `product/REQUIREMENTS.md`
+
+> **Superseded in part (2026-09-17) by #79 and #80:** the exclusion of agent subscriptions no
+> longer holds; Settly now has an agent listing subscription and transaction revenue. The rest of
+> Package B stands. Also refined by #47 (resale only) and #78/#81 (`RENTED`).
 
 **Context.** Scope failure in projects this size comes from too many *lifecycles*, not too many
 features. Each lifecycle carries a state machine, notification rules, permissions, edge cases,
@@ -208,7 +279,8 @@ optional post-v1 addition since it exercises entitlements and expiry.
 so the provider field is Paymob/Kashier/Fawry (#13); the timezone is Africa/Cairo with DST observed
 again since 2023, so viewing slots are never stored as naive local time (#6); listing content may
 be Arabic, affecting FTS configuration and embedding-model choice (#6, #24); money is stored in
-integer minor units, piastres.
+integer minor units, piastres. **Amended by #89 (2026-09-17):** agent subscription base prices are in
+**USD**; EGP remains the currency of real-estate amounts (prices, deposits, refunds).
 
 ---
 
@@ -259,7 +331,8 @@ transition tables live in `product/BUSINESS_RULES.md`.
 - **Failure belongs to `PaymentAttempt`, not `Payment`.** A declined card fails one attempt; the
   obligation returns to `PENDING` for retry.
 - **Two offline escape hatches**, because not every Egyptian deal walks the in-app path:
-  agent-initiated offers, and a direct `PUBLISHED` to `SOLD` transition.
+  agent-initiated offers, and ~~a direct `PUBLISHED` to `SOLD` transition~~ **(removed by #102 — an
+  agent can never make a listing `SOLD` alone)**.
 - **Two-tier edit moderation.** Structural fields — address, geo, type, area, images, title —
   trigger blocking re-review. Content fields — price, description, amenities — stay live with a
   non-blocking recheck flag. Instant price edits matter: stale prices are the top complaint on
@@ -741,6 +814,9 @@ queries it fine.
 ### #21 — Frontend architecture (high impact)
 `2026-09-05` · **LOCKED · LTR-only stance REVERSED by #39** · Frontend · Affects: `architecture/FRONTEND.md`
 
+> **Superseded in part (2026-09-17) by #96:** the V1 map library is **Leaflet** (with MapTiler tiles),
+> not MapLibre.
+
 Next.js App Router. **SEO pages are server-rendered or static; dashboards are pure client-side**,
 which means the Next server **never forwards cookies** and that entire class of bug disappears.
 Dashboards genuinely do not want SSR — they are interactive, unindexed, and server-rendering them
@@ -910,7 +986,7 @@ fan-out once there is more than one instance.
 ---
 
 ### #27 — Seed data and retrieval evaluation
-`2026-09-05` · **LOCKED · evaluation scope extended by #39** · Process · Affects: `process/SEED_DATA.md`
+`2026-09-05` · **LOCKED · evaluation scope extended by #39 · Arabic/cross-language corpus and gates deferred for V1 by #99** · Process · Affects: `process/SEED_DATA.md`
 
 One first-class deliverable, roughly 1–2 weeks of real work — **not optional demo decoration**.
 Hybrid search, semantic retrieval, RAG and the agent are all invisible on forty listings.
@@ -1034,7 +1110,7 @@ technical and AI limits belong in the relevant architecture documents.
 ---
 
 ### #32 — Retrieval evaluation thresholds
-`2026-09-05` · **LOCKED** · Process · *Part of #27*
+`2026-09-05` · **LOCKED · V1 gate is the English rows only; AR and cross-language rows deferred by #99** · Process · *Part of #27*
 
 Pre-committed and **not to be tuned after seeing results**: same-language Recall@10 ≥ 0.80;
 cross-language Recall@10 ≥ 0.65; zero-result rate ≤ 10%; relevant result in top 3 ≥ 0.70. If
@@ -1380,7 +1456,7 @@ primarily on cost. A separate decision, deliberately not opened here.
 ---
 
 ### #39 — Domain Model Reconciliation (high impact)
-`2026-09-05` · **LOCKED · embedding lifecycle sync refined by #42** · Domain · *Amends #3, #6, #21, #23, #24, #27 · Reverses #4, #15 · Completes #9*
+`2026-09-05` · **LOCKED · embedding lifecycle sync refined by #42 · language scope (§3, §5, §6, §8) deferred for V1 by #99 — V1 is English only end to end** · Domain · *Amends #3, #6, #21, #23, #24, #27 · Reverses #4, #15 · Completes #9*
 Affects: `GLOSSARY.md`, `product/BUSINESS_RULES.md`, and every Tier-B architecture document
 
 **Context.** Decision #3 named 36 models. Decisions #9, #14, #15, #24 and #33 then changed what those
@@ -1446,6 +1522,10 @@ is one someone eventually moves after retrieval**, which leaks through result co
 
 #### 3. Multilingual content model
 
+> **Deferred for V1 by #99:** V1 content is English only. The Arabic columns below are **kept for
+> future compatibility, optional and unused in V1 (#101)**. The "at least one pair" wording is
+> superseded for V1: English content is what V1 requires.
+
 **The requirement that decided it:** content may be Arabic-only, English-only, **or both**. A single
 `language` column with one title/description pair **cannot represent a bilingual listing** — so the
 model originally proposed in this decision was rejected on its own terms.
@@ -1504,6 +1584,9 @@ for, and RRF means one firing arm suffices.
 
 #### 5. FTS architecture — amends #6
 
+> **V1 (#99):** only the English vector is in scope. `searchVectorAr`, Arabic normalisation and
+> code-switched queries are deferred with Arabic search.
+
 **Two GENERATED tsvector columns**: `searchVectorEn` (`english` config) and `searchVectorAr`
 (`simple` + deterministic Arabic normalisation), each GIN-indexed. Plus `pg_trgm` on both title
 columns, `Area` names and aliases, and agent names.
@@ -1523,6 +1606,9 @@ column stays generated. Quality is **V24**.
 ---
 
 #### 6. Embedding architecture
+
+> **V1 (#99):** the single vector is built from English content. Cross-language retrieval and V23
+> are deferred.
 
 **One multilingual vector per `Property`**, as a **column**, partial HNSW `WHERE status='PUBLISHED'` —
 #6 preserved intact. Composed from whichever authored content exists (both languages when both are
@@ -1550,6 +1636,10 @@ trail stays intact by construction. Retention windows for `SearchEvent`, `Proper
 ---
 
 #### 8. AI and frontend language behaviour
+
+> **Superseded for V1 by #99** (amended 2026-09-17): the UI locale, localized routes, RTL,
+> `hreflang` **and** the AI response-language behaviour below are all deferred. V1 AI answers are
+> English only.
 
 **Detect language per message**; `preferredLocale` / UI locale is a tiebreaker only; **respond in the
 detected language**; **no conversation-level language state and no language model**. Egyptian users
@@ -2172,13 +2262,13 @@ operation, not a workflow) · deleting AuditLog entries on user deletion (destro
 
 ---
 
-## 5. Proposed decisions (awaiting approval)
+## 5. Proposed decisions (P1, P5, P6, P7 accepted; P2–P4 as noted)
 
 Raised during implementation, recorded under CLAUDE.md rule 3. **Not locked.** Each needs an
 explicit decision before it is treated as settled; the topic documents are unchanged until then.
 
 ### P1 — Map library drift: Leaflet in code vs MapLibre locked
-`2026-09-17` · **PROPOSED** · Frontend · Affects: `architecture/FRONTEND.md` §11
+`2026-09-17` · **ACCEPTED → #96** (option b: Leaflet + MapTiler) · Frontend · Affects: `architecture/FRONTEND.md` §11
 
 **Context.** FRONTEND.md §11 locks **MapLibre + MapTiler** for display. The search map
 (`components/search/SearchMap.tsx`, `react-leaflet`) and the area maps
@@ -2235,3 +2325,1290 @@ companions listed first (their `unicode-range` keeps them off Latin text).
    the missing ids? (The frontend currently falls back to the latest listings on 422.)
 3. **Seed image URLs.** `backend/scripts/seed-catalog.ts` falls back to relative `/images/...`
    URLs when the Cloudinary map is missing, which violates `PropertyImage.url` (`z.string().url()`).
+
+---
+
+### P5 — Role model for dual-capability accounts (follows #50)
+`2026-09-17` · **ACCEPTED → #97** (option a) · Identity · Affects: `architecture/AUTH.md`, `architecture/DOMAIN_MODEL.md`, `frontend/src/middleware.ts`
+
+**Context.** `user.role` is a single enum (USER | AGENT | ADMIN), kept on `user` so the Better Auth
+admin plugin can read it (#39). #50 says one account can be both buyer and agent. The frontend
+middleware currently redirects agents away from buyer routes.
+
+**Options.** (a) Keep one role column; **AGENT means "buyer + agent"** (a superset). Buyer
+capabilities are granted to USER and AGENT; agent capabilities require AGENT **and** a verified
+agent profile. (b) Several roles per user (a role list). (c) Everyone is USER; agent capability
+comes only from an approved agent profile.
+
+**Recommendation.** (a): no schema change, keeps #39, and self-dealing is already a resource
+policy (buyer ≠ listing agent), not a role check. It requires removing the middleware redirect
+that blocks agents from buyer routes.
+
+**Update after #59.** Admins may buy but may not list. Under (a) that reads: **USER** = buyer ·
+**AGENT** = buyer + agent · **ADMIN** = buyer + admin (no agent capabilities). Today 12 listing
+routes accept `ADMIN` for agent actions, which #59 forbids for creation.
+
+---
+
+### P6 — Mechanism for atomic quota enforcement (follows #87)
+`2026-09-17` · **ACCEPTED → #95** · Reliability · Affects: `product/BUSINESS_RULES.md` §8.1, `architecture/CONCURRENCY_AND_IDEMPOTENCY.md`
+
+**Context.** I13 ("an agent's first publications in a billing month never exceed the plan quota") has
+the same shape as I9, I11 and I12: a per-user count that two concurrent approvals could both pass
+(write skew).
+
+**Recommendation.** Reuse the existing mechanism of §8.1: the **transaction-scoped advisory lock keyed
+on the user id** (here, the listing's agent), taken inside the P3 approval transaction before
+counting the month's first publications. No new locking pattern.
+
+---
+
+### P7 — Agent-only SOLD paths vs two-sided sale completion (#77)
+`2026-09-17` · **ACCEPTED → #102** (no agent-only SOLD; P11 removed; O13 aligned with #77) · Product · Affects: `product/BUSINESS_RULES.md` §2, §4
+
+**Context.** #77 (refined by #82) says a listing becomes `SOLD` only when **both buyer and agent
+confirm**, or when an admin confirms at review; the product owner restated that an agent can never
+mark a listing `SOLD` alone. `BUSINESS_RULES.md` still contains two agent-only paths:
+- **P11** — `PUBLISHED → SOLD` by the agent with a reason (the offline-sale escape hatch);
+- **O13** — `RESERVED → COMPLETED` by the agent alone, which moves the property to `SOLD`.
+
+Found by the frontend screen inventory (`discovery/05-final-frontend-screen-inventory.md`, PI-5).
+
+**Not decided.** Whether P11 is removed, kept with extra confirmation (e.g. admin), or reworded, and
+how O13 is aligned with the two-confirmation rule (P9). **Until decided, P11, O13 and #77 stay as
+written, and no UI is designed for an agent-only SOLD action.**
+
+---
+
+## 6. Discovery decisions (existing-system requirements discovery, from 2026-09-17)
+
+Decided by the product owner during the discovery described in `discovery/`. Same weight as
+#1–#44. Topic documents are updated to match.
+
+### #45 — Positioning: whole residential market, premium brand feel
+`2026-09-17` · **LOCKED** · Product · Affects: `product/OVERVIEW.md`, `design/*`, seed data (#27)
+
+**Context.** Newer documents and UI copy framed Settly as an "institutional-grade luxury"
+marketplace for "prime corridors"; OVERVIEW.md said "the Egyptian market" (gap A1).
+
+**Options.** (A) luxury/prime only · (B) whole market, neutral brand · (C) whole market, premium
+brand feel.
+
+**Decision.** **(C).** Settly serves the whole Egyptian residential market. "Premium" describes
+the brand and experience, **not** an eligibility filter on listings, prices or areas.
+
+**Consequences.** No price floor or area whitelist. The area taxonomy must cover the market, not
+only four "prime corridors". Search facets and price ranges must not assume luxury values. Copy
+claiming exclusivity ("institutional-grade", "sovereign", "prime only") is off-brief. The seed
+corpus (#27) must span segments.
+
+### #46 — Project stage: demo first, production-ready by design
+`2026-09-17` · **LOCKED** · Product / Process · Affects: `process/ROADMAP.md`, `architecture/SECURITY.md`, #29
+
+**Context.** Whether Settly is a portfolio demo or a launch decides how strict security,
+compliance and data honesty must be (gap A5).
+
+**Decision.** **Demo first, but designed from the beginning to be production-ready and
+launchable later.** Consistent with #29 (reduce scope by sequencing, not by lowering
+architecture).
+
+**Consequences.** Production-grade controls (secret handling, rate limiting, secure verification,
+audit) are **in scope now**, not "later hardening". External integrations may run in sandbox or
+test mode (Paymob sandbox) as long as the production path is the same code. Anything that would
+block a real launch but not the demo is recorded as a verification item (e.g. V34). Whether
+fabricated figures are acceptable in the demo is **not** decided here (open question A4).
+
+### #47 — V1 listing scope and payment scope
+`2026-09-17` · **LOCKED** · Product · Refines #1 and #13 · Affects: `product/OVERVIEW.md`, `product/BUSINESS_RULES.md`, `architecture/PAYMENTS.md`, `architecture/DOMAIN_MODEL.md`
+
+**Context.** Egyptian residential supply is resale, off-plan (developer) and rental. The schema
+has no developer/project/delivery/instalment fields, and the UI invented them (gaps C3, C4).
+Off-plan deals do not fit the offer → accept → deposit flow: prices are developer-set and the
+developer, not the agent, collects money.
+
+**Options.** (A) resale only · (B) resale + off-plan · (C) resale + off-plan + rentals. For
+payments: keep the locked deposit · no in-app payment in v1 · a different payment object (e.g.
+developer EOI fee).
+
+**Decision.**
+1. **Sale listings in V1 are resale only.**
+2. **Rentals stay as locked in #1:** discovery, viewings and inquiries, never offers or payments.
+3. **Off-plan / developer primary sales are deferred to future scope.** They need their own
+   domain design (developers, projects, delivery, payment plans) and payment design first.
+4. **Payments:** keep the locked reservation-deposit flow (#11, #13) for resale listings,
+   running against **Paymob sandbox**. No payment flow for rentals.
+
+**Consequences.** No developer/project/instalment fields or filters in V1. UI elements that
+present off-plan concepts (handover year, developer facets, instalment plans) are out of V1
+scope. A real launch additionally requires V34. Open follow-up: whether "resale of a unit still
+under construction" counts as resale in V1 (discovery batch 2).
+
+### #48 — The locked roadmap is the V1 source of truth
+`2026-09-17` · **LOCKED** · Process · Affects: `process/ROADMAP.md`, `process/IMPLEMENTATION_PLAN.md`, `SETTLY_MASTER_PLAN.md`, `phases/*`
+
+**Context.** `SETTLY_MASTER_PLAN.md` and `phases/*` (added 2026-09-17) called themselves the
+"single source of truth" and ordered work by screen groups, contradicting the LOCKED roadmap
+(gap A2).
+
+**Decision.** **`process/ROADMAP.md` (phase order) and `process/IMPLEMENTATION_PLAN.md` (steps)
+define V1.** The vertical slice `auth → properties → search → property detail → viewing request`
+comes next, then offers → payments → messaging → notifications, then intelligence.
+`SETTLY_MASTER_PLAN.md` and `phases/*` are **non-authoritative**: useful as a screen inventory and
+progress record, and they cannot override the roadmap unless a later decision says so.
+
+**Consequences.** Those two documents carry a non-authoritative banner. Work already delivered
+beyond the slice (compare, areas, insights, agent directory) is kept but is not a reason to
+continue in screen order.
+
+### #49 — Agent onboarding: buyer first, then a verified application
+`2026-09-17` · **LOCKED** · Identity · Affects: `product/ROLES_AND_PERMISSIONS.md`, `architecture/AUTH.md`, `architecture/DOMAIN_MODEL.md`, `architecture/STORAGE.md`, `architecture/SECURITY.md`
+
+**Context.** Agent sign-up was broken: nothing granted the AGENT role (gap B1). How the role is
+granted had never been specified.
+
+**Decision.** Every user registers as a **buyer**. To become an agent, a user submits an **agent
+application** with **identity verification** (National ID + selfie) and **professional
+verification**. An **admin reviews and approves** it; approval grants agent capability and marks
+the agent verified.
+
+**Consequences.**
+- The application needs a lifecycle (submitted, approved/rejected, resubmission). The current
+  `AgentProfile` (only `isVerified`, `verifiedAt`) cannot express it. Data-model design is pending
+  (discovery step 7).
+- National ID images and selfies are **sensitive personal data**: private storage only (#25:
+  Supabase Storage, signed URLs, audited admin access path), **never Cloudinary** (public media),
+  never in `AuditLog.metadata` (#42). Retention rules are open. Legal check: **V35**.
+- The register page's "Advisor" tab and license fields no longer match this flow.
+- Open: what "professional verification" requires; whether the selfie is compared manually or by a
+  KYC provider; whether rejected applicants may re-apply.
+
+### #50 — One account, buyer and agent capabilities
+`2026-09-17` · **LOCKED** · Identity · Amends `BUSINESS_RULES.md` O1 · Affects: `architecture/AUTH.md`, `frontend/src/middleware.ts`
+
+**Decision.** One account may hold both buyer and agent capabilities. An agent may act as a buyer
+on other agents' listings. **An agent may never make an offer on a listing they own** (new O1
+guard: buyer ≠ listing agent).
+
+**Consequences.** The role model needs a design (proposal **P5**). The frontend middleware that
+redirects agents away from buyer routes contradicts this decision. Open: whether the same
+self-dealing ban covers viewings, messages and agent-recorded offers (O1b).
+
+### #51 — Listings are created by verified agents only (V1)
+`2026-09-17` · **LOCKED** · Product · Confirms #1
+
+**Decision.** Only verified agents may create and submit listings in V1 (P1/P2 unchanged).
+**Owner (for-sale-by-owner) listings are future scope.**
+
+### #52 — Revoking agent verification suspends the agent's listings
+`2026-09-17` · **LOCKED** · Governance · Affects: `product/BUSINESS_RULES.md` §2, §11.1
+
+**Decision.** An admin may **revoke** an agent's verification. The agent's listings become
+**SUSPENDED** and are hidden from the public marketplace. The account stays active (the user keeps
+buyer capability) unless it is separately suspended (§11.1).
+
+**Consequences and open points.**
+- `SOLD` is terminal and cannot become SUSPENDED, so the cascade applies to live listings.
+- Under the existing P12 rule, a `RESERVED` listing moving to SUSPENDED triggers a **full deposit
+  refund**. Is that intended for revocation?
+- Open: effect on `DRAFT`, `PENDING_REVIEW` and `ARCHIVED` listings, open offers and scheduled
+  viewings; whether re-verification restores listings automatically or through admin review.
+- This is a fourth, distinct form of agent removal next to suspend / deactivate / anonymise
+  (§11.1).
+
+### #53 — Phone numbers collected, not verified
+`2026-09-17` · **LOCKED** · Identity · Affects: `architecture/AUTH.md`, `architecture/DOMAIN_MODEL.md`
+
+**Decision.** Collect a phone number from **all users**. **No phone verification in V1** (no
+SMS/WhatsApp provider cost). Better Auth's `phoneNumber` plugin stays unused (#9); the number is
+ordinary profile data.
+
+**Consequences.** An unverified number must never be used as a login identifier, a verification
+channel or proof of identity. Open: required at sign-up or later; accepted formats; who can see a
+buyer's or agent's number, and when.
+
+### #54 — Resale includes under-construction units
+`2026-09-17` · **LOCKED** · Product · Amends #47 · Affects: `architecture/DOMAIN_MODEL.md`, `product/BUSINESS_RULES.md` §1, `architecture/SEARCH.md`
+
+**Context.** In Egypt, much resale supply is units not yet delivered, where the seller still owes
+the developer instalments.
+
+**Decision.** V1 resale includes **under-construction** units. Such listings carry an **expected
+delivery date** and **remaining instalments** where applicable. Developer primary (off-plan) sales
+remain future scope (#47).
+
+**Consequences.** New listing attributes (completion status, expected delivery, remaining
+instalments) are needed; none exist today. Open and important: what `price` means for these
+listings (the amount paid to the seller, or the total including remaining instalments), and which
+amount the 5% deposit is calculated on.
+
+### #55 — Professional proof: several accepted types
+`2026-09-17` · **LOCKED** · Identity · Refines #49
+
+**Decision.** An agent application must include at least one professional proof. Accepted types:
+broker or license document, employment/authorization letter from a brokerage, commercial
+registration or tax document, or **other** proof an admin can review (with a description).
+
+**Consequences.** The application stores a proof type and the uploaded file(s) in private
+storage. No external registry lookup in V1.
+
+### #56 — Manual identity check
+`2026-09-17` · **LOCKED** · Identity · Refines #49
+
+**Decision.** An admin compares the National ID image with the selfie by eye. **No paid KYC or
+face-matching provider in V1.**
+
+**Consequences.** The admin review screen must show both documents side by side through the
+audited access path (§9). Each view of an identity document is audited (ids only, #42).
+
+### #57 — Rejection, re-application, retention
+`2026-09-17` · **LOCKED** · Identity · Refines #49 · Depends on V35
+
+**Decision.** Rejecting an application **requires a reason** shown to the applicant. A rejected
+applicant **may re-apply**. ID and selfie files follow a **defined retention period**, set after
+legal review (V35).
+
+**Consequences.** Until V35 is resolved, only test identity documents may be collected. Open:
+whether re-application needs a cooldown or attempt limit.
+
+### #58 — Revocation cascade (amends #52)
+`2026-09-17` · **LOCKED** · Governance · Amends #52 and `BUSINESS_RULES.md` §7 (for this case) · Affects: `BUSINESS_RULES.md` §2, §3, §4, §7, §10; `architecture/CONCURRENCY_AND_IDEMPOTENCY.md`
+
+**Decision.** When an admin revokes an agent's verification:
+1. **Every listing of that agent except `SOLD`** becomes suspended and hidden.
+2. **`RESERVED` listings are not refunded automatically.** An admin reviews each one. This
+   overrides the "admin suspends the listing → 100% refund" row of §7 for revocation only; abuse
+   suspensions (P12) keep the automatic full refund.
+3. **Open offers and viewings on those listings are frozen.**
+4. After **re-verification**, the listings **need admin review** before becoming public again.
+
+**Consequences.** The current state machines have no path from `DRAFT`, `PENDING_REVIEW`,
+`REJECTED` or `ARCHIVED` into `SUSPENDED`, no way back through review, and no "frozen" concept for
+offers or viewings, whose timers (offer TTL, 72 h deposit deadline, viewing expiry) are driven by
+scheduled jobs. These need a design in the state-machine step. Open: can the buyer still withdraw
+or cancel a frozen item (principle §9.1 says exit is never blocked); do timers pause; is there a
+deadline for the admin review of a reserved listing, and what is refunded if the buyer withdraws
+meanwhile.
+
+### #59 — Self-dealing ban and admin scope (amends #50)
+`2026-09-17` · **LOCKED** · Identity · Amends #50 · Affects: `BUSINESS_RULES.md` §3, §4, §9; `product/ROLES_AND_PERMISSIONS.md`
+
+**Decision.** On a listing they own, an agent may **not**: make an offer (O1), request a viewing
+(V1), message as a buyer, or be named as the buyer of an agent-recorded offer (O1b).
+**Admins may act as buyers but may not create listings.**
+
+**Consequences.** Guards on V1, O1, O1b and conversation creation: actor ≠ listing agent. Listing
+routes that accept `ADMIN` for creation must stop doing so. Open: conflict of interest when an
+admin moderates a listing, or verifies an agent, they are dealing with as a buyer.
+
+### #60 — Phone number rules (amends #53)
+`2026-09-17` · **LOCKED** · Identity · Amends #53 · Affects: `architecture/AUTH.md`, `architecture/SECURITY.md`
+
+**Decision.** Phone is **required at sign-up**. **International numbers are allowed.** A buyer's
+phone becomes visible to the listing agent **only after the buyer makes an offer** on that agent's
+listing. An agent's phone is **never public**.
+
+**Consequences.** Store numbers in a normalised international format. Sign-in with Google does not
+supply a phone, so those accounts need a completion step before use. The public agents page
+currently shows WhatsApp numbers (mock data), which this decision forbids. The register page
+collects a phone but never sends it. Open: whether visibility ends when the offer ends, and whether
+the buyer ever sees the agent's phone.
+
+### #61 — Under-construction resale price semantics (amends #54)
+`2026-09-17` · **LOCKED** · Product · Amends #54 · Confirms #13 · Affects: `BUSINESS_RULES.md` §1, §2.3, §6; `architecture/SEARCH.md`
+
+**Decision.** For every resale listing, `price` is **the amount the buyer pays the seller**.
+Remaining developer instalments are stored and shown **separately**. The **5% reservation deposit
+(cap 50,000 EGP) is calculated from `price` only**.
+
+**Consequences.** Price filters, sorting and comparison operate on `price`; a buyer's full cost
+for an under-construction unit is `price` + remaining instalments, which the UI must show clearly.
+Open: the structure of "remaining instalments" (total only, or amount + count + frequency + end
+date).
+
+### #62 — Buyers can always exit a frozen item
+`2026-09-17` · **LOCKED** · Governance · Refines #58 · Applies BUSINESS_RULES §9.1
+
+**Decision.** While offers and viewings are frozen by a revocation (#58), the buyer may **withdraw
+the offer or cancel the viewing at any time, without penalty**. Agent-side actions stay blocked.
+
+**Consequences.** Exit transitions (O7/O8, V6/V7) must accept frozen items. Withdrawing frees the
+buyer's I9/I12 slot immediately.
+
+### #63 — Expiry clocks pause during a freeze
+`2026-09-17` · **LOCKED** · Reliability · Refines #58 · Affects: BUSINESS_RULES §10, `architecture/CONCURRENCY_AND_IDEMPOTENCY.md`
+
+**Decision.** Time-based expiries on a frozen item (offer TTL 7 d, deposit deadline 72 h, viewing
+expiry, cooling-off 48 h) **pause** when the freeze starts and **resume with the remaining time**
+when it ends.
+
+**Consequences.** Each frozen item must record when the freeze started and how much time was left;
+the scheduled expiry jobs must skip frozen items. Clock arithmetic stays server-side (#21).
+
+### #64 — Review of a reserved listing after revocation
+`2026-09-17` · **LOCKED** · Governance · Refines #58 · Affects: BUSINESS_RULES §2.4, §7
+
+**Decision.**
+- An admin must decide within **5 business days**.
+- If the buyer withdraws during the review, the refund is **100%**.
+- The admin either **releases** the reservation (the issue is resolved and the listing continues
+  toward sale) or **cancels it with a full refund**.
+
+**Consequences.** A business-day calendar is needed (open: Egyptian working week and public
+holidays). Open: what happens automatically if the deadline passes with no decision, and whether a
+release requires the agent to be re-verified first.
+
+### #65 — Restoring listings after re-verification
+`2026-09-17` · **LOCKED** · Governance · Refines #58
+
+**Decision.** When a revoked agent is verified again: listings that were **`DRAFT` or `ARCHIVED`**
+return to that state automatically; listings that were **`PUBLISHED` or `RESERVED`** stay hidden
+until an admin reviews each one.
+
+**Consequences.** A suspended listing must remember its pre-suspension state and the reason for
+suspension (revocation vs abuse), so that re-verification never reinstates an abuse suspension.
+Open: listings that were `PENDING_REVIEW` or `REJECTED`.
+
+### #66 — Phone visibility lifecycle
+`2026-09-17` · **LOCKED** · Privacy · Refines #60 · Affects: BUSINESS_RULES §9, `architecture/SECURITY.md`
+
+**Decision.**
+- An agent sees a buyer's phone only while that buyer has an offer on the agent's listing; access
+  **ends when the offer is withdrawn, rejected or expires**.
+- **Buyers never see an agent's phone.**
+- **Admins may view any phone number** for support or moderation; **every access is audited**
+  (ids only in the audit record, #42).
+
+**Consequences.** Visibility is computed per request from the offer's current state, never copied
+to the agent. Open: whether an agent-recorded offer (O1b) grants access, and whether access
+continues after acceptance, reservation and sale.
+
+### #67 — Admin conflict of interest
+`2026-09-17` · **LOCKED** · Governance · Affects: BUSINESS_RULES §9, `product/ROLES_AND_PERMISSIONS.md`
+
+**Decision.** An admin may not review, approve, reject, suspend or verify a case in which they are
+**personally involved**. Another admin must handle it.
+
+**Consequences.** A service-layer guard on every admin action, plus a way to route the case to
+another admin. Open: what counts as "involved" (an offer, viewing or conversation on the listing?
+a favourite? a past deal with the agent?), and what happens when only one admin exists (the demo
+setup).
+
+### #68 — Remaining-instalments structure
+`2026-09-17` · **LOCKED** · Product · Refines #54, #61 · Affects: `architecture/DOMAIN_MODEL.md`, `architecture/SEARCH.md`
+
+**Decision.** An under-construction resale listing records **total remaining amount** (EGP
+piastres), **number of remaining instalments**, **instalment frequency** and **last instalment
+date**.
+
+**Consequences.** Enables showing the per-instalment amount and the buyer's full cost (`price` +
+remaining total). Open: allowed frequency values, and validation rules (e.g. all four fields
+required together).
+
+### #69 — Revocation follow-ups
+`2026-09-17` · **LOCKED** · Governance · Refines #58, #64, #65
+
+**Decision.**
+1. After re-verification, a listing that was **`PENDING_REVIEW` returns to the review queue**; one
+   that was **`REJECTED` stays `REJECTED`**.
+2. If the **5-business-day** review of a reserved listing passes with no decision, the system
+   **cancels the reservation and refunds 100%**.
+3. An admin may **release** a reservation **only after the agent is verified again**.
+
+**Consequences.** A new system-driven expiry (review deadline) joins the scheduled jobs, so the
+"nine jobs" of #10 grows (see #77 as well).
+
+### #70 — Business-day calendar
+`2026-09-17` · **LOCKED** · Governance · Refines #64
+
+**Decision.** Business days are **Sunday to Thursday**, excluding **Egyptian public holidays kept in
+an admin-maintained list**.
+
+**Consequences.** Requires storage for the holiday list and an admin screen to maintain it (the
+table count of #39 would change; data-model step). Deadline computation is server-side, in
+`Africa/Cairo` time.
+
+### #71 — Definition of "personally involved"
+`2026-09-17` · **LOCKED** · Governance · Refines #67
+
+**Decision.** An admin is personally involved in a case when they have an **offer, viewing or
+conversation** on the listing, **or with that agent**. Such a case must be handled by another admin.
+The demo is seeded with **two admins**.
+
+**Consequences.** The guard is computable from existing tables (Offer, Viewing, Conversation). With
+a single admin in a real deployment, involved cases wait.
+
+### #72 — Phone access follows the offer, whoever recorded it
+`2026-09-17` · **LOCKED** · Privacy · Refines #66
+
+**Decision.** An agent-recorded offer (O1b) grants the agent access to the buyer's phone under the
+same rules as a buyer-submitted offer. Access lasts while the offer is **pending, accepted,
+reserved or completed**, and ends when it is **withdrawn, rejected, expired or cancelled**.
+
+### #73 — Instalment frequency and validation
+`2026-09-17` · **LOCKED** · Product · Refines #68
+
+**Decision.** Frequency is one of **monthly, quarterly, semi-annual, annual**. Whenever a listing
+has a remaining amount, **all instalment fields are required** (total, count, frequency, end date).
+
+### #74 — One pending agent application
+`2026-09-17` · **LOCKED** · Identity · Refines #57
+
+**Decision.** A user may re-apply immediately after a rejection, but may have **at most one pending
+application** at a time.
+
+**Consequences.** A database-level uniqueness rule on pending applications per user (data-model step).
+
+### #75 — What creates a lead
+`2026-09-17` · **LOCKED** · Product · Affects: BUSINESS_RULES §3, §4; `architecture/DOMAIN_MODEL.md`
+
+**Decision.** The **first real contact** between a buyer and a listing (a **message**, a **viewing
+request** or an **offer**) creates the lead for that buyer and listing; later contacts reuse it.
+
+**Consequences.** Consistent with V1 ("Lead created or reused") and the existing uniqueness of
+(buyer, listing). Agent-recorded offers also create or reuse the lead. The lead's own status
+lifecycle (`NEW`, `CONTACTED`, `QUALIFIED`, `LOST` in the schema) is not yet specified.
+**→ Resolved by #83.**
+
+### #76 — The deposit counts toward the price
+`2026-09-17` · **LOCKED** · Payments · Refines #13 · Affects: BUSINESS_RULES §6, §7; `architecture/PAYMENTS.md`
+
+**Decision.** The reservation deposit (5% of `price`, cap 50,000 EGP) is **credited toward the sale
+price** and deducted from the final amount the buyer pays.
+
+**Consequences.** Buyer-facing wording must say so. The deposit therefore belongs, economically, to
+the seller's proceeds: how and when it reaches the seller is part of V34. Open: who receives the
+20% retained on a late buyer withdrawal (§7 says "platform/agent"), and how Settly earns revenue at
+all, since no revenue model is recorded anywhere. **→ Revenue model: #79. The 20% recipient remains
+TBD.** **→ Recipient resolved by #84 (the seller).**
+
+### #77 — Two-sided sale completion with a 30-day review
+`2026-09-17` · **LOCKED** · Product · **Amends P9** · Affects: BUSINESS_RULES §2, §10
+
+**Decision.** A `RESERVED` listing becomes `SOLD` only when **both the buyer and the agent confirm
+completion**. If it is **not completed within 30 days**, the listing goes to **admin review**. The
+admin **may request evidence** (for example a signed contract) when needed; evidence is **not
+mandatory** for every sale.
+
+**Consequences.** P9 changes from an agent-only transition to a two-confirmation transition. Another
+system-driven deadline joins the scheduled jobs. The 30-day clock pauses during a revocation freeze
+(#63). The current code lets the agent mark a sale alone, which this decision forbids. Open: what the
+admin can decide at review, and what happens when one party disputes completion.
+**→ Resolved by #82.**
+
+### #78 — RENTED becomes an official listing state
+`2026-09-17` · **LOCKED** · Product · **Amends #5** (Property 8 → 9 states) · Affects: BUSINESS_RULES §2
+
+**Decision.** Add **`RENTED`** to the property state machine. The listing agent moves a **rental**
+listing from `PUBLISHED` to `RENTED` when it has been rented.
+
+**Consequences.** Matches the value already present in the database enum. Open: whether `RENTED` is
+terminal like `SOLD` or can be relisted when the tenancy ends, and whether a revocation (#58)
+suspends `RENTED` listings. **→ Resolved by #81.**
+
+### #79 — Revenue model: transaction revenue + agent listing subscription
+`2026-09-17` · **LOCKED** · Product · **Supersedes in part #1** (agent subscriptions) · Affects: `product/OVERVIEW.md`, `product/BUSINESS_RULES.md`, `architecture/PAYMENTS.md`, `process/ROADMAP.md`
+
+**Context.** No revenue model was recorded anywhere (gap E11). #1 had listed agent subscriptions
+under Package C and the out-of-scope lists excluded "agent subscription billing".
+
+**Decision.** Settly has **two revenue streams**:
+1. **Transaction revenue** — Settly earns revenue from **successful property sales**. The fee or
+   percentage, who pays it, and the payout rules are **TBD** and will be defined separately.
+2. **Agent listing subscription** — see #80.
+
+**Consequences.** "Agent subscription billing" is removed from every out-of-scope / rejected list.
+Subscription payments and the transaction fee are **new payment objects** next to the reservation
+deposit; how they are collected (provider flow, timing, refunds) is **not decided** and must not be
+assumed from the deposit design. V34 (legality of Settly handling funds) now also covers transaction
+revenue and payouts. Still TBD: who receives the 20% retained on a late buyer withdrawal (§7). **→ Resolved by #84: the
+seller.**
+
+### #80 — Agent listing subscription: exactly three plans with a monthly quota
+`2026-09-17` · **LOCKED** · Product · Refines #79 · Affects: `product/BUSINESS_RULES.md` §1, §2.5; `architecture/DOMAIN_MODEL.md`; `product/ROLES_AND_PERMISSIONS.md`
+
+**Decision.**
+- **Exactly 3 plans exist: Free, Pro, Enterprise.** No other tiers.
+
+| Plan | New listings per billing month |
+|---|---|
+| **Free** | **2** |
+| **Pro** | **4** |
+| **Enterprise** | **8** |
+
+- The quota counts listings **created/published during the billing month**, not the number of
+  currently active listings.
+- **Deleting, selling, suspending or archiving a listing does not restore quota.**
+- The quota **resets at the beginning of the next billing month**.
+- **Prices are not set** (TBD). **→ Set by #89 (2026-09-17): Free $0, Pro $20, Enterprise $50 per month, USD base.**
+
+**Consequences.** Needs plan and subscription data plus a per-month usage record (data-model step).
+TBD, deliberately not assumed: plan prices; payment method and recurring-billing mechanics; what
+"billing month" is anchored to (calendar month or subscription start) **(→ #88–#93 resolve these; prices set by #89)**; the exact event that consumes
+quota (draft creation, submission for review, or first publication) **(→ first publication, resolved by #86)**; whether relisting (`ARCHIVED →
+DRAFT`, `RENTED` relist) consumes quota **(→ yes, resolved by #85)**; plan changes mid-month; what happens when a paid plan lapses;
+whether a newly verified agent starts on Free.
+
+### #81 — RENTED is not terminal; relisting is a new reviewed lifecycle
+`2026-09-17` · **LOCKED** · Product · **Amends #78** · Refines #58, #65 · Affects: `product/BUSINESS_RULES.md` §2, §2.4
+
+**Decision.**
+- `RENTED` is **not terminal**. When the rental period ends, the agent may **relist** the property.
+- Relisting always goes through **`DRAFT → PENDING_REVIEW → PUBLISHED`** and is reviewable as a
+  **new listing lifecycle**.
+- The **previous rental listing and its history are preserved**.
+- **Never `RENTED → PUBLISHED` directly**, and never silently.
+- **Revocation applies to `RENTED` listings** (they are not exempt like `SOLD`). The agent must be
+  verified again before such a listing can become publicly active, which in any case requires
+  relisting through review.
+
+**Consequences.** New transition P16 (relist from `RENTED`). TBD: whether relisting creates a new
+listing record linked to the old one or reuses the record with preserved history (note that a
+`PropertyStatusHistory` table was rejected in #39, so "preserved history" currently means
+`AuditLog` plus the retained listing data); the state a suspended `RENTED` listing returns to after
+re-verification; whether relisting consumes subscription quota (#80) **(→ yes, resolved by #85)**.
+
+### #82 — Sale-completion review: outcomes and disputes
+`2026-09-17` · **LOCKED** · Product · Refines #77 · Affects: `product/BUSINESS_RULES.md` §2, §7, §10
+
+**Decision.**
+- A reservation becomes `SOLD` **only after both buyer and agent confirm** (unchanged, #77).
+- If **30 days** pass without both confirmations, the case **automatically enters admin review**.
+- The admin may:
+  1. **confirm the sale** → `SOLD`;
+  2. **determine that the sale fell through** → the applicable refund/cancellation rules (§7) apply;
+  3. **extend the review period** when there is a justified reason.
+- If the buyer and agent **disagree** about whether the sale completed, the case is **not resolved
+  automatically**; it goes to **admin review**.
+- Every admin decision respects the conflict-of-interest rules (#67, #71).
+
+**Consequences.** TBD: the maximum length or number of extensions; whether a disagreement enters
+review immediately or at the 30-day mark (the decision only says it goes to admin review); how the
+admin records which §7 cause applies to a fell-through case.
+
+### #83 — Lead pipeline: hybrid automatic and manual stages
+`2026-09-17` · **LOCKED** · Product · Refines #75 · Affects: `product/BUSINESS_RULES.md` §3.3, §6.3; `architecture/DOMAIN_MODEL.md`; `architecture/PAYMENTS.md`
+
+**Decision.**
+- Pipeline: **`NEW → CONTACTED → QUALIFIED → WON / LOST`**.
+- **Automatic progression** on clear system events, for example: the first qualifying interaction
+  can move `NEW → CONTACTED`; an offer can move the lead toward `QUALIFIED`; **a completed sale sets
+  `WON`**.
+- **Agents may update the stage manually** when they have more context, and **set `LOST`**.
+
+**Consequences.** The schema's `LeadStatus` lacks `WON` (data-model step). The atomic deposit bundle
+previously said "Lead → won" at reservation; under this decision **`WON` is set when the sale
+completes (`SOLD`)**, so that line is corrected. The exact automatic rules beyond the examples are
+intentionally not fixed yet (TBD), as is what happens to other buyers' leads when a listing is sold,
+rented or archived.
+
+### #84 — The late-withdrawal retention goes to the seller
+`2026-09-17` · **LOCKED** · Payments · Resolves the open point in #76 and #79 · Affects: `product/BUSINESS_RULES.md` §1, §7
+
+**Context.** When a buyer withdraws after the 48-hour cooling-off period, 20% of the reservation
+deposit is retained (§7). The recipient was recorded as "platform/agent" and then marked TBD once
+the deposit was defined as credited toward the sale price (#76) and the revenue model was set (#79).
+
+**Decision.** The retained 20% goes **100% to the seller**. It is **not Settly revenue** and is **not
+paid to the agent**.
+
+**Consequences.** Settly's revenue remains the two streams of #79 only. How and when the amount reaches
+the seller is part of the still-open payout rules and legal check V34. The same recipient applies
+wherever §7 says "per the same retention" (collapse for external reasons).
+
+### #85 — Relisting counts against the monthly listing quota
+`2026-09-17` · **LOCKED** · Product · Resolves the relisting question in #80 and #81 · Affects: `product/BUSINESS_RULES.md` §2, §2.5
+
+**Context.** #80 left open whether relisting consumes the agent's monthly new-listing quota; #81
+made `RENTED` relistable through a new reviewed lifecycle.
+
+**Decision.**
+- A **relisting counts against the agent's monthly listing quota** and consumes **1 listing** from
+  the current plan's quota (Free 2 · Pro 4 · Enterprise 8).
+- Relisting **still follows `DRAFT → PENDING_REVIEW → PUBLISHED`**.
+- Relisting **cannot be used to bypass the monthly limit**.
+
+**Scope.** Applies to both relisting paths in `BUSINESS_RULES.md` §2: **P14** (`ARCHIVED → DRAFT`)
+and **P16** (relisting a `RENTED` property).
+
+**Consequences.** An agent whose quota for the month is used up cannot relist until the quota
+resets. Still TBD (unchanged): the exact event within the lifecycle at which quota is consumed
+(#80), which applies to relistings the same way as to new listings. **→ Refined by #86:** quota is
+consumed when the relisted listing is first published, so creating the relist draft itself is not
+blocked; the limit applies at publication. **OPEN:** whether P10 (a
+fall-through that returns a reserved listing directly to `PUBLISHED`, described as "relisted") or
+the automatic restorations after re-verification (#65, #69) count as relistings; neither goes
+through `DRAFT`, so this decision does not cover them. **→ Resolved by #86:** they are not first
+publications of a listing lifecycle, so they do not consume quota.
+
+### #86 — Listing quota is consumed at first publication
+`2026-09-17` · **LOCKED** · Product · Resolves the consumption point left open in #80 and #85 · Affects: `product/BUSINESS_RULES.md` §2, §2.5
+
+**Context.** #80 said the quota counts listings "created/published" in the billing month and left the
+exact consuming event open; #85 made relistings consume quota without fixing when.
+
+**Decision.**
+- An agent's monthly listing quota is consumed **when a listing is first published** (`PUBLISHED`).
+- **Creating a draft or submitting it for review does not consume quota.**
+- **Rejected listings do not consume quota.**
+- Once consumed, quota is **not restored** if the listing is later **sold, rented, suspended,
+  archived or deleted**.
+- **Relistings follow the same rule:** a relisting (P14, P16) consumes quota when the relisted
+  listing is first published.
+
+**Consequences.**
+- Quota is consumed at **P3** (`PENDING_REVIEW → PUBLISHED`, an admin approval) for a listing
+  lifecycle's first publication, and counts in the billing month of that publication (the
+  billing-month anchor is still TBD, #80).
+- Returning an already-published listing to `PUBLISHED` is **not** a first publication and consumes
+  nothing: re-approval after a structural edit (P6 → P3), a fall-through (P10), reinstatement after a
+  suspension (P13), and restorations after re-verification (#65, #69).
+- A never-published draft, the only listing that can be hard-deleted (§2.2), never consumed quota.
+- **OPEN:** what happens when an admin is about to approve (P3) a listing whose agent has no quota
+  left in the current month (approval blocked, listing waits until the reset, or submission blocked
+  earlier); and how concurrent approvals for the same agent are kept within the limit (design step).
+  **→ Resolved by #87** (the listing stays `PENDING_REVIEW`; enforcement is atomic; the mechanism is
+  proposal P6).
+
+### #87 — Exhausted quota: the listing waits in review; enforcement is atomic
+`2026-09-17` · **LOCKED** · Product / Reliability · Resolves the open point in #86 · Affects: `product/BUSINESS_RULES.md` §2, §2.5, §8
+
+**Decision.**
+- If an agent has **exhausted** the monthly listing quota, an **admin approval must not publish**
+  a new listing (a first publication, #86).
+- The listing **remains `PENDING_REVIEW`** until quota becomes available **after the billing-month
+  reset**.
+- The limit is enforced **atomically**: concurrent approvals can never take an agent beyond the plan
+  quota.
+
+**Consequences.** New invariant **I13**. P3 gains a quota guard for first publications (re-publications
+under #86 are unaffected). Mechanism: proposal **P6** (the existing per-user advisory lock). Still
+OPEN: how a waiting listing gets published after the reset (automatically or by a new admin
+approval), in which order, whether the admin reviews its content before the reset, and whether an
+upgrade mid-month releases waiting listings. **→ Resolved by #94; mechanism by #95.**
+
+### #88 — Billing month and first paid period
+`2026-09-17` · **LOCKED · S2 (first paid period) superseded by #104** · Product · Refines #80 · Batch 7 S1, S2
+
+**Decision.**
+- The **billing month is the calendar month in Cairo time** (`Africa/Cairo`). Every agent's quota
+  resets on the **1st** of each calendar month.
+- ~~When a paid plan starts **mid-month**, its first subscription period **ends at the end of the
+  current calendar month**, and the **first payment is prorated**.~~ **Superseded by #104:** every
+  paid period lasts 30 days from its start time at the full price. The calendar month above now
+  governs **only the listing quota**.
+
+**Consequences.** Quota usage is counted per calendar month; no per-agent reset schedule is needed.
+See #92 for the unresolved interaction with upgrades.
+
+### #89 — Plan pricing
+`2026-09-17` · **LOCKED** · Product · Refines #80 · Batch 7 S3 · **Prices set and currency changed by the amendment below (2026-09-17)**
+
+**Decision.** **Free is always free.** ~~**Pro and Enterprise prices are TBD.** Prices are in **EGP**.~~
+*(superseded by the amendment below)* **Monthly billing only** in V1 (no annual option).
+
+**Consequences.** ~~No numeric price appears anywhere in the documentation until a later decision
+sets it.~~ *(superseded: the prices are now set)*
+
+**Amendment (2026-09-17) — final V1 prices, USD base.** *(Currency display and charging are superseded
+by #103: USD-only plans UI, no toggle, EGP charged at a fixed 48.98 EGP/USD.)*
+
+| Plan | Base price | Billing | Quota (#80) |
+|---|---:|---|---|
+| **Free** | **$0 / month** | 30-day period (#104) | 2 |
+| **Pro** | **$20 / month** | 30-day period (#104) | 4 |
+| **Enterprise** | **$50 / month** | 30-day period (#104) | 8 |
+
+- **Subscription base prices are denominated in USD.** These USD amounts are the canonical prices.
+- ~~**Display currency:** the frontend may show subscription prices in **USD or EGP**, with a
+  user-selectable toggle. There is one price per plan (the USD base); EGP is a converted,
+  equivalent display value from a current exchange rate. It is never stored as the canonical price
+  and never hard-coded as a base price.~~ **Superseded by #103:** one price per plan (the USD base),
+  shown in USD with no toggle; EGP is the charged amount at the fixed rate 48.98.
+- **Scope of the currency change:** subscription pricing only. **Real-estate amounts (listing
+  prices, the reservation deposit — 5%, capped at 50,000 EGP — refunds and retention) stay in EGP**
+  as defined in #2, #13, #76 and `BUSINESS_RULES.md`. #2 is amended only to that extent.
+- ~~The proration (#88) and full-price upgrade (#92) rules apply to the USD base price.~~ **Superseded
+  by #104:** no proration; every paid period is charged the full price.
+- **Not implemented by this amendment:** no currency conversion, no exchange-rate API, and no
+  payment, schema or UI change.
+- **OPEN (not decided here):**
+  *(Items 1–3 resolved by #103.)*
+  1. **Charge currency at Paymob checkout.** Is the agent charged in USD, or in EGP converted from
+     the USD base? And if converted, which rate applies at the moment of charge? It depends on what
+     the Paymob merchant account supports (**V37**).
+  2. The **receipt currency** (and the rate shown on it, if converted).
+  3. The **exchange-rate source**, refresh frequency and staleness handling for the display toggle.
+  4. How USD amounts are stored. #5 locks money as `BIGINT` minor units with an explicit currency
+     column; storing cents for USD is part of the subscription data-model design.
+  5. VAT/e-invoicing on USD-priced subscriptions remains **V36**.
+
+### #90 — Subscription payment method and receipts
+`2026-09-17` · **LOCKED** · Payments · Refines #79, #80 · Batch 7 S4, S5 · Affects: `architecture/PAYMENTS.md`
+
+**Decision.**
+- Pro and Enterprise are paid through **Paymob hosted checkout, ~~each month~~ for each 30-day period (#104)**.
+- **No saved card** and **no automatic saved-card renewal** in V1.
+- V1 issues a **simple receipt only**. Egyptian VAT, e-invoicing and tax handling are checked before
+  launch as part of the legal review (**V36**); no tax implementation is assumed.
+
+**Consequences.** Subscription payments reuse the hosted-checkout approach already chosen for
+deposits (#13). Renewal is a manual payment by the agent for each **30-day period (#104)**; its absence leads to #91.
+
+### #91 — Expiry, downgrade effect and cancellation
+`2026-09-17` · **LOCKED** · Product · Batch 7 S6–S8
+
+**Decision.**
+- When a paid plan **expires** (not renewed, or payment failed), the agent moves to **Free
+  immediately on the expiry date**. **No grace period.**
+- After a downgrade to Free, **existing published listings stay live**; the quota limits new
+  publications only (#86).
+- An agent may **cancel at any time**: the paid plan stays active **until the end of the paid
+  period**, and **no refund** is given.
+
+### #92 — Changing plans mid-month
+`2026-09-17` · **LOCKED · period wording amended by #104 (30-day periods, no proration)** · Product · Batch 7 S9–S11
+
+**Decision.**
+- **Upgrade takes effect immediately.** The agent gets the **new plan's monthly quota minus the
+  publications already consumed** in the current calendar month (e.g. Free with 1 used → Pro: 3
+  remaining).
+- On a **mid-period upgrade**, the agent pays the **full price of the new plan**, and a **new
+  ~~full one-month~~ 30-day (#104) billing period starts immediately from the upgrade time**. There is **no prorated
+  price-difference** calculation.
+- **Downgrade takes effect ~~at the next billing month~~ when the current paid period ends (#104)**;
+  the current plan stays effective until its paid period ends.
+
+**Consequences.** An immediate upgrade can release listings waiting for quota (#94).
+
+**Clarification (2026-09-17) — two distinct cases.** *(Superseded by #104: every paid period —
+first, re-subscription, upgrade, renewal — is 30 days from its start at the full price.)*
+
+| Case | When | Price | Billing period |
+|---|---|---|---|
+| ~~**New paid subscription** (#88, S2)~~ | ~~An agent on Free starts a paid plan for the first time, mid-calendar-month~~ | ~~Prorated first payment~~ → **full price (#104)** | ~~First period ends at the end of the current calendar month~~ → **30 days from start (#104)** |
+| **Mid-period upgrade** (this decision, S11) | An agent with an active paid plan moves to a higher plan during its period | **Full price** of the new plan | A **new ~~full one-month~~ 30-day period starts at the upgrade time** (#104) |
+
+In both cases the **quota month stays the calendar month** (#88): quota resets on the 1st, and an
+upgrade's remaining quota is the new plan's quota minus publications already consumed this calendar
+month.
+
+~~**Not covered by S2/S11 (OPEN):** an agent who starts a paid plan again after a previous paid plan
+expired or was cancelled; and when renewals fall once an upgrade's one-month period ends
+(upgrade-anchored or back to the calendar month).~~ **Resolved by #104:** re-subscription and renewals
+are full-price 30-day periods, never tied to the calendar month.
+
+### #93 — Starting plan, revocation and queue position
+`2026-09-17` · **LOCKED** · Product · Batch 7 S12–S14 · Refines #58, #69
+
+**Decision.**
+- A newly verified agent starts on **Free**. **No Pro trial.**
+- When an agent's verification is **revoked**, the **subscription keeps running**: billing is not
+  paused or cancelled. Listing availability follows the revocation rules (#58, #64, #65, #69).
+- Listings that return to review after **re-verification** **keep their original place and time in
+  the review queue**.
+
+### #94 — Listings waiting for quota
+`2026-09-17` · **LOCKED** · Product · Refines #87 · Batch 7 S15–S20 · Affects: `product/BUSINESS_RULES.md` §2, §2.5
+
+**Decision.**
+- Admins **review a listing even when the agent has no quota left**. If the content is approved,
+  the listing **stays `PENDING_REVIEW`** with the internal status **Approved, Waiting for Quota**,
+  and **publishes automatically** once quota is available.
+- When quota becomes available — after the **monthly reset**, an **immediate upgrade**, or any other
+  approved quota increase — waiting listings are published **automatically, oldest approval first
+  (FIFO)**, until the available quota is used.
+- **Editing** a waiting listing **invalidates its approval**; it must be reviewed again.
+- Agents see quota through **three mechanisms**: remaining quota in the dashboard, a **warning** when
+  submitting with no quota left, and a **notification** when a waiting listing is published.
+- There is **no cap** on the number of waiting listings.
+- An **immediate mid-month upgrade** can release waiting listings at once, in the same FIFO order.
+
+**Consequences.** Publication of a waiting listing is a system-driven first publication (P3a) with the
+same effects as P3, and it consumes quota under I13. The "waiting" status is a sub-state of
+`PENDING_REVIEW`, not a new property state.
+
+### #95 — Quota enforcement mechanism
+`2026-09-17` · **LOCKED** · Reliability · Accepts P6 · Batch 7 S21, S22 · Affects: `product/BUSINESS_RULES.md` §8.1, `architecture/CONCURRENCY_AND_IDEMPOTENCY.md` §4
+
+**Decision.**
+- Enforce the monthly listing quota with the **existing per-user advisory lock** (the pattern used
+  for I9, I11, I12), keyed on the **listing's agent**, inside the approval/publication operation.
+- Invariant **I13**: an agent's first publications in a billing month never exceed the quota of the
+  agent's **active plan**, including under concurrent admin approvals.
+- **No new quota-counter model** and no new enforcement architecture.
+- The check at **submission is warning-only**; submission is allowed with no quota left. Enforcement
+  stays at approval/publication, so such a listing can enter review, and approval leaves it
+  `PENDING_REVIEW` as **Approved, Waiting for Quota** (#94).
+
+### #96 — Maps: Leaflet with MapTiler
+`2026-09-17` · **LOCKED** · Frontend · Accepts P1 (option b) · **Supersedes the map part of #21** · Batch 7 S23–S25 · Affects: `architecture/FRONTEND.md`, `design/DESIGN_SYSTEM.md`, `architecture/SECURITY.md`
+
+**Decision.**
+- **Leaflet** is the approved V1 map library. The maps are **not** migrated to MapLibre.
+- **MapTiler** is the tile provider **everywhere** in V1; area pages that use CARTO are standardised
+  on MapTiler.
+- The hard-coded MapTiler key moves to **`NEXT_PUBLIC_MAPTILER_KEY`**, and the key is
+  **domain-restricted** in the MapTiler dashboard. No real key appears in documentation or commits.
+
+**Consequences.** `NEXT_PUBLIC_*` values are visible in the browser, so the domain restriction is the
+protection that matters. V26 now concerns Leaflet controls. The code changes (CARTO → MapTiler, key to
+env) are implementation work, not done by this decision.
+
+### #97 — Role model, portals and admin creation
+`2026-09-17` · **LOCKED** · Identity · Accepts P5 (option a) · Batch 7 S26–S28 · Affects: `architecture/AUTH.md`, `product/ROLES_AND_PERMISSIONS.md`, `architecture/FRONTEND.md`
+
+**Decision.**
+- **One role per account.** Effective capabilities:
+  - `USER` → Buyer
+  - `AGENT` → Buyer + Agent (after verification)
+  - `ADMIN` → Buyer + Admin, **without** agent/listing powers
+- No multiple roles per account and no role-schema change. Self-dealing limits stay per-listing
+  business rules (#59).
+- Agents and admins use buyer functionality with the **same login/account**; the frontend lets them
+  **switch between the applicable portals** (Buyer, Agent, Admin). Not implemented by this decision.
+- **Admin accounts are created only by seed or a controlled CLI/script.** No in-app "promote to
+  admin" feature (API or UI) in V1.
+
+**Consequences.** The frontend middleware that redirects agents away from buyer routes contradicts
+this decision (implementation follow-up).
+
+### #98 — Cloudinary secret remediation
+`2026-09-17` · **LOCKED** · Security · Batch 7 S29–S31 · Affects: `process/ENVIRONMENT.md`, `architecture/INFRASTRUCTURE.md`, `.github/workflows/ci.yml`
+
+**Context.** Cloudinary credentials were committed in plain text in `.github/workflows/ci.yml` (public
+repository) from 2026-09-14.
+
+**Decision.**
+1. The exposed Cloudinary API secret **has been rotated**; the new value lives only in the owner's
+   local `.env` and in GitHub Actions secrets.
+2. `ci.yml` reads `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from
+   **GitHub Actions secrets**; no plaintext credentials.
+3. **Git history is not rewritten** (no force-push, no history clean-up). Rotation is what makes the
+   old value useless.
+
+**Consequences.** The three repository secrets must exist in GitHub for the CI steps that use
+Cloudinary. No real credential appears in documentation, code, CI files, logs or commits.
+
+### #99 — V1 frontend is English only; Arabic/RTL deferred
+`2026-09-17` · **LOCKED** · Frontend · **Supersedes for V1 the UI-locale, localized-route and RTL parts of #39 §8** (and so the #4 reversal, for the UI only) · Affects: `architecture/FRONTEND.md`, `product/OVERVIEW.md`, `product/REQUIREMENTS.md`, `design/DESIGN_SYSTEM.md`, `design/UX_PATTERNS.md`, `process/IMPLEMENTATION_PLAN.md`, `process/TESTING.md`, `architecture/SEARCH.md`, `GLOSSARY.md`
+
+**Context.** #39 made the UI fully bilingual (`/en` + `/ar`) with first-class RTL and a `/[locale]`
+segment on every public route. The implemented frontend is English only with no locale segment, and
+the final screen inventory (`discovery/05-final-frontend-screen-inventory.md`) was planned as English
+only. The two positions could not both be current.
+
+**Decision.**
+- The **Settly V1 frontend is English only**.
+- There are **no `/ar/*` routes in V1**, and V1 routes carry **no `/[locale]` segment**.
+- **No Arabic/RTL implementation is required during V1** (no RTL layout, mirrored icons, reversed
+  table/form order, Arabic UI catalog or `hreflang` alternates).
+- **Arabic/RTL is a Future / Optional Feature**, to be reconsidered **only after the core project is
+  completed**, through a new decision.
+- Existing `/ar`, `/[locale]` and RTL references in older documents and design candidates are **not
+  current requirements**.
+
+**Scope — ~~what this decision does not change~~ (superseded by the amendment below, 2026-09-17).** It concerns the **UI locale** (chrome, routes,
+layout direction) only. #39's content model (`titleEn`/`titleAr`, …), bilingual area aliases, Arabic
+query understanding and search, AI response language, and the checks V3, V23 and V24 are **not
+changed here**. **OPEN:** whether V1 still accepts and searches Arabic listing content, Arabic
+queries and Arabic AI answers, and therefore whether `dir="auto"` on user-generated content remains
+a V1 requirement. Until that is decided, those parts of #39 stand.
+
+**Consequences.**
+- V25 (i18n routing × ISR), V26 (RTL maturity) and V27 (Arabic numerals) are **deferred**: they do
+  not block V1.
+- ISR invalidation concerns one locale, not two.
+- Middleware does no locale resolution.
+- The two Arabic design candidates (`property-detail-ar.html`, `assistant/ar.html`) and the
+  bilingual statements in the candidate `DESIGN.md` files are kept as future reference only.
+- The Arabic font subsets committed under P3 are not required by V1. Keeping or removing them is an
+  implementation matter, not decided here.
+- No code changes are made by this decision.
+
+**Amendment (2026-09-17) — English only end to end.** The open point above is decided by the product
+owner. **Settly V1 is English only across the entire user-facing product**, not only the interface:
+
+| V1 language surface | Scope |
+|---|---|
+| UI text (chrome, labels, errors, emails, notifications) | **English only** |
+| Listing / property content (titles, descriptions, captions, agent bios) and editorial content (`KnowledgeArticle`, area names shown to users) | **English only** |
+| Search queries and search-facing language (lexical, semantic, query understanding, gazetteer) | **English only** |
+| AI assistant and AI-generated answers | **English only** |
+| User-facing system messages | **English only** |
+
+- **Arabic content, Arabic search, Arabic AI answers and Arabic/RTL support** are all a **Future /
+  Optional Feature after core project completion**. Arabic is **not implemented in V1**.
+- **No mixed-direction handling in V1:** no `dir="auto"` for Arabic content and no RTL rendering.
+- The language parts of **#39 §3 (content model), §5 (Arabic FTS vector and normalisation), §6
+  (cross-language embedding role) and §8 (AI response language, UI locale)** are **deferred for V1**.
+  The English parts stand: the English generated tsvector, the single multilingual embedding
+  vector (now used for English), and "content is never machine-translated for display".
+- **Retrieval evaluation (#27, #32) in V1 covers English only:** the Recall@10 **EN→EN ≥ 0.80**,
+  **zero-result rate ≤ 10%** and **relevant-in-top-3 ≥ 0.70** gates apply unchanged. The **AR→AR and
+  cross-language rows**, the **"< 0.50 cross-language → revisit #24"** rule, the bilingual benchmark
+  queries and the Arabic-only seed listings are **deferred** with Arabic.
+- **V3, V23 and V24** (Arabic retrieval, AR↔EN cross-lingual quality, Arabic normalisation) are
+  **deferred**. They do not block V1.
+- The AI assistant answers in English. Detecting the language of an incoming message is no longer a
+  V1 behaviour requirement. How a non-English message is handled is an AI-spec detail, and may not
+  produce Arabic output.
+
+**OPEN — data-model and API follow-up (not decided here, no code changed).** The implemented schema and
+catalog API already carry Arabic fields (`Property.titleAr`/`descriptionAr`/`searchVectorAr`,
+`AgentProfile.bioAr`, `PropertyImage.captionAr`, `Amenity.nameAr` and `Area.nameAr` (both required),
+`KnowledgeArticle.titleAr`/`bodyAr` (required), the `ar_normalize` SQL function, and the Arabic
+fields in `property.schema.ts`/`compare.schema.ts` and the catalog seed). V1 must not require or
+populate Arabic values through user-facing flows. **Whether these columns stay dormant, become
+optional, or are removed is a separate data-model decision** (it changes the schema and the OpenAPI
+contract). Until it is made, documentation describes them as present but unused in V1.
+**→ Resolved by #101** (kept, optional, unused in V1; implementation pending).
+
+### #100 — Canonical portal route prefixes
+`2026-09-17` · **LOCKED** · Frontend · Refines #97 · Affects: `architecture/FRONTEND.md`, `discovery/05-final-frontend-screen-inventory.md`
+
+**Context.** #97 defined three portals but no URL prefixes. `FRONTEND.md` §2 named `/dashboard/*`
+for the buyer area; the frontend middleware and navbar use `/buyer/*`, `/agent/*` and `/admin/*`; the
+auth pages redirect to `/buyer-dashboard/overview` and `/agent-dashboard/overview`.
+
+**Decision.**
+
+| Portal | Canonical V1 prefix |
+|---|---|
+| Buyer | **`/buyer/*`** |
+| Agent | **`/agent/*`** |
+| Admin | **`/admin/*`** |
+
+**`/dashboard/*` and `/buyer-dashboard/*` are not canonical V1 portal prefixes**, and neither is
+`/agent-dashboard/*`.
+
+**Consequences.**
+- Documentation uses only the three canonical prefixes.
+- The exact routes inside each prefix are set with the screen specifications. The conceptual
+  structure is in `discovery/05-final-frontend-screen-inventory.md` §E.
+- Design-candidate folder names (`buyer-dashboard/`, `agent-dashboard/`) are file paths, not routes.
+- **Implementation follow-ups (not done by this decision; no route, middleware or redirect is
+  changed):**
+  1. `frontend/src/app/(auth)/login`, `register` and `verify-email` redirect to the non-canonical
+     `/buyer-dashboard/overview` and `/agent-dashboard/overview`.
+  2. `frontend/src/components/layout/Navbar.tsx` links to `/buyer/overview`, `/agent/overview` and
+     `/admin/verification`. The prefixes are canonical, but the landing routes must match the
+     approved screen specifications.
+  3. `frontend/src/middleware.ts` protects the canonical prefixes but still redirects agents away
+     from `/buyer/*`, contrary to #97 (already recorded there).
+  4. No portal pages exist yet under any of the three prefixes.
+
+### #101 — Arabic data fields: kept for future compatibility, optional and unused in V1
+`2026-09-17` · **LOCKED** · Data / API · Resolves the data-model open point of #99 · Refines #39 §3, §5 · **Implementation pending** · Affects: `architecture/DOMAIN_MODEL.md`, `architecture/DATABASE.md`, `architecture/SEARCH.md`, `architecture/RAG.md`, `process/SEED_DATA.md`, `GLOSSARY.md`
+
+**Context.** #99 makes V1 English only end to end. The schema, migrations and catalog/identity API
+already carry Arabic fields from #39, and four of them are required (`NOT NULL`). #99 left open whether
+they stay, become optional or are removed.
+
+**Decision.**
+- **Keep** the existing Arabic-related database and API fields **for future compatibility**. They are
+  **not deleted**, and neither is the `ar_normalize` function.
+- **V1 does not use them:**
+  - V1 application flows read and write **English fields only**;
+  - Arabic fields are **not used by V1 search**, and `searchVectorAr` (with its GIN index) is not
+    queried;
+  - `ar_normalize` stays present but unused;
+  - **Arabic RAG retrieval** and **Arabic AI answers** are deferred (#99).
+- Arabic fields that are currently **required only for Arabic support become optional (nullable)**.
+- **No dummy or placeholder Arabic content** is ever written to satisfy a constraint, a seed or a test.
+  **V1 never requires Arabic data to be supplied.**
+- #99 remains **the** language-scope decision; this decision only settles the data-model consequence.
+
+**Follow-up implementation work (not done by this decision; no schema, migration, API, seed, test or
+application code is changed here):**
+
+| # | Area | Work |
+|---|---|---|
+| F1 | Migration (new, additive) | Make **`Area.nameAr`**, **`Amenity.nameAr`**, **`KnowledgeArticle.titleAr`** and **`KnowledgeArticle.bodyAr`** nullable (`DROP NOT NULL`). Keep the already-nullable `Property.titleAr`/`descriptionAr`, `PropertyImage.captionAr` and `AgentProfile.bioAr`, the generated `searchVectorAr`, its GIN index, the trigram indexes on `titleAr`/`nameAr`, and `ar_normalize` unchanged. Update `schema.prisma` to match (`String?`). Existing migrations are not edited |
+| F2 | English required in V1 | V1 validation requires the **English** fields where content is required (e.g. `Property.titleEn`/`descriptionEn`). Replace the "English **or** Arabic" refinements in `catalog/schema/property.schema.ts`. Whether a database constraint also enforces English is part of the F1 migration design |
+| F3 | API schemas (Zod → OpenAPI) | Response fields `nameAr` (area, amenity, compare) become **nullable**. `amenity.schema.ts` create input no longer requires `nameAr`. Arabic inputs (`titleAr`, `descriptionAr`, `captionAr`, `bioAr`, `nameAr`) are optional and not used by V1 clients. Whether write endpoints ignore or reject them is part of this change |
+| F4 | Contract snapshot | Regenerate the OpenAPI spec and the committed frontend snapshot (`frontend/src/api/openapi.json`, `v1.d.ts`) |
+| F5 | Backend code | Remove Arabic fallbacks from V1 logic, e.g. the slug seed falling back to `titleAr` in `property.repository.ts`. Catalog and identity services stay English-only in behaviour |
+| F6 | Seed | `backend/scripts/seed-catalog.ts` stops writing Arabic values (leaves them `NULL`). No placeholder Arabic. Clearing Arabic values already in local databases is done with the reseed |
+| F7 | Tests | Update factories and tests that set or assert Arabic values (`test/harness/factories.mjs`, `test/database-constraints.test.mjs`, `test/endpoints/areas.test.mjs`, `auth.test.mjs`, `catalog.test.mjs`) so that no Arabic data is required |
+| F8 | Frontend | Remove hard-coded Arabic area names and `nameAr` search matching (`app/(public)/areas/page.tsx`, `areas/[slug]/page.tsx`). Property pages render English fields only |
+| F9 | Search / RAG / AI (when built) | Lexical search queries `searchVectorEn` only. Embeddings, RAG chunks and AI answers use English content only. Nothing calls `ar_normalize` |
+
+F1–F8 is one reviewed change (schema + API contract + dependants). It follows the normal implementation
+gate: plan → approval → implement → verify.
+
+### #102 — No agent-only SOLD: sale completion always needs both parties
+`2026-09-17` · **LOCKED** · Product · **Accepts and resolves P7** · Confirms #77 (governing rule), #82 · **Removes P11**, amends O12/O13 · Affects: `product/BUSINESS_RULES.md` §2, §4; `product/ROLES_AND_PERMISSIONS.md`; `architecture/CONCURRENCY_AND_IDEMPOTENCY.md`; `GLOSSARY.md`
+
+**Context.** #77 requires both buyer and agent to confirm before a reserved listing becomes `SOLD`, but
+`BUSINESS_RULES.md` kept two agent-only paths (P7): **P11** (`PUBLISHED → SOLD` by the agent, the
+"offline-sale escape hatch" from #5) and **O13** (`RESERVED → COMPLETED` by the agent alone, which set
+the property to `SOLD`).
+
+**Decision.** **An agent can never make a listing `SOLD` independently.** The only path to `SOLD` is:
+
+```text
+Accepted offer
+→ Deposit paid (offer and listing RESERVED)
+→ Cooling-off / sale process
+→ Buyer confirmation + Agent confirmation
+→ Sale completed (offer COMPLETED)
+→ Listing SOLD
+```
+
+- **#77 remains the governing rule** for two-party completion. When a case enters admin review under
+  the existing rules (P9a: 30 days without both confirmations, or a buyer–agent disagreement), the
+  admin decides per #82 (confirm → `SOLD`, fell through, or extend), subject to #67/#71.
+- **P11 is removed.** There is no `PUBLISHED → SOLD` transition. A deal agreed off-platform is
+  recorded through the existing **O1b** path (the agent records the terms, the buyer confirms) and
+  then follows the path above.
+- **O13 becomes the offer side of P9.** `RESERVED → COMPLETED` happens only when both parties have
+  confirmed (or an admin confirms at review), at the same moment as P9.
+- **O12** loses its "property sold offline" trigger.
+- **No new state** (such as `SALE_REPORTED`) is introduced.
+
+**Consequences.**
+- Property transitions drop from 17 to 16 (P11 kept as a retired row number for traceability).
+- #5's "direct `PUBLISHED` to `SOLD`" escape hatch is superseded.
+- **OPEN (not decided here):**
+  - whether completion confirmations may be recorded before the 48-hour cooling-off window ends
+    (the rule lists cooling-off before confirmation but sets no guard);
+  - how a property sold entirely outside Settly, with no buyer on the platform, is handled. The only
+    existing agent option is archiving (P7), and no special handling is decided.
+- **Implementation follow-ups (not done by this decision; no code, schema or API is changed):**
+  1. `backend/src/modules/catalog/routes/property.routes.ts` and `service/property.service.ts`:
+     - `POST /api/v1/properties/{id}/offline-sale` (P11, `offlineSale`) must be removed;
+     - `POST /api/v1/properties/{id}/mark-sold` (`markSold`, the agent alone completes a reserved
+       sale) must be replaced by the two-party confirmation flow with admin review (#77, #82).
+  2. Regenerate the OpenAPI spec and the frontend snapshot afterwards.
+  3. Update the tests that exercise these actions.
+  4. Transaction T6 (offline sale) in `CONCURRENCY_AND_IDEMPOTENCY.md` is retired; the atomic writes
+     of the two-party completion are designed with that flow.
+
+### #103 — Subscription charge currency: EGP at a fixed V1 rate of 48.98 EGP per USD
+`2026-09-17` · **LOCKED** · Payments / Product · **Supersedes the display-toggle and open-currency parts of the #89 amendment** · Refines #88, #90, #92 · Affects: `product/BUSINESS_RULES.md` §1, §2.5; `architecture/PAYMENTS.md`; `architecture/DOMAIN_MODEL.md`; `GLOSSARY.md`
+
+**Context.** The #89 amendment made USD the canonical subscription price, allowed a USD/EGP display
+toggle, and left the charge currency, receipt currency and exchange-rate source open (V37). A
+live-rate model (a CBE sell rate, a refresh job, blocking checkout on a stale rate, an external rate
+provider) was then proposed in discussion as S158–S160. **It was never recorded and is withdrawn by
+this decision.**
+
+**Decision (subscription payments only).**
+
+| Item | V1 rule |
+|---|---|
+| Canonical plan prices | **Free $0 · Pro $20 · Enterprise $50 per month (USD)** — unchanged from #89 |
+| Plans UI | Shows **USD prices only**. **No USD/EGP currency toggle**, and EGP is never shown as an alternative plan price |
+| Charge currency | **EGP** — the Paymob payment is created in EGP |
+| Conversion rate | **Fixed: 1 USD = 48.98 EGP.** A product/business rate, **not a live market rate**, never refreshed automatically. Changing it needs a new decision |
+| Calculation | `EGP = USD amount × 48.98`, then **round up to the next whole EGP** (rounding applied once, to the final amount) |
+| Before checkout | The agent sees the **exact EGP amount that will be charged** before being redirected to Paymob |
+
+| Plan | USD | × 48.98 | EGP charged | Minor units |
+|---|---:|---:|---:|---|
+| Free | $0 | — | no payment | — |
+| Pro | $20 | 979.60 | **980 EGP** | 2000 US cents → 98,000 piastres |
+| Enterprise | $50 | 2,449.00 | **2,449 EGP** | 5000 US cents → 244,900 piastres |
+
+- ~~**New paid subscription (#88):** the prorated USD amount is converted with the same rule~~
+  **Superseded by #104:** there is no proration. **Every paid period** (first, re-subscription,
+  upgrade, renewal) converts the **full USD price**: 980 or 2,449 EGP.
+- **Payment record:** stores the USD base amount (cents) and the EGP charged amount (piastres,
+  always a whole-pound multiple) with currency `EGP`, plus the rate used (48.98) for audit. The
+  webhook checks that EGP amount and currency exactly. The rate is a business constant in the
+  backend configuration module (#31); there is no rate table, rate provider or refresh job.
+- **Receipt (#90):** shows the **EGP amount charged** as the paid amount, with the plan's USD price,
+  the 30-day period (#104) and the fixed rate (1 USD = 48.98 EGP) as reference.
+- **Superseded:**
+  - from the #89 amendment: the USD/EGP display toggle, "EGP is a converted display value", and open
+    items 1–3 (charge currency, receipt currency, exchange-rate source);
+  - the withdrawn S158–S160 proposal: the CBE sell rate, FX refresh jobs, stale-rate blocking and live
+    exchange-rate providers.
+- **Unchanged:** real-estate listing prices, the reservation deposit (5%, capped at 50,000 EGP),
+  refunds and retention, and the transaction-fee rules (#79) — all EGP as before.
+
+**Consequences.**
+- V37 is narrowed to Paymob confirming that the Egypt account accepts the exact EGP amounts Settly
+  sends.
+- V36 (legal, VAT and e-invoicing review) also covers showing USD plan prices while charging EGP
+  (Law 194/2020: dealing inside Egypt is in Egyptian pounds).
+- **OPEN:** ~~the proration formula (#88); re-subscription after a lapse and renewal timing after an
+  upgrade (#92)~~ *(resolved by #104)*; the subscription payment data model (a separate record, since
+  `Payment` requires an offer) **→ resolved by #105**.
+- **Not implemented:** no code, schema, migration, UI or payment-integration change is made by this
+  decision.
+
+### #104 — Subscription periods: 30 days from the start time, full price, no proration
+`2026-09-17` · **LOCKED** · Product / Payments · **Supersedes the S2 part of #88** · Amends #90, #92, #103 · Affects: `product/BUSINESS_RULES.md` §1, §2.5; `architecture/PAYMENTS.md`; `GLOSSARY.md`
+
+**Context.** #88 (S2) gave a new paid subscription a **prorated** first payment and a first period
+ending at the **end of the calendar month**, while #92 gave upgrades a full-price **one-month**
+period from the upgrade time. That left re-subscription and renewal timing open, and made #103 need a
+proration formula. The proration questions S161–S162 were raised in discussion only; **they are
+withdrawn and not applicable**.
+
+**Decision.**
+- **Every paid subscription period lasts 30 full days from its exact start time**
+  (e.g. starts September 17 → ends October 17).
+- The agent **always pays the full plan price**: **no proration, no credit**. At the fixed rate
+  (#103) that is **980 EGP** for Pro and **2,449 EGP** for Enterprise.
+- This applies to:
+  - the **first paid subscription**;
+  - **re-subscription after expiry or cancellation**;
+  - a **mid-period upgrade**;
+  - **subsequent renewals**.
+- **Upgrade:** charges the **full price of the new plan** and **starts a new 30-day period
+  immediately** from the upgrade time (e.g. upgrade September 17 → new period ends October 17). The
+  previous plan's remaining time is **not prorated or credited**. Quota effect unchanged (#92: new
+  plan quota − publications already consumed this calendar month; waiting listings may publish, #94).
+- **Downgrade:** takes effect **when the current 30-day paid period ends** (#92's "until its paid
+  period ends").
+- **Cancellation / expiry:** unchanged (#91). A cancelled plan runs to the end of its 30-day period
+  with no refund; an unrenewed or failed plan moves to Free on its expiry time.
+
+**Two separate cycles — never merged.**
+
+| Cycle | Rule |
+|---|---|
+| **Subscription billing period** | **30 days from the start time** of each paid period (this decision) |
+| **Listing quota month** | **Calendar month in Cairo time, reset on the 1st** (#88, unchanged) |
+
+Wherever the quota rules say "billing month" (#80, #86, #87, I13, P3), they mean the **Cairo
+calendar quota month**, not the subscription period.
+
+**Superseded:**
+- #88's S2 bullet (prorated first payment, first period ending at month end);
+- #92's "one-month period" wording and its S2/S11 clarification table;
+- #92's two OPEN points (re-subscription after a lapse, renewal timing after an upgrade), now
+  resolved: full price and a 30-day period;
+- #103's proration line and its open proration-formula point.
+
+~~**OPEN (not decided here):** early-renewal start; 30-day time arithmetic.~~ **Resolved by the
+amendment below.**
+
+**Amendment (2026-09-17) — early renewal and period arithmetic (approved by the product owner).**
+
+*Early renewal (same plan):*
+- A renewal paid while a period is active **starts when the current period ends** (stacked). The
+  agent never loses paid days, and no credit is involved.
+- Renewal is available **only in the last 7 days** of the active period. Outside that window, and
+  after expiry, the agent starts a new subscription (a full-price 30-day period from payment).
+- **At most one queued period** at a time. A different plan goes through the upgrade or downgrade
+  flow, never through renewal.
+- **Upgrade is blocked while a renewal is queued**, until the queued period starts. The UI explains
+  why. This keeps an already-paid queued period from being lost.
+
+*Period arithmetic:*
+- A period is **exactly 30 × 24 hours (720 hours)** from its start instant:
+  `endsAt = startsAt + 30 days`, stored in **UTC**, computed server-side (#21) and displayed in Cairo
+  time.
+- It is **not** "same date next month". January 17 → **February 16**; July 17 → **August 16**;
+  September 17 → October 17.
+- Across a Cairo daylight-saving change, the displayed end time differs from the start time by one
+  hour. This is accepted.
+- A queued renewal's `startsAt` equals the previous period's `endsAt`.
+
+**Not implemented:** no code, schema, migration, UI or payment-integration change.
+
+### #105 — Subscription payment data model
+`2026-09-17` · **LOCKED** · Data / Payments · Resolves the data-model open point of #103 · Implements the rules of #88–#93, #103, #104 · **Design only — implementation pending** · Affects: `architecture/DOMAIN_MODEL.md`, `architecture/PAYMENTS.md`, `architecture/CONCURRENCY_AND_IDEMPOTENCY.md`, `product/BUSINESS_RULES.md` §2.5
+
+**Context.** Subscription payments need a record, but the deposit `Payment` requires an `offerId` and
+carries deposit-only invariants: one reserved offer per property, the 72-hour deadline, the checkout
+hold and the refund flows. #79 says subscription payments must not be assumed to follow the deposit
+design.
+
+**Decision.** **Separate subscription tables; the deposit `Payment` is not reused or generalised.**
+
+**Reused unchanged:**
+- `WebhookEvent` (one inbound table, deduplicated on `(provider, eventId)`). The Paymob merchant
+  order reference carries a prefix (`sub_` / `dep_`) so the webhook routes to the right flow;
+- `IdempotencyKey`, `AuditLog`, the provider port (`createCheckout`, `getTransaction`,
+  `verifyWebhook`);
+- the reconciliation-job pattern and the per-user advisory lock.
+
+**Four new tables:**
+
+| Table | Purpose | Key fields |
+|---|---|---|
+| `AgentSubscription` | One row per agent; anchors the subscription | `agentId` (unique), `cancelledAt`, timestamps |
+| `SubscriptionPeriod` | One row per **paid** 30-day period (Free has none) | `subscriptionId`; `plan` (`SubscriptionPlan`: `PRO` \| `ENTERPRISE`); `kind` (`NEW` \| `RENEWAL` \| `UPGRADE` \| `DOWNGRADE`); `startsAt`, `endsAt` (UTC, `endsAt = startsAt + 30 days`); `endedEarlyAt` (set when an upgrade replaces the period); `status` (`SCHEDULED` \| `ACTIVE` \| `ENDED` \| `SUPERSEDED`); `paymentId` (unique) |
+| `SubscriptionPayment` | The payment obligation for one period | `agentId`, `plan`, `kind` (snapshot); `baseAmountMinor` BigInt, US cents, `baseCurrency = 'USD'`; `fxRate` Decimal(10,4) (snapshot of 48.98, #103); `chargedAmountMinor` BigInt, piastres, `chargedCurrency = 'EGP'`; `feeAmountMinor`, `netAmountMinor` BigInt piastres; `status`; `expiresAt`; `paidAt`; `receiptNumber` (unique, sequential) |
+| `SubscriptionPaymentAttempt` | One try at Paymob; failure belongs here, not to the obligation | `subscriptionPaymentId`, `provider`, `providerTransactionId`, `status`, `error` |
+
+**No plan table and no exchange-rate table.** Prices, quotas and the rate are business constants in
+the backend configuration module (#31) and are copied into each payment when it is created.
+
+**Subscription payment states** follow the documented deposit pattern (`BUSINESS_RULES.md` §5), not the
+drifted deposit enums in the current schema:
+- `PENDING` (created; the exact EGP amount has been shown);
+- `PROCESSING` (redirected to Paymob);
+- `SUCCEEDED` (**verified webhook or reconciliation only**; the browser return never sets it);
+- `EXPIRED` (**checkout lifetime of 60 minutes** passed unpaid);
+- `CANCELLED` (replaced by a newer checkout from the same agent).
+
+A failed attempt returns the payment to `PENDING`. There are no refund states, since subscriptions
+are never refunded (#91), except the exception rule below.
+
+**Rules and database protections:**
+
+| Rule | Enforcement |
+|---|---|
+| **Effective plan** = the plan of the period where `startsAt ≤ now < coalesce(endedEarlyAt, endsAt)`; otherwise **Free** | Computed on read, so a queued period takes effect by time alone. I13 reads it under the per-user advisory lock (#95) |
+| No overlapping periods per agent | Exclusion constraint on `(subscriptionId, tstzrange(startsAt, coalesce(endedEarlyAt, endsAt)))`, the pattern of viewing overlaps (R4) |
+| At most one queued period | Partial unique index on `subscriptionId` WHERE `status = 'SCHEDULED'` |
+| At most one open checkout per agent | Partial unique index on `agentId` WHERE `status IN ('PENDING','PROCESSING')`. Starting a new checkout cancels the old one |
+| Currency and whole-pound checks | `CHECK (baseCurrency = 'USD')`, `CHECK (chargedCurrency = 'EGP')`, `CHECK (chargedAmountMinor % 100 = 0)` |
+| Webhook | Maps by the `sub_` reference, checks the stored EGP amount and currency exactly, then creates or activates the period atomically |
+| Upgrade | One transaction: current period → `SUPERSEDED` with `endedEarlyAt = now`; new `UPGRADE` period `[now, now + 30 days)`; waiting listings published FIFO (#94) under the per-user lock |
+| Anonymisation (#42) | Subscription and payment rows are kept as financial records; the person is anonymised, as for deposits |
+
+**Gap answers (approved by the product owner):**
+1. **Downgrade to a lower paid plan** (Enterprise → Pro) is a paid, queued `DOWNGRADE` period that
+   starts when the current period ends. It uses the renewal rules of #104: only in the last 7 days,
+   one queued period, and it blocks upgrades until it starts. A downgrade to Free means letting the
+   plan expire; there is nothing to pay.
+2. **Cancelling while a period is queued:** the queued period is already paid and **still runs** (no
+   refund, #91). Cancellation only stops renewal reminders and records `cancelledAt`.
+3. **Checkout lifetime:** **60 minutes**, then `EXPIRED`.
+4. **A payment that succeeds but cannot be applied** (the agent's state changed during checkout) is
+   **flagged for admin review and refunded manually through Paymob**. This is the only subscription
+   refund path; it is an exception, not a product feature.
+
+**Consequences.**
+- The table inventory grows from 39 to 43, before the other pending additions in
+  `DOMAIN_MODEL.md` §11a.
+- New race entries R12–R14 and transactions T8–T9 in `CONCURRENCY_AND_IDEMPOTENCY.md`.
+- **Separate follow-up, not part of this decision:** the implemented deposit enums disagree with
+  `BUSINESS_RULES.md` §5:
+  - `PaymentStatus` has `FAILED` but no `CANCELLED`;
+  - `AttemptStatus` lacks `ABANDONED` and `EXPIRED`;
+  - `RefundStatus` uses `COMPLETED` instead of `SUCCEEDED`.
+- **Not implemented:** no schema, migration, code, API or UI change. The implementation follows the
+  normal gate (plan → approval → implement → verify).
+
+### #106 — Slice 1 defaults: viewing length, portal landing routes, phone step, unbuilt actions
+`2026-09-17` · **LOCKED** · Product / Frontend · Chosen by the assistant on the product owner's instruction ("choose what is best"; portfolio scope, #46) · Affects: `product/BUSINESS_RULES.md` §3, `architecture/FRONTEND.md` §6, `discovery/06-slice-1-screen-specs.md`
+
+**Context.** The slice-1 screen specifications (#48 vertical slice) need a few values that no decision
+set.
+
+**Decision.**
+1. **A viewing lasts 60 minutes.** Agent availability windows are split into 60-minute slots, and a
+   window shorter than 60 minutes is rejected. This matches the 14:00–15:00 example in
+   `BUSINESS_RULES.md` §3.1.
+2. **Buyers may request viewings up to 30 days ahead** (UI and service limit).
+3. **Portal dashboards live at the prefix root:** `/buyer`, `/agent`, `/admin` (#100).
+4. **The Google phone step is `/complete-profile`.** A signed-in user without a phone cannot use any
+   portal page until the phone is saved (#60).
+5. **Actions whose phase is not built are not rendered** (no fake buttons). In slice 1 that means
+   make offer, message agent and favourite on the property page.
+6. **Slice-1 agents and listings come from the seed.** The agent application flow is a later phase.
+
+**Confirmed, not new:**
+- **Email verification is by Better Auth link only.** #9 already lists `emailOTP` as not used, so the
+  custom 6-digit OTP in the code is removed (gap B3/F3).
+- **Session policy is 7 days sliding with a 30-day absolute cap** (V12, verified); `AUTH.md` §3 is
+  corrected to match (gap B4).
+
+**Not implemented:** documentation only.

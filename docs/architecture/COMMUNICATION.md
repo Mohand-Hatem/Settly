@@ -53,7 +53,7 @@ locale switch re-renders existing notifications correctly with no data migration
 
 ## 6. Email — Resend (LOCKED, Decisions #36 & #44)
 
-Chosen for React Email (bilingual templates in the same stack as the UI), no sandbox-approval
+Chosen for React Email (templates in the same stack as the UI; **English only in V1**, #99), no sandbox-approval
 friction (unlike SES), and bounce/complaint webhooks without extra infrastructure. **Resend is locked
 across all environments (development, testing, production) — Mailpit is eliminated.** All emails
 reach real inboxes (e.g., Gmail, Outlook). Business logic interacts strictly via an `EmailService`

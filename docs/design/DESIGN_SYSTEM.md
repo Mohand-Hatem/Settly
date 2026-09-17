@@ -1,8 +1,8 @@
 # Design System — Constraints (Pre-Stitch)
 
     Status:       PROVISIONAL — constraints only, authoritative values pending the Stitch design phase
-    Last Updated: 2026-09-05
-    Derived From: Decisions #21, #30, #39
+    Last Updated: 2026-09-17
+    Derived From: Decisions #21, #30, #39, #99
     Related:      ../architecture/FRONTEND.md, UX_PATTERNS.md
 
 ## 1. Purpose
@@ -16,11 +16,13 @@ radii, shadows, and animation timings are Tier-C work, locked only after Stitch 
 
 - **Tailwind CSS** + **shadcn/ui (Radix primitives)**
 - **WCAG 2.2 AA** target
-- **Full bilingual RTL/LTR** — logical CSS properties throughout, no `margin-left`/`margin-right`
-- **Arabic-capable typography** — a font family covering both scripts
-- `dir="auto"` on all user-generated content, in both directions
+- **English-only UI in V1 (#99)** — LTR only; no RTL layout or Arabic UI is required. Arabic/RTL is a
+  Future / Optional Feature (the former bilingual constraints of #39 are not current requirements)
+- Typography needs to cover Latin only in V1 (content is English only, #99); Arabic script support
+  is a future-phase need
+- No `dir="auto"` / mixed-direction handling for Arabic content in V1 (#99)
 - **Recharts** for data visualization
-- **MapLibre** for map display (+ MapTiler tiles)
+- **Leaflet** for map display (+ MapTiler tiles) — #96
 - `prefers-reduced-motion` respected everywhere animation appears (Motion library)
 
 ## 3. Design intent (brand direction, to steer Stitch — not a finished system)
@@ -40,9 +42,8 @@ styling bleeding onto public marketing/search pages.
 
 ## 5. Localized formatting (constraint, not a value)
 
-Numbers, dates, and currency must format per the active locale via `Intl`. **Numeral convention**
-(Western `123` vs. Arabic-Indic `١٢٣`) is explicitly **not decided here** — deferred to the Stitch
-phase as a product/design call (V27), not an architectural blocker.
+Numbers, dates, and currency format via `Intl` (English locale in V1, #99). **Numeral convention**
+for a future Arabic UI (Western `123` vs. Arabic-Indic `١٢٣`, V27) is deferred with Arabic.
 
 ## 6. Relationship to Stitch
 
@@ -63,8 +64,7 @@ ownership, rendering model, or business rules (`../architecture/FRONTEND.md`).
 
 ## 7. Pending verification
 
-**V26** (RTL maturity of shadcn/Radix, MapLibre, Recharts) · **V27** (numeral convention —
-deferred, not blocking).
+None for V1. V26 (RTL maturity) and V27 (numeral convention) are **deferred by #99**.
 
 ## 8. Rejected / do not add
 

@@ -127,9 +127,10 @@ around a security control** (#37). See `INFRASTRUCTURE.md` and `process/ENVIRONM
 Kubernetes · Terraform · service mesh · multi-region · a staging environment · microservices ·
 GraphQL · tRPC · Socket.IO (native WebSockets used for 1-on-1 chat; SSE for notifications) ·
 Mailpit (real Resend delivery everywhere) · a generic event bus · CASL/Casbin · PostgreSQL RLS ·
-a rental lifecycle · agency/organization models · agent subscription billing · a public/partner API ·
+a rental lifecycle · agency/organization models · a public/partner API ·
 LangChain/LangGraph · a dedicated reranker (v1) · an autonomous or multi-agent system (#1, #8,
-#10, #17, #19, #21, #22, #33, #43, #44).
+#10, #17, #19, #21, #22, #33, #43, #44). Agent subscription billing was removed from this list by
+#79/#80.
 
 ## 11. Related documents
 

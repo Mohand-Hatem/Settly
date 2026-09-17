@@ -2,7 +2,7 @@
 
     Status:       LOCKED
     Last Updated: 2026-09-05
-    Derived From: Decisions #9, #33, #38, #39, #42
+    Derived From: Decisions #9, #33, #38, #39, #42, #97
     Related:      BACKEND.md, SECURITY.md, ../product/BUSINESS_RULES.md Section 9
 
 ## 1. Purpose
@@ -31,7 +31,7 @@ which is what makes suspension **immediate**.
 - `httpOnly; secure` (production) / not-secure (local http); `sameSite=lax`; domain `.settly.com`
   in production, host-only locally — `localhost:3000`/`:4000` are same-site because `SameSite` is
   evaluated on the registrable domain, ports are not part of it (#37)
-- Sliding 30-day expiry, **absolute 90-day cap** — PENDING V12
+- **Sliding 7-day expiry (refreshed daily), absolute 30-day cap** — V12 verified; confirmed by #106
 - Trusted-origin allowlist matches the CORS allowlist
 - Revoked on: password reset, password change, email change, admin suspension, explicit logout-all
 
@@ -46,7 +46,7 @@ development, where the real login cost should be felt (`../process/ENVIRONMENT.m
 | Field | Home | Notes |
 |---|---|---|
 | `emailVerified` | `user`, native | Read directly by the verification boundary (Section 6 below) |
-| `role` | `user`, admin plugin | Business data, enforced by Settly's policy functions — **not** the plugin's access-control DSL |
+| `role` | `user`, admin plugin | Business data, enforced by Settly's policy functions — **not** the plugin's access-control DSL. **One role per account (#97):** `USER` = buyer · `AGENT` = buyer + agent (after verification) · `ADMIN` = buyer + admin, no agent/listing powers. `ADMIN` is set only by seed or a controlled CLI/script — no in-app promotion |
 | `banned`/`banReason`/`banExpires` | `user`, admin plugin | The suspension mechanism |
 | `anonymizedAt` | `user`, `additionalField` | Set on account deletion (#42) |
 | `preferredLocale` | `user`, `additionalField` | Required by the notification worker (no request context) — PENDING V19 for JSON-field support |
@@ -79,13 +79,14 @@ is no separate authorization surface for AI to bypass, because none exists.
 | Resource | Buyer | Agent | Admin |
 |---|---|---|---|
 | Published property | Read | Read; write own only | Read; moderate any |
-| Offer | Party only | Party only | Read; no transitions |
-| Payment/Refund | Own; cannot self-initiate refund | — | Initiate refund with reason |
+| Offer | Party only | Party only (never on own listings, #59) | Read; no transitions — except as the **buyer party** of their own offer (#59, #97) |
+| Payment/Refund | Own; cannot self-initiate refund | Own subscription payments (#90) | Initiate refund with reason; own payments as a buyer |
 | Private document | Per visibility scope | Own + own listings | Read only via audited path |
 | Conversation | Participant only | Participant only | Not readable by default |
 
-**Two explicit admin boundaries:** admins do not read buyer-agent conversations by default;
-admins never act as a party to an offer or payment.
+**Admin boundaries:** admins do not read buyer-agent conversations by default; admins may act only
+as the **buyer** party of an offer or payment (#59, #97), never as the agent party, and never handle
+a case they are personally involved in (#67, #71).
 
 ## 8. The 404/403 leak rule
 

@@ -49,7 +49,7 @@ V6 Verified (2026-09-16): Neon PgBouncer transaction pooler supports protocol-le
 | Column | Config | Why generated |
 |---|---|---|
 | `Property.searchVectorEn` | `to_tsvector('english', ...)` | Fixed configuration per column (#39 amendment to #6) |
-| `Property.searchVectorAr` | `to_tsvector('simple', ar_normalize(...))` | Fixed configuration; Arabic normalisation applied deterministically inside the expression |
+| `Property.searchVectorAr` | `to_tsvector('simple', ar_normalize(...))` | Fixed configuration; Arabic normalisation applied deterministically inside the expression. **Kept for future compatibility but unused in V1** (English only, #99, #101); `ar_normalize` likewise stays present and unused |
 
 **The original per-row FTS trigger (Decision #6) is removed** — two fixed-config generated
 columns replace it (#39). Both must be immutable expressions to remain generated columns.

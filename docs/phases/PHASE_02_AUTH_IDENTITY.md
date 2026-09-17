@@ -1,5 +1,11 @@
 # Phase 02: Identity, Authentication & Fiduciary RBAC
 
+> **⚠️ Non-authoritative (Decision #48, 2026-09-17).** V1 order and scope are defined by
+> `../process/ROADMAP.md` and `../process/IMPLEMENTATION_PLAN.md`. This file is kept as a screen
+> inventory and progress record; where it disagrees with those documents or with
+> `../DECISIONS.md`, they win. Its "luxury / escrow" framing is superseded by #45 and #47.
+
+
 > **Status**: ✅ Completed & Verified  
 > **Milestone**: Better Auth Integration, Email OTP via Resend, Role Segregation  
 > **Completion Date**: 2026-09-16  

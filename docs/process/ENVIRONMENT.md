@@ -45,6 +45,11 @@ bill — this line matters most.
 Documented procedure; rotate on suspected exposure. `BETTER_AUTH_SECRET` rotation invalidates all
 sessions — never rotate casually. gitleaks + GitHub secret scanning catch accidental commits.
 
+**Exposure remediation (#98):** rotate the credential first; remove the plaintext and reference a
+GitHub Actions secret (CI) or the gitignored `.env` (local); **do not rewrite git history** —
+rotation makes the old value useless. Applied 2026-09-17 to the Cloudinary credentials once present
+in `ci.yml`. The MapTiler key is read from `NEXT_PUBLIC_MAPTILER_KEY` and domain-restricted (#96).
+
 ## 6. Docker Compose (local)
 
 Postgres (with the four required extensions), Redis (or Upstash Redis config). Mailpit is eliminated per Decision #44; Resend is used for real email delivery across all environments. A backend Dockerfile gives

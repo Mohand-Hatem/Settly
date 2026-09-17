@@ -6,6 +6,7 @@ import "@/styles/settly/master-nav-footer.css";
 import "@/styles/settly/settly-assistant-widget.css";
 import { Toaster } from "@/components/ui/Toaster";
 import { fontVariables } from "@/fonts";
+import { QueryProvider } from "@/lib/query/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Settly — Intelligent Real Estate for Egypt",
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" dir="ltr" className={fontVariables}>
       <body className="bg-canvas text-ink min-h-screen antialiased">
-        {children}
+        <QueryProvider>{children}</QueryProvider>
         <Toaster />
       </body>
     </html>

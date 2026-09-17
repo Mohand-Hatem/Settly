@@ -1,6 +1,7 @@
 "use client";
 
-import React, { Suspense, useCallback, useEffect, useState, useMemo } from "react";
+import React, { Suspense, useCallback, useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { 
@@ -10,6 +11,7 @@ import {
   Sparkles 
 } from "lucide-react";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { areasQuery } from "@/lib/query/catalog";
 import type { DistrictMapItem } from "@/components/areas/AreaRadarMap";
 import "@/styles/settly/areas.css";
 
@@ -125,7 +127,6 @@ const DEFAULT_DISTRICTS: DistrictCardItem[] = [
 ];
 
 function AreasContent() {
-  const [districts, setDistricts] = useState<DistrictCardItem[]>(DEFAULT_DISTRICTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string>("ALL");
   const [sortMetric, setSortMetric] = useState<string>("APPRECIATION_DESC");
@@ -138,30 +139,15 @@ function AreasContent() {
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
-  // Fetch areas from backend to augment with DB records if available
-  useEffect(() => {
-    async function loadAreas() {
-      try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiBase}/api/v1/areas`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.items && data.items.length > 0) {
-            // Augment existing rich items with real DB IDs if slugs match
-            setDistricts((prev) =>
-              prev.map((d) => {
-                const match = data.items.find((dbItem: { slug: string; id: string }) => dbItem.slug === d.slug);
-                return match ? { ...d, id: match.id } : d;
-              })
-            );
-          }
-        }
-      } catch (err) {
-        console.error("Could not fetch remote areas, using local defaults:", err);
-      }
-    }
-    loadAreas();
-  }, []);
+  // Editorial district cards, linked to their database records by slug when available
+  const { data: areas } = useQuery(areasQuery());
+  const districts = useMemo(() => {
+    const idBySlug = new Map((areas?.items ?? []).map((a) => [a.slug, a.id]));
+    return DEFAULT_DISTRICTS.map((d) => {
+      const id = idBySlug.get(d.slug);
+      return id ? { ...d, id } : d;
+    });
+  }, [areas]);
 
   // Filtered & Sorted districts list
   const filteredDistricts = useMemo(() => {

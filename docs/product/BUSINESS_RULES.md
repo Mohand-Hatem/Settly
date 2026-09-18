@@ -327,6 +327,7 @@ amounts (V37).
 | V4 | `REQUESTED` → `RESCHEDULE_PROPOSED` | Agent | Proposed time inside availability | Notify buyer |
 | V5 | `RESCHEDULE_PROPOSED` → `CONFIRMED` | Buyer | As V2 | As V2 |
 | V6 | `RESCHEDULE_PROPOSED` → `CANCELLED` | Buyer | — | Notify agent |
+| V6a | `REQUESTED` → `CANCELLED` | Buyer | — (never gated: exit is never blocked, §9.1, #62; approved in slice-1 spec S1-11) | Withdraws a pending request and frees an I9 slot |
 | V7 | `CONFIRMED` → `CANCELLED` | Buyer or Agent | Record `cancelled_by` + reason | Slot released; notify other party; if under 2 hours before, flag the canceller's reliability counter |
 | V8 | `CONFIRMED` → `COMPLETED` | Agent | Only after `starts_at` | `Lead` advances; buyer prompted to make an offer |
 | V9 | `CONFIRMED` → `NO_SHOW` | Agent | Only after `starts_at` **+ 30 minutes grace** | Buyer reliability counter; notify buyer |

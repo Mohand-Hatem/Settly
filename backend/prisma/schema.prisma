@@ -556,6 +556,7 @@ model Viewing {
   endsAt             DateTime
   status             ViewingStatus @default(REQUESTED)
   cancellationReason String?
+  cancelledBy        ActorType?
   notes              String?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt

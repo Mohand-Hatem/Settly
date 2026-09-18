@@ -9,7 +9,14 @@ import { env } from "./config/index.js";
 import { identityRouter } from "./modules/identity/index.js";
 import { catalogRouter } from "./modules/catalog/index.js";
 import { engagementRouter } from "./modules/engagement/index.js";
-import { pipelineRouter } from "./modules/pipeline/index.js";
+import {
+  pipelineRouter,
+  viewingRouter,
+  myViewingRouter,
+  myAgentViewingRouter,
+  availabilityRouter,
+  viewingSlotsRouter,
+} from "./modules/pipeline/index.js";
 import { paymentsRouter } from "./modules/payments/index.js";
 import { messagingRouter } from "./modules/messaging/index.js";
 import { notificationsRouter } from "./modules/notifications/index.js";
@@ -101,6 +108,12 @@ app.get("/health", healthHandler);
 app.get("/api/v1/health", healthHandler);
 
 // 5. REST Resource Routers (Decision #40, API.md)
+// Viewings (pipeline) — mounted before the broader /properties and /me routers
+app.use("/api/v1/properties/:id/viewing-slots", viewingSlotsRouter);
+app.use("/api/v1/viewings", viewingRouter);
+app.use("/api/v1/me/viewings", myViewingRouter);
+app.use("/api/v1/me/agent/viewings", myAgentViewingRouter);
+app.use("/api/v1/me/availability", availabilityRouter);
 app.use("/api/v1/areas", areaRouter);
 app.use("/api/v1/properties", propertyRouter);
 app.use("/api/v1/amenities", amenityRouter);

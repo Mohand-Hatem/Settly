@@ -16,6 +16,7 @@
     "test:db": "node test/database-constraints.test.mjs",
     "test:endpoints": "node test/endpoints/areas.test.mjs",
     "test:auth": "node test/endpoints/auth.test.mjs",
+    "test:viewings": "node test/endpoints/viewings.test.mjs",
     "test:agent-verification": "node test/endpoints/agent-verification.test.mjs",
     "test:catalog": "node test/endpoints/catalog.test.mjs",
     "test:discovery": "node test/endpoints/discovery.test.mjs",

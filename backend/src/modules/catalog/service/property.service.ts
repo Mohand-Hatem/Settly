@@ -1,3 +1,4 @@
+import { publish } from "../../../shared/events/bus.js";
 import * as propertyRepo from "../repository/property.repository.js";
 import { areaService } from "./area.service.js";
 import { getAgentByUserId } from "../../identity/service/agent.service.js";
@@ -32,6 +33,22 @@ const STRUCTURAL_FIELDS: (keyof UpdatePropertyInput)[] = [
 // ==============================================================================
 // 1. P1: Create Draft Listing
 // ==============================================================================
+
+/**
+ * Applies a status transition, then publishes property.statusChanged after commit so other
+ * modules can react (e.g. the pipeline cancels open viewings when a listing leaves PUBLISHED, V11).
+ */
+async function transitionAndPublish(
+  input: Parameters<typeof propertyRepo.transitionPropertyStatus>[0]
+): Promise<PropertyResponse> {
+  const result = await propertyRepo.transitionPropertyStatus(input);
+  publish("property.statusChanged", {
+    propertyId: input.propertyId,
+    from: String(input.previousStatus ?? input.expectedStatus),
+    to: String(input.newStatus),
+  });
+  return result;
+}
 
 export async function createDraft(
   agentId: string,
@@ -162,7 +179,7 @@ export async function submitForReview(
 
   const action = raw.status === "REJECTED" ? "PROPERTY_RESUBMITTED" : "PROPERTY_SUBMITTED";
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "PENDING_REVIEW",
     actorId: agentId,
@@ -194,7 +211,7 @@ export async function approveProperty(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "PUBLISHED",
     actorId: adminId,
@@ -224,7 +241,7 @@ export async function rejectProperty(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "REJECTED",
     actorId: adminId,
@@ -333,7 +350,7 @@ export async function archiveProperty(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "ARCHIVED",
     actorId: agentId,
@@ -369,7 +386,7 @@ export async function markSold(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "SOLD",
     actorId: agentId,
@@ -402,7 +419,7 @@ export async function offlineSale(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "SOLD",
     actorId: agentId,
@@ -441,7 +458,7 @@ export async function fallThrough(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "PUBLISHED",
     actorId,
@@ -475,7 +492,7 @@ export async function suspendProperty(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "SUSPENDED",
     actorId: adminId,
@@ -513,7 +530,7 @@ export async function unsuspendProperty(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: targetStatus,
     actorId: adminId,
@@ -549,7 +566,7 @@ export async function relistProperty(
     );
   }
 
-  return await propertyRepo.transitionPropertyStatus({
+  return await transitionAndPublish({
     propertyId,
     newStatus: "DRAFT",
     actorId: agentId,

@@ -194,23 +194,20 @@ export async function sendVerificationEmail({
   to,
   name,
   url,
-  code,
 }: {
   to: string;
   name?: string;
   url: string;
-  code?: string;
 }): Promise<{ id?: string; error?: unknown }> {
   const html = renderSettlyEmailTemplate({
     headline: "Verify your email address",
-    preheader: "Settly Sovereign Access",
-    bodyContent: `Hello ${name || "Client"},<br><br>
-    Welcome to Settly. Please enter the 6-digit cryptographic verification code below in your browser, or click the direct button to activate your account.`,
-    code,
+    preheader: "Confirm your email to start using Settly",
+    bodyContent: `Hello ${name || "there"},<br><br>
+    Welcome to Settly. Click the button below to verify your email address. You need a verified email to request viewings and make offers.`,
     ctaText: "Verify Email Address",
     ctaUrl: url,
     footnote:
-      "This code expires in 15 minutes. If you did not create a Settly account, you can safely ignore this email.",
+      "This link can be used once. If you did not create a Settly account, you can safely ignore this email.",
   });
 
   return sendEmail({

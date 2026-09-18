@@ -1,6 +1,5 @@
 process.env.NODE_ENV = "test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
 import { server } from "../../dist/settly-api.js";
 import { prisma } from "../../dist/shared/database/prisma.js";
 
@@ -46,6 +45,7 @@ async function run() {
         email: buyerEmail,
         password,
         name: "Test Buyer",
+        phone: "010 0123 4567",
       }),
     });
 
@@ -62,6 +62,8 @@ async function run() {
     assert.ok(buyerUserId, "Expected user id in sign-up response");
     assert.equal(signUpData.user.email, buyerEmail);
     assert.equal(signUpData.user.role, "USER");
+    const createdBuyer = await prisma.user.findUnique({ where: { id: buyerUserId } });
+    assert.equal(createdBuyer.phone, "+201001234567", "Egyptian local number stored as E.164 (#60)");
     console.log(`  ✅ Passed: Buyer created with ID '${buyerUserId}', session cookie issued.\n`);
 
     // --------------------------------------------------------------------------
@@ -152,6 +154,7 @@ async function run() {
         email: agentEmail,
         password,
         name: "Test Agent Broker",
+        phone: "+44 7700 900123",
       }),
     });
     if (!agentSignUpRes.ok) {
@@ -243,54 +246,74 @@ async function run() {
     console.log("  ✅ Passed: Banned user immediately blocked with RFC 9457 403.\n");
 
     // --------------------------------------------------------------------------
-    // 8. Former master OTP '882194' is rejected without a matching verification row
+    // 8. Email sign-up without a valid phone is rejected (#60)
     // --------------------------------------------------------------------------
-    console.log("Test 8: POST /api/v1/identity/verify-otp rejects former master code '882194'...");
-    await prisma.verification.deleteMany({ where: { identifier: buyerEmail } });
-    await prisma.user.update({ where: { id: buyerUserId }, data: { emailVerified: false } });
+    console.log("Test 8: POST /api/auth/sign-up/email without a valid phone is rejected...");
+    const noPhoneEmail = `test_nophone_${Date.now()}@test.settly.estate`;
+    for (const phone of [undefined, "12345"]) {
+      const res = await fetch(`${BASE_URL}/api/auth/sign-up/email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Origin: BASE_URL },
+        body: JSON.stringify({ email: noPhoneEmail, password, name: "No Phone", phone }),
+      });
+      assert.equal(res.status, 400, `phone=${phone} must be rejected`);
+    }
+    assert.equal(await prisma.user.count({ where: { email: noPhoneEmail } }), 0);
+    console.log("  ✅ Passed: missing and invalid phones rejected; no user created.\n");
 
-    const bypassRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
+    // --------------------------------------------------------------------------
+    // 9. The custom OTP endpoint no longer exists (verification is link-only, #9/#106)
+    // --------------------------------------------------------------------------
+    console.log("Test 9: POST /api/v1/identity/verify-otp is gone...");
+    const otpRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: buyerEmail, code: "882194" }),
     });
-    assert.equal(bypassRes.status, 400);
-    const bypassUser = await prisma.user.findUnique({ where: { id: buyerUserId } });
-    assert.equal(bypassUser.emailVerified, false, "Bypass code must not verify the email");
-    console.log("  ✅ Passed: '882194' rejected with 400 and emailVerified stays false.\n");
+    assert.equal(otpRes.status, 404);
+    console.log("  ✅ Passed: OTP endpoint returns 404.\n");
 
     // --------------------------------------------------------------------------
-    // 9. A real, unexpired OTP verifies the email and is consumed (single use)
+    // 10. PATCH /api/v1/me normalises a phone and rejects an invalid one (complete-profile, #106)
     // --------------------------------------------------------------------------
-    console.log("Test 9: POST /api/v1/identity/verify-otp accepts a valid OTP once...");
-    const validCode = "418027";
-    await prisma.verification.create({
-      data: {
-        id: randomUUID(),
-        identifier: buyerEmail,
-        value: validCode,
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000),
-      },
-    });
-
-    const otpRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
+    console.log("Test 10: PATCH /api/v1/me phone normalisation and validation...");
+    const agentLogin = await fetch(`${BASE_URL}/api/auth/sign-in/email`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: buyerEmail.toUpperCase(), code: validCode }),
+      headers: { "Content-Type": "application/json", Origin: BASE_URL },
+      body: JSON.stringify({ email: agentEmail, password }),
     });
-    assert.equal(otpRes.status, 200);
-    const verifiedUser = await prisma.user.findUnique({ where: { id: buyerUserId } });
-    assert.equal(verifiedUser.emailVerified, true);
-    const remaining = await prisma.verification.count({ where: { identifier: buyerEmail } });
-    assert.equal(remaining, 0, "Used OTP must be deleted");
+    assert.equal(agentLogin.status, 200);
+    const agentCookie2 = extractCookie(agentLogin);
+    const phoneOk = await fetch(`${BASE_URL}/api/v1/me`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Cookie: agentCookie2 },
+      body: JSON.stringify({ phone: "0020 100 765 4321" }),
+    });
+    assert.equal(phoneOk.status, 200);
+    assert.equal((await phoneOk.json()).phone, "+201007654321");
+    const phoneBad = await fetch(`${BASE_URL}/api/v1/me`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Cookie: agentCookie2 },
+      body: JSON.stringify({ phone: "not-a-phone" }),
+    });
+    assert.equal(phoneBad.status, 422);
+    console.log("  ✅ Passed: phone normalised to E.164; invalid phone returns 422.\n");
 
-    const replayRes = await fetch(`${BASE_URL}/api/v1/identity/verify-otp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: buyerEmail, code: validCode }),
+    // --------------------------------------------------------------------------
+    // 11. Sessions older than the 30-day absolute cap are revoked (V12, #106)
+    // --------------------------------------------------------------------------
+    console.log("Test 11: A session older than 30 days is rejected and deleted...");
+    const oldToken = decodeURIComponent(agentCookie2.split("=")[1]).split(".")[0];
+    const oldSession = await prisma.session.findFirst({ where: { token: oldToken } });
+    assert.ok(oldSession, "Expected the agent session row");
+    await prisma.session.update({
+      where: { id: oldSession.id },
+      data: { createdAt: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000) },
     });
-    assert.equal(replayRes.status, 400);
-    console.log("  ✅ Passed: Valid OTP verified the email and cannot be replayed.\n");
+    const expiredRes = await fetch(`${BASE_URL}/api/v1/me`, { headers: { Cookie: agentCookie2 } });
+    assert.equal(expiredRes.status, 401);
+    assert.equal(await prisma.session.count({ where: { id: oldSession.id } }), 0);
+    console.log("  ✅ Passed: capped session returns 401 and is deleted.\n");
 
     console.log("===============================================================================");
     console.log("All Better Auth & RBAC Tests Passed Successfully! ✅");
@@ -314,6 +337,7 @@ async function run() {
         await prisma.session.deleteMany({ where: { userId: buyerUserId } });
         await prisma.account.deleteMany({ where: { userId: buyerUserId } });
         await prisma.user.deleteMany({ where: { id: buyerUserId } });
+        await prisma.user.deleteMany({ where: { email: { startsWith: "test_nophone_" } } });
       } catch (e) {
         console.warn("Buyer cleanup warning:", e.message);
       }

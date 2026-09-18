@@ -89,9 +89,11 @@ enum ViewingStatus {
   REQUESTED
   CONFIRMED
   RESCHEDULE_PROPOSED
+  DECLINED
   COMPLETED
   CANCELLED
   NO_SHOW
+  EXPIRED
 }
 
 enum OfferStatus {
@@ -207,6 +209,7 @@ model User {
   banExpires      DateTime?
   anonymizedAt    DateTime?
   preferredLocale String?   @default("en")
+  phone           String?
 
   sessions               Session[]
   accounts               Account[]

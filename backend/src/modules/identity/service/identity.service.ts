@@ -10,7 +10,8 @@ import type {
   AgentProfileResponse,
   CreateOrUpdateAgentProfile,
 } from "../schema/profile.schema.js";
-import { notFoundError } from "../../../shared/errors/problem-details.js";
+import { notFoundError, ProblemError } from "../../../shared/errors/problem-details.js";
+import { normalizePhone } from "../phone.js";
 
 function mapUserToProfile(user: UserRecord): UserProfileResponse {
   return {
@@ -18,6 +19,7 @@ function mapUserToProfile(user: UserRecord): UserProfileResponse {
     name: user.name,
     email: user.email,
     emailVerified: user.emailVerified,
+    phone: user.phone ?? null,
     image: user.image,
     role: user.role as "USER" | "AGENT" | "ADMIN",
     preferredLocale: (user.preferredLocale as "en" | "ar") ?? null,
@@ -60,23 +62,22 @@ export class IdentityService {
     if (!user) {
       throw notFoundError("User", userId);
     }
-    const updated = await this.repo.updateUser(userId, data);
-    return mapUserToProfile(updated);
-  }
-
-  /**
-   * Consumes a 6-digit email verification OTP. Returns false when no unexpired
-   * matching verification row exists; there is no bypass code.
-   */
-  async verifyEmailOtp(email: string, code: string): Promise<boolean> {
-    const record = await this.repo.findUnexpiredVerification(email, code, new Date());
-    if (!record) {
-      return false;
+    let phone: string | undefined;
+    if (data.phone !== undefined) {
+      const normalized = normalizePhone(data.phone);
+      if (!normalized) {
+        throw new ProblemError({
+          type: "/errors/validation-failed",
+          title: "Validation Failed",
+          status: 422,
+          detail: "One or more request parameters failed validation schema checks.",
+          errors: [{ path: "phone", code: "invalid_phone" }],
+        });
+      }
+      phone = normalized;
     }
-
-    await this.repo.markEmailVerified(email);
-    await this.repo.deleteVerification(record.id);
-    return true;
+    const updated = await this.repo.updateUser(userId, { ...data, phone });
+    return mapUserToProfile(updated);
   }
 
   async getAgentProfile(userId: string): Promise<AgentProfileResponse> {

@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth, type UserSession } from "../auth.js";
+import { auth, SESSION_ABSOLUTE_MAX_MS, type UserSession } from "../auth.js";
+import { identityRepository } from "../repository/identity.repository.js";
 import { requestContext } from "../../../shared/context/request-context.js";
 import {
   unauthenticatedError,
@@ -13,6 +14,7 @@ export interface SettlyUser {
   name: string;
   email: string;
   emailVerified: boolean;
+  phone?: string | null;
   image?: string | null;
   role: "USER" | "AGENT" | "ADMIN" | string;
   banned?: boolean | null;
@@ -47,6 +49,15 @@ export async function authenticate(
     const sessionData = await auth.api.getSession({
       headers: fromNodeHeaders(req.headers),
     });
+
+    // Absolute 30-day session cap (V12, #106): the sliding expiry alone would let a session live forever.
+    if (
+      sessionData?.session &&
+      Date.now() - new Date(sessionData.session.createdAt).getTime() > SESSION_ABSOLUTE_MAX_MS
+    ) {
+      await identityRepository.deleteSession(sessionData.session.id);
+      return next();
+    }
 
     if (sessionData?.user && sessionData?.session) {
       req.user = sessionData.user as unknown as SettlyUser;

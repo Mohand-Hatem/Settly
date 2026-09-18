@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { authClient, ROLE_HOME, roleOf } from "@/lib/auth-client";
 import { Menu, X, User, LogOut } from "lucide-react";
 
 interface NavbarProps {
@@ -28,12 +28,7 @@ export function Navbar({ dark = false }: NavbarProps) {
     window.location.href = "/";
   };
 
-  const getDashboardHref = () => {
-    if (!session?.user) return "/login";
-    if (session.user.role === "ADMIN") return "/admin/verification";
-    if (session.user.role === "AGENT") return "/agent/overview";
-    return "/buyer/overview";
-  };
+  const getDashboardHref = () => (session?.user ? ROLE_HOME[roleOf(session.user)] : "/login");
 
   const isSearchMode = pathname === "/search";
   const isDarkHeader =
@@ -76,7 +71,7 @@ export function Navbar({ dark = false }: NavbarProps) {
               type="text"
               className="hdr-search-input"
               id="globalSearchInput"
-              placeholder="Search district, compound, or developer (e.g. Golden Square, Palm Hills)..."
+              placeholder="Search by area or compound (e.g. New Cairo, Sheikh Zayed)..."
               defaultValue="Golden Square, New Cairo"
               autoComplete="off"
               aria-label="Search properties in Egypt"
@@ -121,32 +116,6 @@ export function Navbar({ dark = false }: NavbarProps) {
 
         {/* Right Header Actions */}
         <div className="settly-header-actions">
-          {/* Sovereign CBE Exchange Rate Pill */}
-          <div
-            className="settly-fx-pill"
-            title="Central Bank of Egypt Sovereign Exchange Rate"
-          >
-            <span>USD/EGP:</span>
-            <strong>48.85</strong>
-          </div>
-
-          {/* AI Assistant Workspace Launcher */}
-          <Link
-            href="/assistant"
-            className="settly-header-ai-btn hidden sm:inline-flex"
-            title="Settly AI Assistant — Dedicated Advisory Workspace"
-          >
-            <span className="header-ai-logo-plate">
-              <img
-                src="/images/logo.png"
-                alt="Settly Logo"
-                className="header-ai-logo-img"
-              />
-            </span>
-            <span className="header-ai-label">AI Assistant</span>
-            <span className="header-ai-pulse-dot" aria-label="Live" />
-          </Link>
-
           {/* Auth State CTAs */}
           {!isPending && session?.user ? (
             <div className="hidden sm:flex items-center gap-2">
@@ -212,21 +181,6 @@ export function Navbar({ dark = false }: NavbarProps) {
           </nav>
 
           <div className="pt-4 border-t border-line flex flex-col gap-3">
-            <div className="flex items-center justify-between font-mono text-xs text-ink-3 py-1">
-              <span>Sovereign CBE Rate:</span>
-              <strong className="text-navy-900 font-bold">USD/EGP: 48.85</strong>
-            </div>
-
-            <Link
-              href="/assistant"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-line bg-canvas font-sans font-semibold text-sm text-navy-900"
-            >
-              <img src="/images/logo.png" alt="AI" width={16} height={16} />
-              <span>Settly AI Advisory Assistant</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            </Link>
-
             {!isPending && session?.user ? (
               <div className="flex flex-col gap-2 pt-2">
                 <Link

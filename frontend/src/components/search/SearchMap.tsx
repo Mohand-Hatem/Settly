@@ -14,6 +14,7 @@ import {
 } from "react-leaflet";
 import { PropertyItem } from "./PropertyCard";
 import { isValidLatLng } from "@/lib/geo";
+import { mapTilerTileUrl, MAPTILER_ATTRIBUTION } from "@/lib/maptiler";
 import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
 
 // Swap a broken listing photo for the placeholder once (the guard prevents a loop)
@@ -292,9 +293,9 @@ export function SearchMap({
           >
             {/* High-resolution MapTiler luxury streets tiles with verified key and zero watermarks */}
             <TileLayer
-              url="https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=FqlQw9LpyWPJ8S7SheRV"
+              url={mapTilerTileUrl()}
               maxZoom={20}
-              attribution="Settly GIS · &copy; MapTiler · &copy; OpenStreetMap"
+              attribution={MAPTILER_ATTRIBUTION}
             />
 
             {/* Cairo Golden Square Corridor Polygon */}

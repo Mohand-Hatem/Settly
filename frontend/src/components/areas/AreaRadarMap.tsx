@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type * as Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { mapTilerTileUrl, MAPTILER_ATTRIBUTION } from "@/lib/maptiler";
 
 export interface DistrictMapItem {
   id: string;
@@ -66,10 +67,8 @@ export function AreaRadarMap({
         zoomControl: true,
         attributionControl: false,
       });
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        { maxZoom: 19, subdomains: "abcd" }
-      ).addTo(map);
+      // MapTiler everywhere in V1 (#96)
+      L.tileLayer(mapTilerTileUrl(), { maxZoom: 19, attribution: MAPTILER_ATTRIBUTION }).addTo(map);
       setLeaflet({ L, map });
     });
 

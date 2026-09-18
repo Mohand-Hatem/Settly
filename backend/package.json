@@ -22,7 +22,7 @@
     "test:discovery": "node test/endpoints/discovery.test.mjs",
     "generate:openapi": "tsx scripts/generate-openapi.ts",
     "check:openapi-drift": "tsx scripts/check-openapi-drift.ts",
-    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:discovery"
+    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:viewings && npm run test:discovery"
   },
   "dependencies": {
     "@prisma/client": "^6.4.0",

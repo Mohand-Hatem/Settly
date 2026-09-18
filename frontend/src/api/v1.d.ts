@@ -2440,6 +2440,11 @@ export interface components {
              */
             emailVerified: boolean;
             /**
+             * @description Phone in E.164 format; null only for Google accounts that have not completed their profile (#60, #106). Never public
+             * @example +201001234567
+             */
+            phone: string | null;
+            /**
              * @description Optional profile avatar URL
              * @example null
              */
@@ -2479,6 +2484,11 @@ export interface components {
              * @enum {string}
              */
             preferredLocale?: "en" | "ar";
+            /**
+             * @description Phone number, international format; normalised to E.164 (#60)
+             * @example +201001234567
+             */
+            phone?: string;
         };
         AgentProfileResponse: {
             /**

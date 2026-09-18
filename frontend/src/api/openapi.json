@@ -1402,6 +1402,12 @@
             "description": "Whether the email address has passed verification (Decision #38)",
             "example": true
           },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone in E.164 format; null only for Google accounts that have not completed their profile (#60, #106). Never public",
+            "example": "+201001234567"
+          },
           "image": {
             "type": "string",
             "nullable": true,
@@ -1444,6 +1450,7 @@
           "name",
           "email",
           "emailVerified",
+          "phone",
           "image",
           "role",
           "preferredLocale",
@@ -1469,6 +1476,13 @@
             ],
             "description": "Updated language preference",
             "example": "ar"
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20,
+            "description": "Phone number, international format; normalised to E.164 (#60)",
+            "example": "+201001234567"
           }
         }
       },

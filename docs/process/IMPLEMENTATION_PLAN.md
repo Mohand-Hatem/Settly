@@ -105,6 +105,32 @@ screens — see the dependency note in Section 9.
 search by filter, view a property, and request a viewing — all through the real UI, against the
 real API, with zero mocked business logic.
 
+**Status (2026-09-19): slice 1 delivered on branch `feat/slice-1`** per
+`../discovery/06-slice-1-screen-specs.md` and decision #106:
+- **Delivered:**
+  - link-only email verification;
+  - required phone and the `/complete-profile` step;
+  - 7-day sliding / 30-day absolute sessions;
+  - portal shells and switcher;
+  - the viewing pipeline V1–V11 with I9 and R4 (backend `test:viewings`, 14 tests including both
+    races);
+  - property page and request modal;
+  - buyer and agent viewing screens;
+  - MapTiler everywhere.
+- **Verified end to end in the browser:** register → verification gate → request → agent confirms →
+  Upcoming.
+- **Known follow-ups outside the slice:**
+  - notification delivery for viewing events (notifications phase);
+  - the agent-application flow (seeded agents for now);
+  - the public "AI assistant" widget still appears on public pages although the AI phase is not
+    built;
+  - the public property response includes the agent's email (not rendered, but exposed by the
+    API);
+  - Better Auth still uses its default ids and password hasher (gaps B5, #9 Argon2id);
+  - the deposit-enum mismatch (#105);
+  - the Arabic-field migration (#101);
+  - the `offline-sale` / `mark-sold` removal (#102).
+
 ## 8. Phase 2 — Transactional core
 
 Offers (`BUSINESS_RULES.md` §4, including I12 and the verification boundary on O1/O3/O5) →

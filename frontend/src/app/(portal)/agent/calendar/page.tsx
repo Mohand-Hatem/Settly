@@ -21,10 +21,10 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "past", label: "Past" },
   { key: "availability", label: "Availability" },
 ];
-const EMPTY: Record<ViewingScope, string> = {
-  pending: "No requests waiting for you.",
-  upcoming: "No confirmed viewings.",
-  past: "No past viewings yet.",
+const EMPTY: Record<ViewingScope, { title: string; description: string }> = {
+  pending: { title: "No requests waiting for you.", description: "Requests from buyers appear here as soon as they are sent." },
+  upcoming: { title: "No confirmed viewings.", description: "Viewings you confirm appear here, grouped by day." },
+  past: { title: "No past viewings yet.", description: "Completed, cancelled and expired viewings are kept here." },
 };
 
 function ViewingList({ scope, onOpen }: { scope: ViewingScope; onOpen: (v: Viewing) => void }) {
@@ -41,7 +41,7 @@ function ViewingList({ scope, onOpen }: { scope: ViewingScope; onOpen: (v: Viewi
     );
   }
   if (items.length === 0) {
-    return <EmptyState icon={<CalendarClock className="h-6 w-6" />} title={EMPTY[scope]} description="Requests from buyers appear here as soon as they are sent." />;
+    return <EmptyState icon={<CalendarClock className="h-6 w-6" />} title={EMPTY[scope].title} description={EMPTY[scope].description} />;
   }
 
   // Upcoming viewings are shown as a day-by-day agenda (Cairo days).

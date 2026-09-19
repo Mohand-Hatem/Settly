@@ -6,6 +6,25 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "frontend"],
       "port": 3000
+    },
+    {
+      "name": "frontend-3001",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--prefix", "frontend", "next", "dev", "frontend", "-p", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "backend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:api", "--prefix", "backend"],
+      "port": 4000
+    },
+    {
+      "name": "backend-for-3001",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:api", "--prefix", "backend"],
+      "env": { "FRONTEND_URL": "http://localhost:3001" },
+      "port": 4000
     }
   ]
 }

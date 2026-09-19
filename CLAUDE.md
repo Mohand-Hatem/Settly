@@ -5,11 +5,14 @@ Buyers discover properties through structured, geographic and semantic search, r
 viewings, negotiate offers, and pay a reservation deposit. Agents manage listings and
 their pipeline. Admins moderate. Mid-scale modular monolith, TypeScript throughout.
 
-**Status: ARCHITECTURE CLOSED at Decision #42. Tier-B documentation set complete (docs/product,
-docs/architecture, docs/process, docs/design constraints, docs/generated contracts). No
-application code exists yet. Do not write application code unless explicitly asked.**
+**Status (2026-09-19): architecture closed at #42; discovery decisions up to #106; slice 1
+(auth, portal shells, viewing pipeline, property page, viewing screens) implemented. Write code only
+for an area whose specs and implementation plan the user has approved. Never commit or push — the
+user does that.**
 
-For the detailed AI working protocol, see `docs/AI_AGENT_RULES.md`.
+For the work cycle every change follows, see `docs/process/AI_WORKFLOW.md` (also loaded as the
+`settly-governor` skill). For the detailed AI working protocol, see `docs/AI_AGENT_RULES.md`. What is
+built and what comes next: `docs/process/IMPLEMENTATION_PLAN.md` §7 "Status".
 
 ---
 

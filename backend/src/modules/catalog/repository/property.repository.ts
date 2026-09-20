@@ -128,7 +128,6 @@ export function formatProperty(p: any): PropertyResponse {
       ? {
           id: p.agent.id,
           name: p.agent.name,
-          email: p.agent.email,
           image: p.agent.image,
           licenseNumber: p.agent.agentProfile?.licenseNumber,
           brokerageName: p.agent.agentProfile?.brokerageName,

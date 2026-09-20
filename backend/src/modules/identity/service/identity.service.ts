@@ -80,6 +80,18 @@ export class IdentityService {
     return mapUserToProfile(updated);
   }
 
+  async updateUserRole(
+    userId: string,
+    role: "USER" | "AGENT" | "ADMIN"
+  ): Promise<UserProfileResponse> {
+    const user = await this.repo.findUserById(userId);
+    if (!user) {
+      throw notFoundError("User", userId);
+    }
+    const updated = await this.repo.updateUserRole(userId, role);
+    return mapUserToProfile(updated);
+  }
+
   async getAgentProfile(userId: string): Promise<AgentProfileResponse> {
     const profile = await this.repo.findAgentProfileByUserId(userId);
     if (!profile) {

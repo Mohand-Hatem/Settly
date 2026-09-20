@@ -96,3 +96,5 @@ export const ViewingListResponseSchema = z
   .openapi("ViewingList");
 
 export type ViewingResponse = z.infer<typeof ViewingResponseSchema>;
+
+export * from "./offer.schema.js";

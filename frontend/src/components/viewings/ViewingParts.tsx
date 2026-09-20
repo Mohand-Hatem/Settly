@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { Viewing, ViewingStatus } from "@/api/pipeline";
 import { cairoDay, cairoRange } from "@/lib/cairo-format";
 import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 /** Every documented viewing state (BUSINESS_RULES §3), shown as-is — never collapsed. */
 const STATUS: Record<ViewingStatus, { label: string; tone: string }> = {
@@ -61,9 +62,21 @@ export function ViewingCard({
 
 export function ListSkeleton({ rows = 3 }: { rows?: number }) {
   return (
-    <div className="space-y-3" aria-label="Loading">
+    <div className="space-y-3" aria-busy="true" aria-label="Loading viewings">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="h-[88px] animate-pulse rounded-xl bg-canvas-2" />
+        <div
+          key={i}
+          className="flex items-center justify-between rounded-xl border border-line bg-white p-4"
+        >
+          <div className="flex items-center gap-3.5 flex-1 min-w-0">
+            <Skeleton className="h-11 w-11 rounded-lg shrink-0" />
+            <div className="space-y-1.5 flex-1 min-w-0">
+              <Skeleton className="h-4 w-44" />
+              <Skeleton className="h-3 w-36" />
+            </div>
+          </div>
+          <Skeleton className="h-6 w-20 rounded-full shrink-0" />
+        </div>
       ))}
     </div>
   );

@@ -14,6 +14,7 @@ import {
   conflictError,
 } from "../../../shared/errors/problem-details.js";
 import { subscribe } from "../../../shared/events/bus.js";
+import { notificationService } from "../../notifications/service/index.js";
 import { addDays, cairoDate, cairoToUtc, minutesOf, timeOf, weekdayOf } from "./cairo-time.js";
 
 /** Business constants for viewings (BUSINESS_RULES §1, §3; #106). */
@@ -243,6 +244,22 @@ async function requestViewing(actor: Actor, input: { propertyId: string; startsA
       { limit: MAX_OPEN_REQUESTS }
     );
   }
+
+  void notificationService
+    .notifyUser({
+      userId: property.agentId,
+      type: "VIEWING_REQUESTED",
+      params: {
+        viewingId: result.viewing.id,
+        propertyId: property.id,
+        propertyTitle: property.titleEn,
+        scheduledAt: result.viewing.startsAt.toISOString(),
+        recipientRole: "agent",
+      },
+      sendEmail: true,
+    })
+    .catch(() => {});
+
   return toResponse(result.viewing, "buyer");
 }
 
@@ -283,12 +300,46 @@ async function confirmOrAccept(v: ViewingRecord, from: ViewingStatus) {
 
 const agentActions = {
   async confirm(agentId: string, id: string) {
-    return toResponse(await confirmOrAccept(await loadForParty(id, agentId, "agent"), "REQUESTED"), "agent");
+    const v = await loadForParty(id, agentId, "agent");
+    const confirmed = await confirmOrAccept(v, "REQUESTED");
+
+    void notificationService
+      .notifyUser({
+        userId: confirmed.buyerId,
+        type: "VIEWING_CONFIRMED",
+        params: {
+          viewingId: id,
+          propertyId: confirmed.property.id,
+          propertyTitle: confirmed.property.titleEn,
+          scheduledAt: confirmed.startsAt.toISOString(),
+          recipientRole: "buyer",
+        },
+        sendEmail: true,
+      })
+      .catch(() => {});
+
+    return toResponse(confirmed, "agent");
   },
   async decline(agentId: string, id: string, reason?: string) {
     const v = await loadForParty(id, agentId, "agent");
+    const declined = await guardedTransition(v, ["REQUESTED"], { status: "DECLINED", cancellationReason: reason ?? null, cancelledBy: "AGENT" });
+
+    void notificationService
+      .notifyUser({
+        userId: v.buyerId,
+        type: "VIEWING_DECLINED",
+        params: {
+          viewingId: id,
+          propertyId: v.property.id,
+          propertyTitle: v.property.titleEn,
+          recipientRole: "buyer",
+        },
+        sendEmail: true,
+      })
+      .catch(() => {});
+
     return toResponse(
-      await guardedTransition(v, ["REQUESTED"], { status: "DECLINED", cancellationReason: reason ?? null, cancelledBy: "AGENT" }),
+      declined,
       "agent"
     );
   },
@@ -433,3 +484,5 @@ export const viewingService = {
 
 // Kept for the module index contract.
 export const pipelineService = viewingService;
+
+export * from "./offer.service.js";

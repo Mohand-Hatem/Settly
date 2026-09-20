@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 import L from "leaflet";
@@ -474,9 +475,12 @@ export function SearchMap({
                 >
                   <X className="w-3.5 h-3.5" strokeWidth={2.5} />
                 </button>
-                <img
+                <Image
                   src={activeProperty.img}
                   alt={activeProperty.title}
+                  fill
+                  sizes="260px"
+                  className="object-cover"
                   loading="lazy"
                   onError={handleImgError}
                 />
@@ -544,7 +548,17 @@ export function SearchMap({
                 id={`tray-card-${p.id}`}
                 onClick={() => onSelectProperty(p.id)}
               >
-                <img src={p.img} alt={p.title} loading="lazy" onError={handleImgError} />
+                <div className="relative w-[72px] h-[72px] rounded-lg overflow-hidden shrink-0">
+                  <Image
+                    src={p.img}
+                    alt={p.title}
+                    fill
+                    sizes="72px"
+                    className="object-cover"
+                    loading="lazy"
+                    onError={handleImgError}
+                  />
+                </div>
                 <div className="map-tray-info">
                   <b>{p.title}</b>
                   <span>

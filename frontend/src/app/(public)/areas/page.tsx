@@ -8,11 +8,13 @@ import {
   Search, 
   TrendingUp, 
   ArrowRight, 
-  Sparkles 
+  Sparkles,
+  ChevronDown
 } from "lucide-react";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { areasQuery } from "@/lib/query/catalog";
 import type { DistrictMapItem } from "@/components/areas/AreaRadarMap";
+import { MapSkeleton, Skeleton } from "@/components/ui/Skeleton";
 import "@/styles/settly/areas.css";
 
 // Dynamic Leaflet Map Component (Client-Side Only)
@@ -20,15 +22,7 @@ const AreaRadarMap = dynamic(
   () => import("@/components/areas/AreaRadarMap").then((mod) => mod.AreaRadarMap),
   {
     ssr: false,
-    loading: () => (
-      <div className="area-map-container bg-[#F7F6F3] flex items-center justify-center border border-[rgba(30,42,74,0.12)]">
-        <div className="text-center">
-          <div className="inline-block w-8 h-8 border-3 border-[#C69749] border-t-transparent rounded-full animate-spin mb-3" />
-          <p className="font-serif text-base text-navy-900 font-medium">Initializing Spatial GIS Radar...</p>
-          <p className="text-xs text-ink-3 font-mono mt-1">Calibrating prime Egyptian micro-market coordinates</p>
-        </div>
-      </div>
-    ),
+    loading: () => <MapSkeleton className="area-map-container" message="Initializing Spatial GIS Radar..." />,
   }
 );
 
@@ -204,19 +198,19 @@ function AreasContent() {
             {/* Macro Telemetry Chips */}
             <div className="macro-stats-row">
               <div className="macro-stat-card">
-                <span className="macro-stat-val">4 Corridors</span>
+                <span className="macro-stat-val font-mono tabular-nums">4 Corridors</span>
                 <span className="macro-stat-lbl">Tier-1 Micro-Markets</span>
               </div>
               <div className="macro-stat-card">
-                <span className="macro-stat-val">62,500 EGP</span>
+                <span className="macro-stat-val font-mono tabular-nums">62,500 EGP</span>
                 <span className="macro-stat-lbl">Average Benchmark / m²</span>
               </div>
               <div className="macro-stat-card">
-                <span className="macro-stat-val text-green-700">+28.4%</span>
+                <span className="macro-stat-val font-mono tabular-nums text-green-700">+28.4%</span>
                 <span className="macro-stat-lbl">YoY Appreciation</span>
               </div>
               <div className="macro-stat-card">
-                <span className="macro-stat-val">100% CAD</span>
+                <span className="macro-stat-val font-mono tabular-nums">100% CAD</span>
                 <span className="macro-stat-lbl">Geocoded Boundaries</span>
               </div>
             </div>
@@ -257,18 +251,21 @@ function AreasContent() {
             </div>
 
             {/* Sorting Dropdown */}
-            <select
-              className="area-sort-select"
-              value={sortMetric}
-              onChange={(e) => setSortMetric(e.target.value)}
-              aria-label="Sort micro-markets"
-            >
-              <option value="APPRECIATION_DESC">Highest Capital Growth (YoY)</option>
-              <option value="PRICE_DESC">Highest Price / m²</option>
-              <option value="PRICE_ASC">Lowest Price / m²</option>
-              <option value="INVENTORY_DESC">Largest Active Inventory</option>
-              <option value="NAME_ASC">District Name (A–Z)</option>
-            </select>
+            <div className="area-sort-wrap">
+              <select
+                className="area-sort-select"
+                value={sortMetric}
+                onChange={(e) => setSortMetric(e.target.value)}
+                aria-label="Sort micro-markets"
+              >
+                <option value="APPRECIATION_DESC">Highest Capital Growth (YoY)</option>
+                <option value="PRICE_DESC">Highest Price / m²</option>
+                <option value="PRICE_ASC">Lowest Price / m²</option>
+                <option value="INVENTORY_DESC">Largest Active Inventory</option>
+                <option value="NAME_ASC">District Name (A–Z)</option>
+              </select>
+              <ChevronDown className="area-sort-chevron" />
+            </div>
           </div>
         </div>
       </section>
@@ -303,7 +300,7 @@ function AreasContent() {
                 <article
                   key={d.slug}
                   id={`district-card-${d.slug}`}
-                  className={`district-card ${isHighlighted ? "ring-2 ring-[#C69749]" : ""}`}
+                  className={`district-card ${isHighlighted ? "ring-2 ring-brass" : ""}`}
                 >
                   {/* Card Media Header */}
                   <div className="district-media">
@@ -317,7 +314,7 @@ function AreasContent() {
                     <span className="district-tag-pill">{d.region}</span>
                     <span className="district-growth-badge">
                       <TrendingUp className="w-3 h-3 text-white" />
-                      <span>+{d.appreciationYoY}% YoY</span>
+                      <span className="font-mono tabular-nums">+{d.appreciationYoY}% YoY</span>
                     </span>
                   </div>
 
@@ -331,21 +328,21 @@ function AreasContent() {
                     {/* 4-Metric Key Matrix */}
                     <div className="district-metrics-matrix">
                       <div className="district-metric-item">
-                        <span className="dist-metric-val">
+                        <span className="dist-metric-val font-mono tabular-nums">
                           {d.avgPricePerSqm.toLocaleString()} EGP
                         </span>
                         <span className="dist-metric-lbl">Avg Price / m²</span>
                       </div>
                       <div className="district-metric-item">
-                        <span className="dist-metric-val">{d.compoundsCount} Compounds</span>
+                        <span className="dist-metric-val font-mono tabular-nums">{d.compoundsCount} Compounds</span>
                         <span className="dist-metric-lbl">Gated Masterplans</span>
                       </div>
                       <div className="district-metric-item">
-                        <span className="dist-metric-val text-green-700">{d.rentalYield}%</span>
+                        <span className="dist-metric-val font-mono tabular-nums text-green-700">{d.rentalYield}%</span>
                         <span className="dist-metric-lbl">Avg Prime Yield</span>
                       </div>
                       <div className="district-metric-item">
-                        <span className="dist-metric-val">{d.activePropertiesCount} Units</span>
+                        <span className="dist-metric-val font-mono tabular-nums">{d.activePropertiesCount} Units</span>
                         <span className="dist-metric-lbl">Available Homes</span>
                       </div>
                     </div>
@@ -363,7 +360,7 @@ function AreasContent() {
                     <div className="dist-highlights">
                       {d.highlights.map((hl, idx) => (
                         <div key={idx} className="dist-hl-item">
-                          <Sparkles className="w-3.5 h-3.5 text-[#AE8033]" />
+                          <Sparkles className="w-3.5 h-3.5 text-brass-600" />
                           <span>{hl}</span>
                         </div>
                       ))}
@@ -377,9 +374,10 @@ function AreasContent() {
                       </Link>
                       <Link
                         href={`/search?area=${d.slug}`}
-                        className="dist-active-units hover:text-navy-900 transition"
+                        className="dist-active-units hover:text-navy-900 transition inline-flex items-center gap-1"
                       >
-                        {d.activePropertiesCount} Verified Listings →
+                        <span>{d.activePropertiesCount} Verified Listings</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
                   </div>
@@ -418,9 +416,9 @@ function AreasContent() {
                     <span className="text-xs text-ink-3">New Cairo / Golden Sq</span>
                   </td>
                   <td>Fifth Settlement, Katameya, Mostakbal City</td>
-                  <td className="font-mono font-bold">72,500 EGP</td>
-                  <td className="font-mono text-green-700 font-bold">+31.4%</td>
-                  <td className="font-mono">8.9%</td>
+                  <td className="font-mono tabular-nums font-bold">72,500 EGP</td>
+                  <td className="font-mono tabular-nums text-green-700 font-bold">+31.4%</td>
+                  <td className="font-mono tabular-nums">8.9%</td>
                   <td>Luxury Villas & Penthouses</td>
                   <td>Palm Hills, Emaar, Mountain View</td>
                 </tr>
@@ -430,9 +428,9 @@ function AreasContent() {
                     <span className="text-xs text-ink-3">Sheikh Zayed / New Zayed</span>
                   </td>
                   <td>Zayed Dunes, Al Guezira, Green Belt</td>
-                  <td className="font-mono font-bold">58,200 EGP</td>
-                  <td className="font-mono text-green-700 font-bold">+26.8%</td>
-                  <td className="font-mono">8.2%</td>
+                  <td className="font-mono tabular-nums font-bold">58,200 EGP</td>
+                  <td className="font-mono tabular-nums text-green-700 font-bold">+26.8%</td>
+                  <td className="font-mono tabular-nums">8.2%</td>
                   <td>Standalone Villas & Townhouses</td>
                   <td>SODIC, Emaar, Ora Developers</td>
                 </tr>
@@ -442,9 +440,9 @@ function AreasContent() {
                     <span className="text-xs text-ink-3">Mediterranean Riviera</span>
                   </td>
                   <td>Ras El Hekma, Sidi Abd El Rahman, Marassi</td>
-                  <td className="font-mono font-bold">94,000 EGP</td>
-                  <td className="font-mono text-green-700 font-bold">+38.5%</td>
-                  <td className="font-mono">9.4%</td>
+                  <td className="font-mono tabular-nums font-bold">94,000 EGP</td>
+                  <td className="font-mono tabular-nums text-green-700 font-bold">+38.5%</td>
+                  <td className="font-mono tabular-nums">9.4%</td>
                   <td>Beachfront Chalets & Mansions</td>
                   <td>Modon, TMG, Hassan Allam</td>
                 </tr>
@@ -454,9 +452,9 @@ function AreasContent() {
                     <span className="text-xs text-ink-3">Coastal Leisure Hub</span>
                   </td>
                   <td>El Gouna, Soma Bay, Sahl Hasheesh</td>
-                  <td className="font-mono font-bold">86,500 EGP</td>
-                  <td className="font-mono text-green-700 font-bold">+24.1%</td>
-                  <td className="font-mono">7.8%</td>
+                  <td className="font-mono tabular-nums font-bold">86,500 EGP</td>
+                  <td className="font-mono tabular-nums text-green-700 font-bold">+24.1%</td>
+                  <td className="font-mono tabular-nums">7.8%</td>
                   <td>Waterfront Villas & Duplexes</td>
                   <td>Orascom Development, Soma Bay</td>
                 </tr>
@@ -473,10 +471,28 @@ export default function AreasPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#F7F6F3] p-12 flex items-center justify-center">
-          <div className="text-center">
-            <div className="inline-block w-8 h-8 border-3 border-[#C69749] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="font-serif text-lg text-[#131D36]">Loading Prime Micro-Markets Directory...</p>
+        <div className="min-h-screen bg-canvas pb-20 space-y-8" aria-busy="true" aria-label="Loading areas">
+          <div className="border-b border-[rgba(30,42,74,0.08)] bg-white/70 py-10 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto space-y-3">
+              <Skeleton className="h-8 w-64 font-display" />
+              <Skeleton className="h-4 w-96" />
+            </div>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <MapSkeleton className="h-[420px]" message="Calibrating Prime Egyptian Micro-Markets..." />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="rounded-2xl border border-[rgba(30,42,74,0.10)] bg-white p-5 space-y-4">
+                  <Skeleton className="w-full h-44 rounded-xl" />
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <div className="flex justify-between pt-2 border-t border-[rgba(30,42,74,0.06)]">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-24 font-mono" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       }

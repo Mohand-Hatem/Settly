@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function MetricsPillars() {
@@ -6,9 +7,12 @@ export function MetricsPillars() {
     <section className="sect">
       <div className="wrap split">
         <div className="split-media">
-          <img
+          <Image
             src="/images/10.jpg"
             alt="Minimal cubic residence at dusk with warm interior light behind full-height glazing."
+            width={800}
+            height={670}
+            sizes="(max-width: 900px) 100vw, 50vw"
             loading="lazy"
           />
           <div className="split-stat">

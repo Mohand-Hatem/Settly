@@ -46,16 +46,14 @@ inspect docs + code → screen specs → implementation plan → STOP for user a
 
 ## 4. Where the project is (2026-09-19)
 
-**Done:** architecture and discovery (decisions up to #106), final screen inventory, and **slice 1**:
-auth fixes (link-only email verification, required phone, `/complete-profile`, 7-day / 30-day
-sessions), portal shells and switcher, the viewing pipeline V1–V11 with its concurrency guarantees,
-the property page, and the buyer and agent viewing screens.
+**Done:** architecture and discovery (decisions up to #106), final screen inventory, **slice 1**
+(auth, portal shells and switcher, viewing pipeline V1–V11, property page, viewing screens), and
+**cleanup** (fake AI widget hidden, agent email removed from public property API, agent-only
+`offline-sale` / `mark-sold` endpoints removed per #102).
 
 **Next, in order:**
 
-1. Cleanup: remove or hide the fake public AI-assistant widget; stop the public property API from
-   returning the agent's email; remove the agent-only `offline-sale` / `mark-sold` endpoints (#102).
-2. Transactional core: **Offers** (write specs and a plan first) → deposit payments (Paymob sandbox;
+1. Transactional core: **Offers** (write specs and a plan first) → deposit payments (Paymob sandbox;
    reconcile deposit enums with BUSINESS_RULES §5, #105) → messaging → notifications.
 
 ## 5. Running and testing

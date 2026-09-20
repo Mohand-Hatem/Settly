@@ -691,3 +691,244 @@ html[dir="rtl"] .settly-header-actions,
     font-size: 11.5px;
   }
 }
+
+/* ============================================================================
+   SETTLY — LUXURY MEGA-MENUS & USER ACCOUNT PORTAL DROPDOWNS
+   Strictly adheres to /impeccable standards:
+   - Deep Navy, Settly Brass, Bone Canvas, Sage badges
+   ========================================================================= */
+
+.settly-nav-dropdown-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.settly-nav-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--settly-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 20px 40px -12px rgba(19, 29, 54, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1001;
+}
+
+.settly-nav-dropdown-wrap:hover .settly-nav-dropdown,
+.settly-nav-dropdown-wrap:focus-within .settly-nav-dropdown,
+.settly-nav-dropdown.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Buy Dropdown */
+.settly-dropdown-buy {
+  width: 320px;
+  padding: 12px;
+}
+
+/* Districts Mega Menu */
+.settly-dropdown-mega {
+  width: 580px;
+  padding: 18px;
+}
+
+.mega-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mega-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--settly-canvas);
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.mega-card:hover {
+  background: #FFFFFF;
+  border-color: var(--settly-brass);
+  box-shadow: 0 2px 8px rgba(198, 151, 73, 0.12);
+  transform: translateY(-1px);
+}
+
+.mega-card-title {
+  font-family: var(--settly-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--settly-navy-900);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mega-card-desc {
+  font-size: 11.5px;
+  color: var(--settly-ink-2);
+  line-height: 1.4;
+}
+
+.mega-card-meta {
+  font-family: var(--settly-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--settly-brass-600);
+  margin-top: 2px;
+}
+
+.dropdown-footer-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  margin-top: 10px;
+  border-top: 1px solid var(--settly-line);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--settly-navy-900);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.dropdown-footer-link:hover {
+  background: var(--settly-canvas);
+  color: var(--settly-brass-600);
+}
+
+/* User Account & Portal Switcher Dropdown */
+.settly-user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 290px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--settly-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(19, 29, 54, 0.04), 0 20px 40px -12px rgba(19, 29, 54, 0.2);
+  padding: 8px;
+  z-index: 1002;
+  animation: dropdownIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-dropdown-header {
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--settly-line);
+}
+
+.user-dropdown-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--settly-navy-900);
+  line-height: 1.3;
+}
+
+.user-dropdown-email {
+  font-size: 11.5px;
+  color: var(--settly-ink-3);
+  margin-top: 1px;
+  word-break: break-all;
+}
+
+.user-dropdown-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.role-badge-buyer {
+  background: var(--settly-brass-050);
+  color: var(--settly-brass-600);
+  border: 1px solid rgba(198, 151, 73, 0.3);
+}
+
+.role-badge-agent {
+  background: #EAF0EC;
+  color: #3D5A4C;
+  border: 1px solid rgba(61, 90, 76, 0.3);
+}
+
+.role-badge-admin {
+  background: #1E2A4A;
+  color: #FFFFFF;
+}
+
+.user-dropdown-section-title {
+  font-family: var(--settly-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--settly-ink-3);
+  padding: 10px 12px 4px;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--settly-ink-1);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.user-dropdown-item:hover {
+  background: var(--settly-canvas);
+  color: var(--settly-navy-900);
+}
+
+.user-dropdown-item.is-portal {
+  font-weight: 600;
+  color: var(--settly-navy-900);
+  background: rgba(30, 42, 74, 0.03);
+}
+
+.user-dropdown-item.is-portal:hover {
+  background: var(--settly-brass-050);
+  color: var(--settly-navy-900);
+}
+
+.user-dropdown-footer {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--settly-line);
+}
+

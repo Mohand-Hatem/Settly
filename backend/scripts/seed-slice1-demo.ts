@@ -43,25 +43,87 @@ async function main() {
     console.log("• Availability already present — left unchanged");
   }
 
-  const password = process.env.SEED_DEMO_PASSWORD;
-  if (!password) {
-    console.log("• SEED_DEMO_PASSWORD not set — no login created for the demo agent");
-  } else if (password.length < 8) {
+  const password = process.env.SEED_DEMO_PASSWORD || "SettlyDemo2026!";
+  if (password.length < 8) {
     console.error("SEED_DEMO_PASSWORD must be at least 8 characters.");
     process.exit(1);
-  } else {
-    const ctx = await auth.$context;
-    const hash = await ctx.password.hash(password);
-    const account = await prisma.account.findFirst({ where: { userId: agent.id, providerId: "credential" } });
-    if (account) {
-      await prisma.account.update({ where: { id: account.id }, data: { password: hash } });
-    } else {
-      await prisma.account.create({
-        data: { id: uuidv7(), userId: agent.id, accountId: agent.id, providerId: "credential", password: hash },
-      });
-    }
-    console.log(`✔ Demo login ready for ${AGENT_EMAIL}`);
   }
+
+  const ctx = await auth.$context;
+  const hash = await ctx.password.hash(password);
+
+  // Agent login
+  const agentAccount = await prisma.account.findFirst({ where: { userId: agent.id, providerId: "credential" } });
+  if (agentAccount) {
+    await prisma.account.update({ where: { id: agentAccount.id }, data: { password: hash } });
+  } else {
+    await prisma.account.create({
+      data: { id: uuidv7(), userId: agent.id, accountId: agent.id, providerId: "credential", password: hash },
+    });
+  }
+  console.log(`✔ Demo login ready for ${AGENT_EMAIL}`);
+
+  // Seed Demo Buyer
+  const BUYER_EMAIL = "buyer@settly.estate";
+  let buyer = await prisma.user.findUnique({ where: { email: BUYER_EMAIL } });
+  if (!buyer) {
+    buyer = await prisma.user.create({
+      data: {
+        id: uuidv7(),
+        name: "Tarek Mansour",
+        email: BUYER_EMAIL,
+        emailVerified: true,
+        phone: "+201000000002",
+        role: "USER",
+      },
+    });
+    console.log(`✔ Demo buyer ${BUYER_EMAIL} created`);
+  } else {
+    await prisma.user.update({
+      where: { id: buyer.id },
+      data: { emailVerified: true, phone: buyer.phone || "+201000000002" },
+    });
+  }
+  const buyerAccount = await prisma.account.findFirst({ where: { userId: buyer.id, providerId: "credential" } });
+  if (buyerAccount) {
+    await prisma.account.update({ where: { id: buyerAccount.id }, data: { password: hash } });
+  } else {
+    await prisma.account.create({
+      data: { id: uuidv7(), userId: buyer.id, accountId: buyer.id, providerId: "credential", password: hash },
+    });
+  }
+  console.log(`✔ Demo login ready for ${BUYER_EMAIL}`);
+
+  // Seed Demo Admin
+  const ADMIN_EMAIL = "admin@settly.estate";
+  let adminUser = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
+  if (!adminUser) {
+    adminUser = await prisma.user.create({
+      data: {
+        id: uuidv7(),
+        name: "Karima Admin",
+        email: ADMIN_EMAIL,
+        emailVerified: true,
+        phone: "+201000000003",
+        role: "ADMIN",
+      },
+    });
+    console.log(`✔ Demo admin ${ADMIN_EMAIL} created`);
+  } else {
+    await prisma.user.update({
+      where: { id: adminUser.id },
+      data: { emailVerified: true, phone: adminUser.phone || "+201000000003" },
+    });
+  }
+  const adminAccount = await prisma.account.findFirst({ where: { userId: adminUser.id, providerId: "credential" } });
+  if (adminAccount) {
+    await prisma.account.update({ where: { id: adminAccount.id }, data: { password: hash } });
+  } else {
+    await prisma.account.create({
+      data: { id: uuidv7(), userId: adminUser.id, accountId: adminUser.id, providerId: "credential", password: hash },
+    });
+  }
+  console.log(`✔ Demo login ready for ${ADMIN_EMAIL}`);
 
   await prisma.$disconnect();
 }

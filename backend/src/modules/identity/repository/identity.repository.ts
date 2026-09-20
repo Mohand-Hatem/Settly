@@ -24,6 +24,13 @@ export class IdentityRepository {
     });
   }
 
+  async updateUserRole(id: string, role: "USER" | "AGENT" | "ADMIN"): Promise<User> {
+    return prisma.user.update({
+      where: { id },
+      data: { role },
+    });
+  }
+
   async deleteSession(sessionId: string): Promise<void> {
     await prisma.session.deleteMany({ where: { id: sessionId } });
   }

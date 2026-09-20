@@ -21,6 +21,7 @@ const config: Config = {
           600: "#AE8033",
           200: "#E7D3AB",
           50: "#F6EEDE",
+          "050": "#F6EEDE",
         },
         canvas: {
           DEFAULT: "#F7F6F3",
@@ -39,12 +40,20 @@ const config: Config = {
           DEFAULT: "rgba(30, 42, 74, 0.10)",
           2: "rgba(30, 42, 74, 0.18)",
         },
+        error: {
+          DEFAULT: "#991B1B",
+          light: "#FDF2F2",
+        },
+        warning: {
+          DEFAULT: "#B45309",
+          light: "#FEF3C7",
+        },
       },
       fontFamily: {
-        display: ["var(--font-noto-naskh-arabic)", "var(--font-spectral)", "Georgia", "serif"],
-        serif: ["var(--font-noto-naskh-arabic)", "var(--font-spectral)", "Georgia", "serif"],
-        sans: ["var(--font-ibm-plex-arabic)", "var(--font-plus-jakarta)", "system-ui", "sans-serif"],
-        mono: ["var(--font-ibm-plex-arabic)", "var(--font-jetbrains-mono)", "ui-monospace", "monospace"],
+        display: ["var(--font-spectral)", "var(--font-noto-naskh-arabic)", "Georgia", "serif"],
+        serif: ["var(--font-spectral)", "var(--font-noto-naskh-arabic)", "Georgia", "serif"],
+        sans: ["var(--font-plus-jakarta)", "var(--font-ibm-plex-arabic)", "system-ui", "sans-serif"],
+        mono: ["var(--font-jetbrains-mono)", "var(--font-ibm-plex-arabic)", "ui-monospace", "monospace"],
       },
       aspectRatio: {
         card: "4 / 4.65",

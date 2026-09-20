@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 
@@ -206,7 +207,13 @@ export function SpatialMapShowcase() {
                     onClick={() => handleSelect(hit.id)}
                     style={{ cursor: "pointer" }}
                   >
-                    <img src={hit.image} alt={hit.title} loading="lazy" />
+                    <Image
+                      src={hit.image}
+                      alt={hit.title}
+                      width={48}
+                      height={48}
+                      className="rounded-md object-cover"
+                    />
                     <div>
                       <b>{hit.title}</b>
                       <span>{hit.specs}</span>
@@ -361,10 +368,13 @@ export function SpatialMapShowcase() {
                     >
                       <X className="w-3.5 h-3.5" strokeWidth={2.5} />
                     </button>
-                    <img
+                    <Image
                       id="mapPopImg"
                       src={selectedHit.image}
                       alt={selectedHit.title}
+                      fill
+                      sizes="280px"
+                      className="object-cover"
                       loading="lazy"
                     />
                   </div>

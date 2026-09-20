@@ -275,12 +275,15 @@ const INITIAL_PROPERTIES: PropertyItem[] = [
 const selectPropertyItems = (res: PropertyListResponse) => res.items.map(toPropertyItem);
 
 export function SearchWorkspace() {
-  // Live catalog; the curated demo set stays on screen until it arrives or if the API is down
-  const { data: liveProperties } = useQuery({
+  // Live catalog; the curated demo set stays on screen once loaded or if the API is down
+  const { data: liveProperties, isPending: isCatalogPending } = useQuery({
     ...propertyListQuery(),
     select: selectPropertyItems,
   });
-  const properties = liveProperties?.length ? liveProperties : INITIAL_PROPERTIES;
+  const properties = useMemo(
+    () => (liveProperties?.length ? liveProperties : (isCatalogPending ? [] : INITIAL_PROPERTIES)),
+    [liveProperties, isCatalogPending]
+  );
 
   // Filters State - Default to full coverage so live properties appear immediately
   const [selectedLocations, setSelectedLocations] = useState<string[]>([
@@ -581,6 +584,7 @@ export function SearchWorkspace() {
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
           onClearAll={handleClearAll}
+          isLoading={isCatalogPending && !liveProperties}
         />
 
         {/* Right Map Discovery Column */}

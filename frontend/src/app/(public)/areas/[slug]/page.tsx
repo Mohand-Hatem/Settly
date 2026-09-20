@@ -12,6 +12,7 @@ import {
   Phone,
 } from "lucide-react";
 import type { CompoundPerimeter } from "@/components/areas/AreaDetailMap";
+import { MapSkeleton } from "@/components/ui/Skeleton";
 import "@/styles/settly/area-detail.css";
 
 // Dynamic Leaflet Map Component (Client-Side Only)
@@ -19,15 +20,7 @@ const AreaDetailMap = dynamic(
   () => import("@/components/areas/AreaDetailMap").then((mod) => mod.AreaDetailMap),
   {
     ssr: false,
-    loading: () => (
-      <div className="gis-canvas-box flex items-center justify-center bg-[#F7F6F3]">
-        <div className="text-center">
-          <div className="inline-block w-8 h-8 border-3 border-[#C69749] border-t-transparent rounded-full animate-spin mb-3" />
-          <p className="font-serif text-base text-[#131D36] font-medium">Calibrating Masterplan Perimeter...</p>
-          <p className="text-xs text-[#64748B] font-mono mt-1">Rendering GIS satellite compound polygons</p>
-        </div>
-      </div>
-    ),
+    loading: () => <MapSkeleton className="gis-canvas-box" message="Calibrating Masterplan Perimeter..." />,
   }
 );
 

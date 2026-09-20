@@ -86,37 +86,40 @@ export class PipelineRepository {
     notes: string | null;
     maxOpen: number;
   }): Promise<{ status: "created"; viewing: ViewingRecord } | { status: "limit_reached" }> {
-    return prisma.$transaction(async (tx) => {
-      await lockUser(tx, input.buyerId);
-      const open = await tx.viewing.count({
-        where: { buyerId: input.buyerId, status: { in: OPEN_STATUSES } },
-      });
-      if (open >= input.maxOpen) return { status: "limit_reached" as const };
+    return prisma.$transaction(
+      async (tx) => {
+        await lockUser(tx, input.buyerId);
+        const open = await tx.viewing.count({
+          where: { buyerId: input.buyerId, status: { in: OPEN_STATUSES } },
+        });
+        if (open >= input.maxOpen) return { status: "limit_reached" as const };
 
-      const viewing = await tx.viewing.create({
-        data: {
-          id: uuidv7(),
-          buyerId: input.buyerId,
-          agentId: input.agentId,
-          propertyId: input.propertyId,
-          startsAt: input.startsAt,
-          endsAt: input.endsAt,
-          notes: input.notes,
-        },
-        include: viewingInclude,
-      });
-      await tx.lead.upsert({
-        where: { buyerId_propertyId: { buyerId: input.buyerId, propertyId: input.propertyId } },
-        create: {
-          id: uuidv7(),
-          buyerId: input.buyerId,
-          agentId: input.agentId,
-          propertyId: input.propertyId,
-        },
-        update: {},
-      });
-      return { status: "created" as const, viewing };
-    });
+        const viewing = await tx.viewing.create({
+          data: {
+            id: uuidv7(),
+            buyerId: input.buyerId,
+            agentId: input.agentId,
+            propertyId: input.propertyId,
+            startsAt: input.startsAt,
+            endsAt: input.endsAt,
+            notes: input.notes,
+          },
+          include: viewingInclude,
+        });
+        await tx.lead.upsert({
+          where: { buyerId_propertyId: { buyerId: input.buyerId, propertyId: input.propertyId } },
+          create: {
+            id: uuidv7(),
+            buyerId: input.buyerId,
+            agentId: input.agentId,
+            propertyId: input.propertyId,
+          },
+          update: {},
+        });
+        return { status: "created" as const, viewing };
+      },
+      { maxWait: 15000, timeout: 30000 }
+    );
   }
 
   async findViewing(id: string): Promise<ViewingRecord | null> {
@@ -145,32 +148,35 @@ export class PipelineRepository {
     data: Prisma.ViewingUpdateManyMutationInput = {}
   ): Promise<{ status: "ok"; viewing: ViewingRecord } | { status: "stale" } | { status: "overlap" }> {
     try {
-      const result = await prisma.$transaction(async (tx) => {
-        // Serialise confirmations per agent: without this, two overlapping confirmations deadlock
-        // (each waits on the other's exclusion check while trying to decline the other's row).
-        await lockUser(tx, agentId);
-        const { count } = await tx.viewing.updateMany({
-          where: { id, status: from },
-          data: { ...data, status: "CONFIRMED" },
-        });
-        if (count !== 1) return "stale" as const;
-        const v = await tx.viewing.findUniqueOrThrow({ where: { id } });
-        await tx.viewing.updateMany({
-          where: {
-            id: { not: id },
-            agentId: v.agentId,
-            status: "REQUESTED",
-            startsAt: { lt: v.endsAt },
-            endsAt: { gt: v.startsAt },
-          },
-          data: {
-            status: "DECLINED",
-            cancellationReason: "Another viewing was confirmed for this time.",
-            cancelledBy: "SYSTEM",
-          },
-        });
-        return "ok" as const;
-      });
+      const result = await prisma.$transaction(
+        async (tx) => {
+          // Serialise confirmations per agent: without this, two overlapping confirmations deadlock
+          // (each waits on the other's exclusion check while trying to decline the other's row).
+          await lockUser(tx, agentId);
+          const { count } = await tx.viewing.updateMany({
+            where: { id, status: from },
+            data: { ...data, status: "CONFIRMED" },
+          });
+          if (count !== 1) return "stale" as const;
+          const v = await tx.viewing.findUniqueOrThrow({ where: { id } });
+          await tx.viewing.updateMany({
+            where: {
+              id: { not: id },
+              agentId: v.agentId,
+              status: "REQUESTED",
+              startsAt: { lt: v.endsAt },
+              endsAt: { gt: v.startsAt },
+            },
+            data: {
+              status: "DECLINED",
+              cancellationReason: "Another viewing was confirmed for this time.",
+              cancelledBy: "SYSTEM",
+            },
+          });
+          return "ok" as const;
+        },
+        { maxWait: 15000, timeout: 30000 }
+      );
       if (result === "stale") return { status: "stale" };
       return { status: "ok", viewing: (await this.findViewing(id))! };
     } catch (err) {

@@ -1,13 +1,17 @@
 import React from "react";
+import Image from "next/image";
 
 export function MobileShowcase() {
   return (
     <section className="sect">
       <div className="wrap mob-grid">
         <div className="mob-media">
-          <img
+          <Image
             src="/images/phone.jpg"
             alt="A hand holding a phone showing the Settly property search."
+            width={600}
+            height={800}
+            sizes="(max-width: 900px) 100vw, 50vw"
             loading="lazy"
           />
         </div>

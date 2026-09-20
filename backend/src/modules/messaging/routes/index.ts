@@ -1,4 +1,5 @@
 import { Router } from "express";
+export { conversationRouter, myConversationsRouter } from "./conversation.routes.js";
 
 export const messagingRouter: Router = Router();
 

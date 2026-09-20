@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { PropertyCard, PropertyItem } from "./PropertyCard";
+import { PropertyCardSkeleton } from "@/components/ui/Skeleton";
 
 interface PropertyStreamProps {
   properties: PropertyItem[];
@@ -11,6 +12,7 @@ interface PropertyStreamProps {
   favorites: string[];
   onToggleFavorite: (id: string) => void;
   onClearAll?: () => void;
+  isLoading?: boolean;
 }
 
 export function PropertyStream({
@@ -21,6 +23,7 @@ export function PropertyStream({
   favorites,
   onToggleFavorite,
   onClearAll,
+  isLoading,
 }: PropertyStreamProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
@@ -32,7 +35,13 @@ export function PropertyStream({
 
   return (
     <main className="search-stream-col">
-      {totalCount === 0 ? (
+      {isLoading ? (
+        <div className="stream-grid" id="streamGrid">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <PropertyCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : totalCount === 0 ? (
         <div className="stream-empty-state" role="status">
           <div className="empty-state-icon">
             <svg

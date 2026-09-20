@@ -268,3 +268,5 @@ availabilityRouter.put(
   agentOnly,
   handle(async (req) => viewingService.setAvailability(req.user!.id, parse(UpdateAvailabilitySchema, req.body, req)))
 );
+
+export * from "./offer.routes.js";

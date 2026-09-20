@@ -22,13 +22,14 @@ export async function sendEmail({
   html,
   text,
 }: EmailPayload): Promise<{ id?: string; error?: unknown }> {
-  // In automated test environments, log and return early to prevent external network calls and quota burning
-  if (env.NODE_ENV === "test" || env.RESEND_API_KEY.startsWith("re_ci_")) {
+  // Unless ENABLE_REAL_EMAIL is explicitly set to true, skip actual Resend API delivery to prevent blocking/quota exhaustion.
+  if (!env.ENABLE_REAL_EMAIL || env.NODE_ENV === "test" || env.RESEND_API_KEY.startsWith("re_ci_")) {
+    const extractedLink = html.match(/href="([^"]+)"/)?.[1];
     logger.info(
-      { to, subject },
-      "[Resend Mock] Email delivery skipped in test environment.",
+      { to, subject, link: extractedLink },
+      "[Resend Intercepted / Demo Mode] Email delivery bypassed. Verification/reset link logged safely without calling Resend API.",
     );
-    return { id: "test_email_id_" + Date.now() };
+    return { id: "demo_email_id_" + Date.now() };
   }
 
   // Handle Resend onboarding sandbox constraint: only verified owner email can receive

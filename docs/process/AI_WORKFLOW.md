@@ -595,11 +595,9 @@ Every new area follows the same cycle:
 7. Documentation update and change report
 ```
 
-Next, in order:
+**Next, in order:**
 
-1. **Cleanup:** remove or hide the fake public AI-assistant widget; stop the public property API from
-   returning the agent's email; remove the agent-only `offline-sale` / `mark-sold` endpoints (#102).
-2. **Transactional core (#48):** Offers (specs + plan first) → deposit payments (Paymob sandbox;
+1. **Transactional core (#48):** Offers (specs + plan first) → deposit payments (Paymob sandbox;
    reconcile deposit enums with BUSINESS_RULES §5, #105) → messaging → notifications (including the
    viewing events that currently notify nobody).
 

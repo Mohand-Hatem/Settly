@@ -95,9 +95,7 @@ export async function middleware(request: NextRequest) {
   if (isAdminRoute && role !== "ADMIN") {
     return NextResponse.redirect(new URL("/buyer?notice=no-access", request.url));
   }
-  if (isAgentRoute && role !== "AGENT") {
-    return NextResponse.redirect(new URL("/buyer?notice=no-access", request.url));
-  }
+  // In portfolio demo mode, authenticated clients may freely explore both /buyer and /agent portals.
 
   return NextResponse.next();
 }

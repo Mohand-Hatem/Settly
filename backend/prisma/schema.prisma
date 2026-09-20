@@ -103,8 +103,10 @@ enum OfferStatus {
   REJECTED
   EXPIRED
   WITHDRAWN
+  SUPERSEDED
   RESERVED
   COMPLETED
+  FELL_THROUGH
   CANCELLED
 }
 
@@ -112,10 +114,11 @@ enum PaymentStatus {
   PENDING
   PROCESSING
   SUCCEEDED
-  FAILED
+  CANCELLED
+  EXPIRED
   REFUNDED
   PARTIALLY_REFUNDED
-  EXPIRED
+  FAILED
 }
 
 enum AttemptStatus {
@@ -123,13 +126,16 @@ enum AttemptStatus {
   REDIRECTED
   SUCCEEDED
   FAILED
+  ABANDONED
+  EXPIRED
 }
 
 enum RefundStatus {
   REQUESTED
   PROCESSING
-  COMPLETED
+  SUCCEEDED
   FAILED
+  COMPLETED
 }
 
 enum VisibilityScope {
@@ -573,17 +579,30 @@ model Offer {
   agent      User        @relation("AgentOffers", fields: [agentId], references: [id])
   propertyId String
   property   Property    @relation(fields: [propertyId], references: [id])
-  status     OfferStatus @default(PENDING_AGENT)
-  acceptedAt DateTime?
-  expiresAt  DateTime?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  status           OfferStatus @default(PENDING_AGENT)
+  acceptedAt       DateTime?
+  expiresAt        DateTime?
+  rejectionReason  String?
+  withdrawalReason String?
+  buyerConfirmedAt    DateTime?
+  agentConfirmedAt    DateTime?
+  disputedAt          DateTime?
+  disputedById        String?
+  disputeReason       String?
+  adminReviewedAt     DateTime?
+  adminReviewedById   String?
+  adminReviewDecision String?
+  adminReviewNotes    String?
+  adminReviewDeadline DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   revisions OfferRevision[]
   payments  Payment[]
 
   @@index([buyerId, status])
-  @@index([propertyId])
+  @@index([agentId, status])
+  @@index([propertyId, status])
 }
 
 model OfferRevision {
@@ -627,6 +646,7 @@ model Payment {
 
   @@index([offerId])
   @@index([buyerId])
+  @@index([status, deadlineAt])
 }
 
 model PaymentAttempt {
@@ -640,6 +660,7 @@ model PaymentAttempt {
   createdAt             DateTime      @default(now())
 
   @@index([paymentId])
+  @@index([providerTransactionId])
 }
 
 model Refund {

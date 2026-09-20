@@ -16,9 +16,20 @@ import {
   myAgentViewingRouter,
   availabilityRouter,
   viewingSlotsRouter,
+  offerRouter,
+  myOfferRouter,
+  myAgentOfferRouter,
+  propertyOfferRouter,
+  adminSalesRouter,
 } from "./modules/pipeline/index.js";
-import { paymentsRouter } from "./modules/payments/index.js";
-import { messagingRouter } from "./modules/messaging/index.js";
+import { paymentsRouter, depositOfferRouter } from "./modules/payments/index.js";
+import {
+  messagingRouter,
+  conversationRouter,
+  myConversationsRouter,
+  registerSocket,
+  unregisterSocket,
+} from "./modules/messaging/index.js";
 import { notificationsRouter } from "./modules/notifications/index.js";
 import { knowledgeRouter } from "./modules/knowledge/index.js";
 import { aiRouter } from "./modules/ai/index.js";
@@ -27,7 +38,7 @@ import { analyticsRouter } from "./modules/analytics/index.js";
 
 import { requestContext, getRequestId, type RequestContext } from "./shared/context/request-context.js";
 export { requestContext, getRequestId, type RequestContext };
-import { toNodeHandler } from "better-auth/node";
+import { toNodeHandler, fromNodeHeaders } from "better-auth/node";
 import { auth } from "./modules/identity/auth.js";
 import { profileRouter } from "./modules/identity/routes/profile.routes.js";
 import { adminAgentRouter } from "./modules/identity/routes/admin-agent.routes.js";
@@ -108,11 +119,18 @@ app.get("/health", healthHandler);
 app.get("/api/v1/health", healthHandler);
 
 // 5. REST Resource Routers (Decision #40, API.md)
-// Viewings (pipeline) — mounted before the broader /properties and /me routers
+// Viewings and Offers (pipeline) — mounted before the broader /properties and /me routers
 app.use("/api/v1/properties/:id/viewing-slots", viewingSlotsRouter);
+app.use("/api/v1/properties/:id", propertyOfferRouter);
 app.use("/api/v1/viewings", viewingRouter);
+app.use("/api/v1/offers/:id/deposit", depositOfferRouter);
+app.use("/api/v1/offers", offerRouter);
 app.use("/api/v1/me/viewings", myViewingRouter);
+app.use("/api/v1/me/offers", myOfferRouter);
 app.use("/api/v1/me/agent/viewings", myAgentViewingRouter);
+app.use("/api/v1/me/agent/offers", myAgentOfferRouter);
+app.use("/api/v1/conversations", conversationRouter);
+app.use("/api/v1/me/conversations", myConversationsRouter);
 app.use("/api/v1/me/availability", availabilityRouter);
 app.use("/api/v1/areas", areaRouter);
 app.use("/api/v1/properties", propertyRouter);
@@ -120,6 +138,7 @@ app.use("/api/v1/amenities", amenityRouter);
 app.use("/api/v1/uploads", uploadRouter);
 app.use("/api/v1/admin/agents", adminAgentRouter);
 app.use("/api/v1/admin/properties", adminPropertyRouter);
+app.use("/api/v1/admin/sales", adminSalesRouter);
 app.use("/api/v1/me", profileRouter);
 app.use("/api/v1/me/properties", myPropertyRouter);
 app.use("/api/v1/me/devices", deviceRouter);
@@ -149,16 +168,35 @@ export const wss = new WebSocketServer({
   path: "/ws/chat",
 });
 
-wss.on("connection", (ws, req) => {
-  logger.info({ path: req.url }, "WebSocket client connected on /ws/chat");
+wss.on("connection", async (ws, req) => {
+  logger.info({ path: req.url }, "WebSocket client connected on /ws/chat, verifying session...");
 
-  ws.on("message", (message) => {
-    logger.debug({ messageLength: message.toString().length }, "Received WebSocket message");
-  });
+  try {
+    const sessionData = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    });
 
-  ws.on("close", () => {
-    logger.info("WebSocket client disconnected");
-  });
+    if (!sessionData?.user) {
+      logger.warn({ path: req.url }, "WebSocket client unauthenticated, closing connection");
+      ws.close(4401, "Unauthorized");
+      return;
+    }
+
+    const userId = sessionData.user.id;
+    registerSocket(userId, ws);
+
+    ws.on("close", () => {
+      unregisterSocket(userId, ws);
+    });
+
+    ws.on("error", (err) => {
+      logger.warn({ userId, err }, "WebSocket connection error");
+      unregisterSocket(userId, ws);
+    });
+  } catch (err) {
+    logger.error({ err }, "Error during WebSocket connection handshake");
+    ws.close(4500, "Internal Server Error");
+  }
 });
 
 export function startServer(port: number = env.PORT) {

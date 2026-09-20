@@ -248,3 +248,21 @@ profileRouter.post(
     }
   }
 );
+
+profileRouter.post(
+  "/switch-role",
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { role } = req.body;
+      if (role !== "USER" && role !== "AGENT") {
+        return res.status(400).json({ error: "Role must be USER or AGENT." });
+      }
+      const updated = await identityService.updateUserRole(req.user!.id, role);
+      res.json(updated);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+

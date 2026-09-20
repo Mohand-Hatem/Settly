@@ -8,6 +8,7 @@ import { problemMessage } from "@/api/errors";
 import { availabilityQuery, useSaveAvailability } from "@/lib/query/pipeline";
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toaster";
+import { AvailabilityEditorSkeleton } from "@/components/ui/Skeleton";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIMES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
@@ -41,7 +42,7 @@ export function AvailabilityEditor() {
   };
   const invalid = windows.findIndex((w) => minutes(w.endTime) - minutes(w.startTime) < 60);
 
-  if (query.isPending) return <div className="h-40 animate-pulse rounded-xl bg-canvas-2" />;
+  if (query.isPending) return <AvailabilityEditorSkeleton />;
   if (query.isError) return <p role="alert" className="text-sm text-red-700">{problemMessage(query.error)}</p>;
 
   return (

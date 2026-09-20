@@ -5,7 +5,8 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, CalendarPlus, ChevronLeft, ChevronRight, Layers, MapPin, Scale, Share2, X } from "lucide-react";
+import { BadgeCheck, CalendarPlus, ChevronLeft, ChevronRight, HandCoins, Layers, MapPin, MessageSquare, Scale, Share2, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import type { PropertyResponse } from "@/api/catalog";
 import { authClient } from "@/lib/auth-client";
 import { piastresToEgp } from "@/lib/money";
@@ -13,11 +14,15 @@ import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
 import { toast } from "@/components/ui/Toaster";
 import { VerificationProvider, useVerificationGate } from "@/components/portal/EmailVerification";
 import { RequestViewingModal } from "@/components/property/RequestViewingModal";
+import { MakeOfferModal } from "@/components/property/MakeOfferModal";
+import { MessageAgentModal } from "@/components/property/MessageAgentModal";
+import { myOfferForPropertyQuery } from "@/lib/query/offers";
+import { Skeleton } from "@/components/ui/Skeleton";
 import "./property-detail.css";
 
 const PropertyLocationMap = dynamic(() => import("@/components/property/PropertyLocationMap"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse rounded-xl bg-canvas-2" />,
+  loading: () => <Skeleton className="h-full w-full rounded-xl min-h-[250px]" />,
 });
 
 const TYPE_LABEL: Record<string, string> = {
@@ -56,6 +61,8 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
   const { data: session } = authClient.useSession();
   const { guard } = useVerificationGate();
   const [requestOpen, setRequestOpen] = useState(false);
+  const [offerOpen, setOfferOpen] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   const title = property.titleEn ?? "Property";
@@ -68,6 +75,12 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
   const isReserved = property.status === "RESERVED";
   const canRequest = property.status === "PUBLISHED" && !isOwnListing;
   const areaName = property.area?.nameEn;
+
+  const myOfferQuery = useQuery({
+    ...myOfferForPropertyQuery(property.id),
+    enabled: Boolean(session?.user && !isRent && !isOwnListing),
+  });
+  const activeOffer = myOfferQuery.data;
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -93,6 +106,28 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
     guard(() => setRequestOpen(true));
   };
 
+  const onMakeOffer = () => {
+    const here = `/properties/${property.slug}`;
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(here)}`);
+      return;
+    }
+    if (!session.user.phone) {
+      router.push(`/complete-profile?callbackUrl=${encodeURIComponent(here)}`);
+      return;
+    }
+    guard(() => setOfferOpen(true));
+  };
+
+  const onMessageAgent = () => {
+    const here = `/properties/${property.slug}`;
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(here)}`);
+      return;
+    }
+    setMessageOpen(true);
+  };
+
   const onShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -113,18 +148,73 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
           <span className="ml-1 text-sm font-medium text-ink-3">{label(RENT_PERIOD, property.rentalPeriod)}</span>
         )}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 space-y-2">
         {isOwnListing ? (
           <p className="rounded-lg bg-canvas p-3 text-sm text-ink-2">This is your listing.</p>
         ) : isReserved ? (
           <p className="rounded-lg bg-canvas p-3 text-sm text-ink-2">
-            This property is reserved and is not taking viewing requests.
+            This property is reserved and is not taking offers or viewing requests.
           </p>
         ) : (
-          <button type="button" className="btn-submit-offer flex w-full items-center justify-center gap-2" onClick={onRequest} disabled={!canRequest}>
-            <CalendarPlus className="h-4 w-4" aria-hidden />
-            Request a viewing
-          </button>
+          <>
+            {!isRent && (
+              activeOffer ? (
+                <div className="rounded-xl border border-brass/30 bg-brass-050/60 p-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-navy-900">Your active offer:</span>
+                    <span className="font-mono font-bold text-navy-900">
+                      {activeOffer.currentAmount.toLocaleString("en-US")} EGP
+                    </span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-ink-2">
+                    <span>Status:</span>
+                    <span className="font-semibold capitalize text-brass-600">
+                      {activeOffer.status.replace(/_/g, " ").toLowerCase()}
+                    </span>
+                  </div>
+                  <Link
+                    href="/buyer/offers"
+                    className="mt-2 block text-center font-semibold text-navy-900 underline hover:text-brass-600"
+                  >
+                    View offer details & revisions →
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-brass py-2.5 font-semibold text-navy-900 transition hover:bg-brass-600 hover:text-white"
+                  onClick={onMakeOffer}
+                  disabled={!canRequest}
+                >
+                  <HandCoins className="h-4 w-4" aria-hidden />
+                  Make an offer
+                </button>
+              )
+            )}
+            <button
+              type="button"
+              className={`flex w-full items-center justify-center gap-2 rounded-lg py-2.5 font-semibold transition ${
+                !isRent
+                  ? "border border-line bg-white text-navy-900 hover:bg-canvas"
+                  : "btn-submit-offer"
+              }`}
+              onClick={onRequest}
+              disabled={!canRequest}
+            >
+              <CalendarPlus className="h-4 w-4" aria-hidden />
+              Request a viewing
+            </button>
+            {!isOwnListing && (
+              <button
+                type="button"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-line bg-white py-2.5 font-semibold text-navy-900 transition hover:bg-canvas"
+                onClick={onMessageAgent}
+              >
+                <MessageSquare className="h-4 w-4 text-brass" aria-hidden />
+                Message agent
+              </button>
+            )}
+          </>
         )}
       </div>
       {property.agent && (
@@ -294,15 +384,37 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
       </main>
 
       {canRequest && (
-        <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-white p-3 lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-2 border-t border-line bg-white p-3 lg:hidden">
           <div className="min-w-0 flex-1">
-            <div className="truncate font-mono text-base font-bold text-navy-900">
+            <div className="truncate font-mono text-sm font-bold text-navy-900">
               {price > 0 ? `${price.toLocaleString("en-US")} EGP` : "Price on request"}
             </div>
-            <div className="text-xs text-ink-3">{isRent ? "For rent" : "For sale"}</div>
+            <div className="text-[11px] text-ink-3">{isRent ? "For rent" : "For sale"}</div>
           </div>
-          <button type="button" className="btn-submit-offer flex items-center gap-2" onClick={onRequest}>
-            <CalendarPlus className="h-4 w-4" aria-hidden /> Request a viewing
+          {!isOwnListing && (
+            <button
+              type="button"
+              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-semibold text-navy-900"
+              onClick={onMessageAgent}
+            >
+              <MessageSquare className="h-3.5 w-3.5 text-brass" aria-hidden /> Chat
+            </button>
+          )}
+          {!isRent && !activeOffer && (
+            <button
+              type="button"
+              className="flex items-center gap-1.5 rounded-lg bg-brass px-3 py-2 text-xs font-semibold text-navy-900"
+              onClick={onMakeOffer}
+            >
+              <HandCoins className="h-3.5 w-3.5" aria-hidden /> Offer
+            </button>
+          )}
+          <button
+            type="button"
+            className="flex items-center gap-1.5 rounded-lg bg-navy-900 px-3 py-2 text-xs font-semibold text-white"
+            onClick={onRequest}
+          >
+            <CalendarPlus className="h-3.5 w-3.5" aria-hidden /> Viewing
           </button>
         </div>
       )}
@@ -334,6 +446,24 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
         isOpen={requestOpen}
         onClose={() => setRequestOpen(false)}
       />
+      {!isRent && (
+        <MakeOfferModal
+          propertyId={property.id}
+          propertyTitle={title}
+          listingPriceEgp={price}
+          isOpen={offerOpen}
+          onClose={() => setOfferOpen(false)}
+        />
+      )}
+      {property.agent && (
+        <MessageAgentModal
+          propertyId={property.id}
+          propertyTitle={title}
+          agentName={property.agent.name}
+          isOpen={messageOpen}
+          onClose={() => setMessageOpen(false)}
+        />
+      )}
     </div>
   );
 }

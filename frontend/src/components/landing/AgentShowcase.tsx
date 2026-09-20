@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function AgentShowcase() {
@@ -91,10 +92,12 @@ export function AgentShowcase() {
         </div>
 
         <div className="agents-col-media">
-          <img
+          <Image
             className="agents-bg-img"
             src="/images/7.jpg"
             alt="Modern residential exterior with a paved approach and mature planting."
+            fill
+            sizes="(max-width: 900px) 100vw, 50vw"
             loading="lazy"
           />
           <div className="agents-media-scrim"></div>

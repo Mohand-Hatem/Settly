@@ -157,9 +157,15 @@
   border-color: var(--navy-900);
 }
 
+.area-sort-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .area-sort-select {
   height: 42px;
-  padding: 0 14px;
+  padding: 0 34px 0 14px;
   border-radius: 8px;
   border: 1px solid var(--line-2);
   background: #fff;
@@ -169,6 +175,27 @@
   color: var(--navy-900);
   cursor: pointer;
   outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.area-sort-select:hover {
+  border-color: var(--navy-800);
+}
+
+.area-sort-select:focus {
+  border-color: var(--navy-900);
+  box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.08);
+}
+
+.area-sort-chevron {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: var(--ink-3);
+  width: 15px;
+  height: 15px;
 }
 
 /* Spatial Radar Section */

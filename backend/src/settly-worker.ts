@@ -1,5 +1,6 @@
 import pino from "pino";
 import { env } from "./config/index.js";
+import { viewingService } from "./modules/pipeline/index.js";
 
 export const workerLogger = pino({
   level: env.NODE_ENV === "production" ? "info" : "debug",
@@ -37,9 +38,24 @@ async function startWorker() {
     "Settly Worker: 9 scheduled jobs configured per CONCURRENCY_AND_IDEMPOTENCY.md"
   );
 
+  // V10 viewing expiry (BUSINESS_RULES §3): open requests whose time has passed become EXPIRED.
+  // A simple interval until BullMQ scheduling is wired; the update is idempotent.
+  const VIEWING_EXPIRY_INTERVAL_MS = 5 * 60 * 1000;
+  const runViewingExpiry = async () => {
+    try {
+      const expired = await viewingService.expireStaleRequests();
+      if (expired > 0) workerLogger.info({ expired }, "viewing-expiry: requests expired");
+    } catch (err) {
+      workerLogger.error({ err }, "viewing-expiry failed");
+    }
+  };
+  void runViewingExpiry();
+  const viewingExpiryTimer = setInterval(runViewingExpiry, VIEWING_EXPIRY_INTERVAL_MS);
+
   // Graceful shutdown handling
   const shutdown = (signal: string) => {
     workerLogger.info({ signal }, "Settly Worker shutting down gracefully...");
+    clearInterval(viewingExpiryTimer);
     process.exit(0);
   };
 

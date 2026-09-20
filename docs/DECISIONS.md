@@ -121,11 +121,13 @@ Append-oriented history of every architectural, product and process decision.
 | 99 | Product / Frontend | **English-only V1, end to end:** UI, listing and editorial content, search, AI answers and system messages are **English only**; no `/ar/*` routes, no `/[locale]` segment, no RTL and no `dir="auto"` for Arabic in V1; **Arabic content, Arabic search, Arabic AI answers and Arabic/RTL are a Future / Optional Feature** after core completion. Defers for V1 the language parts of #39 §3/§5/§6/§8 and the Arabic/cross-language parts of #27/#32; V3, V23–V27 deferred | LOCKED (2026-09-17, amended same day) · Arabic schema/API fields: separate data-model decision OPEN |
 | 100 | Frontend | **Portal route prefixes:** Buyer **`/buyer/*`** · Agent **`/agent/*`** · Admin **`/admin/*`**; `/dashboard/*` and `/buyer-dashboard/*` are not canonical. Existing code mismatches (auth redirects, navbar landing links, middleware agent redirect) are implementation follow-ups. Refines #97 | LOCKED (2026-09-17) · code not yet aligned |
 | 101 | Data / API | **Arabic data fields in V1:** existing Arabic columns, API fields and `ar_normalize` are **kept for future compatibility but unused in V1**; Arabic fields required only for Arabic support become **nullable** (`Area.nameAr`, `Amenity.nameAr`, `KnowledgeArticle.titleAr`/`bodyAr`); **no placeholder Arabic data**; V1 flows, search, RAG and AI use English only. Resolves the data-model point of #99 | LOCKED (2026-09-17) · **implementation pending** (F1–F9) |
-| 102 | Product | **No agent-only SOLD:** a listing becomes `SOLD` only via accepted offer → deposit paid → cooling-off / sale process → **buyer + agent confirmation** → sale completed; admin review per #82 when P9a applies. **P11 removed**; O13 happens only with P9; O12 loses the offline-sale trigger; no new state. Accepts P7; #77 stays the governing rule | LOCKED (2026-09-17) · code follow-ups pending (`offline-sale`, `mark-sold`) |
+| 102 | Product | **No agent-only SOLD:** a listing becomes `SOLD` only via accepted offer → deposit paid → cooling-off / sale process → **buyer + agent confirmation** → sale completed; admin review per #82 when P9a applies. **P11 removed**; O13 happens only with P9; O12 loses the offline-sale trigger; no new state. Accepts P7; #77 stays the governing rule | LOCKED (2026-09-17) · offline-sale and mark-sold removed (2026-09-19) |
 | 103 | Payments | **Subscription charge currency:** plans UI shows **USD only** (no toggle); payment charged in **EGP** at a **fixed V1 rate of 1 USD = 48.98 EGP** (not live, never auto-refreshed), **rounded up to a whole EGP** — Pro **980 EGP**, Enterprise **2,449 EGP** (always the full price, #104); the exact EGP amount is shown before the Paymob redirect; receipt shows EGP charged plus the USD reference and rate. Supersedes the #89 toggle and FX open items; the live-rate proposal (S158–S160) was withdrawn | LOCKED (2026-09-17) · Paymob confirmation (V37) and legal review (V36) pending |
 | 104 | Product / Payments | **Subscription periods:** every paid period (first subscription, re-subscription, upgrade, renewal) lasts **30 full days from its start time** at the **full plan price** — **no proration, no credit**; an upgrade starts a new 30-day period immediately; a downgrade applies when the current period ends. **The listing quota stays on the Cairo calendar month (reset on the 1st)**; the two cycles are never merged. Supersedes #88 S2; proration questions S161–S162 withdrawn | LOCKED (2026-09-17) · amended same day: early renewal stacks after the current period (last 7 days only, one queued period, no upgrade while queued); a period is exactly 720 hours from start (UTC) |
 | 105 | Data / Payments | **Subscription payment data model:** four new tables (`AgentSubscription`, `SubscriptionPeriod`, `SubscriptionPayment`, `SubscriptionPaymentAttempt`); deposit `Payment` untouched; `WebhookEvent`, idempotency, audit, provider port and advisory lock reused. Effective plan computed from the active period (else Free). No-overlap, one-queued-period and one-open-checkout constraints; USD cents + EGP piastres + fixed-rate snapshot. Paid downgrade = queued period; cancel keeps a paid queued period; 60-minute checkout; unapplicable success → admin review + manual refund | LOCKED (2026-09-17) · design only, implementation pending |
-| 106 | Product / Frontend | **Slice 1 defaults:** a viewing lasts **60 minutes** (availability split into 60-minute slots); requests up to **30 days ahead**; dashboards at `/buyer`, `/agent`, `/admin`; Google phone step at `/complete-profile`; unbuilt actions are not rendered; slice-1 agents/listings are seeded. Confirms: email verification by **link only** (#9), sessions **7 d sliding / 30 d absolute** (V12) | LOCKED (2026-09-17) |
+| 107 | Pipeline / Security | **Offer lifecycle (O1–O10):** authoritative 10-state machine; revisions thread; Invariant I12 (max 5 live offers per buyer); phone redaction; 72h deposit obligation (5%, cap 50k EGP) | LOCKED (2026-09-19) · implemented |
+| 108 | Payments / Concurrency | **Reservation Deposit Payments:** 15-minute checkout hold on property (`checkoutHoldExpiresAt`); Paymob hosted checkout redirect + HMAC SHA-512 webhook; Atomic Bundle (T1) on webhook verification reserving offer and property, superseding rival offers and cancelling pending payments; enum reconciliation (`CANCELLED`, `ABANDONED`, `EXPIRED`, `SUCCEEDED`); return URL never trusts query parameters (polling SH-05); BUY-08 checkout & BUY-09 callback UI | LOCKED (2026-09-20) · implemented |
+
 
 **Model count: 39 tables — 4 Better Auth-managed, 35 Settly-owned (#39).**
 **No application code exists yet.**
@@ -203,16 +205,16 @@ implement. **"It sounds plausible" is not verification.**
 
 ## 3. Decision index
 
-- **Product & domain:** #1, #2, #3, #4, #5, #28, **#35, #38, #39**, **#45–#47, #49–#62, #64–#83, #97, #102**
+- **Product & domain:** #1, #2, #3, #4, #5, #28, **#35, #38, #39**, **#45–#47, #49–#62, #64–#83, #97, #102, #107, #108, #109, #110, #111**
 - **API contract:** **#40**
 - **Testing:** **#41**
 - **Privacy & retention:** **#42**
 - **Data & persistence:** #6, #7, #16, #20, #25, **#101, #105**
 - **Backend & auth:** #8, #9
-- **Reliability & concurrency:** #10, #11, #12, #26, **#63**
-- **Payments & revenue:** #13, **#76, #79, #80, #84, #85, #86, #87, #88–#95, #103, #104, #105**
+- **Reliability & concurrency:** #10, #11, #12, #26, **#63, #107, #108**
+- **Payments & revenue:** #13, **#76, #79, #80, #84, #85, #86, #87, #88–#95, #103, #104, #105, #108**
 - **Search & AI:** #14, #15, #17, #19, #24
-- **Frontend:** #21, #23, **#96, #99, #100, #106**
+- **Frontend:** #21, #23, **#96, #99, #100, #106, #107, #108, #109, #110, #111**
 - **Infrastructure:** #22, **#37**
 - **Security & operations:** **#33, #34, #36, #98**
 - **Process:** #0, #18, #27, #29, #30, #31, #32, **#48**
@@ -3374,13 +3376,12 @@ Accepted offer
     (the rule lists cooling-off before confirmation but sets no guard);
   - how a property sold entirely outside Settly, with no buyer on the platform, is handled. The only
     existing agent option is archiving (P7), and no special handling is decided.
-- **Implementation follow-ups (not done by this decision; no code, schema or API is changed):**
+- **Implementation follow-ups (completed 2026-09-19):**
   1. `backend/src/modules/catalog/routes/property.routes.ts` and `service/property.service.ts`:
-     - `POST /api/v1/properties/{id}/offline-sale` (P11, `offlineSale`) must be removed;
-     - `POST /api/v1/properties/{id}/mark-sold` (`markSold`, the agent alone completes a reserved
-       sale) must be replaced by the two-party confirmation flow with admin review (#77, #82).
-  2. Regenerate the OpenAPI spec and the frontend snapshot afterwards.
-  3. Update the tests that exercise these actions.
+     - `POST /api/v1/properties/{id}/sell` / `offline-sale` (P11, `offlineSale`) was removed;
+     - `POST /api/v1/properties/{id}/mark-sold` (`markSold`) was removed; sale completion will be implemented via the two-party confirmation flow (#77, #82) in Phase 2.
+  2. Regenerated OpenAPI spec (`backend/docs/openapi.json`) and frontend contract types (`frontend/src/api/v1.d.ts`).
+  3. Verified drift and test suite green.
   4. Transaction T6 (offline sale) in `CONCURRENCY_AND_IDEMPOTENCY.md` is retired; the atomic writes
      of the two-party completion are designed with that flow.
 
@@ -3612,3 +3613,148 @@ set.
   corrected to match (gap B4).
 
 **Not implemented:** documentation only.
+
+---
+
+### #107 — Transactional Core: Offer lifecycle (O1–O10), revisions, Invariant I12, and buyer privacy
+`2026-09-19` · **LOCKED** · Product / Pipeline / Security · Affects: `product/BUSINESS_RULES.md` §4, `backend/prisma/schema.prisma`, `docs/discovery/05-final-frontend-screen-inventory.md`
+
+**Context.** The transactional core requires buyers to submit, counter, accept, or withdraw purchase offers on published sale listings, while allowing listing agents to review, accept, counter, or decline. Governed by BUSINESS_RULES §4 and Invariant I12.
+
+**Decision.**
+1. **Authoritative 10-State Machine:** `PENDING_AGENT`, `PENDING_BUYER`, `ACCEPTED`, `RESERVED`, `REJECTED`, `WITHDRAWN`, `EXPIRED`, `SUPERSEDED`, `COMPLETED`, `FELL_THROUGH`.
+   - `SUPERSEDED` and `FELL_THROUGH` added to Prisma enum `OfferStatus`.
+   - `rejectionReason` and `withdrawalReason` recorded on `Offer` model.
+2. **Revision Thread Model:** Every initial offer or counter-offer creates an immutable `OfferRevision` with revision number, actor role (BUYER or AGENT), purchase price in EGP (min 100,000), optional earnest money, contingencies/terms (max 1000 chars), and optional closing date.
+3. **Invariant I12 & Concurrency:** Buyers are restricted to at most 5 live offers across the platform (`PENDING_AGENT`, `PENDING_BUYER`, `ACCEPTED`, `RESERVED`). Enforced atomically via `pg_advisory_xact_lock(hashtext('buyer_offer_' || buyerId))` and transactional query checks.
+4. **Privacy & Redaction (#60, #66):** Listing agent never sees buyer phone number until an offer exists in a live state. Once an offer becomes terminal (`REJECTED`, `WITHDRAWN`, `EXPIRED`, `SUPERSEDED`, etc.), buyer phone is automatically redacted unless another live offer or confirmed viewing connects them. Agent phone is never public.
+5. **Deposit Obligation (72 hours):** When an offer is accepted (O4 or O5), the offer moves to `ACCEPTED` and generates a 5% reservation deposit requirement (capped at 50,000 EGP per business rules) with a 72-hour payment window (`depositDeadlineAt`).
+6. **Frontend Integration:** Implemented "Make an offer" modal with real-time price comparison and deposit preview on `/properties/[slug]`, plus Buyer Offers management (`/buyer/offers`) and Agent Incoming Offers (`/agent/offers`) with drawer negotiation threads following the Impeccable "Navy & Brass" design system.
+
+---
+
+### #108 — Transactional Core: Reservation Deposit Payments, 15-Minute Checkout Hold, Paymob Webhook Concurrency, and Enum Reconciliation
+`2026-09-20` · **LOCKED** · Payments / Architecture / Security · Affects: `docs/product/BUSINESS_RULES.md` §5, `backend/prisma/schema.prisma`, `backend/src/modules/payments`, `frontend/src/app/(portal)/buyer/offers/[id]/deposit`
+
+**Context.** In Phase 2, accepted offers require a reservation deposit (5% of agreed price, capped at 50,000 EGP) within 72 hours. When multiple buyers have accepted offers racing for reservation on the same listing (§6), checkout concurrency must prevent double reservations, credit card data must never touch Settly servers, client return URLs must not be trusted to mark payments successful, and webhook delivery must execute an atomic bundle.
+
+**Decision.**
+1. **15-Minute Checkout Hold (`checkoutHoldExpiresAt`):**
+   - When a buyer initiates checkout (`POST /api/v1/offers/:id/deposit/checkout`), the backend acquires an exclusive 15-minute checkout hold on the underlying `Property` (`checkoutHoldExpiresAt = now() + 15m`, `checkoutHoldUserId = buyerId`).
+   - If another buyer currently holds an unexpired checkout hold, the request is rejected with `409 Conflict` (`/errors/checkout-hold-active`).
+   - If the same buyer re-initiates checkout within their active hold window, the hold timestamp is refreshed up to the original deadline.
+2. **Paymob Hosted Checkout & Sandboxed Simulation:**
+   - Full hosted redirection (`PAYMENTS.md` §5). Settly never receives or stores card numbers, CVVs, or bank credentials.
+   - Paymob credentials are read from environment (`PAYMOB_API_KEY`, `PAYMOB_INTEGRATION_ID`, `PAYMOB_HMAC_SECRET`, `PAYMOB_IFRAME_ID`). If unset (local dev/test), the adapter transparently runs an offline sandbox simulator.
+3. **Absolute Rule: Authoritative Verified Webhook Only (`PAYMENTS.md` §5.1):**
+   - No client return query parameter (`?success=true`) ever transitions payment to `SUCCEEDED`.
+   - The Paymob server-to-server webhook (`POST /api/v1/payments/webhook/paymob`) verified with HMAC-SHA512 across sorted Paymob payload keys is the sole authority for marking payment `SUCCEEDED`.
+   - Duplicate webhooks are idempotently deduplicated using `WebhookEvent(provider, eventId)`.
+4. **Atomic Bundle (Transaction T1):**
+   - Upon receiving a valid successful webhook:
+     1. Insert `WebhookEvent` record for audit and deduplication.
+     2. Update `Payment` to `SUCCEEDED` and create/update `PaymentAttempt` to `SUCCEEDED`.
+     3. Transition the winning `Offer` from `ACCEPTED` to `RESERVED`.
+     4. Transition the `Property` from `PUBLISHED` to `RESERVED` and clear the checkout hold.
+     5. Atomically supersede all rival live offers on the property (`PENDING_AGENT`, `PENDING_BUYER`, `ACCEPTED` → `SUPERSEDED`).
+     6. Cancel any active or pending deposit `Payment` records belonging to rival buyers (`CANCELLED`).
+5. **Database Enum Reconciliation (Decision #105 & BUSINESS_RULES §5):**
+   - PostgreSQL enum migration `20260920110000_reconcile_deposit_enums` applied:
+     - `PaymentStatus` includes: `CANCELLED`.
+     - `AttemptStatus` includes: `ABANDONED`, `EXPIRED`.
+     - `RefundStatus` includes: `SUCCEEDED`.
+6. **Frontend Screens (`BUY-08`, `BUY-09`, `SH-05`):**
+   - `BUY-08` (`/buyer/offers/[id]/deposit`): Pre-checkout review showing 15-minute hold timer, 5% deposit breakdown (capped at 50,000 EGP), 48-hour cooling-off terms, conflict warning for concurrent buyers, and "Proceed to Secure Paymob Checkout".
+   - `BUY-09` (`/buyer/offers/[id]/deposit/callback`): Status polling state machine (`SH-05`) that queries `GET /api/v1/offers/:id/deposit/status` with animated countdown, handling `SUCCEEDED` (reservation confirmed), `SUPERSEDED` (another buyer paid first), `FAILED`, and `TIMEOUT` states with "Navy & Brass" styling.
+
+---
+
+### #109 — Transactional Core: In-App Messaging (SH-03), Real-Time WebSocket, Auto-Lead Generation, and Privacy Boundaries
+`2026-09-20` · **LOCKED** · Messaging / Architecture / Security · Affects: `docs/architecture/MESSAGING.md`, `backend/src/modules/messaging`, `frontend/src/app/(portal)/buyer/messages`, `frontend/src/app/(portal)/agent/messages`
+
+**Context.** Phase 2 requires direct in-app messaging between buyers and listing agents scoped to specific property listings (`SH-03`), eliminating external chat dependencies while adhering strictly to Settly privacy policies and invariant rules.
+
+**Decision.**
+1. **Property-Scoped 1-on-1 Conversations:**
+   - Conversations are uniquely bound to `(propertyId, buyerId)`. If an existing conversation exists between the buyer and property, it is reused.
+   - Initial message creates the conversation record and the first message atomically.
+2. **Invariant #59 Enforcement:**
+   - Listing agents cannot message their own property listings. Any attempt returns `409 Conflict` (`/errors/agent-messaging-own-listing`).
+3. **Automatic Lead Generation (Decision #75):**
+   - If no prior `Lead` record exists for the buyer on that property, creating a conversation automatically provisions a `Lead` in state `LeadStatus.NEW` assigned to the listing agent.
+4. **Real-Time WebSocket Layer (`/ws/chat`):**
+   - WebSocket server co-mounted with the HTTP server at `/ws/chat`.
+   - Authenticated via Better Auth session cookies (`settly_session` / `__Secure-settly_session`).
+   - In-memory multi-socket connection pool (`userId -> Set<WebSocket>`) delivering instantaneous message push (`CHAT_MESSAGE`) across active buyer and agent devices.
+5. **Privacy & Security Boundaries (#42, #60, #66):**
+   - Message text is strictly excluded from AI RAG pipelines, vectors, and embeddings.
+   - Direct agent and buyer personal phone numbers and private emails are never exposed in conversation DTOs or chat UI.
+   - Information Leak Prevention: Non-participant users querying a conversation receive `404 Not Found` (never `403 Forbidden`).
+6. **Frontend Integration (`BUY-13`, `AGT-15`, `PUB-03`):**
+   - `PUB-03`: "Message Agent" modal on `/properties/[slug]` (desktop action panel and mobile sticky bar), opening chat directly.
+   - `BUY-13` (`/buyer/messages`) & `AGT-15` (`/agent/messages`): Impeccable Master-Detail split terminal layout (`buyer-dashboard/messages.html` candidate) with active conversation drawer, real-time message stream, unread badge counters, and offline reconnection handling.
+
+---
+
+### #110 — Transactional Core: Authoritative In-App Notification Center (SH-02), Event-Driven Triggers, and WebSocket Fan-Out
+`2026-09-20` · **LOCKED** · Notifications / Architecture / Frontend · Affects: `docs/architecture/COMMUNICATION.md`, `backend/src/modules/notifications`, `frontend/src/app/(portal)/buyer/notifications`, `frontend/src/app/(portal)/agent/notifications`, `frontend/src/app/(portal)/admin/notifications`, `frontend/src/components/portal/PortalShell.tsx`
+
+**Context.** Phase 2 Milestone 5 requires a unified notification engine and notification center (`SH-02`: `BUY-14`, `AGT-16`, `ADM-13`) to alert buyers, agents, and admins in real time when transactional lifecycle events occur (viewings, offers, counter-offers, deposits, chat messages).
+
+**Decision.**
+1. **PostgreSQL as Authoritative Store (`COMMUNICATION.md` §1):**
+   - The PostgreSQL `Notification` row is the sole authoritative record of every notification.
+   - Email (Resend) and real-time WebSocket signals (`NOTIFICATION_SIGNAL`) are best-effort delivery channels. A delivery failure to email or WebSocket never rolls back or invalidates the persisted notification.
+2. **Category Taxonomy & Template Rendering:**
+   - Four categorical buckets: `DEALS` (offers, counter-offers, deposits, reservations), `VIEWINGS` (requested, confirmed, declined), `MESSAGES` (new in-app chat), and `SYSTEM` (account, verification, status changes).
+   - Dynamic server-side template formatting generates contextual titles, messages, action URLs, and icons per notification type and recipient role.
+3. **Event-Driven Lifecycle Wiring:**
+   - Viewing pipeline (`requestViewing`, `confirm`, `decline`) generates notifications to buyer and agent.
+   - Offer pipeline (`createOffer`, `counterOffer`, `acceptOffer`, `rejectOffer`) notifies counterparties with updated negotiation details.
+   - Deposit payments: Webhook confirmation emits `DEPOSIT_CONFIRMED` notifications to buyer and listing agent.
+   - Messaging: Incoming chat messages emit `NEW_MESSAGE` notifications.
+4. **Header Bell & Telemetry API (`SH-02`):**
+   - High-performance unread count endpoint `GET /api/v1/notifications/unread-count` backing the header bell badge.
+   - Fast dropdown preview in `PortalShell` with instant "Mark all as read" and direct portal routing.
+5. **Frontend Notification Center Feeds (`BUY-14`, `AGT-16`, `ADM-13`):**
+   - Impeccable "Navy & Brass" design tokens matching candidate mockup (`agent-dashboard/notifications.html`).
+   - 4-metric telemetry overview (Total, Unread, Deals, Viewings).
+   - Category filtering (`ALL`, `DEALS`, `VIEWINGS`, `MESSAGES`), unread toggle, instant search, and timeline grouping (`Today`, `Yesterday`, `Earlier`).
+   - Granular actions: "Mark as read", "Delete", and contextual CTA navigation.
+
+---
+
+### #111 — Transactional Core: Two-Party Sale Completion Protocol, Invariant #102, 30-Day Conveyance Countdown (Decision #82), Conflict-of-Interest Guard (#67, #71), and Admin Review Queue (ADM-07)
+`2026-09-20` · **LOCKED** · Sales / Pipeline / Admin / Governance · Affects: `docs/product/BUSINESS_RULES.md`, `backend/src/modules/pipeline`, `frontend/src/app/(portal)/admin/sales`, `frontend/src/components/offers/SaleCompletionCard.tsx`, `frontend/src/components/portal/PortalShell.tsx`
+
+**Context.** In Egypt's real estate market, legal property conveyance (title search, notary public contracts, tax clearance, and keys handover) occurs after the buyer pays the reservation deposit. Phase 2 Milestone 6 implements the definitive sale closing lifecycle, enforcing dual confirmation, fraud prevention, and admin oversight.
+
+**Decision.**
+1. **Two-Party Mutual Confirmation Rule (Decision #77, Invariant #102):**
+   - A listing agent can **never** mark a property `SOLD` unilaterally. Any offline sale endpoints or agent-only closing triggers are prohibited.
+   - When in `RESERVED` status, the deal requires explicit confirmation from both the buyer (`buyerConfirmedAt`) and the listing agent (`agentConfirmedAt`) via `POST /api/v1/offers/:id/confirm-sale` (`BUY-10` for buyer, `AGT-07` for agent).
+   - The first party to confirm records their timestamp while the offer and property remain `RESERVED`.
+   - The second party to confirm atomically completes the deal via PostgreSQL transaction:
+     - Offer transitions from `RESERVED` to `COMPLETED` (Transition O13).
+     - Property transitions from `RESERVED` to `SOLD` (Transition P9).
+     - Buyer's associated `Lead` record transitions to `QUALIFIED` (Decision #83).
+     - Both parties receive authoritative in-app and email `SALE_COMPLETED` notifications.
+2. **30-Day Conveyance Window & Automatic Admin Review Escalation (Decision #82, Transition P9a):**
+   - Every reservation is provisioned with a 30-day review deadline (`adminReviewDeadline`).
+   - If 30 days elapse without both confirmations, or if either party submits a dispute via `POST /api/v1/offers/:id/dispute-sale`, the deal automatically enters **Admin Review** (`ADM-07`).
+3. **Conflict-of-Interest Guard (Decisions #67, #71):**
+   - Administrators who are personal parties to the deal (i.e. the buyer or the listing agent) are strictly forbidden by database checks and backend authorization (`/errors/admin-conflict-of-interest`, HTTP 403) from adjudicating or confirming the transaction.
+   - Frontend displays a prominent conflict banner and completely locks all adjudication controls for conflicted administrators.
+4. **Administrative Adjudication Actions (`ADM-07` at `/admin/sales`):**
+   - **Confirm Sale Completion (`POST /api/v1/admin/sales/:id/confirm`):** Admin verifies that notary deeds are executed; transitions Offer to `COMPLETED` and Property to `SOLD` (P9, O13).
+   - **Declare Fell Through (`POST /api/v1/admin/sales/:id/fell-through`):** Admin resolves that transaction cannot complete; transitions Offer to `FELL_THROUGH`, returns Property to `PUBLISHED` (P10, O14), and logs cause determination for §7 deposit refund evaluation.
+   - **Extend Review (`POST /api/v1/admin/sales/:id/extend`):** Admin grants an extension (1–60 days) with justified audit notes.
+5. **Frontend Deliverables:**
+   - `SaleCompletionCard.tsx`: Two-party confirmation stepper, 30-day conveyance timeline bar, confirm modal, and dispute modal mounted in buyer and agent offer drawers.
+   - `ADM-07` (`/admin/sales`): Admin review queue with 3 tabs (`Action Required`, `Active Reservations`, `Resolved`), filter search, and adjudication drawer with conflict-of-interest detection.
+   - `PortalShell.tsx`: Mounted `Sales & Closings` (`Scale` icon) under Governance Suite navigation for Admin.
+
+
+
+
+

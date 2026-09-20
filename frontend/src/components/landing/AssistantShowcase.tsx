@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link";
+import Image from "next/image";
 
 export function AssistantShowcase() {
   return (
@@ -13,9 +13,9 @@ export function AssistantShowcase() {
               then searches the same verified index the filters use, then shows
               you which part of your request each result answered.
             </p>
-            <Link className="btn btn-accent" href="/assistant">
-              Try the assistant
-            </Link>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md font-mono text-xs font-semibold bg-navy-800 text-brass border border-brass/30">
+              Interactive Assistant · Arriving in Phase 3
+            </span>
             <div className="ai-note">
               <svg
                 width="16"
@@ -54,10 +54,12 @@ export function AssistantShowcase() {
             </div>
             <div className="ai-results">
               <div className="ai-res">
-                <img
+                <Image
                   src="/images/11.jpg"
                   alt="Lake View Signature Villa"
-                  loading="lazy"
+                  width={48}
+                  height={48}
+                  className="rounded-md object-cover"
                 />
                 <div>
                   <b>Lake View Signature Villa</b>
@@ -66,10 +68,12 @@ export function AssistantShowcase() {
                 <span className="pct">4 / 4</span>
               </div>
               <div className="ai-res">
-                <img
+                <Image
                   src="/images/9.jpg"
                   alt="Courtyard Townhouse"
-                  loading="lazy"
+                  width={48}
+                  height={48}
+                  className="rounded-md object-cover"
                 />
                 <div>
                   <b>Courtyard Townhouse</b>
@@ -78,10 +82,12 @@ export function AssistantShowcase() {
                 <span className="pct">4 / 4</span>
               </div>
               <div className="ai-res">
-                <img
+                <Image
                   src="/images/4.jpg"
                   alt="Palm Court Residence"
-                  loading="lazy"
+                  width={48}
+                  height={48}
+                  className="rounded-md object-cover"
                 />
                 <div>
                   <b>Palm Court Residence</b>

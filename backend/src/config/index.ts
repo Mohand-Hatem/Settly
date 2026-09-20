@@ -19,6 +19,7 @@ const envSchema = z.object({
   PAYMOB_HMAC_SECRET: z.string().optional(),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
+  ENABLE_REAL_EMAIL: z.string().optional().transform((v) => v === "true"),
 });
 
 export const env = envSchema.parse(process.env);

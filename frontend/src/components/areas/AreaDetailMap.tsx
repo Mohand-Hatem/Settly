@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
+import { mapTilerTileUrl, MAPTILER_ATTRIBUTION } from "@/lib/maptiler";
 
 export interface CompoundPerimeter {
   name: string;
@@ -43,13 +44,8 @@ export function AreaDetailMap({
         attributionControl: false,
       });
 
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        {
-          subdomains: "abcd",
-          maxZoom: 18,
-        }
-      ).addTo(map);
+      // MapTiler everywhere in V1 (#96)
+      L.tileLayer(mapTilerTileUrl(), { maxZoom: 18, attribution: MAPTILER_ATTRIBUTION }).addTo(map);
 
       mapInstanceRef.current = map;
 

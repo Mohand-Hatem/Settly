@@ -208,36 +208,6 @@ registry.registerPath({
   },
 });
 
-// Action: POST /api/v1/properties/{id}/sell
-registry.registerPath({
-  method: "post",
-  path: "/api/v1/properties/{id}/sell",
-  tags: ["Catalog", "Agent"],
-  summary: "Offline-sale escape hatch for published property (P11)",
-  security: [{ sessionAuth: [] }],
-  request: {
-    params: z.object({ id: z.string().uuid() }),
-    body: { content: { "application/json": { schema: ActionReasonSchema } } },
-  },
-  responses: {
-    200: { description: "Property marked as SOLD offline", content: { "application/json": { schema: PropertyResponseSchema } } },
-  },
-});
-
-// Action: POST /api/v1/properties/{id}/mark-sold
-registry.registerPath({
-  method: "post",
-  path: "/api/v1/properties/{id}/mark-sold",
-  tags: ["Catalog", "Agent"],
-  summary: "Confirm sale of reserved listing (P9)",
-  security: [{ sessionAuth: [] }],
-  request: {
-    params: z.object({ id: z.string().uuid() }),
-  },
-  responses: {
-    200: { description: "Property marked as SOLD", content: { "application/json": { schema: PropertyResponseSchema } } },
-  },
-});
 
 // Action: POST /api/v1/properties/{id}/relist
 registry.registerPath({
@@ -474,40 +444,6 @@ propertyRouter.post(
   }
 );
 
-// P11: Offline sale
-propertyRouter.post(
-  "/:id/sell",
-  requireRole("AGENT", "ADMIN"),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const id = req.params.id as string;
-      const parsed = ActionReasonSchema.safeParse(req.body);
-      if (!parsed.success) {
-        return next(validationError(parsed.error, req.originalUrl));
-      }
-
-      const result = await propertyService.offlineSale(req.user!.id, id, parsed.data.reason);
-      res.status(200).json(result);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-// P9: Mark sold from reserved
-propertyRouter.post(
-  "/:id/mark-sold",
-  requireRole("AGENT", "ADMIN"),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const id = req.params.id as string;
-      const result = await propertyService.markSold(req.user!.id, id);
-      res.status(200).json(result);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
 
 // P14: Relist
 propertyRouter.post(

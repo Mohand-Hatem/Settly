@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function MarketInsightsDeck() {
@@ -113,9 +114,12 @@ export function MarketInsightsDeck() {
               >
                 <div className="card-spread-media">
                   <span className="card-cat-badge">{item.category}</span>
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
                     loading="lazy"
                   />
                 </div>

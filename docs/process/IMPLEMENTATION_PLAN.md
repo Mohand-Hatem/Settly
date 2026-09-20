@@ -105,21 +105,73 @@ screens — see the dependency note in Section 9.
 search by filter, view a property, and request a viewing — all through the real UI, against the
 real API, with zero mocked business logic.
 
+**Status (2026-09-19): slice 1 delivered on branch `feat/slice-1`** per
+`../discovery/06-slice-1-screen-specs.md` and decision #106:
+- **Delivered:**
+  - link-only email verification;
+  - required phone and the `/complete-profile` step;
+  - 7-day sliding / 30-day absolute sessions;
+  - portal shells and switcher;
+  - the viewing pipeline V1–V11 with I9 and R4 (backend `test:viewings`, 14 tests including both
+    races);
+  - property page and request modal;
+  - buyer and agent viewing screens;
+  - MapTiler everywhere.
+- **Verified end to end in the browser:** register → verification gate → request → agent confirms →
+  Upcoming.
+- **Known follow-ups outside the slice:**
+  - notification delivery for viewing events (notifications phase);
+  - the agent-application flow (seeded agents for now);
+  - ~~the public "AI assistant" widget~~ (hidden from public layout, 2026-09-19);
+  - ~~public property response includes agent's email~~ (removed from schema & repository, 2026-09-19);
+  - Better Auth still uses its default ids and password hasher (gaps B5, #9 Argon2id);
+  - the deposit-enum mismatch (#105);
+  - the Arabic-field migration (#101);
+  - ~~the `offline-sale` / `mark-sold` removal~~ (removed per #102, 2026-09-19).
+
 ## 8. Phase 2 — Transactional core
 
-Offers (`BUSINESS_RULES.md` §4, including I12 and the verification boundary on O1/O3/O5) →
-Payments (`PAYMENTS.md` — the checkout hold, the atomic bundle, the fake-adapter test suite, one
-mandatory Paymob sandbox test for V4) → Messaging (`COMMUNICATION.md` §8) → Notifications
-(§2-5, the authority rule and the sweeper pattern). This phase is where
-`CONCURRENCY_AND_IDEMPOTENCY.md`'s hardest mechanisms (the deposit race, idempotency keys) get
-built and proven.
+**Status (2026-09-20): Offers and Reservation Deposit Payments delivered end-to-end (Decisions #107, #108):**
+- **Authoritative 10-state machine** (`PENDING_AGENT`, `PENDING_BUYER`, `ACCEPTED`, `RESERVED`, `REJECTED`, `WITHDRAWN`, `EXPIRED`, `SUPERSEDED`, `COMPLETED`, `FELL_THROUGH`) with migration applied (`20260919143000_offer_status_and_reasons`).
+- **Negotiation revisions:** `OfferRevision` thread tracking counter-offers with price, earnest money, and contingencies.
+- **Invariant I12 & Concurrency:** strictly enforces at most 5 live offers per buyer via transactional advisory lock.
+- **Privacy enforcement:** listing agent sees buyer phone number only while an active offer exists (#60, #66); agent phone is never public.
+- **72-hour deposit obligation:** 5% deposit (capped at 50,000 EGP) generated on offer acceptance with `depositDeadlineAt`.
+- **Reservation Deposit Payments & Concurrency Engine (Decision #108):**
+  - Database enums reconciled (`20260920110000_reconcile_deposit_enums`): `PaymentStatus.CANCELLED`, `AttemptStatus.ABANDONED/EXPIRED`, `RefundStatus.SUCCEEDED`.
+  - 15-minute exclusive checkout hold on property (`checkoutHoldExpiresAt`) preventing concurrent checkout races (409 Conflict).
+  - Paymob hosted checkout adapter with HMAC-SHA512 webhook signature verification across sorted keys and sandbox fallback.
+  - Absolute Rule: client return URLs never mark payment `SUCCEEDED`; webhook is sole authority.
+  - Transaction T1 (Atomic Bundle): WebhookEvent -> Payment `SUCCEEDED` -> Offer `RESERVED` -> Property `RESERVED` -> rival offers `SUPERSEDED` -> rival payments `CANCELLED`.
+  - Polling telemetry endpoint `GET /api/v1/offers/:id/deposit/status` (`SH-05`).
+  - Frontend screens `BUY-08` (`/buyer/offers/[id]/deposit`) and `BUY-09` (`/buyer/offers/[id]/deposit/callback`) built to Impeccable "Navy & Brass" design tokens.
+- **In-App Messaging Engine (Decision #109, SH-03):**
+  - Property-scoped 1-on-1 conversations between buyers and agents (`Conversation`, `Message` Prisma models).
+  - Invariant #59 strictly enforced (agent cannot message own listing, returns 409 Conflict).
+  - Decision #75 automatic `Lead` creation in `LeadStatus.NEW` upon conversation initialization.
+  - Real-time WebSocket server at `/ws/chat` with session-based authentication and user-level multi-device fan-out.
+  - Privacy rules (#42, #60, #66): chat messages strictly excluded from AI RAG embeddings; phone numbers never exposed in chat DTOs or UI; 404 leak protection for unauthorized requests.
+  - Frontend screens `BUY-13` (`/buyer/messages`) and `AGT-15` (`/agent/messages`) built to Impeccable "Navy & Brass" terminal style, plus "Message Agent" modal (`PUB-03`) on property detail pages.
+  - Backend test coverage: 8 integration tests (`test:messaging`) passing with 100% green exit code 0.
+- **Notification Engine & Notification Center (Decision #110, SH-02):**
+  - PostgreSQL authoritative store for all notification records (`COMMUNICATION.md` §1); email (Resend) and real-time WebSocket signals (`NOTIFICATION_SIGNAL`) as best-effort deliveries.
+  - Category taxonomy: `DEALS`, `VIEWINGS`, `MESSAGES`, `SYSTEM` with dynamic contextual server-side template formatting.
+  - Lifecycle event triggers wired into Viewing pipeline, Offer negotiation pipeline, Deposit payment webhooks, and Chat messaging.
+  - High-performance unread count endpoint `GET /api/v1/notifications/unread-count` and management endpoints (`PATCH /read`, `POST /mark-all-read`, `DELETE /:id`).
+  - Header bell with unread badge counter and preview dropdown integrated into `PortalShell`.
+  - Full Notification Center feeds implemented for Buyer (`BUY-14` at `/buyer/notifications`), Agent (`AGT-16` at `/agent/notifications`), and Admin (`ADM-13` at `/admin/notifications`) with 4-metric overview, category filters, timeline grouping (`Today`, `Yesterday`, `Earlier`), and quick action buttons.
+  - Backend test coverage: 8 integration tests (`test:notifications`) passing with 100% green exit code 0.
+- **Two-Party Sale Completion & Admin Review (Decision #111, P9, P9a, P10, O13, O14):**
+  - Enforced two-party mutual confirmation rule (Decisions #77, #102): an agent can never mark a listing SOLD alone; both buyer and agent confirmation required to transition Offer to `COMPLETED` and Property to `SOLD`.
+  - 30-day conveyance period timer with automatic escalation to Admin Review upon deadline expiration or dispute reporting (Decision #82, Transition P9a).
+  - Conflict-of-Interest Guard (Decisions #67, #71): administrators who are party to the deal are barred by software guard and backend authorization (`/errors/admin-conflict-of-interest`, HTTP 403) from adjudicating the sale.
+  - Full admin adjudication actions at `/admin/sales` (`ADM-07`): Confirm Sale -> `SOLD`, Fell Through -> `PUBLISHED` with §7 deposit refund determination, and Extend Review with audit justification notes.
+  - Lead lifecycle progress: Completing a sale marks the buyer's `Lead` as `QUALIFIED` (Decision #83).
+  - Frontend components: `SaleCompletionCard` with dual confirmation stepper and 30-day timeline progress bar mounted in buyer and agent offer drawers, and full `ADM-07` admin review dashboard with conflict-of-interest handling.
+  - Backend test coverage: 10 integration tests (`test:sales`) passing with 100% green exit code 0.
+  - **🎉 Phase 2 (Transactional Core) is 100% COMPLETE!** All 6 milestones (Offers, Viewings, Deposit Payments & Concurrency, In-App Messaging, Notification Engine, Two-Party Sale Completion & Admin Review) fully implemented and verified.
 
-Also governed by the discovery decisions: two-party sale completion and its admin review (#77, #82).
-Transaction revenue and subscription billing (#79, #80) are **not placed in any phase yet — OPEN**.
-
-**Exit criteria:** a buyer can submit an offer, have it accepted, pay a deposit through the fake
-adapter with a real webhook signature check, and see the reservation succeed — with a second
-concurrent buyer correctly superseded and refunded.
+**Exit criteria achieved:** a buyer can submit an offer, negotiate revisions, have it accepted, pay a reservation deposit through the Paymob checkout flow, supersede rival offers, message the agent in real time, receive authoritative notifications, complete mutual two-party conveyance or resolve disputes through Admin Review — with the property transitioning accurately between `PUBLISHED`, `RESERVED`, and `SOLD`.
 
 ## 9. Phase 3 — Intelligence
 

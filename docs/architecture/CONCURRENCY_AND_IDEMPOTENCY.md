@@ -29,7 +29,7 @@ affected means you lost. `SERIALIZABLE` is used nowhere.
 | R1 | Two funded deposits on one property | **Partial unique index** on `propertyId` WHERE offer status IN (RESERVED, COMPLETED) |
 | R2 | Duplicate webhook delivery | Unique `(provider, providerEventId)` |
 | R3 | Out-of-order webhooks | State-machine guards — `SUCCEEDED` never downgrades |
-| R4 | Overlapping viewings | **Exclusion constraint** on `(agentId, tstzrange(startsAt,endsAt))` WHERE CONFIRMED |
+| R4 | Overlapping viewings | **Exclusion constraint** on `(agentId, tstzrange(startsAt,endsAt))` WHERE CONFIRMED, plus the **agent's advisory lock** around confirmation (V2/V5), because confirming also auto-declines rivals and two overlapping confirmations would otherwise deadlock (found by the slice-1 concurrency test) |
 | R5 | Buyer counters while agent accepts | Conditional update (status CAS) |
 | R6 | Double-click pay | Idempotency key + partial unique (one non-terminal `PaymentAttempt` per `Payment`) |
 | R7 | Retry during in-flight webhook | Conditional `PENDING → PROCESSING` |

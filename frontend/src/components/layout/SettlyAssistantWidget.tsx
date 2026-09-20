@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Maximize2, ArrowRight, ShieldCheck } from "lucide-react";
+import { X, Maximize2, ArrowRight } from "lucide-react";
 
 export function SettlyAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);

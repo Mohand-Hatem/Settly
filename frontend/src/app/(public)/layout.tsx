@@ -1,7 +1,6 @@
 import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { SettlyAssistantWidget } from "@/components/layout/SettlyAssistantWidget";
 import { MockupRibbon } from "@/components/layout/MockupRibbon";
 
 export default function PublicLayout({
@@ -20,9 +19,6 @@ export default function PublicLayout({
 
       {/* 4. Unified 4-Column Luxury Broadsheet Footer */}
       <Footer />
-
-      {/* 5. Universal Settly AI Assistant Floating FAB & Slide-over Drawer */}
-      <SettlyAssistantWidget />
     </div>
   );
 }

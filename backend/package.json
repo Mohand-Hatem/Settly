@@ -16,12 +16,19 @@
     "test:db": "node test/database-constraints.test.mjs",
     "test:endpoints": "node test/endpoints/areas.test.mjs",
     "test:auth": "node test/endpoints/auth.test.mjs",
+    "test:viewings": "node test/endpoints/viewings.test.mjs",
     "test:agent-verification": "node test/endpoints/agent-verification.test.mjs",
     "test:catalog": "node test/endpoints/catalog.test.mjs",
     "test:discovery": "node test/endpoints/discovery.test.mjs",
+    "test:offers": "node test/endpoints/offers.test.mjs",
+    "test:payments": "node test/endpoints/payments.test.mjs",
+    "test:messaging": "node test/endpoints/messaging.test.mjs",
+    "test:notifications": "node test/endpoints/notifications.test.mjs",
+    "test:sales": "node test/endpoints/sales.test.mjs",
     "generate:openapi": "tsx scripts/generate-openapi.ts",
+    "seed:slice1-demo": "tsx scripts/seed-slice1-demo.ts",
     "check:openapi-drift": "tsx scripts/check-openapi-drift.ts",
-    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:discovery"
+    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:viewings && npm run test:discovery && npm run test:offers && npm run test:payments && npm run test:messaging && npm run test:notifications && npm run test:sales"
   },
   "dependencies": {
     "@prisma/client": "^6.4.0",

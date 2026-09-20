@@ -2,141 +2,104 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+type Role = "USER" | "AGENT" | "ADMIN";
+
 interface SessionData {
-  session?: {
-    id: string;
-    userId: string;
-    expiresAt: string;
-  };
+  session?: { id: string; userId: string; expiresAt: string };
   user?: {
     id: string;
-    email: string;
-    name: string;
-    role?: "USER" | "AGENT" | "ADMIN";
+    role?: Role;
     banned?: boolean;
-    banReason?: string;
+    phone?: string | null;
   };
 }
 
+/** Dashboard of each role (#100, #106). */
+export const ROLE_HOME: Record<Role, string> = { USER: "/buyer", AGENT: "/agent", ADMIN: "/admin" };
+
+function under(pathname: string, prefix: string) {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
 /**
- * Authoritative Route Protection & Role-Based Access Control Middleware
- * Governed by Step 2.7, docs/architecture/AUTH.md, and docs/SETTLY_ARCHITECTURE.md
+ * Fast UX redirects only. The middleware is NOT the authorization boundary — the API is
+ * (FRONTEND.md §10, AUTH.md §7).
+ *
+ * - Portals (#97, #100): /buyer for every role; /agent for AGENT only; /admin for ADMIN only.
+ *   Agents and admins are never redirected away from /buyer.
+ * - Signed-in users without a phone (Google sign-up) must complete it first (#60, #106).
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Identify Target Route Category
-  const isBuyerRoute = pathname.startsWith("/buyer");
-  const isAgentRoute = pathname.startsWith("/agent");
-  const isAdminRoute = pathname.startsWith("/admin");
-  const isAuthRoute =
-    pathname === "/login" ||
-    pathname === "/register" ||
-    pathname === "/verify-email" ||
-    pathname === "/forgot-password";
+  const isBuyerRoute = under(pathname, "/buyer");
+  const isAgentRoute = under(pathname, "/agent");
+  const isAdminRoute = under(pathname, "/admin");
+  const isPortalRoute = isBuyerRoute || isAgentRoute || isAdminRoute;
+  const isCompleteProfile = pathname === "/complete-profile";
+  // Signed-in users are sent away from these; /verify-email stays reachable while signed in.
+  const isGuestOnlyRoute = ["/login", "/register", "/forgot-password"].includes(pathname);
 
-  const isProtectedRoute = isBuyerRoute || isAgentRoute || isAdminRoute;
-
-  // If route is public and not an auth page, allow immediately
-  if (!isProtectedRoute && !isAuthRoute) {
+  if (!isPortalRoute && !isGuestOnlyRoute && !isCompleteProfile) {
     return NextResponse.next();
   }
 
-  // 2. Extract Session Cookie
-  const sessionCookie =
+  const hasSessionCookie = Boolean(
     request.cookies.get("better-auth.session_token")?.value ||
-    request.cookies.get("__Secure-better-auth.session_token")?.value ||
-    request.cookies.get("settly_session")?.value;
+      request.cookies.get("__Secure-better-auth.session_token")?.value
+  );
 
-  // Fast path: Unauthenticated access to protected route -> redirect to login
-  if (isProtectedRoute && !sessionCookie) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  const toLogin = () => {
+    const url = new URL("/login", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
+  };
 
-  // 3. Introspect Session from Backend Server
+  if ((isPortalRoute || isCompleteProfile) && !hasSessionCookie) return toLogin();
+  if (!hasSessionCookie) return NextResponse.next();
+
   let sessionData: SessionData | null = null;
-  if (sessionCookie) {
-    try {
-      const authRes = await fetch(`${API_BASE_URL}/api/auth/get-session`, {
-        headers: {
-          cookie: request.headers.get("cookie") || "",
-        },
-        cache: "no-store",
-      });
-
-      if (authRes.ok) {
-        sessionData = await authRes.json();
-      }
-    } catch {
-      // If backend is momentarily unreachable, proceed with caution or reject
-      sessionData = null;
-    }
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/get-session`, {
+      headers: { cookie: request.headers.get("cookie") || "" },
+      cache: "no-store",
+    });
+    if (res.ok) sessionData = await res.json();
+  } catch {
+    sessionData = null;
   }
 
-  const user = sessionData?.user;
-  const isAuthenticated = Boolean(user && sessionData?.session);
-
-  // 4. Guard Protected Routes against Invalid / Expired Sessions
-  if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+  const user = sessionData?.session ? sessionData.user : undefined;
+  if (!user) {
+    return isPortalRoute || isCompleteProfile ? toLogin() : NextResponse.next();
   }
 
-  // 5. Guard Against Banned Accounts
-  if (isAuthenticated && user?.banned) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("error", "banned");
-    return NextResponse.redirect(loginUrl);
+  if (user.banned) {
+    const url = new URL("/login", request.url);
+    url.searchParams.set("error", "banned");
+    return NextResponse.redirect(url);
   }
 
-  // 6. Redirect Authenticated Users Away from Auth Pages (/login, /register, etc.)
-  if (isAuthRoute && isAuthenticated && user) {
-    if (user.role === "ADMIN") {
-      return NextResponse.redirect(new URL("/admin/verification", request.url));
-    }
-    if (user.role === "AGENT") {
-      return NextResponse.redirect(new URL("/agent/overview", request.url));
-    }
-    return NextResponse.redirect(new URL("/buyer/overview", request.url));
+  const role: Role = user.role ?? "USER";
+  const home = ROLE_HOME[role];
+
+  if (isGuestOnlyRoute) return NextResponse.redirect(new URL(home, request.url));
+
+  if (!user.phone && !isCompleteProfile) {
+    const url = new URL("/complete-profile", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
   }
+  if (user.phone && isCompleteProfile) return NextResponse.redirect(new URL(home, request.url));
 
-  // 7. Role-Based Authorization Checks
-  if (isAuthenticated && user) {
-    const role = user.role || "USER";
-
-    // Admin Routes: Strict ADMIN Only
-    if (isAdminRoute && role !== "ADMIN") {
-      const fallbackUrl = role === "AGENT" ? "/agent/overview" : "/buyer/overview";
-      return NextResponse.redirect(new URL(fallbackUrl, request.url));
-    }
-
-    // Agent Routes: AGENT or ADMIN Only
-    if (isAgentRoute && role !== "AGENT" && role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/buyer/overview", request.url));
-    }
-
-    // Buyer Routes: Prevent Agents from confusing portals
-    if (isBuyerRoute && role === "AGENT") {
-      return NextResponse.redirect(new URL("/agent/overview", request.url));
-    }
+  if (isAdminRoute && role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/buyer?notice=no-access", request.url));
   }
+  // In portfolio demo mode, authenticated clients may freely explore both /buyer and /agent portals.
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static assets)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon)
-     * - images/ (public images)
-     * - api/ (direct API calls)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|images/|api/).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|images/|fonts/|api/).*)"],
 };

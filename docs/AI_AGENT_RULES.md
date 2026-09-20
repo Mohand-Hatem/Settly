@@ -12,9 +12,11 @@ short, auto-loaded entry point; this document is the detailed protocol it points
 
 ## 2. Architecture status
 
-**CLOSED at Decision #42.** 42 decisions locked, 1 provisional (#36 Resend), 39 tables, 33
-pending verifications, zero application code as of this writing. Do not treat this document, or
-any Tier-B document, as an invitation to reopen architecture decisions.
+**CLOSED at Decision #42.** Later product decisions (#45–#106) came from the 2026-09-17 discovery;
+see `DECISIONS.md`. Application code exists since slice 1 (2026-09-19); what is built is recorded in
+`process/IMPLEMENTATION_PLAN.md` §7 "Status". The work cycle for every change is
+`process/AI_WORKFLOW.md`. Do not treat this document, or any Tier-B document, as an invitation to
+reopen architecture decisions.
 
 ## 3. Rules
 

@@ -52,7 +52,7 @@ async function run() {
     const agentSignUpRes = await fetch(`${BASE_URL}/api/auth/sign-up/email`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: BASE_URL },
-      body: JSON.stringify({ email: agentEmail, password, name: "Listing Agent" }),
+      body: JSON.stringify({ email: agentEmail, password, name: "Listing Agent", phone: "+201001234567" }),
     });
     assert.equal(agentSignUpRes.status, 200);
     const agentCookie = extractCookie(agentSignUpRes);
@@ -67,7 +67,7 @@ async function run() {
     const adminSignUpRes = await fetch(`${BASE_URL}/api/auth/sign-up/email`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: BASE_URL },
-      body: JSON.stringify({ email: adminEmail, password, name: "Catalog Admin" }),
+      body: JSON.stringify({ email: adminEmail, password, name: "Catalog Admin", phone: "+201001234567" }),
     });
     assert.equal(adminSignUpRes.status, 200);
     const adminCookie = extractCookie(adminSignUpRes);

@@ -40,6 +40,7 @@ A document may be LOCKED overall with individual PROVISIONAL/PENDING sections, s
 docs/
 ├── README.md                   this file
 ├── AI_AGENT_RULES.md            the AI working protocol
+│                                (work cycle: process/AI_WORKFLOW.md; other AIs start at ../AGENTS.md)
 ├── GLOSSARY.md                  domain vocabulary
 ├── DECISIONS.md                 decision history + pending-verification checklist
 │
@@ -84,6 +85,7 @@ docs/
 │   ├── TESTING.md                Decision #41
 │   ├── SEED_DATA.md
 │   ├── ENVIRONMENT.md
+│   ├── AI_WORKFLOW.md            the work cycle and rules for every AI agent
 │   └── ROADMAP.md
 │
 ├── design/                       CONSTRAINTS now; authoritative values after Stitch
@@ -100,6 +102,7 @@ docs/
 | Task | Read first |
 |---|---|
 | Anything, first time | `../CLAUDE.md` → this file → `GLOSSARY.md` |
+| Continuing the project as an AI agent | `../AGENTS.md` → `process/AI_WORKFLOW.md` → `process/IMPLEMENTATION_PLAN.md` §7 |
 | Add/change an API endpoint | `architecture/API.md` → `process/CONVENTIONS.md` → the relevant domain doc |
 | Payments, refunds, webhooks | `architecture/PAYMENTS.md` → `architecture/CONCURRENCY_AND_IDEMPOTENCY.md` → `product/BUSINESS_RULES.md` |
 | **Change a state machine or business rule** | `product/BUSINESS_RULES.md` → `DECISIONS.md` → **explicit approval required** |
@@ -131,6 +134,6 @@ prose** — module boundaries, type strictness, OpenAPI drift, migration validit
 ## 6. Architecture status
 
 **CLOSED at Decision #42.** 42 decisions locked, 1 provisional (#36 Resend), 39 tables, 33 pending
-verifications (V1–V33, none verified). Zero application code. This Tier-B documentation set
-describes the current implementation-ready state derived from that closed architecture — it is not
-itself a new decision surface.
+verifications (V1–V33). Later product decisions (#45–#106) come from the 2026-09-17 discovery, and
+slice 1 is implemented (2026-09-19) — see `process/IMPLEMENTATION_PLAN.md` §7 "Status". This Tier-B
+documentation set is not itself a new decision surface.

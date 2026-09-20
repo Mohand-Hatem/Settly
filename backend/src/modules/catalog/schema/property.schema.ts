@@ -57,7 +57,6 @@ export const PropertyAgentSummarySchema = z
   .object({
     id: z.string().uuid(),
     name: z.string(),
-    email: z.string().email(),
     image: z.string().nullable(),
     licenseNumber: z.string().optional(),
     brokerageName: z.string().optional(),

@@ -26,6 +26,7 @@ import type { CompareItem, CompareResponse } from "@/api/catalog";
 import { compareQuery, marketPulseQuery, propertyListQuery } from "@/lib/query/catalog";
 import { formatMoney, piastresToEgp, type Currency, type FxRates } from "@/lib/money";
 import { isValidLatLng } from "@/lib/geo";
+import { ComparisonMatrixSkeleton, Skeleton } from "@/components/ui/Skeleton";
 import "@/styles/settly/compare.css";
 
 // Columns shown side by side; the backend enforces the same 2–4 range
@@ -312,6 +313,13 @@ function CompareContent() {
                 >
                   EUR
                 </button>
+                <button
+                  type="button"
+                  className={`curr-chip ${currency === "AED" ? "active" : ""}`}
+                  onClick={() => setCurrency("AED")}
+                >
+                  AED
+                </button>
               </div>
 
               {/* Differences Only Toggle Switch */}
@@ -356,10 +364,8 @@ function CompareContent() {
       <main className="comp-workspace">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {isLoading && (
-            <div className="bg-white p-12 rounded-2xl border border-[rgba(30,42,74,0.12)] text-center">
-              <div className="inline-block w-8 h-8 border-3 border-[#C69749] border-t-transparent rounded-full animate-spin mb-4" />
-              <p className="font-serif text-lg text-navy-900 font-medium">Assembling parametric comparison matrix...</p>
-              <p className="text-xs text-ink-3 mt-1 font-mono">Querying verified specifications and CAD geometry</p>
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+              <ComparisonMatrixSkeleton />
             </div>
           )}
 
@@ -415,7 +421,7 @@ function CompareContent() {
                             </div>
                             <div className="prop-hdr-body">
                               <span className="prop-hdr-loc">
-                                <MapPin className="w-3 h-3 text-[#C69749]" />
+                                <MapPin className="w-3 h-3 text-brass" />
                                 {p.area.nameEn}
                               </span>
                               <Link href={`/properties/${p.slug}`} className="prop-hdr-title" title={p.titleEn}>
@@ -426,15 +432,16 @@ function CompareContent() {
                               </div>
                             </div>
                             <div className="prop-hdr-actions">
-                              <Link href={`/properties/${p.slug}`} className="btn-hdr-action btn-hdr-primary">
-                                Dossier →
+                              <Link href={`/properties/${p.slug}`} className="btn-hdr-action btn-hdr-primary inline-flex items-center justify-center gap-1">
+                                <span>Dossier</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
                               </Link>
-                              <a
-                                href={`mailto:advisory@settly.estate?subject=Viewing%20Inquiry%3A%20${encodeURIComponent(p.titleEn)}`}
+                              <Link
+                                href={`/properties/${p.slug}`}
                                 className="btn-hdr-action btn-hdr-secondary"
                               >
                                 Viewing
-                              </a>
+                              </Link>
                             </div>
                           </div>
                         </div>
@@ -445,17 +452,15 @@ function CompareContent() {
                     {properties.length < MAX_COMPARE && (
                       <div className="cell-prop">
                         {addMutation.isPending ? (
-                          <div className="prop-header-empty animate-pulse">
-                            <div className="empty-slot-icon">
-                              <div className="w-5 h-5 border-2 border-[#C69749] border-t-transparent rounded-full animate-spin" />
-                            </div>
-                            <div className="empty-slot-title">Adding Residence...</div>
-                            <div className="empty-slot-sub">Querying verified CAD metrics</div>
+                          <div className="p-4 space-y-3" aria-busy="true" aria-label="Adding residence">
+                            <Skeleton className="w-full h-32 rounded-xl" />
+                            <Skeleton className="h-5 w-3/4" />
+                            <Skeleton className="h-4 w-1/2 font-mono" />
                           </div>
                         ) : (
                           <div className="prop-header-empty">
                             <div className="empty-slot-icon">
-                              <Plus className="w-5 h-5 text-[#AE8033]" />
+                              <Plus className="w-5 h-5 text-brass-600" />
                             </div>
                             <div className="empty-slot-title">Add Residence</div>
                             <div className="empty-slot-sub">Compare up to 4 prime properties side-by-side</div>
@@ -574,7 +579,7 @@ function CompareContent() {
                         <div className="cell-attr">Transaction Type</div>
                         {properties.map((p) => (
                           <div key={`intent-${p.id}`} className="cell-prop">
-                            <span className="val-mono font-semibold text-[#131D36]">
+                            <span className="val-mono font-semibold text-navy-900">
                               {p.listingIntent === "SALE" ? "Outright Ownership (Sale)" : "Primary Leasehold (Rent)"}
                             </span>
                             <span className="val-sub">Registered title</span>
@@ -799,16 +804,17 @@ function CompareContent() {
                         <div className="flex flex-col gap-2">
                           <Link
                             href={`/properties/${p.slug}`}
-                            className="px-4 py-2 bg-navy-900 text-white rounded-lg text-xs font-bold text-center hover:bg-navy-800 transition"
+                            className="px-4 py-2 bg-navy-900 text-white rounded-lg text-xs font-bold text-center hover:bg-navy-800 transition inline-flex items-center justify-center gap-1"
                           >
-                            Full Property Dossier →
+                            <span>Full Property Dossier</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
-                          <a
-                            href={`mailto:advisory@settly.estate?subject=Private%20Viewing%20Request%3A%20${encodeURIComponent(p.titleEn)}`}
+                          <Link
+                            href={`/properties/${p.slug}`}
                             className="px-4 py-2 bg-white border border-[rgba(30,42,74,0.18)] text-navy-900 rounded-lg text-xs font-bold text-center hover:bg-canvas transition"
                           >
                             Schedule Private Viewing
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -869,9 +875,17 @@ function CompareContent() {
       >
         <div className="max-h-[60vh] overflow-y-auto space-y-3 pr-1">
           {catalog.isPending ? (
-            <div className="py-12 text-center">
-              <div className="inline-block w-6 h-6 border-2 border-[#C69749] border-t-transparent rounded-full animate-spin mb-2" />
-              <p className="text-xs text-ink-3">Loading available residences...</p>
+            <div className="space-y-2.5 py-2" aria-busy="true" aria-label="Loading available residences">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl border border-[rgba(30,42,74,0.08)] bg-white">
+                  <Skeleton className="w-16 h-12 rounded-lg shrink-0" />
+                  <div className="flex-1 space-y-1.5 min-w-0">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-48" />
+                  </div>
+                  <Skeleton className="h-4 w-20 font-mono" />
+                </div>
+              ))}
             </div>
           ) : availableCatalog.length === 0 ? (
             <div className="py-8 text-center text-sm text-ink-3">
@@ -914,16 +928,7 @@ function CompareContent() {
 
 export default function ComparePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#F7F6F3] p-12 flex items-center justify-center">
-          <div className="text-center">
-            <div className="inline-block w-8 h-8 border-3 border-[#C69749] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="font-serif text-lg text-[#131D36]">Loading Settly Comparison Matrix...</p>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<ComparisonMatrixSkeleton />}>
       <CompareContent />
     </Suspense>
   );

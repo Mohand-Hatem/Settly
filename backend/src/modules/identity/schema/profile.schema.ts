@@ -23,6 +23,10 @@ export const UserProfileResponseSchema = z
       description: "Whether the email address has passed verification (Decision #38)",
       example: true,
     }),
+    phone: z.string().nullable().openapi({
+      description: "Phone in E.164 format; null only for Google accounts that have not completed their profile (#60, #106). Never public",
+      example: "+201001234567",
+    }),
     image: z.string().nullable().openapi({
       description: "Optional profile avatar URL",
       example: null,
@@ -50,6 +54,10 @@ export const UpdateUserProfileSchema = z
     preferredLocale: z.enum(["en", "ar"]).optional().openapi({
       description: "Updated language preference",
       example: "ar",
+    }),
+    phone: z.string().min(8).max(20).optional().openapi({
+      description: "Phone number, international format; normalised to E.164 (#60)",
+      example: "+201001234567",
     }),
   })
   .openapi("UpdateUserProfile");

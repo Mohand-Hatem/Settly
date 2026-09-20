@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 import L from "leaflet";
@@ -14,6 +15,7 @@ import {
 } from "react-leaflet";
 import { PropertyItem } from "./PropertyCard";
 import { isValidLatLng } from "@/lib/geo";
+import { mapTilerTileUrl, MAPTILER_ATTRIBUTION } from "@/lib/maptiler";
 import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
 
 // Swap a broken listing photo for the placeholder once (the guard prevents a loop)
@@ -292,9 +294,9 @@ export function SearchMap({
           >
             {/* High-resolution MapTiler luxury streets tiles with verified key and zero watermarks */}
             <TileLayer
-              url="https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=FqlQw9LpyWPJ8S7SheRV"
+              url={mapTilerTileUrl()}
               maxZoom={20}
-              attribution="Settly GIS · &copy; MapTiler · &copy; OpenStreetMap"
+              attribution={MAPTILER_ATTRIBUTION}
             />
 
             {/* Cairo Golden Square Corridor Polygon */}
@@ -473,9 +475,12 @@ export function SearchMap({
                 >
                   <X className="w-3.5 h-3.5" strokeWidth={2.5} />
                 </button>
-                <img
+                <Image
                   src={activeProperty.img}
                   alt={activeProperty.title}
+                  fill
+                  sizes="260px"
+                  className="object-cover"
                   loading="lazy"
                   onError={handleImgError}
                 />
@@ -543,7 +548,17 @@ export function SearchMap({
                 id={`tray-card-${p.id}`}
                 onClick={() => onSelectProperty(p.id)}
               >
-                <img src={p.img} alt={p.title} loading="lazy" onError={handleImgError} />
+                <div className="relative w-[72px] h-[72px] rounded-lg overflow-hidden shrink-0">
+                  <Image
+                    src={p.img}
+                    alt={p.title}
+                    fill
+                    sizes="72px"
+                    className="object-cover"
+                    loading="lazy"
+                    onError={handleImgError}
+                  />
+                </div>
                 <div className="map-tray-info">
                   <b>{p.title}</b>
                   <span>

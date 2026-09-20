@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type * as Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { mapTilerTileUrl, MAPTILER_ATTRIBUTION } from "@/lib/maptiler";
 
 export interface DistrictMapItem {
   id: string;
@@ -66,10 +67,8 @@ export function AreaRadarMap({
         zoomControl: true,
         attributionControl: false,
       });
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        { maxZoom: 19, subdomains: "abcd" }
-      ).addTo(map);
+      // MapTiler everywhere in V1 (#96)
+      L.tileLayer(mapTilerTileUrl(), { maxZoom: 19, attribution: MAPTILER_ATTRIBUTION }).addTo(map);
       setLeaflet({ L, map });
     });
 
@@ -140,11 +139,11 @@ export function AreaRadarMap({
       <div ref={mapContainerRef} className="area-gis-map-frame" />
       <div className="area-map-legend">
         <div className="legend-item">
-          <span className="legend-dot bg-[#C69749]" />
+          <span className="legend-dot bg-brass" />
           <span>Prime Corridor Nodes</span>
         </div>
         <div className="legend-item">
-          <span className="legend-dot bg-[#131D36]" />
+          <span className="legend-dot bg-navy-900" />
           <span>EGP/m² Micro-Market Benchmark</span>
         </div>
       </div>

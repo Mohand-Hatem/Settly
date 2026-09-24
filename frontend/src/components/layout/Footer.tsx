@@ -21,20 +21,20 @@ export function Footer() {
               <span style={{ color: "#fff" }}>Settly</span>
             </Link>
             <p className="settly-ftr-desc">
-              Settly is Egypt&apos;s premier verified luxury real estate platform. Discover curated residential properties and prime developments with transparent pricing and secure deposit protection across Greater Cairo and the North Coast.
+              Settly is Egypt&apos;s verified residential real estate platform. Discover resale villas, townhouses, and apartments with transparent pricing and title due diligence across Greater Cairo and the Egyptian market.
             </p>
             <div className="settly-trust-badges">
               <div className="settly-trust-badge-row">
                 <Shield className="w-3.5 h-3.5 text-brass shrink-0" />
-                <span>Verified Listings &amp; Direct Developer Units</span>
+                <span>Verified Resale Listings &amp; Title Diligence</span>
               </div>
               <div className="settly-trust-badge-row">
                 <CheckCircle2 className="w-3.5 h-3.5 text-brass shrink-0" />
-                <span>Tier-1 Licensed Master Developer Exchange</span>
+                <span>Licensed Egyptian Real Estate Agents</span>
               </div>
               <div className="settly-trust-badge-row">
                 <CreditCard className="w-3.5 h-3.5 text-brass shrink-0" />
-                <span>100% Freehold Foreign Ownership Guarantee</span>
+                <span>Transparent Viewing &amp; Offer Pipeline</span>
               </div>
             </div>
           </div>
@@ -64,51 +64,43 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 3: Institutional Intelligence */}
+          {/* Col 3: Intelligence & Tools */}
           <div className="settly-ftr-col">
             <h4>Intelligence &amp; Tools</h4>
             <ul className="settly-ftr-links">
               <li>
-                <Link href="/market-insights">Macro Intelligence (Q1 2026)</Link>
+                <Link href="/market-insights">Market Insights (Q1 2026)</Link>
               </li>
               <li>
-                <Link href="/market-insights#yieldArbitrage">Yield Arbitrage Terminal</Link>
-              </li>
-              <li>
-                <Link href="/market-insights#developerLeague">Developer Punctuality Table</Link>
-              </li>
-              <li>
-                <Link href="/compare">Compare 4 Residences Side-by-Side</Link>
+                <Link href="/compare">Compare Residences Side-by-Side</Link>
               </li>
               <li>
                 <Link href="/search">Verified Properties Search</Link>
               </li>
               <li>
-                <Link href="/agents">Certified Agent Directory</Link>
+                <Link href="/agents">Licensed Agent Directory</Link>
+              </li>
+              <li>
+                <Link href="/how-it-works">How Settly Works</Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Private Client Advisory & Desk */}
+          {/* Col 4: Buyer & Seller Guidance */}
           <div className="settly-ftr-col">
-            <h4>Private Client Desk</h4>
+            <h4>Settly Guidance Desk</h4>
             <div className="settly-ftr-advisory">
               <p>
-                Dedicated advisory and viewing support for luxury property buyers, investors, and international clients.
+                Learn how Settly guides buyers and verified agents through structured viewings, offers, and title transfer.
               </p>
-              <a
-                href="https://wa.me/201000000000"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/how-it-works"
                 className="btn-ftr-concierge"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
-                </svg>
-                <span>Chat on WhatsApp</span>
-              </a>
+                <span>How Settly Works &rarr;</span>
+              </Link>
               <div className="settly-ftr-hours">
-                Daily 09:00 — 21:00 CLT · Cairo / Dubai / London
+                Daily 09:00 — 21:00 CLT · Cairo, Egypt
               </div>
 
               {/* Social Media Strip */}

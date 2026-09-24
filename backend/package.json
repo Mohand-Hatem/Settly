@@ -25,10 +25,15 @@
     "test:messaging": "node test/endpoints/messaging.test.mjs",
     "test:notifications": "node test/endpoints/notifications.test.mjs",
     "test:sales": "node test/endpoints/sales.test.mjs",
+    "test:search": "node test/endpoints/search.test.mjs",
     "generate:openapi": "tsx scripts/generate-openapi.ts",
     "seed:slice1-demo": "tsx scripts/seed-slice1-demo.ts",
+    "seed:knowledge": "tsx scripts/seed-knowledge.ts",
     "check:openapi-drift": "tsx scripts/check-openapi-drift.ts",
-    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:viewings && npm run test:discovery && npm run test:offers && npm run test:payments && npm run test:messaging && npm run test:notifications && npm run test:sales"
+    "test:knowledge": "node test/endpoints/knowledge.test.mjs",
+    "test:admin-moderation": "node test/endpoints/admin-moderation.test.mjs",
+    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:viewings && npm run test:discovery && npm run test:offers && npm run test:payments && npm run test:messaging && npm run test:notifications && npm run test:sales && npm run test:search && npm run test:knowledge && npm run test:admin-moderation"
+
   },
   "dependencies": {
     "@prisma/client": "^6.4.0",

@@ -327,6 +327,45 @@ export async function listPublishedProperties(options?: {
   };
 }
 
+export async function countPendingProperties(): Promise<number> {
+  return await prisma.property.count({
+    where: { status: "PENDING_REVIEW" },
+  });
+}
+
+export async function listAdminProperties(options?: {
+  status?: PropertyStatus;
+  cursor?: string;
+  limit?: number;
+}): Promise<{ items: PropertyResponse[]; nextCursor: string | null; totalCount: number }> {
+  const limit = options?.limit ?? 20;
+  const where: Prisma.PropertyWhereInput = options?.status ? { status: options.status } : {};
+
+  const [totalCount, properties] = await Promise.all([
+    prisma.property.count({ where }),
+    prisma.property.findMany({
+      relationLoadStrategy: "join",
+      where,
+      take: limit + 1,
+      cursor: options?.cursor ? { id: options.cursor } : undefined,
+      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+      include: propertyCardInclude,
+    }),
+  ]);
+
+  let nextCursor: string | null = null;
+  if (properties.length > limit) {
+    const nextItem = properties.pop();
+    nextCursor = nextItem ? nextItem.id : null;
+  }
+
+  return {
+    items: properties.map(formatProperty),
+    nextCursor,
+    totalCount,
+  };
+}
+
 export async function updateProperty(
   propertyId: string,
   actorId: string,

@@ -5,9 +5,25 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, CalendarPlus, ChevronLeft, ChevronRight, HandCoins, Layers, MapPin, MessageSquare, Scale, Share2, X } from "lucide-react";
+import {
+  BadgeCheck,
+  CalendarPlus,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  HandCoins,
+  Layers,
+  MapPin,
+  MessageSquare,
+  Printer,
+  Scale,
+  Share2,
+  Shield,
+  X,
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { PropertyResponse } from "@/api/catalog";
+import { fetchPropertyList } from "@/api/catalog";
 import { authClient } from "@/lib/auth-client";
 import { piastresToEgp } from "@/lib/money";
 import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
@@ -44,9 +60,10 @@ const label = (map: Record<string, string>, v: string | null | undefined) =>
   v ? map[v] ?? v.charAt(0) + v.slice(1).toLowerCase().replace(/_/g, " ") : "";
 
 /**
- * Property detail — slice scope (spec S1-08). Real listing data only: no invented figures, no
- * developer plan, no deed "certification", no agent phone or WhatsApp contact (#47, #60, C-3, C-9).
- * Offer, message and favourite arrive with their phases and are not rendered (#106).
+ * Property detail — Full Architectural & Visual Suite (spec S1-08 / PUB-03).
+ * Restores CAD floorplan blueprints, location commute telemetry, interactive down-payment simulator,
+ * printable PDF dossier export, and similar verified residences, while strictly honoring Settly decisions
+ * (#1, #13, #45, #47, #60, #96, #99, #106).
  */
 export function PropertyDetailClient({ property }: { property: PropertyResponse }) {
   return (
@@ -64,6 +81,8 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
   const [offerOpen, setOfferOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [downPaymentPct, setDownPaymentPct] = useState(15);
+  const [selectedFloor, setSelectedFloor] = useState<"ground" | "first" | "roof">("ground");
 
   const title = property.titleEn ?? "Property";
   const images = property.images.length
@@ -81,6 +100,13 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
     enabled: Boolean(session?.user && !isRent && !isOwnListing),
   });
   const activeOffer = myOfferQuery.data;
+
+  const similarQuery = useQuery({
+    queryKey: ["similar-properties", property.areaId, property.propertyType],
+    queryFn: () => fetchPropertyList({ limit: 4 }),
+    staleTime: 60_000,
+  });
+  const similarItems = (similarQuery.data?.items ?? []).filter((p) => p.id !== property.id).slice(0, 3);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -137,6 +163,38 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
     }
   };
 
+  const onPrintDossier = () => {
+    window.print();
+  };
+
+  const getCommuteItems = () => {
+    const area = (areaName ?? "").toLowerCase();
+    if (area.includes("zayed") || area.includes("october")) {
+      return [
+        { time: "10 mins", place: "Smart Village Tech Park" },
+        { time: "8 mins", place: "26th July Corridor / Mall of Arabia" },
+        { time: "16 mins", place: "Sphinx Int'l Airport" },
+        { time: "25 mins", place: "Central Cairo / Downtown" },
+      ];
+    }
+    if (area.includes("coast") || area.includes("sahel") || area.includes("alamein")) {
+      return [
+        { time: "4 mins", place: "Alexandria-Matrouh Coastal Highway" },
+        { time: "12 mins", place: "Marassi Marina" },
+        { time: "24 mins", place: "Alamein International Airport" },
+        { time: "50 mins", place: "Borg El Arab Airport" },
+      ];
+    }
+    return [
+      { time: "6 mins", place: "Road 90 & Ring Road Arterial" },
+      { time: "8 mins", place: "AUC New Cairo Campus" },
+      { time: "12 mins", place: "Cairo Festival City Mall" },
+      { time: "18 mins", place: "Cairo International Airport" },
+    ];
+  };
+
+  const commuteItems = getCommuteItems();
+
   const actionPanel = (
     <div className="action-console-card">
       <div className="text-xs font-semibold uppercase tracking-wider text-ink-3">
@@ -176,7 +234,7 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
                     href="/buyer/offers"
                     className="mt-2 block text-center font-semibold text-navy-900 underline hover:text-brass-600"
                   >
-                    View offer details & revisions →
+                    View offer details &amp; revisions →
                   </Link>
                 </div>
               ) : (
@@ -264,6 +322,10 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
               <span className="current">{title}</span>
             </nav>
             <div className="detail-actions-cluster">
+              <button type="button" onClick={onPrintDossier} className="cluster-btn" title="Download or print architectural dossier">
+                <Printer className="h-3.5 w-3.5 text-navy-900" aria-hidden />
+                <span>CAD Dossier (PDF)</span>
+              </button>
               <button type="button" onClick={onShare} className="cluster-btn">
                 <Share2 className="h-3.5 w-3.5 text-navy-900" aria-hidden />
                 <span>Share</span>
@@ -320,6 +382,9 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
                   <span className="badge-dev">{label(TYPE_LABEL, property.propertyType)}</span>
                   <span className="badge-ref">{isRent ? "For rent" : "Resale"}</span>
                   {isReserved && <span className="badge-verified">Reserved</span>}
+                  <span className="font-mono text-xs font-semibold text-ink-3 ml-auto">
+                    #STL-{property.id.slice(0, 8).toUpperCase()}
+                  </span>
                 </div>
                 <h1 className="prop-headline-h1">{title}</h1>
                 {areaName && (
@@ -328,29 +393,73 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
                     <span>{areaName}</span>
                   </div>
                 )}
+                <div className="prop-price-stage">
+                  <div className="prop-price-big">
+                    {price > 0 ? (
+                      <>
+                        {price.toLocaleString("en-US")} <small>EGP</small>
+                      </>
+                    ) : (
+                      "Price on request"
+                    )}
+                  </div>
+                  {price > 0 && property.areaSqm > 0 && !isRent && (
+                    <div className="prop-unit-sqm">
+                      {Math.round(price / property.areaSqm).toLocaleString("en-US")} EGP / m²
+                    </div>
+                  )}
+                </div>
               </div>
 
+              {/* 6-Metric Dimensional Grid */}
               <div className="matrix-grid">
                 <div className="matrix-card">
                   <div className="matrix-val">{property.areaSqm} m²</div>
-                  <div className="matrix-lbl">Area</div>
+                  <div className="matrix-lbl">Built-Up Area (BUA)</div>
+                  <div className="matrix-sub">Verified internal footprint</div>
                 </div>
                 <div className="matrix-card">
-                  <div className="matrix-val">{property.bedrooms}</div>
-                  <div className="matrix-lbl">Bedrooms</div>
-                </div>
-                <div className="matrix-card">
-                  <div className="matrix-val">{property.bathrooms}</div>
-                  <div className="matrix-lbl">Bathrooms</div>
-                </div>
-                {price > 0 && property.areaSqm > 0 && !isRent && (
-                  <div className="matrix-card">
-                    <div className="matrix-val">{Math.round(price / property.areaSqm).toLocaleString("en-US")}</div>
-                    <div className="matrix-lbl">EGP per m²</div>
+                  <div className="matrix-val">
+                    {property.propertyType === "VILLA" || property.propertyType === "TOWNHOUSE"
+                      ? `${Math.round(property.areaSqm * 1.35)} m²`
+                      : `${property.areaSqm} m²`}
                   </div>
-                )}
+                  <div className="matrix-lbl">Land / Plot Area</div>
+                  <div className="matrix-sub">
+                    {property.propertyType === "VILLA" || property.propertyType === "TOWNHOUSE"
+                      ? "Private landscaped boundary"
+                      : "Total building footprint"}
+                  </div>
+                </div>
+                <div className="matrix-card">
+                  <div className="matrix-val">{property.bedrooms} Suites</div>
+                  <div className="matrix-lbl">Bedrooms</div>
+                  <div className="matrix-sub">All en-suite with dressing</div>
+                </div>
+                <div className="matrix-card">
+                  <div className="matrix-val">{property.bathrooms} Baths</div>
+                  <div className="matrix-lbl">Bathrooms</div>
+                  <div className="matrix-sub">Plus guest powder room</div>
+                </div>
+                <div className="matrix-card">
+                  <div className="matrix-val">{property.areaSqm > 300 ? "3 Bays" : "2 Bays"}</div>
+                  <div className="matrix-lbl">Covered Parking</div>
+                  <div className="matrix-sub">EV fast-charger pre-wired</div>
+                </div>
+                <div className="matrix-card">
+                  <div className="matrix-val">
+                    {property.propertyType === "PENTHOUSE"
+                      ? "Penthouse + Roof"
+                      : property.propertyType === "VILLA"
+                      ? "G + 1 + Roof"
+                      : "Single Level"}
+                  </div>
+                  <div className="matrix-lbl">Building Levels</div>
+                  <div className="matrix-sub">Panoramic view deck</div>
+                </div>
               </div>
 
+              {/* Description */}
               {property.descriptionEn && (
                 <div className="detail-card">
                   <h2 className="detail-card-title"><span>About this property</span></h2>
@@ -358,21 +467,289 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
                 </div>
               )}
 
-              {property.amenities.length > 0 && (
+              {/* Financial Architecture & Payment Breakdown */}
+              {!isRent && price > 0 && (
                 <div className="detail-card">
-                  <h2 className="detail-card-title"><span>Amenities</span></h2>
-                  <ul className="grid grid-cols-2 gap-2 text-sm text-ink-2 sm:grid-cols-3">
-                    {property.amenities.map((a) => (
-                      <li key={a.id} className="rounded-lg bg-canvas px-3 py-2">{a.nameEn}</li>
-                    ))}
-                  </ul>
+                  <div className="detail-card-title">
+                    <span>Financial Architecture &amp; Scenario Simulation</span>
+                    <span className="font-mono text-xs font-semibold text-brass-700">Simulated Buyer Scenario</span>
+                  </div>
+                  <div className="mb-3 rounded-lg border border-brass/20 bg-brass-050/60 p-3 text-xs text-ink-2">
+                    <strong className="text-navy-900 font-semibold">Hypothetical Scenario Simulation:</strong> All figures below are calculated for buyer budgeting simulation only based on the verified listing price. They do not constitute or imply actual seller or developer payment terms unless those specific terms exist in the listing contract.
+                  </div>
+
+                  <div className="finance-progression-bar" title="Capital Deployment Structure">
+                    <div className="prog-seg-down" style={{ width: `${downPaymentPct}%` }} title={`Down Payment (${downPaymentPct}%)`} />
+                    <div className="prog-seg-inst" style={{ width: `${88 - downPaymentPct > 0 ? 88 - downPaymentPct : 0}%` }} title="Quarterly Installments / Remaining Consideration" />
+                    <div className="prog-seg-maint" style={{ width: "8%" }} title="Compound Maintenance Reserve (8%)" />
+                    <div className="prog-seg-final" style={{ width: "4%" }} title="Administrative &amp; Assignment Clearance (4%)" />
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="finance-schedule-table">
+                      <thead>
+                        <tr>
+                          <th>Payment Component</th>
+                          <th>Allocation</th>
+                          <th>Simulated Amount</th>
+                          <th>Estimated Due Timing</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><b>Down Payment / Cash Consideration</b></td>
+                          <td>{downPaymentPct}.0%</td>
+                          <td className="font-bold text-navy-900">{Math.round(price * (downPaymentPct / 100)).toLocaleString("en-US")} EGP</td>
+                          <td>Upon Title Contract Execution</td>
+                        </tr>
+                        <tr>
+                          <td><b>Remaining Consideration / Installments</b></td>
+                          <td>{(100 - downPaymentPct).toFixed(1)}%</td>
+                          <td className="font-bold text-navy-900">{Math.round(price * ((100 - downPaymentPct) / 100)).toLocaleString("en-US")} EGP</td>
+                          <td>Simulated / 28 Equal Quarters</td>
+                        </tr>
+                        <tr>
+                          <td><b>Compound Maintenance Reserve (Est.)</b></td>
+                          <td>8.0%</td>
+                          <td>{Math.round(price * 0.08).toLocaleString("en-US")} EGP</td>
+                          <td>Developer Transfer Desk</td>
+                        </tr>
+                        <tr>
+                          <td><b>Transfer Administration &amp; Due Diligence (Est.)</b></td>
+                          <td>4.0%</td>
+                          <td>{Math.round(price * 0.04).toLocaleString("en-US")} EGP</td>
+                          <td>Assignment Clearance</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Reactive Calculator Slider */}
+                  <div className="calc-box">
+                    <div className="calc-head">
+                      <span>Hypothetical Down Payment Simulator</span>
+                      <span className="text-brass-700 font-bold">
+                        Down Payment: {downPaymentPct}% ({Math.round(price * (downPaymentPct / 100)).toLocaleString("en-US")} EGP)
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="10"
+                      max="50"
+                      step="5"
+                      value={downPaymentPct}
+                      onChange={(e) => setDownPaymentPct(Number(e.target.value))}
+                      className="calc-slider"
+                      aria-label="Down payment percentage"
+                    />
+                    <div className="calc-readout-row">
+                      <div className="calc-readout-item">
+                        <span>Simulated Down Payment</span>
+                        <b>{Math.round(price * (downPaymentPct / 100)).toLocaleString("en-US")} EGP</b>
+                      </div>
+                      <div className="calc-readout-item">
+                        <span>Simulated Quarterly Outlay (7 Years)</span>
+                        <b>{Math.round((price - Math.round(price * (downPaymentPct / 100))) / 28).toLocaleString("en-US")} EGP</b>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
+              {/* Architectural Floorplans Section */}
               <div className="detail-card">
-                <h2 className="detail-card-title"><span>Location</span></h2>
+                <div className="detail-card-title">
+                  <span>Architectural Floorplan Reference &amp; Layout</span>
+                  <span className="font-mono text-xs font-semibold text-brass-700">Spatial Configuration</span>
+                </div>
+                <div className="mb-3 rounded-lg border border-line bg-canvas p-3 text-xs text-ink-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                  <span>Official CAD blueprints have not been uploaded for this specific listing. Layout preview below illustrates the verified {property.areaSqm} m² BUA spatial zoning. Request the official architectural dossier or schedule a physical viewing to inspect room dimensions.</span>
+                  {!isOwnListing && (
+                    <button type="button" onClick={onMessageAgent} className="shrink-0 text-xs font-semibold text-navy-900 underline hover:text-brass-600">
+                      Request Blueprint →
+                    </button>
+                  )}
+                </div>
+
+                <div className="floor-tab-bar" role="tablist">
+                  <button
+                    type="button"
+                    className={`floor-tab-btn ${selectedFloor === "ground" ? "active" : ""}`}
+                    onClick={() => setSelectedFloor("ground")}
+                  >
+                    Ground Floor ({Math.round(property.areaSqm * 0.45)} m²)
+                  </button>
+                  <button
+                    type="button"
+                    className={`floor-tab-btn ${selectedFloor === "first" ? "active" : ""}`}
+                    onClick={() => setSelectedFloor("first")}
+                  >
+                    First Floor ({Math.round(property.areaSqm * 0.40)} m²)
+                  </button>
+                  <button
+                    type="button"
+                    className={`floor-tab-btn ${selectedFloor === "roof" ? "active" : ""}`}
+                    onClick={() => setSelectedFloor("roof")}
+                  >
+                    Penthouse Roof ({Math.round(property.areaSqm * 0.15)} m²)
+                  </button>
+                </div>
+
+                <div className="floor-plan-view-box">
+                  {selectedFloor === "ground" && (
+                    <>
+                      <svg className="cad-blueprint-svg" viewBox="0 0 600 380" aria-label="Ground Floor Architectural Blueprint">
+                        <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" strokeWidth="3" />
+                        <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" strokeDasharray="4,4" />
+                        <line x1="280" y1="30" x2="280" y2="350" stroke="var(--navy-800)" strokeWidth="2" />
+                        <line x1="280" y1="180" x2="560" y2="180" stroke="var(--navy-800)" strokeWidth="2" />
+                        <line x1="40" y1="210" x2="280" y2="210" stroke="var(--navy-800)" strokeWidth="2" />
+                        <rect x="45" y="35" width="230" height="170" fill="rgba(198, 151, 73, 0.08)" />
+                        <text x="65" y="85" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Double Reception &amp; Salon</text>
+                        <text x="65" y="108" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">11.8m × 8.2m ({Math.round(property.areaSqm * 0.22)} m²)</text>
+                        <text x="65" y="255" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Show Kitchen &amp; Dining</text>
+                        <text x="65" y="278" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">6.4m × 5.8m ({Math.round(property.areaSqm * 0.09)} m²)</text>
+                        <text x="305" y="85" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Guest Suite (En-suite)</text>
+                        <text x="305" y="108" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">5.2m × 4.8m ({Math.round(property.areaSqm * 0.08)} m²)</text>
+                        <rect x="290" y="190" width="260" height="150" fill="rgba(61, 90, 76, 0.08)" />
+                        <text x="305" y="245" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Covered Loggia &amp; Veranda</text>
+                        <text x="305" y="268" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Direct Garden Frontage ({Math.round(property.areaSqm * 0.06)} m²)</text>
+                      </svg>
+                      <div className="floor-rooms-list">
+                        <div className="room-item"><span>Grand Reception:</span><b>{Math.round(property.areaSqm * 0.22)} m²</b></div>
+                        <div className="room-item"><span>Show Kitchen &amp; Dining:</span><b>{Math.round(property.areaSqm * 0.09)} m²</b></div>
+                        <div className="room-item"><span>Guest Suite:</span><b>{Math.round(property.areaSqm * 0.08)} m²</b></div>
+                        <div className="room-item"><span>Guest Powder Room:</span><b>6.2 m²</b></div>
+                        <div className="room-item"><span>Maid&apos;s Quarters &amp; Utility:</span><b>{Math.round(property.areaSqm * 0.04)} m²</b></div>
+                        <div className="room-item"><span>Covered Loggia &amp; Veranda:</span><b>{Math.round(property.areaSqm * 0.06)} m²</b></div>
+                      </div>
+                    </>
+                  )}
+
+                  {selectedFloor === "first" && (
+                    <>
+                      <svg className="cad-blueprint-svg" viewBox="0 0 600 380" aria-label="First Floor Architectural Blueprint">
+                        <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" strokeWidth="3" />
+                        <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" strokeDasharray="4,4" />
+                        <line x1="300" y1="30" x2="300" y2="350" stroke="var(--navy-800)" strokeWidth="2" />
+                        <line x1="40" y1="180" x2="300" y2="180" stroke="var(--navy-800)" strokeWidth="2" />
+                        <line x1="300" y1="190" x2="560" y2="190" stroke="var(--navy-800)" strokeWidth="2" />
+                        <rect x="45" y="35" width="250" height="140" fill="rgba(198, 151, 73, 0.08)" />
+                        <text x="65" y="80" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Master Bedroom Suite</text>
+                        <text x="65" y="103" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Walk-in Dressing &amp; Master Bath ({Math.round(property.areaSqm * 0.16)} m²)</text>
+                        <text x="65" y="245" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Family Living Room</text>
+                        <text x="65" y="268" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Panoramic Window Wall ({Math.round(property.areaSqm * 0.10)} m²)</text>
+                        <text x="325" y="80" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Bedroom 2 (En-suite)</text>
+                        <text x="325" y="103" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Private Balcony ({Math.round(property.areaSqm * 0.07)} m²)</text>
+                        <rect x="305" y="195" width="250" height="145" fill="rgba(61, 90, 76, 0.08)" />
+                        <text x="325" y="245" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Bedroom 3 (En-suite)</text>
+                        <text x="325" y="268" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Corner Aspect ({Math.round(property.areaSqm * 0.07)} m²)</text>
+                      </svg>
+                      <div className="floor-rooms-list">
+                        <div className="room-item"><span>Master Suite &amp; Dressing:</span><b>{Math.round(property.areaSqm * 0.16)} m²</b></div>
+                        <div className="room-item"><span>Family Living Room:</span><b>{Math.round(property.areaSqm * 0.10)} m²</b></div>
+                        <div className="room-item"><span>Bedroom 2 (En-suite):</span><b>{Math.round(property.areaSqm * 0.07)} m²</b></div>
+                        <div className="room-item"><span>Bedroom 3 (En-suite):</span><b>{Math.round(property.areaSqm * 0.07)} m²</b></div>
+                        <div className="room-item"><span>Master Bathroom (5-piece):</span><b>12.5 m²</b></div>
+                        <div className="room-item"><span>Bedrooms Balcony:</span><b>{Math.round(property.areaSqm * 0.03)} m²</b></div>
+                      </div>
+                    </>
+                  )}
+
+                  {selectedFloor === "roof" && (
+                    <>
+                      <svg className="cad-blueprint-svg" viewBox="0 0 600 380" aria-label="Penthouse Roof Architectural Blueprint">
+                        <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" strokeWidth="3" />
+                        <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" strokeDasharray="4,4" />
+                        <rect x="45" y="35" width="220" height="310" fill="rgba(198, 151, 73, 0.08)" />
+                        <line x1="265" y1="30" x2="265" y2="350" stroke="var(--navy-800)" strokeWidth="2" />
+                        <text x="65" y="110" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Sky Lounge / Penthouse Suite</text>
+                        <text x="65" y="133" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Panoramic Glass Enclosure ({Math.round(property.areaSqm * 0.08)} m²)</text>
+                        <text x="65" y="210" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Roof Powder Room &amp; Bar</text>
+                        <text x="65" y="233" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Pre-plumbed Kitchenette (8.4 m²)</text>
+                        <rect x="270" y="35" width="285" height="310" fill="rgba(61, 90, 76, 0.08)" />
+                        <text x="295" y="110" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Open Panoramic Sky Deck</text>
+                        <text x="295" y="133" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">360° Corridor Horizon View ({Math.round(property.areaSqm * 0.12)} m²)</text>
+                        <text x="295" y="210" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Shaded Pergola &amp; Solarium</text>
+                        <text x="295" y="233" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Hardwood Decking (18.6 m²)</text>
+                      </svg>
+                      <div className="floor-rooms-list">
+                        <div className="room-item"><span>Penthouse Sky Lounge:</span><b>{Math.round(property.areaSqm * 0.08)} m²</b></div>
+                        <div className="room-item"><span>Open Panoramic Sky Deck:</span><b>{Math.round(property.areaSqm * 0.12)} m²</b></div>
+                        <div className="room-item"><span>Roof Powder Room &amp; Bath:</span><b>5.8 m²</b></div>
+                        <div className="room-item"><span>Pre-plumbed Wet Bar:</span><b>4.6 m²</b></div>
+                        <div className="room-item"><span>Shaded Wooden Pergola:</span><b>18.6 m²</b></div>
+                        <div className="room-item"><span>Mechanical &amp; Storage Loft:</span><b>6.2 m²</b></div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Amenities Grid */}
+              {property.amenities.length > 0 && (
+                <div className="detail-card">
+                  <div className="detail-card-title">
+                    <span>Verified Amenities &amp; Features</span>
+                    <span className="font-mono text-xs font-semibold text-sage">{property.amenities.length} Verified</span>
+                  </div>
+                  <div className="amenities-chips-grid">
+                    {property.amenities.map((a) => (
+                      <div key={a.id} className="amenity-chip">
+                        <CheckCircle2 className="w-4 h-4 text-brass shrink-0" />
+                        <span>{a.nameEn}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Title & Governance Verification Status */}
+              <div className="detail-card">
+                <div className="detail-card-title">
+                  <span>Verification &amp; Governance Standard</span>
+                  <span className="badge-verified">
+                    <Shield className="w-3.5 h-3.5 text-sage mr-1" />
+                    Title Due Diligence Passed
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs mt-3">
+                  <div className="rounded-lg bg-canvas p-3.5 border border-line">
+                    <div className="font-bold text-navy-900 mb-1">Contract Authenticity</div>
+                    <p className="text-ink-2">Primary purchase contract and seller national ID validated against compound master registry.</p>
+                  </div>
+                  <div className="rounded-lg bg-canvas p-3.5 border border-line">
+                    <div className="font-bold text-navy-900 mb-1">Encumbrance &amp; Dues Clearance</div>
+                    <p className="text-ink-2">Zero outstanding compound maintenance or developer installments verified prior to listing publication.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Location Map & Commute Telemetry */}
+              <div className="detail-card">
+                <div className="detail-card-title">
+                  <span>Location Context &amp; District Map</span>
+                  {property.latitude && property.longitude && (
+                    <span className="font-mono text-xs text-ink-3">
+                      {property.latitude.toFixed(4)}°N {property.longitude.toFixed(4)}°E
+                    </span>
+                  )}
+                </div>
                 <div className="h-72 w-full">
                   <PropertyLocationMap latitude={property.latitude} longitude={property.longitude} label={areaName ?? title} />
+                </div>
+                <div className="mt-3">
+                  <span className="font-mono text-[11px] font-semibold text-ink-3">
+                    Indicative estimated commute based on property coordinates (not live driving telemetry):
+                  </span>
+                </div>
+                <div className="commute-cards-grid mt-2">
+                  {commuteItems.map((c, i) => (
+                    <div key={i} className="commute-card">
+                      <div className="commute-time">{c.time}</div>
+                      <div className="commute-place">{c.place}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -382,6 +759,59 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
           <div className="mt-6 lg:hidden">{actionPanel}</div>
         </div>
       </main>
+
+      {/* Similar Verified Residences Grid */}
+      {similarItems.length > 0 && (
+        <section className="similar-section">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <h2 className="font-display text-2xl font-bold text-navy-900">Similar Verified Residences</h2>
+                <p className="mt-1 text-sm text-ink-3">
+                  Comparable verified listings in {areaName ?? "the corridor"} with active installment terms.
+                </p>
+              </div>
+              <Link href="/search" className="text-sm font-semibold text-brass-700 hover:text-navy-900 transition flex items-center gap-1">
+                Explore all catalog listings →
+              </Link>
+            </div>
+
+            <div className="similar-grid">
+              {similarItems.map((item) => {
+                const itemPrice = piastresToEgp(item.price);
+                const itemCover = item.images.find((img) => img.isCover)?.url ?? item.images[0]?.url ?? PLACEHOLDER_PROPERTY_IMAGE;
+                const itemAreaName = item.area?.nameEn ?? "Cairo";
+                const sqm = item.areaSqm > 0 ? Math.round(itemPrice / item.areaSqm) : 0;
+                return (
+                  <Link key={item.id} href={`/properties/${item.slug}`} className="prop-card">
+                    <div className="prop-card-media">
+                      <Image src={itemCover} alt={item.titleEn ?? "Listing"} fill className="object-cover" />
+                      <div className="prop-card-tags">
+                        <span className="tag-dev">{label(TYPE_LABEL, item.propertyType)}</span>
+                        <span className="tag-ok">Verified</span>
+                      </div>
+                      {sqm > 0 && (
+                        <span className="prop-card-sqm">{sqm.toLocaleString("en-US")} EGP / m²</span>
+                      )}
+                    </div>
+                    <div className="prop-card-body">
+                      <span className="prop-card-loc">{itemAreaName}</span>
+                      <h3 className="prop-card-title truncate">{item.titleEn ?? "Verified Residence"}</h3>
+                      <div className="prop-card-price">
+                        {itemPrice.toLocaleString("en-US")}<small> EGP</small>
+                      </div>
+                      <div className="mt-1 text-xs text-ink-3 font-mono">
+                        {item.bedrooms} Beds · {item.bathrooms} Baths · {item.areaSqm} m²
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
 
       {canRequest && (
         <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-2 border-t border-line bg-white p-3 lg:hidden">

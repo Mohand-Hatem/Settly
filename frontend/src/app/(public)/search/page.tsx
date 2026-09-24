@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { SearchWorkspace } from "@/components/search/SearchWorkspace";
 import "@/styles/settly/search.css";
@@ -10,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function SearchPage() {
-  return <SearchWorkspace />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F7F6F3]" />}>
+      <SearchWorkspace />
+    </Suspense>
+  );
 }

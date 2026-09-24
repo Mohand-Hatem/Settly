@@ -62,11 +62,9 @@ export function HeroSection() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M4 7h16v12H4z" />
-                <path d="M4 11h16" />
-                <path d="M8 4v3" />
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-              Bilingual EN / العربية
+              Verified title &amp; due diligence
             </span>
           </div>
 

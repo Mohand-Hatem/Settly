@@ -42,6 +42,7 @@ import { toNodeHandler, fromNodeHeaders } from "better-auth/node";
 import { auth } from "./modules/identity/auth.js";
 import { profileRouter } from "./modules/identity/routes/profile.routes.js";
 import { adminAgentRouter } from "./modules/identity/routes/admin-agent.routes.js";
+import { adminStatsRouter } from "./modules/identity/routes/admin-stats.routes.js";
 import { deviceRouter } from "./modules/identity/routes/device.routes.js";
 import {
   areaRouter,
@@ -136,6 +137,7 @@ app.use("/api/v1/areas", areaRouter);
 app.use("/api/v1/properties", propertyRouter);
 app.use("/api/v1/amenities", amenityRouter);
 app.use("/api/v1/uploads", uploadRouter);
+app.use("/api/v1/admin/stats", adminStatsRouter);
 app.use("/api/v1/admin/agents", adminAgentRouter);
 app.use("/api/v1/admin/properties", adminPropertyRouter);
 app.use("/api/v1/admin/sales", adminSalesRouter);

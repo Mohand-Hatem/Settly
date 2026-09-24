@@ -272,6 +272,10 @@ export class PaymentService {
       return { success: false, reason: "transaction_declined" };
     }
   }
+
+  async countFailedRefunds(): Promise<number> {
+    return await paymentRepository.countFailedRefunds();
+  }
 }
 
 export const paymentService = new PaymentService();

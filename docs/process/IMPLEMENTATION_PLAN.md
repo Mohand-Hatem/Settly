@@ -175,23 +175,73 @@ real API, with zero mocked business logic.
 
 ## 9. Phase 3 — Intelligence
 
-Lexical + semantic search arms and RRF fusion (`SEARCH.md` §4-6) — English only in V1 (#99); V23/V24
-(Arabic and cross-language retrieval) are deferred with Arabic. RAG
-ingestion and the visibility-filtered retrieval pipeline (`RAG.md`). The AI assistant tool-calling
-loop (`AI.md`). The Property Shortlist Agent (`AGENT.md`), built last since it composes the
-others. Seed data (`SEED_DATA.md`) is built and the evaluation gate run **as part of this phase**,
-not before — there's nothing to seed until the schema and search arms exist.
+**Status (2026-09-22): Milestone 3.1 (Hybrid Search Engine) delivered end-to-end (`SEARCH.md` §4-6, `AI.md` §2):**
+- **Search Indexes & Database Migration (`20260921100000_search_indexes`):**
+  - GIN index on `Property.searchVectorEn` for PostgreSQL lexical full-text retrieval.
+  - Partial HNSW index on `Property.embedding` (`vector_cosine_ops`, $m=16, ef\_construction=64$) `WHERE "status" = 'PUBLISHED'`.
+  - HNSW index on `Embedding.embedding` (`vector_cosine_ops`).
+- **AI & Embedding Infrastructure (`modules/ai/service/embedding.service.ts`):**
+  - Google `gemini-embedding-001` integration with 1536-dimensional Matryoshka truncation and mandatory $L_2$ re-normalization ($v_{norm} = v / \|v\|_2$).
+  - Canonical property composition format excluding price numerals, coordinates, and agent identifiers per `SEARCH.md` §7.
+  - Deterministic PRNG fallback vector generator for test suites and offline resilience.
+  - Catalog embedder script (`backend/scripts/embed-catalog.ts`) executed and populated across all published listings.
+- **Deterministic Query Understanding (`modules/ai/service/query-understanding.service.ts`):**
+  - Sub-millisecond extraction for intent (`BUY`/`RENT`), property types, bedrooms, price thresholds (EGP to piastres conversion), and area aliases via `areaService.listAreas` gazetteer cache.
+  - Returns machine-readable removable filter chips (`{ kind, value, label }`) and residual semantic text.
+- **Reciprocal Rank Fusion (RRF, $k=60$) & PostGIS Map Clustering (`modules/search/sql/index.ts`):**
+  - Blends keyword BM25/FTS ranks with vector cosine distance plus structured filters (intent, property type, price in piastres, bedrooms, 3-level area hierarchy traversal).
+  - PostGIS `ST_SnapToGrid` server-side clustering at `/api/v1/search/properties/clusters` for low-zoom map aggregates (`SEARCH.md` §3, §8).
+  - Clean OpenAPI 3.0.3 contract (73 registered endpoints) and drift verification gate.
+- **Frontend Search Experience (`frontend/src/components/search`):**
+  - `SearchWorkspace.tsx` wired to live `searchPropertiesQuery` hook, supporting natural language search, query synchronization via URL, and responsive mobile drawers.
+  - `DiscoveryBar.tsx` equipped with natural language prompt bar, typed chip badges (bed, tag, coins, map pin), loading skeletons, and lexical fallback degradation indicators.
+  - `mapProperty.ts` updated to seamlessly map both catalog and search response models.
+- **Verification:** 100% green across all 15 backend test suites (`test:search` passing with 7/7 suites), architectural boundary lints, OpenAPI drift gates, frontend type-checks (`tsc --noEmit`), linters (`next lint`), and full Next.js production build (`29/29` static and dynamic pages generated with 0 errors).
 
-**Exit criteria:** the retrieval evaluation report (`SEED_DATA.md` §4) meets its pre-committed
-thresholds, or the embedding decision is revisited per the documented gate — not silently shipped
-either way.
+
+**Milestone 3.2: RAG Knowledge Base & Visibility-Filtered Retrieval (`RAG.md`) — COMPLETE (2026-09-22):**
+- **Chunking Utility (`modules/ai/service/chunking.service.ts`):** Structure-aware ~1800-char chunks with ~270-char overlap and contextual prefix (`"From the {title}, section: {section}"`) per `RAG.md §3`.
+- **In-Query Visibility Filter — The Security Kernel (`modules/knowledge/sql/index.ts`):** `executeRagRetrievalSql` enforces `PUBLIC` / `PARTY` / `PRIVATE` scoping as SQL `WHERE` predicates on `Embedding` rows. Post-filtering in application code is forbidden per `RAG.md §5` / `Decision #42`. PARTY check: listing agent OR buyer with a live offer (`PENDING_AGENT`, `PENDING_BUYER`, `ACCEPTED`, `RESERVED`) on the document's property.
+- **Knowledge Repository (`modules/knowledge/repository/index.ts`):** Prisma CRUD for `KnowledgeArticle` (create, upsert, delete) with full `Embedding` lifecycle managed in the same transaction (`Decision #42`). Drift sweep delegates to SQL layer.
+- **Knowledge Service (`modules/knowledge/service/index.ts`):** Full ingest pipeline (chunk → embed → transactional upsert), paginated article list, slug lookup, RAG retrieval with abstention (`abstain: true` when no chunks survive the relevance floor — `RAG.md §7`), and nightly drift sweeper that treats any mismatch as a security incident.
+- **REST Routes + OpenAPI (`modules/knowledge/routes/index.ts`, `schema/knowledge.schema.ts`):**
+  - `GET /api/v1/knowledge/articles` — paginated list (cursor-based), public.
+  - `GET /api/v1/knowledge/articles/:slug` — full article body, public.
+  - `POST /api/v1/knowledge/retrieve` — optional-auth RAG retrieval, visibility enforced in-query.
+  - 3 new paths → OpenAPI spec now at **76 registered endpoints** (drift gate ✅).
+- **Drift Sweeper in Worker (`settly-worker.ts`):** Nightly `setInterval` calls `knowledgeService.runDriftSweeper()`. Any non-zero mismatch count is logged `pino.error({ securityIncident: true })`.
+- **Seed Script (`scripts/seed-knowledge.ts`):** 10 idempotent English-only `KnowledgeArticle` seeds — New Cairo, Sheikh Zayed, Maadi, North Coast, 6th October (area guides), buying FAQ, offers FAQ, deposit FAQ, legal summary, market overview. Backs off 60s on Gemini rate limits.
+- **Frontend Types:** `frontend/src/api/v1.d.ts` regenerated from the 76-endpoint spec.
+- **Verification:** 100% green across all **16** backend test suites (16th: `test:knowledge` — 12 tests covering health, list, slug, 404, validation, anonymous PUBLIC retrieval, off-topic abstention, cursor pagination, PARTY visibility structural barrier, query length limit). Architectural boundary lints ✅, OpenAPI drift gate ✅, zero TypeScript errors.
+
+**Exit criteria achieved (Phase 3 full):** properties are semantically searchable via hybrid RRF; a caller can POST a natural-language question to `/knowledge/retrieve` and receive visibility-filtered cited chunks from the RAG corpus, or `abstain: true` if nothing relevant exists — with the security filter provably enforced in-query and the nightly drift sweeper guarding against scope leaks.
+
 
 ## 10. Phase 4 — Operations
 
-Admin moderation surface (load-bearing per Decision #28), the minimal operational panel
-(`OBSERVABILITY.md` §6), the privacy/retention sweepers (`SECURITY.md` §11-15), remaining
-scheduled jobs. Advanced admin analytics and a search-analytics dashboard are **explicitly out of
-scope** (`product/ANALYTICS.md` §3) — do not add them here or anywhere.
+**Status (2026-09-23): Milestone 4.1 (Admin Governance & Moderation Surface) delivered end-to-end (`DECISIONS.md` #28, #56, #67, #71, #93, #94, #97, #100):**
+- **Decision #97 Portal Switcher & Nav Alignment:**
+  - Resolved security/architectural bug in `PortalShell.tsx`: Admin portal switcher now strictly toggles between `["buyer", "admin"]` (USER = buyer; AGENT = buyer + agent; ADMIN = buyer + admin, never agent powers).
+  - Wired Listing Moderation (`/admin/moderation`) and Agent Verification (`/admin/verification`) into Admin portal sidebar navigation.
+- **Backend Admin Governance APIs:**
+  - `GET /api/v1/admin/stats` — Operational dashboard counts (`pendingListings`, `pendingAgentApplications`, `salesNearDeadline`, `failedRefundAlerts`) aggregated across module service interfaces without boundary violations.
+  - `GET /api/v1/admin/properties` — Moderation queue list supporting status filtering (`PENDING_REVIEW`, `PUBLISHED`, `REJECTED`, `SUSPENDED`, `ARCHIVED`) and cursor pagination.
+  - Trusted origins extended for test runners (ports 4016 and 4017).
+  - Clean OpenAPI 3.0.3 contract (78 registered endpoints) verified against drift.
+- **Frontend Governance Surfaces:**
+  - `ADM-01` (`/admin`): Real-time operational dashboard with 4 KPI cards and quick-access desks.
+  - `ADM-02` (`/admin/moderation`): FIFO moderation queue with tabs, review drawer with images, full specs, P3 Approve, P4 Reject (with required reason), P12 Suspend, P13 Reinstate, and ADM-11 Conflict-of-Interest Guard (#67, #71).
+  - `ADM-04` & `ADM-05` (`/admin/verification`): Agent KYC queue with Decision #56 side-by-side National ID and live selfie inspection, regulatory license check, approval, rejection, and revocation with listing suspension consequence warnings.
+- **Verification:**
+  - 100% green across all **17** backend test suites (`test:admin-moderation` passing with 6/6 tests covering 401 unauthenticated, 403 non-admin, stats schema, queue retrieval, and filtering).
+  - Boundary lints: 0 violations. OpenAPI drift check: clean.
+  - Frontend typecheck (`tsc --noEmit`): 0 errors. Linter: 0 warnings.
+  - Full Next.js production build: 31/31 static and dynamic pages prerendered successfully.
+
+**Next in Phase 4:**
+- **Milestone 4.2: Privacy & Retention Sweepers (`SECURITY.md` §11–15):** Session cleanup, idempotency key pruning, account deletion anonymization, and orphan document embedding purge.
+- **Milestone 4.3: Scheduled Worker Schedulers (`CONCURRENCY_AND_IDEMPOTENCY.md`):** Payment reconciliation, offer/viewing expiry jobs, materialized view refresh.
+
 
 ## 11. Deployment phase
 
@@ -200,12 +250,30 @@ Only after Phase 1 is demonstrable. Vercel + Railway (2 services) + Supabase, pe
 V11, V13, V14, V15, V17, V18) at this point, not earlier — most concern a domain, a hosting tier,
 or a production email provider that don't exist yet.
 
-## 12. The parallel design track (Section 13 of this response covers this in detail)
+## 12. Frontend Visual & Structural Reconciliation Master Plan (Reference-Led, Zero-Backend)
 
-Stitch design exploration should start **now**, alongside Step 0, not after Phase 1. It has the
-longest lead time and blocks nothing except the frontend UI work in Steps 5-13's frontend column.
-`design/DESIGN_SYSTEM.md` Section 3 is the brief; Section 13 below (delivered separately) covers
-how to run it.
+    Authority:    docs/process/UI_RECONCILIATION_MASTER_PLAN.md · LOCKED UI Strategy
+    Primary Rule: Current Settly Business Logic + Current Available Data + Reference-Level UI Richness & Design
+    Constraint:   100% Zero Backend / Schema / API Changes · Purely Presentational Enrichment Where Data Is Static
+
+The high-fidelity reference HTML/CSS mockups in `docs/design/candidates/settly-landing/` serve as the **primary visual implementation target** across all Settly portals and screens.
+
+Instead of building isolated, simplified MVP pages, the frontend is reconciled group-by-group against the reference candidates using the **4-Category Gap Classification Framework**:
+1. **Category 1 (Invalid by Rules):** Conflicting elements (escrow, broker phone/WhatsApp, off-plan developer terms, deed certification, luxury-only framing) are specifically removed or adapted. The surrounding layout, cards, and sections are strictly preserved.
+2. **Category 2 (Valid but Unbuilt):** Rich reference features (CAD floorplan tabs with SVG blueprints, commute telemetry matrices, active negotiation visual steppers, 72h countdown banners, gate passes, faceted counts) are restored from the reference HTML/CSS.
+3. **Category 3 (Implemented but Simplified):** Pages and components built during early slices as basic MVPs are enriched to match the density, visual hierarchy, micro-interactions, and editorial craftsmanship of the candidate designs.
+4. **Category 4 (New / No Reference):** Real Settly workflows lacking mockups (Paymob deposit checkout, two-sided sale confirmation, subscription & quota cockpit, waiting-for-quota FIFO queues) are designed consistently from scratch using the "Navy & Brass" design tokens.
+
+### Screen Group Execution Order:
+- **Group 0:** Global Navigation & Shared Shell (`Navbar`, `Footer`, `PortalShell`, `Sidebar`, `PortalSwitcher`, `NotificationDropdown`, modals, toasts, design tokens)
+- **Group 2:** Public Discovery & Properties (`/`, `/search`, `/properties/[slug]`, `/areas`, `/agents`, `/compare`, `/market-insights`)
+- **Group 1:** Authentication & Identity (`/login`, `/register`, `/verify-email`, `/forgot-password`, `/complete-profile`)
+- **Group 3:** Buyer Portal (`/buyer` Overview, `/buyer/viewings`, `/buyer/offers`, `/buyer/saved`, `/buyer/messages`, `/buyer/notifications`, `/buyer/settings`)
+- **Group 4:** Agent Portal & Subscription (`/agent` Overview, `/agent/listings`, `/agent/leads`, `/agent/calendar`, `/agent/subscription`, `/agent/messages`, `/agent/notifications`, `/agent/settings`)
+- **Group 5:** Admin Governance Portal (`/admin` Dashboard, `/admin/moderation`, `/admin/verification`, `/admin/sales`, `/admin/reports`, `/admin/audit-log`, `/admin/holiday-list`, `/admin/notifications`)
+
+Full details, screen tables, and data mapping are codified in `docs/process/UI_RECONCILIATION_MASTER_PLAN.md`.
+
 
 ## 13. What this document does not do
 

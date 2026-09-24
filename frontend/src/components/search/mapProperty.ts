@@ -1,4 +1,5 @@
 import type { PropertyResponse } from "@/api/catalog";
+import type { SearchPropertyItem } from "@/api/search";
 import { PLACEHOLDER_PROPERTY_IMAGE } from "@/lib/images";
 import { piastresToEgp } from "@/lib/money";
 import type { PropertyItem } from "./PropertyCard";
@@ -34,31 +35,34 @@ function formatShortPrice(egp: number): string {
 }
 
 /**
- * Maps an API property onto the search card/map view model.
+ * Maps an API property or search result onto the search card/map view model.
  *
  * Coordinates are passed through untouched: a listing with an invalid position still
  * appears in the results list but is left off the map (see SearchMap), rather than being
  * pinned to a made-up location. Financing fields (finish, plan, installment, handover)
  * are not in the API yet and remain illustrative, as the site-wide banner states.
  */
-export function toPropertyItem(p: PropertyResponse): PropertyItem {
+export function toPropertyItem(p: PropertyResponse | SearchPropertyItem): PropertyItem {
   const priceNum = piastresToEgp(p.price);
-  const sqmPriceNum = p.areaSqm > 0 ? Math.round(priceNum / p.areaSqm) : 0;
+  const areaSqmVal = typeof p.areaSqm === "number" ? p.areaSqm : parseFloat(p.areaSqm) || 0;
+  const sqmPriceNum = areaSqmVal > 0 ? Math.round(priceNum / areaSqmVal) : 0;
   const areaName = p.area?.nameEn || "Egypt";
   const rawType = p.propertyType.toLowerCase();
   const cover = p.images.find((img) => img.isCover) ?? p.images[0];
+  const coverUrl = cover?.url || ("coverImage" in p && p.coverImage ? p.coverImage : PLACEHOLDER_PROPERTY_IMAGE);
+  const amenityList = p.amenities.map((a) => (typeof a === "string" ? a : a.nameEn));
 
   return {
     id: p.id,
     slug: p.slug,
     dev: inferDeveloper(p.titleEn || "", p.descriptionEn || "", areaName),
     title: p.titleEn || "Untitled residence",
-    specs: `${areaName} · ${p.areaSqm} m² · ${p.bedrooms} beds · EGP ${sqmPriceNum.toLocaleString()}/m²`,
+    specs: `${areaName} · ${areaSqmVal} m² · ${p.bedrooms} beds · EGP ${sqmPriceNum.toLocaleString()}/m²`,
     price: `EGP ${priceNum.toLocaleString()}`,
     priceNum,
     priceShort: formatShortPrice(priceNum),
     sqmPrice: `EGP ${sqmPriceNum.toLocaleString()} / m²`,
-    img: cover?.url || PLACEHOLDER_PROPERTY_IMAGE,
+    img: coverUrl,
     lat: p.latitude,
     lng: p.longitude,
     inGoldenSquare: areaName.toLowerCase().includes("golden square"),
@@ -72,10 +76,10 @@ export function toPropertyItem(p: PropertyResponse): PropertyItem {
     interest: "0% Int.",
     beds: p.bedrooms,
     baths: p.bathrooms,
-    bua: p.areaSqm,
-    plotOrTerrace: `${Math.round(p.areaSqm * 1.3)} m²`,
+    bua: areaSqmVal,
+    plotOrTerrace: `${Math.round(areaSqmVal * 1.3)} m²`,
     handover: "Q4 2026",
-    amenities: p.amenities.map((a) => a.nameEn),
+    amenities: amenityList,
     subLocation: areaName,
   };
 }

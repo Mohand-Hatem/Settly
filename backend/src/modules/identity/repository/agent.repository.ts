@@ -245,3 +245,9 @@ export async function deleteUserDevice(userId: string, token: string): Promise<b
   });
   return result.count > 0;
 }
+
+export async function countPendingAgentVerifications(): Promise<number> {
+  return await prisma.agentProfile.count({
+    where: { isVerified: false },
+  });
+}

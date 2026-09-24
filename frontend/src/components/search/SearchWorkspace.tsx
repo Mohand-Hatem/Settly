@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import type { PropertyListResponse } from "@/api/catalog";
-import { propertyListQuery } from "@/lib/query/catalog";
+import { searchPropertiesQuery } from "@/lib/query/search";
+import type { SearchQueryParams } from "@/api/search";
 import dynamic from "next/dynamic";
 import { PropertyItem } from "./PropertyCard";
-import { DiscoveryBar, ViewMode } from "./DiscoveryBar";
+import { DiscoveryBar, ViewMode, SearchChipItem } from "./DiscoveryBar";
 import { FacetRail } from "./FacetRail";
 import { PropertyStream } from "./PropertyStream";
 import { toPropertyItem } from "./mapProperty";
@@ -271,19 +272,18 @@ const INITIAL_PROPERTIES: PropertyItem[] = [
   },
 ];
 
-// Module-level so TanStack Query can memoize the mapped result between renders
-const selectPropertyItems = (res: PropertyListResponse) => res.items.map(toPropertyItem);
-
 export function SearchWorkspace() {
-  // Live catalog; the curated demo set stays on screen once loaded or if the API is down
-  const { data: liveProperties, isPending: isCatalogPending } = useQuery({
-    ...propertyListQuery(),
-    select: selectPropertyItems,
-  });
-  const properties = useMemo(
-    () => (liveProperties?.length ? liveProperties : (isCatalogPending ? [] : INITIAL_PROPERTIES)),
-    [liveProperties, isCatalogPending]
-  );
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // URL search query synchronization
+  const initialQ = searchParams?.get("q") || searchParams?.get("keyword") || "";
+  const [appliedQuery, setAppliedQuery] = useState<string>(initialQ);
+
+  useEffect(() => {
+    const q = searchParams?.get("q") || searchParams?.get("keyword") || "";
+    setAppliedQuery(q);
+  }, [searchParams]);
 
   // Filters State - Default to full coverage so live properties appear immediately
   const [selectedLocations, setSelectedLocations] = useState<string[]>([
@@ -314,9 +314,72 @@ export function SearchWorkspace() {
     "Katameya",
   ]);
 
+  // If user selected exactly 1 property type from facet rail, pass to backend
+  const singleTypeFilter = useMemo((): SearchQueryParams["propertyType"] => {
+    if (selectedTypes.length === 1) {
+      const t = selectedTypes[0].toUpperCase();
+      if (t === "TOWN") return "TOWNHOUSE";
+      if (
+        t === "APARTMENT" ||
+        t === "VILLA" ||
+        t === "DUPLEX" ||
+        t === "PENTHOUSE" ||
+        t === "TOWNHOUSE" ||
+        t === "CHALET"
+      ) {
+        return t;
+      }
+    }
+    return undefined;
+  }, [selectedTypes]);
+
+  const searchParamsPayload = useMemo((): SearchQueryParams => {
+    return {
+      q: appliedQuery.trim() || undefined,
+      propertyType: singleTypeFilter,
+      maxPrice: maxPrice < 60 ? maxPrice * 1_000_000 * 100 : undefined,
+      limit: 50,
+    };
+  }, [appliedQuery, singleTypeFilter, maxPrice]);
+
+  // Live Hybrid Search (RRF rank-fused PostgreSQL tsvector + pgvector)
+  const { data: searchResult, isPending: isSearchPending } = useQuery(
+    searchPropertiesQuery(searchParamsPayload)
+  );
+
+  const liveProperties = useMemo(() => {
+    if (!searchResult?.items) return null;
+    return searchResult.items.map(toPropertyItem);
+  }, [searchResult]);
+
+  const properties = useMemo(
+    () => (liveProperties?.length ? liveProperties : (isSearchPending ? [] : INITIAL_PROPERTIES)),
+    [liveProperties, isSearchPending]
+  );
+
+
   // View and UI State
   const [sortValue, setSortValue] = useState<string>("verified");
   const [viewMode, setViewMode] = useState<ViewMode>("split");
+
+  // Option A: Default to Split View (List + Sticky Map) on desktop (>=1280px), Grid View on mobile/tablets (<1280px)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 1280) {
+        setViewMode("grid");
+      } else {
+        setViewMode("split");
+      }
+      const handleResize = () => {
+        if (window.innerWidth < 1280) {
+          setViewMode((prev) => (prev === "split" ? "grid" : prev));
+        }
+      };
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
   // undefined = the user has not picked yet; null = the user dismissed the selection
   const [selectedId, setSelectedId] = useState<string | null | undefined>(undefined);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -381,27 +444,6 @@ export function SearchWorkspace() {
     if (chip === "over50") setMaxPrice(60);
   };
 
-  const handleClearAll = () => {
-    setSelectedLocations([
-      "Golden Square",
-      "Mivida",
-      "Katameya",
-      "Karmell",
-      "Sidi Abd El Rahman",
-    ]);
-    setMaxPrice(60);
-    setActivePriceChip(null);
-    setSelectedTypes(["villa", "duplex", "penthouse", "town"]);
-    setSelectedHandovers(["ready", "2026", "2027"]);
-    setSelectedDevelopers([
-      "Palm Hills",
-      "SODIC",
-      "Emaar Misr",
-      "Ora Developers",
-      "Katameya",
-    ]);
-  };
-
   // Filter and Sort Logic
   const filteredProperties = useMemo(() => {
     return properties
@@ -459,29 +501,58 @@ export function SearchWorkspace() {
     sortValue,
   ]);
 
-  // Active Chips
-  const activeChips = useMemo(() => {
-    const chips: { key: string; label: string }[] = [];
+  // Active Chips (combines natural language query extraction chips with active facet chips)
+  const activeChips = useMemo((): SearchChipItem[] => {
+    const chips: SearchChipItem[] = [];
+
+    // 1. Natural language extracted chips from backend AI / query understanding
+    if (searchResult?.chips) {
+      for (const c of searchResult.chips) {
+        chips.push({
+          key: `nl-${c.kind}-${c.value}`,
+          label: c.label,
+          kind: c.kind,
+        });
+      }
+    }
+
+    // 2. Residual query intent chip
+    if (searchResult?.residualQuery && searchResult.residualQuery.trim()) {
+      chips.push({
+        key: "residual",
+        label: `Intent: "${searchResult.residualQuery.trim()}"`,
+        kind: "custom",
+      });
+    }
+
+    // 3. Facet rail location chips
     if (selectedLocations.length > 0 && selectedLocations.length < 5) {
       chips.push({
         key: "loc",
         label: `District: ${selectedLocations.join(", ")}`,
+        kind: "area",
       });
     }
-    if (selectedTypes.length > 0 && selectedTypes.length < 4) {
+
+    // 4. Facet rail type chips
+    if (selectedTypes.length > 0 && selectedTypes.length < 4 && !chips.some((c) => c.kind === "type")) {
       chips.push({
         key: "type",
         label: `Type: ${selectedTypes.join(", ")}`,
+        kind: "type",
       });
     }
-    if (maxPrice < 60) {
+
+    // 5. Facet rail price chip
+    if (maxPrice < 60 && !chips.some((c) => c.kind === "maxPrice")) {
       chips.push({
         key: "price",
         label: `Price: up to ${maxPrice}M EGP`,
+        kind: "maxPrice",
       });
     }
     return chips;
-  }, [selectedLocations, selectedTypes, maxPrice]);
+  }, [searchResult?.chips, searchResult?.residualQuery, selectedLocations, selectedTypes, maxPrice]);
 
   const handleRemoveChip = (key: string) => {
     if (key === "loc") {
@@ -492,14 +563,38 @@ export function SearchWorkspace() {
         "Karmell",
         "Sidi Abd El Rahman",
       ]);
-    }
-    if (key === "type") {
+    } else if (key === "type") {
       setSelectedTypes(["villa", "duplex", "penthouse", "town"]);
-    }
-    if (key === "price") {
+    } else if (key === "price") {
       setMaxPrice(60);
       setActivePriceChip(null);
+    } else if (key.startsWith("nl-") || key === "residual") {
+      setAppliedQuery("");
+      router.push("/search");
     }
+  };
+
+  const handleClearAll = () => {
+    setSelectedLocations([
+      "Golden Square",
+      "Mivida",
+      "Katameya",
+      "Karmell",
+      "Sidi Abd El Rahman",
+    ]);
+    setMaxPrice(60);
+    setActivePriceChip(null);
+    setSelectedTypes(["villa", "duplex", "penthouse", "town"]);
+    setSelectedHandovers(["ready", "2026", "2027"]);
+    setSelectedDevelopers([
+      "Palm Hills",
+      "SODIC",
+      "Emaar Misr",
+      "Ora Developers",
+      "Katameya",
+    ]);
+    setAppliedQuery("");
+    router.push("/search");
   };
 
   const toggleFavorite = (id: string) => {
@@ -522,6 +617,8 @@ export function SearchWorkspace() {
         onViewModeChange={setViewMode}
         onOpenFilters={() => setIsMobileFilterOpen(true)}
         activeFilterCount={activeChips.length}
+        isLoading={isSearchPending}
+        isDegraded={searchResult?.degraded}
       />
 
       {/* Main Workspace */}
@@ -584,7 +681,7 @@ export function SearchWorkspace() {
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
           onClearAll={handleClearAll}
-          isLoading={isCatalogPending && !liveProperties}
+          isLoading={isSearchPending}
         />
 
         {/* Right Map Discovery Column */}

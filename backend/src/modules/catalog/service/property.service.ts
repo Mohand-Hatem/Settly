@@ -13,6 +13,7 @@ import type {
   UpdatePropertyInput,
   PropertyResponse,
   PropertyListResponse,
+  PropertyStatus,
 } from "../schema/property.schema.js";
 import type { CompareItem } from "../schema/compare.schema.js";
 
@@ -103,6 +104,18 @@ export async function listPublicProperties(options?: {
   limit?: number;
 }): Promise<PropertyListResponse> {
   return await propertyRepo.listPublishedProperties(options);
+}
+
+export async function countPendingProperties(): Promise<number> {
+  return await propertyRepo.countPendingProperties();
+}
+
+export async function listAdminProperties(options?: {
+  status?: PropertyStatus;
+  cursor?: string;
+  limit?: number;
+}): Promise<PropertyListResponse> {
+  return await propertyRepo.listAdminProperties(options);
 }
 
 // ==============================================================================

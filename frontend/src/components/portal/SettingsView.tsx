@@ -23,10 +23,8 @@ import {
   useUpdateProfileMutation,
   useSaveAgentProfileMutation,
 } from "@/lib/query/identity";
-import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/Toaster";
 import { problemMessage } from "@/api/errors";
-import { switchMyRole } from "@/api/identity";
 
 interface SettingsViewProps {
   portal: "buyer" | "agent";
@@ -67,24 +65,7 @@ export function SettingsView({ portal }: SettingsViewProps) {
   const [bioEn, setBioEn] = useState("");
   const [bioAr, setBioAr] = useState("");
 
-  const router = useRouter();
-  const [roleSwitchLoading, setRoleSwitchLoading] = useState(false);
 
-  const handleSwitchRole = async (targetRole: "USER" | "AGENT", targetUrl: string) => {
-    try {
-      setRoleSwitchLoading(true);
-      await switchMyRole(targetRole);
-      toast.success(
-        `Switched perspective to ${targetRole === "AGENT" ? "Certified Advisor" : "Private Client"}.`
-      );
-      router.push(targetUrl);
-      router.refresh();
-    } catch {
-      router.push(targetUrl);
-    } finally {
-      setRoleSwitchLoading(false);
-    }
-  };
 
   // Populate profile form when query returns
   useEffect(() => {
@@ -287,51 +268,6 @@ export function SettingsView({ portal }: SettingsViewProps) {
       </section>
 
       <div className="settings-workspace">
-        {/* Role & Perspective Switcher Ribbon */}
-        <div className="mb-6 rounded-xl border border-line bg-white p-5 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-brass-600">
-                  Portal Perspective & Mode
-                </span>
-                <span className="rounded-full bg-canvas-2 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-navy-900">
-                  Current: {portal === "agent" ? "Certified Advisor" : "Private Client (Buyer)"}
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-ink-2">
-                Switch your active view to explore both client offer negotiations and certified advisor listing operations.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                disabled={roleSwitchLoading}
-                onClick={() => handleSwitchRole("USER", "/buyer")}
-                className={`px-4 py-2 text-xs font-semibold rounded-lg border transition-all ${
-                  portal === "buyer"
-                    ? "bg-navy-900 text-white border-navy-900 shadow-sm"
-                    : "bg-canvas text-navy-800 border-line hover:bg-white"
-                }`}
-              >
-                Switch to Buyer View
-              </button>
-              <button
-                type="button"
-                disabled={roleSwitchLoading}
-                onClick={() => handleSwitchRole("AGENT", "/agent")}
-                className={`px-4 py-2 text-xs font-semibold rounded-lg border transition-all ${
-                  portal === "agent"
-                    ? "bg-navy-900 text-white border-navy-900 shadow-sm"
-                    : "bg-canvas text-navy-800 border-line hover:bg-white"
-                }`}
-              >
-                Switch to Agent View
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Navigation Tabs */}
         <div className="settings-nav-tabs" role="tablist" aria-label="Settings Sections">
           <button

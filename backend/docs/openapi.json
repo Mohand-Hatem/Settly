@@ -1139,6 +1139,33 @@
           "pageInfo"
         ]
       },
+      "AdminStatsResponse": {
+        "type": "object",
+        "properties": {
+          "pendingListings": {
+            "type": "integer",
+            "description": "Number of listings waiting for moderation review"
+          },
+          "pendingAgentApplications": {
+            "type": "integer",
+            "description": "Number of agent verification applications pending"
+          },
+          "salesNearDeadline": {
+            "type": "integer",
+            "description": "Number of conveyance cases requiring admin action or overdue"
+          },
+          "failedRefundAlerts": {
+            "type": "integer",
+            "description": "Number of failed deposit refunds requiring manual resolution"
+          }
+        },
+        "required": [
+          "pendingListings",
+          "pendingAgentApplications",
+          "salesNearDeadline",
+          "failedRefundAlerts"
+        ]
+      },
       "PaymentStatus": {
         "type": "string",
         "enum": [
@@ -1489,6 +1516,7 @@
         "enum": [
           "DRAFT",
           "PENDING_REVIEW",
+          "REJECTED",
           "PUBLISHED",
           "RESERVED",
           "SOLD",
@@ -3560,6 +3588,193 @@
         "required": [
           "success"
         ]
+      },
+      "ArticleSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "titleEn": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "GUIDE",
+              "FAQ",
+              "LEGAL",
+              "MARKET"
+            ]
+          },
+          "publishedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "areaId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "titleEn",
+          "category",
+          "publishedAt",
+          "areaId"
+        ]
+      },
+      "ArticleList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleSummary"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor",
+          "total"
+        ]
+      },
+      "Article": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "titleEn": {
+            "type": "string"
+          },
+          "bodyEn": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "GUIDE",
+              "FAQ",
+              "LEGAL",
+              "MARKET"
+            ]
+          },
+          "isPublished": {
+            "type": "boolean"
+          },
+          "publishedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "areaId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "titleEn",
+          "bodyEn",
+          "category",
+          "isPublished",
+          "publishedAt",
+          "areaId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RagChunk": {
+        "type": "object",
+        "properties": {
+          "chunkText": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "ARTICLE_CHUNK",
+              "DOCUMENT_CHUNK"
+            ]
+          },
+          "distance": {
+            "type": "number"
+          },
+          "articleSlug": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "chunkText",
+          "sourceType",
+          "distance",
+          "articleSlug"
+        ]
+      },
+      "RagRetrieveResponse": {
+        "type": "object",
+        "properties": {
+          "chunks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RagChunk"
+            }
+          },
+          "abstain": {
+            "type": "boolean",
+            "description": "True when no relevant chunks survive the relevance floor"
+          }
+        },
+        "required": [
+          "chunks",
+          "abstain"
+        ]
+      },
+      "RagRetrieveRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Natural language question for RAG retrieval",
+            "example": "What schools are near New Cairo?"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "Optional property context for PARTY-scoped document retrieval"
+          }
+        },
+        "required": [
+          "query"
+        ]
       }
     },
     "parameters": {}
@@ -4462,6 +4677,82 @@
         }
       }
     },
+    "/api/v1/admin/properties": {
+      "get": {
+        "tags": [
+          "Admin",
+          "Catalog"
+        ],
+        "summary": "List properties for admin moderation review",
+        "description": "Returns paginated properties filtered by status for moderation queue (Admin only).",
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/components/schemas/PropertyStatus"
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of properties for moderation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (Admin role required)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/amenities": {
       "get": {
         "tags": [
@@ -5139,6 +5430,52 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/stats": {
+      "get": {
+        "summary": "Get admin operational dashboard counts (Admin only)",
+        "description": "Returns essential operational queue counts per Decision #28.",
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Admin operational stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminStatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (Admin role required)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
                 }
               }
             }
@@ -9052,6 +9389,664 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ConflictProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search/properties": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Hybrid search for properties (Lexical + Semantic pgvector + RRF)",
+        "description": "Executes hybrid search across PostgreSQL full-text search and vector embeddings with Reciprocal Rank Fusion (RRF). Extracts deterministic query chips from natural language search.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 250
+            },
+            "required": false,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/ListingIntent"
+            },
+            "required": false,
+            "name": "intent",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/PropertyType"
+            },
+            "required": false,
+            "name": "propertyType",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 0
+            },
+            "required": false,
+            "name": "minPrice",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 0
+            },
+            "required": false,
+            "name": "maxPrice",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0
+            },
+            "required": false,
+            "name": "bedrooms",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "areaId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "required": false,
+            "name": "amenities",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[-+]?\\d+(?:\\.\\d+)?,[-+]?\\d+(?:\\.\\d+)?,[-+]?\\d+(?:\\.\\d+)?,[-+]?\\d+(?:\\.\\d+)?$"
+            },
+            "required": false,
+            "name": "bounds",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results with parsed chips and pagination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "titleEn": {
+                            "type": "string"
+                          },
+                          "descriptionEn": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "propertyType": {
+                            "$ref": "#/components/schemas/PropertyType"
+                          },
+                          "listingIntent": {
+                            "$ref": "#/components/schemas/ListingIntent"
+                          },
+                          "price": {
+                            "type": "string"
+                          },
+                          "bedrooms": {
+                            "type": "integer"
+                          },
+                          "bathrooms": {
+                            "type": "integer"
+                          },
+                          "areaSqm": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "$ref": "#/components/schemas/PropertyStatus"
+                          },
+                          "featured": {
+                            "type": "boolean"
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "area": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "nameEn": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "slug",
+                              "nameEn"
+                            ]
+                          },
+                          "coverImage": {
+                            "type": "string"
+                          },
+                          "images": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri"
+                                },
+                                "captionEn": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "isCover": {
+                                  "type": "boolean"
+                                },
+                                "order": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "url",
+                                "isCover",
+                                "order"
+                              ]
+                            }
+                          },
+                          "amenities": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "titleEn",
+                          "propertyType",
+                          "listingIntent",
+                          "price",
+                          "bedrooms",
+                          "bathrooms",
+                          "areaSqm",
+                          "status",
+                          "featured",
+                          "latitude",
+                          "longitude",
+                          "area",
+                          "images",
+                          "amenities"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "chips": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "intent",
+                              "type",
+                              "area",
+                              "bedrooms",
+                              "minPrice",
+                              "maxPrice",
+                              "amenity"
+                            ]
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "value",
+                          "label"
+                        ]
+                      }
+                    },
+                    "residualQuery": {
+                      "type": "string"
+                    },
+                    "degraded": {
+                      "type": "boolean"
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total",
+                    "chips",
+                    "degraded",
+                    "hasMore"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search/properties/clusters": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Spatial cluster aggregates for low-zoom map viewports",
+        "description": "Returns server-side spatial cluster centroids and counts using PostGIS ST_SnapToGrid, sharing the same filtering logic as entity search.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 250
+            },
+            "required": false,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/ListingIntent"
+            },
+            "required": false,
+            "name": "intent",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/PropertyType"
+            },
+            "required": false,
+            "name": "propertyType",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 0
+            },
+            "required": false,
+            "name": "minPrice",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "nullable": true,
+              "minimum": 0
+            },
+            "required": false,
+            "name": "maxPrice",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "minimum": 0
+            },
+            "required": false,
+            "name": "bedrooms",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "areaId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "required": false,
+            "name": "amenities",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[-+]?\\d+(?:\\.\\d+)?,[-+]?\\d+(?:\\.\\d+)?,[-+]?\\d+(?:\\.\\d+)?,[-+]?\\d+(?:\\.\\d+)?$"
+            },
+            "required": false,
+            "name": "bounds",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Map clusters and total count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "clusters": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lat": {
+                            "type": "number"
+                          },
+                          "lng": {
+                            "type": "number"
+                          },
+                          "count": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "lat",
+                          "lng",
+                          "count"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "clusters",
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/knowledge/articles": {
+      "get": {
+        "tags": [
+          "Knowledge"
+        ],
+        "summary": "List published knowledge articles",
+        "description": "Returns a paginated list of published KnowledgeArticle summaries (area guides, FAQs, legal content). Public — no authentication required.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "Opaque pagination cursor from previous response"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Number of articles to return (1–50, default 20)",
+              "example": "20"
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated article list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/knowledge/articles/{slug}": {
+      "get": {
+        "tags": [
+          "Knowledge"
+        ],
+        "summary": "Get a published article by slug",
+        "description": "Returns the full body of a single published KnowledgeArticle. Public — no authentication required.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "URL-safe article slug",
+              "example": "new-cairo-area-guide"
+            },
+            "required": true,
+            "name": "slug",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full article",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found or not published",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/knowledge/retrieve": {
+      "post": {
+        "tags": [
+          "Knowledge"
+        ],
+        "summary": "RAG retrieval — visibility-filtered semantic search over the knowledge corpus",
+        "description": "Embeds the query, retrieves top-K chunks from the RAG corpus filtered by the actor's visibility scope (PUBLIC/PARTY/PRIVATE per RAG.md §5). Returns `abstain: true` when no chunks survive the relevance floor — the correct response is 'I don't have information on that'. Authentication is optional — anonymous callers receive PUBLIC chunks only.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RagRetrieveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "RAG retrieval result (may have abstain: true)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RagRetrieveResponse"
                 }
               }
             }

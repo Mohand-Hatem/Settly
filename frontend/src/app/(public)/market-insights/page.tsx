@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   FileDown,
-  Phone,
   Check,
   X,
 } from "lucide-react";
@@ -1451,19 +1450,17 @@ export default function MarketInsightsPage() {
             </p>
           </div>
           <div className="pre-ftr-actions">
-            <a
-              href="https://wa.me/201000000000?text=Hello%20Settly%20Research,%20I%20would%20like%20to%20schedule%20an%20institutional%20market%20intelligence%20briefing."
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
               className="btn-pre-ftr-wa"
             >
-              <Phone size={16} />
-              <span>WhatsApp Chief Economist</span>
-            </a>
-            <a href="tel:+20221298000" className="btn-pre-ftr-call">
-              <Phone size={15} />
-              <span>+20 (2) 2129 8000</span>
-            </a>
+              <FileDown size={16} />
+              <span>Download Full Market Dossier (PDF)</span>
+            </button>
+            <Link href="/search" className="btn-pre-ftr-call">
+              <span>Explore Verified Resale Catalog →</span>
+            </Link>
           </div>
         </div>
       </section>

@@ -86,7 +86,7 @@ function AdminSalesContent() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="portal-content max-w-[1440px] space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 border-b border-line pb-4">
         <div>

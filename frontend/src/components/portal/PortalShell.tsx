@@ -5,16 +5,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
+  BadgeCheck,
   Bell,
-  CalendarClock,
+  Bookmark,
+  Building2,
   CalendarDays,
+  ClipboardList,
   Compass,
+  FileText,
   HandCoins,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageSquare,
   Scale,
+  Search,
   Settings,
   ShieldCheck,
   X,
@@ -37,31 +42,39 @@ interface NavGroup {
 const NAV_GROUPS: Record<Portal, NavGroup[]> = {
   buyer: [
     {
-      title: "Fiduciary Suite",
+      title: "My Portfolio",
       items: [
         { href: "/buyer", label: "Overview", icon: LayoutDashboard },
-        { href: "/buyer/offers", label: "My Offers", icon: HandCoins },
-        { href: "/buyer/viewings", label: "Viewings", icon: CalendarDays },
-        { href: "/buyer/messages", label: "Messages", icon: MessageSquare },
-        { href: "/search", label: "Browse Catalog", icon: Compass },
+        { href: "/buyer/saved", label: "Favorites & Collections", icon: Bookmark },
+        { href: "/buyer/saved?tab=searches", label: "Saved Searches", icon: Compass },
       ],
     },
     {
-      title: "Account & System",
+      title: "Activity & Offers",
       items: [
+        { href: "/buyer/viewings", label: "My Viewings", icon: CalendarDays },
+        { href: "/buyer/offers", label: "My Offers", icon: HandCoins },
+        { href: "/buyer/messages", label: "Messages", icon: MessageSquare },
         { href: "/buyer/notifications", label: "Notifications", icon: Bell },
+      ],
+    },
+    {
+      title: "Account & Documents",
+      items: [
+        { href: "/buyer/documents", label: "My Documents", icon: FileText },
         { href: "/buyer/settings", label: "Account Settings", icon: Settings },
       ],
     },
   ],
   agent: [
     {
-      title: "Operational Suite",
+      title: "Listing & Pipeline",
       items: [
         { href: "/agent", label: "Overview", icon: LayoutDashboard },
+        { href: "/agent/listings", label: "My Listings", icon: Building2 },
+        { href: "/agent/calendar", label: "Viewing Calendar", icon: CalendarDays },
         { href: "/agent/offers", label: "Offers Review", icon: HandCoins },
-        { href: "/agent/calendar", label: "Calendar & Tours", icon: CalendarClock },
-        { href: "/agent/messages", label: "Messages", icon: MessageSquare },
+        { href: "/agent/messages", label: "Client Inquiries", icon: MessageSquare },
       ],
     },
     {
@@ -77,6 +90,8 @@ const NAV_GROUPS: Record<Portal, NavGroup[]> = {
       title: "Governance Suite",
       items: [
         { href: "/admin", label: "Overview", icon: ShieldCheck },
+        { href: "/admin/moderation", label: "Listing Moderation", icon: ClipboardList },
+        { href: "/admin/verification", label: "Agent Verification", icon: BadgeCheck },
         { href: "/admin/sales", label: "Sales & Closings", icon: Scale },
         { href: "/buyer", label: "Buyer Portal", icon: LayoutDashboard },
       ],
@@ -92,14 +107,11 @@ const NAV_GROUPS: Record<Portal, NavGroup[]> = {
 
 const PORTAL_LABEL: Record<Portal, string> = { buyer: "Buyer", agent: "Agent", admin: "Admin" };
 
-function isActive(pathname: string, href: string, portalRoot: string) {
-  return href === portalRoot ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
-}
-
 export function PortalSwitcher({ current }: { current: Portal }) {
   const { data: session } = authClient.useSession();
   const userRole = roleOf(session?.user);
-  const portals: Portal[] = userRole === "ADMIN" ? ["buyer", "agent", "admin"] : ["buyer", "agent"];
+  const portals: Portal[] = userRole === "ADMIN" ? ["buyer", "admin"] : ["buyer", "agent"];
+
 
   return (
     <nav aria-label="Switch portal" className="portal-switcher-pill">
@@ -178,9 +190,30 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
         .toUpperCase()
     : "U";
 
+  const isItemActive = (href: string) => {
+    const [baseHref, query] = href.split("?");
+    const matchesPath =
+      baseHref === `/${portal}`
+        ? pathname === baseHref
+        : pathname === baseHref || pathname.startsWith(`${baseHref}/`);
+    if (!matchesPath) return false;
+    if (query) {
+      if (typeof window !== "undefined") {
+        const currentParams = new URLSearchParams(window.location.search);
+        return currentParams.get("tab") === "searches";
+      }
+      return false;
+    }
+    if (baseHref === "/buyer/saved" && typeof window !== "undefined") {
+      const currentParams = new URLSearchParams(window.location.search);
+      if (currentParams.get("tab") === "searches") return false;
+    }
+    return true;
+  };
+
   // Determine current active section name for breadcrumbs
   const allItems = groups.flatMap((g) => g.items);
-  const currentItem = allItems.find((item) => isActive(pathname, item.href, `/${portal}`));
+  const currentItem = allItems.find((item) => isItemActive(item.href));
   const currentTitle = currentItem?.label || "Overview";
 
   return (
@@ -225,7 +258,7 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
               <div key={group.title} className="nav-group">
                 <div className="nav-group-label">{group.title}</div>
                 {group.items.map(({ href, label, icon: Icon, badge }) => {
-                  const active = isActive(pathname, href, `/${portal}`);
+                  const active = isItemActive(href);
                   return (
                     <Link
                       key={href}
@@ -241,10 +274,44 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
                 })}
               </div>
             ))}
+
+            {/* Private Advisor Desk Widget (Buyer Portal only - Category 2/3 Reference Component) */}
+            {portal === "buyer" && (
+              <div className="sidebar-advisor">
+                <div className="advisor-header">
+                  <div className="advisor-avatar-box bg-white p-1">
+                    <Image
+                      src="/images/logo.png"
+                      alt="Settly Advisory Desk"
+                      width={32}
+                      height={32}
+                      className="advisor-avatar object-contain"
+                    />
+                  </div>
+                  <div className="advisor-info">
+                    <span className="advisor-name">Settly Advisory Desk</span>
+                    <span className="advisor-meta">
+                      <span className="advisor-status-dot" />
+                      Licensed Support
+                    </span>
+                  </div>
+                </div>
+                <div className="advisor-actions">
+                  <Link href="/buyer/messages" className="btn-advisor-action btn-advisor-msg">
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>In-Platform Message</span>
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer User Strip */}
           <div className="sidebar-footer">
+            <div className="sidebar-trust-marks">
+              <div>VERIFIED LISTINGS &amp; SECURE DEPOSITS</div>
+              <div>LICENSED INDEPENDENT BROKERS</div>
+            </div>
             <div className="sidebar-user-strip">
               <div className="sidebar-user-info">
                 <div className="sidebar-user-avatar">
@@ -287,15 +354,24 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
               </button>
 
               <nav className="header-breadcrumb" aria-label="Breadcrumb">
-                <Link href="/" className="breadcrumb-node">Settly</Link>
-                <span>/</span>
-                <Link href={`/${portal}`} className="breadcrumb-node">{PORTAL_LABEL[portal]}</Link>
-                <span>/</span>
-                <span className="breadcrumb-active">{currentTitle}</span>
+                <Link href={`/${portal}`} className="breadcrumb-node">
+                  {PORTAL_LABEL[portal].toUpperCase()} PORTAL
+                </Link>
+                <span className="text-ink-4">/</span>
+                <span className="breadcrumb-active">{currentTitle.toUpperCase()}</span>
               </nav>
             </div>
 
             <div className="header-end">
+              <div className="portal-trust-chip hidden xl:inline-flex" title="Egyptian Real Estate Regulatory Compliance">
+                <span className="pulse-dot-green" />
+                <span>FRA COMPLIANT REGISTRATION</span>
+              </div>
+
+              <div className="sovereign-rate-pill hidden md:inline-flex" title="Sovereign Reference Exchange Rate (USD/EGP)">
+                <span>USD/EGP 48.98</span>
+              </div>
+
               {cairoTime && (
                 <div className="cairo-clock-pill">
                   <span className="cairo-clock-dot" />
@@ -304,6 +380,15 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
               )}
 
               <PortalSwitcher current={portal} />
+
+              <Link
+                href="/search"
+                className="header-icon-btn hidden sm:inline-flex"
+                title="Search Properties (⌘K)"
+                aria-label="Search Catalog"
+              >
+                <Search className="w-4 h-4 text-ink-2" />
+              </Link>
 
               <NotificationBell portal={portal} />
 
@@ -316,8 +401,8 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
                   {initials}
                 </div>
                 <div className="user-meta-col">
-                  <span className="user-name-txt">{session?.user?.name?.split(" ")[0] || "User"}</span>
-                  <span className="user-role-lbl">{PORTAL_LABEL[portal]}</span>
+                  <span className="user-name-txt">{session?.user?.name || "Client"}</span>
+                  <span className="user-role-lbl">VERIFIED CLIENT</span>
                 </div>
               </Link>
             </div>
@@ -331,6 +416,133 @@ export function PortalShell({ portal, children }: { portal: Portal; children: Re
             </React.Suspense>
             {children}
           </main>
+
+          {/* Mobile Bottom Navigation Bar (SH-12) */}
+          <nav className="portal-mobile-bottom-nav" aria-label="Quick mobile navigation">
+            {portal === "buyer" && (
+              <>
+                <Link
+                  href="/buyer"
+                  className={`mobile-bottom-nav-item ${pathname === "/buyer" ? "active" : ""}`}
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span>Overview</span>
+                </Link>
+                <Link
+                  href="/buyer/offers"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/buyer/offers") ? "active" : ""}`}
+                >
+                  <HandCoins className="w-5 h-5" />
+                  <span>Offers</span>
+                </Link>
+                <Link
+                  href="/buyer/viewings"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/buyer/viewings") ? "active" : ""}`}
+                >
+                  <CalendarDays className="w-5 h-5" />
+                  <span>Viewings</span>
+                </Link>
+                <Link
+                  href="/buyer/messages"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/buyer/messages") ? "active" : ""}`}
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span>Messages</span>
+                </Link>
+                <button
+                  type="button"
+                  className="mobile-bottom-nav-item"
+                  onClick={() => setMobileOpen(true)}
+                  aria-label="Open portal menu"
+                >
+                  <Menu className="w-5 h-5" />
+                  <span>More</span>
+                </button>
+              </>
+            )}
+            {portal === "agent" && (
+              <>
+                <Link
+                  href="/agent"
+                  className={`mobile-bottom-nav-item ${pathname === "/agent" ? "active" : ""}`}
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span>Overview</span>
+                </Link>
+                <Link
+                  href="/agent/listings"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/agent/listings") ? "active" : ""}`}
+                >
+                  <Building2 className="w-5 h-5" />
+                  <span>Listings</span>
+                </Link>
+                <Link
+                  href="/agent/calendar"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/agent/calendar") ? "active" : ""}`}
+                >
+                  <CalendarDays className="w-5 h-5" />
+                  <span>Calendar</span>
+                </Link>
+                <Link
+                  href="/agent/offers"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/agent/offers") ? "active" : ""}`}
+                >
+                  <HandCoins className="w-5 h-5" />
+                  <span>Offers</span>
+                </Link>
+                <button
+                  type="button"
+                  className="mobile-bottom-nav-item"
+                  onClick={() => setMobileOpen(true)}
+                  aria-label="Open portal menu"
+                >
+                  <Menu className="w-5 h-5" />
+                  <span>More</span>
+                </button>
+              </>
+            )}
+            {portal === "admin" && (
+              <>
+                <Link
+                  href="/admin"
+                  className={`mobile-bottom-nav-item ${pathname === "/admin" ? "active" : ""}`}
+                >
+                  <ShieldCheck className="w-5 h-5" />
+                  <span>Overview</span>
+                </Link>
+                <Link
+                  href="/admin/moderation"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/admin/moderation") ? "active" : ""}`}
+                >
+                  <ClipboardList className="w-5 h-5" />
+                  <span>Moderation</span>
+                </Link>
+                <Link
+                  href="/admin/verification"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/admin/verification") ? "active" : ""}`}
+                >
+                  <BadgeCheck className="w-5 h-5" />
+                  <span>Verification</span>
+                </Link>
+                <Link
+                  href="/admin/sales"
+                  className={`mobile-bottom-nav-item ${pathname.startsWith("/admin/sales") ? "active" : ""}`}
+                >
+                  <Scale className="w-5 h-5" />
+                  <span>Sales</span>
+                </Link>
+                <button
+                  type="button"
+                  className="mobile-bottom-nav-item"
+                  onClick={() => setMobileOpen(true)}
+                  aria-label="Open portal menu"
+                >
+                  <Menu className="w-5 h-5" />
+                  <span>More</span>
+                </button>
+              </>
+            )}
+          </nav>
         </div>
       </div>
     </VerificationProvider>

@@ -155,23 +155,23 @@ facets, CARTO removal) are listed in the inventory and need no new spec.
 | Never gated | Browsing, search, property detail, cancelling a viewing |
 | Acceptance criteria | (1) An unverified user cannot create a viewing request (server-enforced). (2) The button is not hidden. (3) After verifying, the banner disappears without a manual reload |
 
-## S1-08 — Property detail (slice scope)
+## S1-08 — Property detail (architectural & visual suite)
 
 | Field | Specification |
 |---|---|
 | Role / route | Everyone · `/properties/[slug]` (ISR; **no per-user cookies in Server Components** — personalised parts load client-side, FRONTEND §2) |
-| Purpose | Understand a listing and request a viewing |
+| Purpose | High-fidelity editorial broadsheet to explore property specifications, architectural blueprints, location commute telemetry, transparent financial schedule, and initiate viewing requests or offers |
 | Entry points | Search results, home, area pages, compare, shared links |
-| Sections | Gallery; title, price (EGP), intent (sale/rent); key specs; **under-construction block** when applicable (delivery date, remaining instalments: total, count, frequency, end date; full cost = price + remaining, #61, #68); description (English, #99); amenities; **location map (Leaflet + MapTiler, #96)**; agent card (name, verified badge, profile link — **no phone, no WhatsApp contact**, #60); similar listings |
+| Sections | (1) Sub-header breadcrumb bar & **action cluster** (Share with clipboard copy, Compare link, Print/PDF Dossier export). (2) **Hero Architectural Gallery Stage** (asymmetric grid, hover zoom, "View all photos" counter lightbox). (3) Identity block (title, reference code, status badges, price in EGP, EGP/m² BUA chip). (4) **6-Metric Dimensional Grid** (BUA, land/plot area, bedrooms, bathrooms, covered parking bays, levels/roof). (5) Property description & verified amenities chips. (6) **Financial Architecture & Capital Deployment** (progress track, resale milestone schedule: cash consideration, maintenance reserve, transfer administration, plus **interactive down-payment slider simulator**). (7) **Under-construction block** when applicable (delivery date, remaining installments, full cost, #61, #68). (8) **Architectural Floorplans (CAD Verified)** (tabbed Ground / First / Roof levels, blueprint SVG diagram, room dimensional breakdown). (9) **Location Context & GIS Map** (Leaflet + MapTiler, #96) accompanied by **4-card commute telemetry matrix** (key arterial destinations: Ring Road, AUC, Airport, City Center). (10) **Title & Due Diligence Standard** (contract authenticity and encumbrance clearance checks). (11) **Sticky Action Console** (pricing, viewing booking trigger, make offer trigger, message agent, agent profile card — **no public phone, no WhatsApp contact**, #60). (12) **Similar Verified Residences** (3-card comparison grid). |
 | Primary action | **Request a viewing** (S1-09) |
-| Secondary actions | Compare; share; WhatsApp **demo CTA only if kept, clearly non-functional** (SH-11) |
-| Not rendered in this slice | Make offer, message agent, favourite (their phases are not built — #106). No escrow wording, no developer payment plan, no deed "certified" badge, no 3D tour (C-3, C-5, C-11) |
-| States | loading · not found / not public (404) · **own listing** (agent viewing their own listing: buyer actions hidden, "This is your listing" note, #59) · **`RESERVED`** (viewing action hidden; "Reserved" badge) · rental listing (viewing allowed) · map tiles failed (address text remains) |
+| Secondary actions | Make an offer (S2); message agent; compare; share; print/export dossier; WhatsApp **demo CTA only if kept, clearly non-functional** (SH-11) |
+| Not rendered | No escrow wording, no developer primary plan, no deed "certified" legal claims, no off-platform agent phone contact (C-3, C-5, C-9, C-11) |
+| States | loading · not found / not public (404) · **own listing** (agent viewing their own listing: buyer actions hidden, "This is your listing" note, #59) · **`RESERVED`** (viewing/offer actions hidden; "Reserved" badge) · rental listing (rent price & period, viewing allowed, offers hidden) · map tiles failed (address text remains) |
 | Permissions | Public read of `PUBLISHED`/`RESERVED` listings only |
-| API | `GET /api/v1/properties/:slug` (exists); similar listings from the catalog service |
-| Mobile / desktop | Mobile: sticky bottom bar with "Request a viewing"; desktop: sticky side card |
-| Acceptance criteria | (1) No agent phone or real WhatsApp number anywhere in the page source. (2) The map uses MapTiler with the key from `NEXT_PUBLIC_MAPTILER_KEY`. (3) The own-listing state hides the viewing action. (4) Under-construction listings show the full cost |
-| Definition of done | Page matches this spec; the local-state "Submit Escrow Offer", favourite and scheduler mocks are removed or replaced by the real viewing flow |
+| API | `GET /api/v1/properties/:slug` (exists); similar listings query / catalog service |
+| Mobile / desktop | Mobile: sticky bottom bar with "Request viewing" / "Make offer"; desktop: sticky side card console |
+| Acceptance criteria | (1) No agent phone or real WhatsApp number anywhere in the page source (#60). (2) The map uses MapTiler with the key from `NEXT_PUBLIC_MAPTILER_KEY` (#96). (3) The own-listing state hides buyer action triggers (#59). (4) Floorplans tab switcher accurately updates blueprint and room dimensions. (5) Financial calculator slider dynamically computes down payment and remaining commitments. (6) Responsive layout adapts seamlessly on mobile viewports. |
+| Definition of done | Page matches this spec; restored architectural and visual components render cleanly and without lint/TypeScript errors |
 
 ## S1-09 — Request viewing (modal on S1-08)
 

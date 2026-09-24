@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { authClient, roleOf } from "@/lib/auth-client";
 import {
   Menu,
@@ -13,16 +13,78 @@ import {
   CalendarDays,
   HandCoins,
   LayoutDashboard,
-  CalendarClock,
   ShieldCheck,
   Building2,
   ArrowRight,
   Compass,
   Home,
+  Bookmark,
+  Search,
+  ClipboardList,
+  BadgeCheck,
+  MessageSquare,
 } from "lucide-react";
 
 interface NavbarProps {
   dark?: boolean;
+}
+
+function NavbarSearchInput() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryParam = searchParams?.get("q") || searchParams?.get("keyword") || "";
+  const [val, setVal] = useState(queryParam);
+
+  useEffect(() => {
+    setVal(queryParam);
+  }, [queryParam]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = val.trim();
+    if (trimmed) {
+      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+    } else {
+      router.push("/search");
+    }
+  };
+
+  const handleClear = () => {
+    setVal("");
+    router.push("/search");
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="settly-hdr-search" id="hdrSearchConsole">
+      <Search className="search-icon w-4 h-4 text-ink-3 shrink-0" />
+      <input
+        type="text"
+        className="hdr-search-input"
+        id="globalSearchInput"
+        placeholder="Search by area or compound (e.g. New Cairo, Sheikh Zayed)..."
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        autoComplete="off"
+        aria-label="Search properties in Egypt"
+      />
+      {val && (
+        <button
+          type="button"
+          className="hdr-search-clear"
+          id="hdrSearchClear"
+          aria-label="Clear search"
+          title="Clear query"
+          onClick={handleClear}
+        >
+          <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+        </button>
+      )}
+      <span className="hdr-search-divider" />
+      <kbd className="hdr-search-kbd" title="Press Enter to search">
+        ↵
+      </kbd>
+    </form>
+  );
 }
 
 export function Navbar({ dark = false }: NavbarProps) {
@@ -84,6 +146,7 @@ export function Navbar({ dark = false }: NavbarProps) {
             alt="Settly Logo"
             width={38}
             height={38}
+            className="brand-logo-img"
             priority
           />
           <span>Settly</span>
@@ -91,50 +154,9 @@ export function Navbar({ dark = false }: NavbarProps) {
 
         {/* Refactored Search Console on Search Page */}
         {isSearchMode && (
-          <div className="settly-hdr-search" id="hdrSearchConsole">
-            <svg
-              className="search-icon"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input
-              type="text"
-              className="hdr-search-input"
-              id="globalSearchInput"
-              placeholder="Search by area or compound (e.g. New Cairo, Sheikh Zayed)..."
-              defaultValue="Golden Square, New Cairo"
-              autoComplete="off"
-              aria-label="Search properties in Egypt"
-            />
-            <button
-              type="button"
-              className="hdr-search-clear"
-              id="hdrSearchClear"
-              aria-label="Clear search"
-              title="Clear query"
-              onClick={() => {
-                const input = document.getElementById(
-                  "globalSearchInput"
-                ) as HTMLInputElement;
-                if (input) input.value = "";
-              }}
-            >
-              <X className="w-3.5 h-3.5" strokeWidth={2.5} />
-            </button>
-            <span className="hdr-search-divider" />
-            <kbd className="hdr-search-kbd" title="Press ⌘K or Ctrl+K to search">
-              ⌘K
-            </kbd>
-          </div>
+          <Suspense fallback={<div className="settly-hdr-search animate-pulse" />}>
+            <NavbarSearchInput />
+          </Suspense>
         )}
 
         {/* Primary Geometric Centered Navigation (Desktop) */}
@@ -244,6 +266,12 @@ export function Navbar({ dark = false }: NavbarProps) {
           </div>
 
           <Link
+            href="/how-it-works"
+            className={`settly-nav-link ${pathname === "/how-it-works" ? "active" : ""}`}
+          >
+            How It Works
+          </Link>
+          <Link
             href="/compare"
             className={`settly-nav-link ${pathname === "/compare" ? "active" : ""}`}
           >
@@ -268,8 +296,20 @@ export function Navbar({ dark = false }: NavbarProps) {
           {/* FX Pill */}
           <div className="settly-fx-pill hidden xl:inline-flex" title="CBE Benchmark FX Rate">
             <span>USD/EGP:</span>
-            <strong>48.85</strong>
+            <strong>48.98</strong>
           </div>
+
+          {/* Quick Search Shortcut when not in search mode */}
+          {!isSearchMode && (
+            <Link
+              href="/search"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-white text-ink-2 shadow-sm transition hover:border-brass hover:text-navy-900"
+              title="Search residences"
+              aria-label="Search residences"
+            >
+              <Search className="w-4 h-4" />
+            </Link>
+          )}
 
           {/* Auth State: User Menu Dropdown or Sign In / Register */}
           {!isPending && session?.user ? (
@@ -331,6 +371,10 @@ export function Navbar({ dark = false }: NavbarProps) {
                     <CalendarDays className="w-4 h-4 text-ink-3" />
                     <span>My Viewings</span>
                   </Link>
+                  <Link href="/buyer/saved" className="user-dropdown-item">
+                    <Bookmark className="w-4 h-4 text-ink-3" />
+                    <span>Saved Properties</span>
+                  </Link>
 
                   {/* Agent Portal Navigation (for AGENT or ADMIN) */}
                   {isAgent && (
@@ -340,13 +384,21 @@ export function Navbar({ dark = false }: NavbarProps) {
                         <LayoutDashboard className="w-4 h-4 text-sage" />
                         <span>Agent Dashboard</span>
                       </Link>
+                      <Link href="/agent/listings" className="user-dropdown-item">
+                        <Building2 className="w-4 h-4 text-ink-3" />
+                        <span>My Listings</span>
+                      </Link>
+                      <Link href="/agent/calendar" className="user-dropdown-item">
+                        <CalendarDays className="w-4 h-4 text-ink-3" />
+                        <span>Viewing Calendar</span>
+                      </Link>
                       <Link href="/agent/offers" className="user-dropdown-item">
                         <HandCoins className="w-4 h-4 text-ink-3" />
                         <span>Incoming Offers</span>
                       </Link>
-                      <Link href="/agent/calendar" className="user-dropdown-item">
-                        <CalendarClock className="w-4 h-4 text-ink-3" />
-                        <span>Availability & Schedule</span>
+                      <Link href="/agent/messages" className="user-dropdown-item">
+                        <MessageSquare className="w-4 h-4 text-ink-3" />
+                        <span>Client Inquiries</span>
                       </Link>
                     </>
                   )}
@@ -354,10 +406,18 @@ export function Navbar({ dark = false }: NavbarProps) {
                   {/* Admin Portal (for ADMIN only) */}
                   {isAdmin && (
                     <>
-                      <div className="user-dropdown-section-title">Admin</div>
+                      <div className="user-dropdown-section-title">Admin Governance</div>
                       <Link href="/admin" className="user-dropdown-item is-portal">
                         <ShieldCheck className="w-4 h-4 text-navy-900" />
-                        <span>Moderation Console</span>
+                        <span>Dashboard Overview</span>
+                      </Link>
+                      <Link href="/admin/moderation" className="user-dropdown-item">
+                        <ClipboardList className="w-4 h-4 text-ink-3" />
+                        <span>Listing Moderation</span>
+                      </Link>
+                      <Link href="/admin/verification" className="user-dropdown-item">
+                        <BadgeCheck className="w-4 h-4 text-ink-3" />
+                        <span>Agent Verification</span>
                       </Link>
                     </>
                   )}
@@ -438,6 +498,14 @@ export function Navbar({ dark = false }: NavbarProps) {
                     Agent Portal
                   </Link>
                 )}
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="col-span-2 rounded-lg bg-navy-800 p-2 text-center text-xs font-semibold text-white"
+                  >
+                    Admin Console
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -461,7 +529,17 @@ export function Navbar({ dark = false }: NavbarProps) {
                   : "text-navy-900 hover:bg-canvas"
               }`}
             >
-              Districts & GIS Radar
+              Districts &amp; GIS Radar
+            </Link>
+            <Link
+              href="/how-it-works"
+              className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${
+                pathname === "/how-it-works"
+                  ? "bg-brass-050 text-brass-600 font-bold"
+                  : "text-navy-900 hover:bg-canvas"
+              }`}
+            >
+              How It Works
             </Link>
             <Link
               href="/compare"
@@ -493,6 +571,18 @@ export function Navbar({ dark = false }: NavbarProps) {
             >
               Verified Agents
             </Link>
+            {!isPending && session?.user && (
+              <Link
+                href="/buyer/saved"
+                className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${
+                  pathname === "/buyer/saved"
+                    ? "bg-brass-050 text-brass-600 font-bold"
+                    : "text-navy-900 hover:bg-canvas"
+                }`}
+              >
+                Saved Properties
+              </Link>
+            )}
           </nav>
 
           <div className="pt-3 border-t border-line">

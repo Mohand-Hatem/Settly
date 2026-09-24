@@ -858,6 +858,67 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/properties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List properties for admin moderation review
+         * @description Returns paginated properties filtered by status for moderation queue (Admin only).
+         */
+        get: {
+            parameters: {
+                query?: {
+                    status?: components["schemas"]["PropertyStatus"];
+                    cursor?: string;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of properties for moderation */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PropertyListResponse"];
+                    };
+                };
+                /** @description Unauthenticated */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden (Admin role required) */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/amenities": {
         parameters: {
             query?: never;
@@ -1515,6 +1576,63 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get admin operational dashboard counts (Admin only)
+         * @description Returns essential operational queue counts per Decision #28.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Admin operational stats */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminStatsResponse"];
+                    };
+                };
+                /** @description Unauthenticated */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden (Admin role required) */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -5104,6 +5222,343 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/search/properties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Hybrid search for properties (Lexical + Semantic pgvector + RRF)
+         * @description Executes hybrid search across PostgreSQL full-text search and vector embeddings with Reciprocal Rank Fusion (RRF). Extracts deterministic query chips from natural language search.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    q?: string;
+                    intent?: components["schemas"]["ListingIntent"];
+                    propertyType?: components["schemas"]["PropertyType"];
+                    minPrice?: number | null;
+                    maxPrice?: number | null;
+                    bedrooms?: number | null;
+                    areaId?: string;
+                    amenities?: string | string[];
+                    bounds?: string;
+                    cursor?: string;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Search results with parsed chips and pagination */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            items: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                titleEn: string;
+                                descriptionEn?: string | null;
+                                propertyType: components["schemas"]["PropertyType"];
+                                listingIntent: components["schemas"]["ListingIntent"];
+                                price: string;
+                                bedrooms: number;
+                                bathrooms: number;
+                                areaSqm: string;
+                                status: components["schemas"]["PropertyStatus"];
+                                featured: boolean;
+                                latitude: number;
+                                longitude: number;
+                                publishedAt?: string | null;
+                                area: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    nameEn: string;
+                                };
+                                coverImage?: string;
+                                images: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: uri */
+                                    url: string;
+                                    captionEn?: string | null;
+                                    isCover: boolean;
+                                    order: number;
+                                }[];
+                                amenities: string[];
+                            }[];
+                            total: number;
+                            chips: {
+                                /** @enum {string} */
+                                kind: "intent" | "type" | "area" | "bedrooms" | "minPrice" | "maxPrice" | "amenity";
+                                value: string;
+                                label: string;
+                            }[];
+                            residualQuery?: string;
+                            degraded: boolean;
+                            hasMore: boolean;
+                            /** Format: uuid */
+                            nextCursor?: string | null;
+                        };
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/search/properties/clusters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Spatial cluster aggregates for low-zoom map viewports
+         * @description Returns server-side spatial cluster centroids and counts using PostGIS ST_SnapToGrid, sharing the same filtering logic as entity search.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    q?: string;
+                    intent?: components["schemas"]["ListingIntent"];
+                    propertyType?: components["schemas"]["PropertyType"];
+                    minPrice?: number | null;
+                    maxPrice?: number | null;
+                    bedrooms?: number | null;
+                    areaId?: string;
+                    amenities?: string | string[];
+                    bounds?: string;
+                    cursor?: string;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Map clusters and total count */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            clusters: {
+                                lat: number;
+                                lng: number;
+                                count: number;
+                            }[];
+                            total: number;
+                        };
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge/articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List published knowledge articles
+         * @description Returns a paginated list of published KnowledgeArticle summaries (area guides, FAQs, legal content). Public — no authentication required.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    cursor?: string;
+                    limit?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Paginated article list */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ArticleList"];
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge/articles/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a published article by slug
+         * @description Returns the full body of a single published KnowledgeArticle. Public — no authentication required.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Full article */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Article"];
+                    };
+                };
+                /** @description Article not found or not published */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge/retrieve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * RAG retrieval — visibility-filtered semantic search over the knowledge corpus
+         * @description Embeds the query, retrieves top-K chunks from the RAG corpus filtered by the actor's visibility scope (PUBLIC/PARTY/PRIVATE per RAG.md §5). Returns `abstain: true` when no chunks survive the relevance floor — the correct response is 'I don't have information on that'. Authentication is optional — anonymous callers receive PUBLIC chunks only.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RagRetrieveRequest"];
+                };
+            };
+            responses: {
+                /** @description RAG retrieval result (may have abstain: true) */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RagRetrieveResponse"];
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -5474,6 +5929,16 @@ export interface components {
                 hasNextPage: boolean;
             };
         };
+        AdminStatsResponse: {
+            /** @description Number of listings waiting for moderation review */
+            pendingListings: number;
+            /** @description Number of agent verification applications pending */
+            pendingAgentApplications: number;
+            /** @description Number of conveyance cases requiring admin action or overdue */
+            salesNearDeadline: number;
+            /** @description Number of failed deposit refunds requiring manual resolution */
+            failedRefundAlerts: number;
+        };
         /** @enum {string} */
         PaymentStatus: "PENDING" | "PROCESSING" | "SUCCEEDED" | "CANCELLED" | "EXPIRED" | "REFUNDED" | "PARTIALLY_REFUNDED";
         /** @enum {string} */
@@ -5620,7 +6085,7 @@ export interface components {
         /** @enum {string|null} */
         RentalPeriod: "MONTHLY" | "YEARLY" | null;
         /** @enum {string} */
-        PropertyStatus: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "RESERVED" | "SOLD" | "RENTED" | "ARCHIVED" | "SUSPENDED";
+        PropertyStatus: "DRAFT" | "PENDING_REVIEW" | "REJECTED" | "PUBLISHED" | "RESERVED" | "SOLD" | "RENTED" | "ARCHIVED" | "SUSPENDED";
         PropertyImage: {
             /**
              * Format: uuid
@@ -6340,6 +6805,58 @@ export interface components {
         NotificationActionSuccess: {
             success: boolean;
             count?: number;
+        };
+        ArticleSummary: {
+            id: string;
+            slug: string;
+            titleEn: string;
+            /** @enum {string} */
+            category: "GUIDE" | "FAQ" | "LEGAL" | "MARKET";
+            /** Format: date-time */
+            publishedAt: string | null;
+            areaId: string | null;
+        };
+        ArticleList: {
+            items: components["schemas"]["ArticleSummary"][];
+            nextCursor: string | null;
+            total: number;
+        };
+        Article: {
+            id: string;
+            slug: string;
+            titleEn: string;
+            bodyEn: string;
+            /** @enum {string} */
+            category: "GUIDE" | "FAQ" | "LEGAL" | "MARKET";
+            isPublished: boolean;
+            /** Format: date-time */
+            publishedAt: string | null;
+            areaId: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        RagChunk: {
+            chunkText: string;
+            /** @enum {string} */
+            sourceType: "ARTICLE_CHUNK" | "DOCUMENT_CHUNK";
+            distance: number;
+            articleSlug: string | null;
+        };
+        RagRetrieveResponse: {
+            chunks: components["schemas"]["RagChunk"][];
+            /** @description True when no relevant chunks survive the relevance floor */
+            abstain: boolean;
+        };
+        RagRetrieveRequest: {
+            /**
+             * @description Natural language question for RAG retrieval
+             * @example What schools are near New Cairo?
+             */
+            query: string;
+            /** @description Optional property context for PARTY-scoped document retrieval */
+            propertyId?: string;
         };
     };
     responses: never;

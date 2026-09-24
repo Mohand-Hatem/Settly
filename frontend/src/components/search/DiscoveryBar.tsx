@@ -1,13 +1,20 @@
 "use client";
 
 import React from "react";
-import { X } from "lucide-react";
+import { X, Bed, Tag, Coins, MapPin, Sparkles } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export type ViewMode = "split" | "grid" | "map";
 
+export interface SearchChipItem {
+  key: string;
+  label: string;
+  kind?: "intent" | "type" | "area" | "bedrooms" | "minPrice" | "maxPrice" | "amenity" | "custom";
+}
+
 interface DiscoveryBarProps {
   count: number;
-  activeChips: { key: string; label: string }[];
+  activeChips: SearchChipItem[];
   onRemoveChip: (key: string) => void;
   onClearAll: () => void;
   sortValue: string;
@@ -16,6 +23,8 @@ interface DiscoveryBarProps {
   onViewModeChange: (mode: ViewMode) => void;
   onOpenFilters?: () => void;
   activeFilterCount?: number;
+  isLoading?: boolean;
+  isDegraded?: boolean;
 }
 
 export function DiscoveryBar({
@@ -29,22 +38,60 @@ export function DiscoveryBar({
   onViewModeChange,
   onOpenFilters,
   activeFilterCount = 0,
+  isLoading = false,
+  isDegraded = false,
 }: DiscoveryBarProps) {
+  const renderChipIcon = (kind?: string) => {
+    switch (kind) {
+      case "bedrooms":
+        return <Bed className="w-2.5 h-2.5 opacity-70" />;
+      case "type":
+        return <Tag className="w-2.5 h-2.5 opacity-70" />;
+      case "minPrice":
+      case "maxPrice":
+        return <Coins className="w-2.5 h-2.5 opacity-70" />;
+      case "area":
+        return <MapPin className="w-2.5 h-2.5 opacity-70" />;
+      case "amenity":
+        return <Sparkles className="w-2.5 h-2.5 opacity-70" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="discovery-bar">
+      {isDegraded && (
+        <div className="wrap pt-2">
+          <div
+            className="discovery-degraded-pill inline-flex items-center gap-1.5 text-xs text-brass-400 bg-navy-900/60 border border-brass-500/20 px-2.5 py-1 rounded"
+            title="Vector semantic search unavailable; fallback to full-text lexical search."
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+            <span>Lexical fallback active</span>
+          </div>
+        </div>
+      )}
+
+      {/* Discovery Sub-bar (Tally, active chips, view switcher) */}
       <div className="wrap discovery-bar-row">
         <div className="discovery-meta">
-          <span className="discovery-tally" id="resultsCount">
-            {count} Verified Residences
-          </span>
+          {isLoading ? (
+            <Skeleton className="h-5 w-32 rounded-md mb-1" />
+          ) : (
+            <span className="discovery-tally" id="resultsCount">
+              {count} Verified Residences
+            </span>
+          )}
           <span className="discovery-sub">
-            New Cairo & Sheikh Zayed · 100% Freehold & CAD Audited
+            New Cairo, Sheikh Zayed &amp; Prime Egypt · Verified Resale Title &amp; Due Diligence
           </span>
         </div>
 
         <div className="discovery-chips" id="activeChipsList">
           {activeChips.map((chip) => (
-            <span key={chip.key} className="active-chip">
+            <span key={chip.key} className={`active-chip chip-${chip.kind || "default"}`}>
+              {renderChipIcon(chip.kind)}
               <span>{chip.label}</span>
               <button
                 type="button"

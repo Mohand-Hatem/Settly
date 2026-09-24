@@ -943,6 +943,10 @@ export class OfferService {
     const formatted = await this.formatOffer(updated, adminUser.id, "ADMIN");
     return { status: "ok", offer: formatted };
   }
+
+  async countActionRequiredSales(): Promise<number> {
+    return await offerRepository.countActionRequiredSales();
+  }
 }
 
 export const offerService = new OfferService();

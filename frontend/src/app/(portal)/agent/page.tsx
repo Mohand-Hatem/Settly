@@ -94,6 +94,45 @@ export default function AgentDashboardPage() {
         </section>
       )}
 
+      {/* Broker Accreditation & Quota Capacity Bar (SUB-09 & Decision #56) */}
+      <section className="rounded-2xl border border-line bg-white p-5 shadow-settly space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-brass">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-display text-base font-bold text-navy-900">
+                  Accredited Broker Mandate Capacity
+                </h2>
+                <span className="rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 font-mono text-[10px] font-bold">
+                  Law #119 Verified
+                </span>
+              </div>
+              <p className="text-xs text-ink-3">
+                Subscription Tier Allocation (`SUB-09`): Resale listing quota &amp; viewing routing
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs text-ink-3">Tier Quota:</span>
+            <span className="font-mono text-xs font-bold text-navy-900">Standard Mandate Desk (10 active)</span>
+          </div>
+        </div>
+
+        <div className="space-y-1.5 pt-1">
+          <div className="flex justify-between text-[11px] font-mono">
+            <span className="text-ink-3">Active Mandates Registered</span>
+            <span className="font-bold text-navy-900">Compliance Nominal</span>
+          </div>
+          <div className="h-2 w-full rounded-full bg-canvas border border-line overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-brass-600 to-brass rounded-full w-[40%]" />
+          </div>
+        </div>
+      </section>
+
       {/* 4-Metric Executive Telemetry Ribbon */}
       <section className="telemetry-grid" aria-label="Operational Telemetry">
         {/* Metric 1: Viewing Requests Awaiting Response */}

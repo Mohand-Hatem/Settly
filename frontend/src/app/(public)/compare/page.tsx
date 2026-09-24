@@ -32,7 +32,7 @@ import "@/styles/settly/compare.css";
 // Columns shown side by side; the backend enforces the same 2–4 range
 const MIN_COMPARE = 2;
 const MAX_COMPARE = 4;
-const DEFAULT_FX: FxRates = { USD: 48.85, EUR: 53.2 };
+const DEFAULT_FX: FxRates = { USD: 48.98, EUR: 53.2 };
 
 /** A compared residence with prices already converted from piastres to EGP. */
 interface CompareProperty extends Omit<CompareItem, "titleEn" | "price" | "pricePerSqm"> {

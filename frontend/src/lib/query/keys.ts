@@ -9,6 +9,8 @@ export const catalogKeys = {
   // Order matters: the compare matrix renders columns in id order
   compare: (ids: readonly string[]) => [...catalogKeys.all, "compare", [...ids]] as const,
   areas: () => [...catalogKeys.all, "areas"] as const,
+  myProperties: (params: { limit?: number; cursor?: string } = {}) =>
+    [...catalogKeys.all, "my-properties", params] as const,
 };
 
 export const analyticsKeys = {

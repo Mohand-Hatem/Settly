@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   Star,
   Check,
-  Phone,
+  MessageSquare,
   Lock,
   X,
 } from "lucide-react";
@@ -58,7 +58,7 @@ interface AdvisorDossier {
   bio: string;
   territoryPillar: string;
   allocationsPillar: string;
-  whatsapp: string;
+  whatsapp?: string;
   portfolio: PortfolioItem[];
   settlements: TransactionRecord[];
   testimonials: TestimonialRecord[];
@@ -637,22 +637,20 @@ export default function AgentProfilePage({ params }: PageProps) {
               </div>
 
               <div className="dossier-cta-cluster">
-                <a
-                  href={`https://wa.me/${advisor.whatsapp}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-dossier-primary"
-                >
-                  <Phone size={15} />
-                  WhatsApp Direct Desk
-                </a>
                 <button
                   type="button"
-                  className="btn-dossier-secondary"
+                  className="btn-dossier-primary"
                   onClick={() => setIsModalOpen(true)}
                 >
+                  <MessageSquare size={15} />
                   Schedule Advisory Briefing
                 </button>
+                <Link
+                  href={`/search?agent=${advisor.id}`}
+                  className="btn-dossier-secondary"
+                >
+                  View Active Mandates ({advisor.activeCount})
+                </Link>
               </div>
             </div>
           </div>
@@ -813,15 +811,14 @@ export default function AgentProfilePage({ params }: PageProps) {
             </div>
 
             <div className="console-body">
-              <a
-                href={`https://wa.me/${advisor.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
                 className="btn-console-whatsapp"
+                onClick={() => setIsModalOpen(true)}
               >
-                <Phone size={15} />
-                Direct WhatsApp Dispatch
-              </a>
+                <MessageSquare size={15} />
+                Request Private Advisory Briefing
+              </button>
 
               <div className="console-divider">Or Book Advisory Session</div>
 
@@ -987,7 +984,7 @@ export default function AgentProfilePage({ params }: PageProps) {
                   Briefing Scheduled
                 </h3>
                 <p style={{ fontSize: "13.5px", color: "var(--ink-2)", lineHeight: 1.5, margin: "0 0 1.5rem" }}>
-                  Your confidential session has been reserved. An encrypted calendar invite and advisor WhatsApp briefing dossier will arrive within {advisor.response}.
+                  Your confidential session has been requested. An encrypted calendar invite and briefing dossier will arrive within {advisor.response}.
                 </p>
                 <button
                   type="button"
@@ -1015,7 +1012,7 @@ export default function AgentProfilePage({ params }: PageProps) {
                   </div>
 
                   <div className="console-form-group">
-                    <label htmlFor="mContact">Email or WhatsApp Number</label>
+                    <label htmlFor="mContact">Email Address or Phone Number</label>
                     <input
                       type="text"
                       id="mContact"

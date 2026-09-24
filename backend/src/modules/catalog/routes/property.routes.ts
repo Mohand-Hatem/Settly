@@ -8,6 +8,7 @@ import {
   PropertyResponseSchema,
   PropertyListResponseSchema,
   ActionReasonSchema,
+  PropertyStatusEnum,
 } from "../schema/property.schema.js";
 import { ReorderImagesSchema } from "../schema/upload.schema.js";
 import { requireRole } from "../../identity/middleware/auth.middleware.js";
@@ -511,6 +512,52 @@ propertyRouter.patch(
 // ==============================================================================
 
 adminPropertyRouter.use(requireRole("ADMIN"));
+
+export const AdminPropertyListQuerySchema = z.object({
+  status: PropertyStatusEnum.optional(),
+  cursor: z.string().uuid().optional(),
+  limit: z.coerce.number().int().min(1).max(50).optional(),
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/api/v1/admin/properties",
+  tags: ["Admin", "Catalog"],
+  summary: "List properties for admin moderation review",
+  description: "Returns paginated properties filtered by status for moderation queue (Admin only).",
+  security: [{ sessionAuth: [] }],
+  request: {
+    query: AdminPropertyListQuerySchema,
+  },
+  responses: {
+    200: {
+      description: "List of properties for moderation",
+      content: { "application/json": { schema: PropertyListResponseSchema } },
+    },
+    401: {
+      description: "Unauthenticated",
+      content: { "application/problem+json": { schema: UnauthenticatedProblemSchema } },
+    },
+    403: {
+      description: "Forbidden (Admin role required)",
+      content: { "application/problem+json": { schema: ForbiddenProblemSchema } },
+    },
+  },
+});
+
+// Moderation queue list
+adminPropertyRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const parsed = AdminPropertyListQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return next(validationError(parsed.error, req.originalUrl));
+    }
+    const result = await propertyService.listAdminProperties(parsed.data);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // P3: Approve
 adminPropertyRouter.post("/:id/approve", async (req: Request, res: Response, next: NextFunction) => {

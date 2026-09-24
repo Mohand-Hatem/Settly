@@ -18,6 +18,7 @@ export const PropertyStatusEnum = z
   .enum([
     "DRAFT",
     "PENDING_REVIEW",
+    "REJECTED",
     "PUBLISHED",
     "RESERVED",
     "SOLD",

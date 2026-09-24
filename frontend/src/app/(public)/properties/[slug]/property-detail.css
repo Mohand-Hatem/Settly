@@ -1095,3 +1095,48 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Print Styles for CAD Dossier (PDF Export) */
+@media print {
+  body, .property-detail-page {
+    background: #ffffff !important;
+    color: #131d36 !important;
+  }
+  .settly-master-header,
+  .settly-global-header,
+  header,
+  footer,
+  .detail-sticky-col,
+  .detail-actions-cluster,
+  .gallery-floating-triggers,
+  .fixed,
+  [role="dialog"],
+  .calc-box,
+  .similar-section {
+    display: none !important;
+  }
+  .detail-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .detail-main-col {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .gallery-stage {
+    padding-block: 0 !important;
+    border-bottom: none !important;
+  }
+  .gallery-grid {
+    height: 340px !important;
+  }
+  .detail-card {
+    page-break-inside: avoid;
+    border: 1px solid #dcdad5 !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .matrix-grid {
+    page-break-inside: avoid;
+  }
+}
+

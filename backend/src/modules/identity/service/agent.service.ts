@@ -57,3 +57,7 @@ export async function registerDeviceToken({
 export async function removeDeviceToken(userId: string, token: string): Promise<boolean> {
   return await agentRepo.deleteUserDevice(userId, token);
 }
+
+export async function countPendingAgentVerifications(): Promise<number> {
+  return await agentRepo.countPendingAgentVerifications();
+}

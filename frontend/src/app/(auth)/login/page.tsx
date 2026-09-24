@@ -23,7 +23,6 @@ function LoginForm() {
   const callbackUrl = safeCallbackUrl(params.get("callbackUrl"));
   const banned = params.get("error") === "banned";
 
-  const [activeRole, setActiveRole] = useState<"buyer" | "agent">("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,19 +30,11 @@ function LoginForm() {
     banned ? "Your account is suspended." : null
   );
 
-  const handleRoleTabChange = (role: "buyer" | "agent") => {
-    setActiveRole(role);
-    setError(null);
-  };
-
-  const fillDemo = (demoEmail: string, demoRole: "buyer" | "agent") => {
-    setActiveRole(demoRole);
+  const fillDemo = (demoEmail: string, roleName: string) => {
     setEmail(demoEmail);
     setPassword("SettlyDemo2026!");
     setError(null);
-    toast.success(
-      `Demo ${demoRole === "buyer" ? "Buyer" : "Advisor"} credentials loaded.`
-    );
+    toast.success(`Demo ${roleName} credentials loaded.`);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -86,8 +77,10 @@ function LoginForm() {
     const origin = window.location.origin;
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: `${origin}${callbackUrl ?? (activeRole === "agent" ? "/agent" : "/buyer")}`,
-      newUserCallbackURL: `${origin}/complete-profile`,
+      callbackURL: `${origin}${callbackUrl ?? "/buyer"}`,
+      newUserCallbackURL: `${origin}/complete-profile${
+        callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
+      }`,
     });
   };
 
@@ -126,71 +119,12 @@ function LoginForm() {
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
             <span>
-              TLS 1.3 encrypted session · Client funds in protected escrow accounts
+              TLS 1.3 encrypted session · Verified reservation deposits &amp; title due diligence
             </span>
           </div>
         </>
       }
     >
-      {/* Role Selector Tabs */}
-      <div
-        className="role-tabs"
-        role="tablist"
-        aria-label="Portal Access Role"
-      >
-        <button
-          type="button"
-          className={`role-tab-btn ${activeRole === "buyer" ? "active" : ""}`}
-          id="tabBuyer"
-          role="tab"
-          aria-selected={activeRole === "buyer"}
-          onClick={() => handleRoleTabChange("buyer")}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          <span className="role-txt-long">Private Client</span>
-          <span className="role-txt-short">Buyer</span>
-        </button>
-
-        <button
-          type="button"
-          className={`role-tab-btn ${activeRole === "agent" ? "active" : ""}`}
-          id="tabAgent"
-          role="tab"
-          aria-selected={activeRole === "agent"}
-          onClick={() => handleRoleTabChange("agent")}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-          </svg>
-          <span className="role-txt-long">Certified Advisor</span>
-          <span className="role-txt-short">Advisor</span>
-        </button>
-      </div>
-
       {/* Quick-Fill Demo Bar */}
       <div className="demo-fill-bar">
         <span className="demo-fill-label">Test Access:</span>
@@ -198,7 +132,7 @@ function LoginForm() {
           <button
             type="button"
             className="btn-demo-quick"
-            onClick={() => fillDemo("buyer@settly.estate", "buyer")}
+            onClick={() => fillDemo("buyer@settly.estate", "Buyer")}
             title="Fill buyer@settly.estate"
           >
             Buyer Demo
@@ -206,7 +140,7 @@ function LoginForm() {
           <button
             type="button"
             className="btn-demo-quick"
-            onClick={() => fillDemo("hana.k@settly.estate", "agent")}
+            onClick={() => fillDemo("hana.k@settly.estate", "Advisor")}
             title="Fill hana.k@settly.estate"
           >
             Advisor Demo
@@ -214,13 +148,7 @@ function LoginForm() {
           <button
             type="button"
             className="btn-demo-quick"
-            onClick={() => {
-              setActiveRole("agent");
-              setEmail("admin@settly.estate");
-              setPassword("SettlyDemo2026!");
-              setError(null);
-              toast.success("Demo Admin credentials loaded.");
-            }}
+            onClick={() => fillDemo("admin@settly.estate", "Admin")}
             title="Fill admin@settly.estate"
           >
             Admin Demo
@@ -233,18 +161,14 @@ function LoginForm() {
 
         <div className="form-group">
           <label htmlFor="emailInput" className="form-label">
-            {activeRole === "agent" ? "ADVISOR EMAIL ADDRESS" : "PORTAL EMAIL ADDRESS"}
+            PORTAL EMAIL ADDRESS
           </label>
           <div className="input-wrapper">
             <input
               id="emailInput"
               type="email"
               className="form-input"
-              placeholder={
-                activeRole === "agent"
-                  ? "advisor@settly.estate"
-                  : "buyer@settly.estate"
-              }
+              placeholder="name@settly.estate"
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -275,7 +199,7 @@ function LoginForm() {
 
         <SubmitButton
           loading={loading}
-          label={activeRole === "agent" ? "Sign in to Advisor Suite" : "Sign in to Residence Portal"}
+          label="Sign in to Settly"
           loadingLabel="Authorizing credentials…"
         />
       </form>

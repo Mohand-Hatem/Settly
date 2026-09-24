@@ -718,6 +718,21 @@ export class OfferRepository {
       },
     };
   }
+
+  async countActionRequiredSales(): Promise<number> {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const now = new Date();
+    return await prisma.offer.count({
+      where: {
+        status: "RESERVED",
+        OR: [
+          { disputedAt: { not: null } },
+          { createdAt: { lte: thirtyDaysAgo } },
+          { adminReviewDeadline: { lte: now } },
+        ],
+      },
+    });
+  }
 }
 
 export const offerRepository = new OfferRepository();

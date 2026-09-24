@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "@/styles/settly/style.css";
 import "@/styles/settly/master-nav-footer.css";
 import "@/styles/settly/settly-assistant-widget.css";
+import "@/styles/settly/portal.css";
 import { Toaster } from "@/components/ui/Toaster";
 import { fontVariables } from "@/fonts";
 import { QueryProvider } from "@/lib/query/QueryProvider";

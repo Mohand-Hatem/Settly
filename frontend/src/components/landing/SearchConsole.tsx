@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export function SearchConsole() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"BUY" | "RENT" | "LAUNCHES">("BUY");
+  const [activeTab, setActiveTab] = useState<"BUY" | "RENT">("BUY");
   const [location, setLocation] = useState("All regions — Egypt");
   const [propertyType, setPropertyType] = useState("Any type");
   const [priceRange, setPriceRange] = useState("Any price (EGP)");
@@ -33,7 +33,7 @@ export function SearchConsole() {
           type="button"
           onClick={() => setActiveTab("BUY")}
         >
-          Buy
+          Buy Resale
         </button>
         <button
           className="tab"
@@ -43,15 +43,6 @@ export function SearchConsole() {
           onClick={() => setActiveTab("RENT")}
         >
           Rent
-        </button>
-        <button
-          className="tab"
-          role="tab"
-          aria-selected={activeTab === "LAUNCHES"}
-          type="button"
-          onClick={() => setActiveTab("LAUNCHES")}
-        >
-          New launches
         </button>
       </div>
       <form className="console-body" onSubmit={handleSearch}>

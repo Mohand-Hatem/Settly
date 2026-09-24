@@ -25,14 +25,11 @@ function RegisterForm() {
   const callbackUrl = safeCallbackUrl(params.get("callbackUrl"));
   const termsId = useId();
 
-  const [activeRole, setActiveRole] = useState<"buyer" | "agent">("buyer");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [dialCode, setDialCode] = useState("+20");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [firmName, setFirmName] = useState("");
-  const [licenseNo, setLicenseNo] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,27 +83,15 @@ function RegisterForm() {
     }
   };
 
-  const fillDemo = (role: "buyer" | "agent") => {
-    setActiveRole(role);
-    if (role === "buyer") {
-      setName("Omar Mostafa");
-      setEmail("omar.buyer@settly.estate");
-      setDialCode("+20");
-      setPhone("1001234567");
-      setPassword("ClientPass#2026");
-      setAgreed(true);
-    } else {
-      setName("Nadia Ezzat");
-      setEmail("nadia.advisor@settly.estate");
-      setDialCode("+20");
-      setPhone("1009876543");
-      setPassword("AdvisorPass#2026");
-      setFirmName("Sovereign Cairo Realty");
-      setLicenseNo("BRK-EG #9942");
-      setAgreed(true);
-    }
+  const fillDemo = () => {
+    setName("Omar Mostafa");
+    setEmail("omar.buyer@settly.estate");
+    setDialCode("+20");
+    setPhone("1001234567");
+    setPassword("ClientPass#2026");
+    setAgreed(true);
     setError(null);
-    toast.success(`Demo ${role === "buyer" ? "Buyer" : "Advisor"} details loaded.`);
+    toast.success("Demo Buyer details loaded.");
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -126,10 +111,6 @@ function RegisterForm() {
     }
     if (password.length < 8) {
       setError("Your security credential must be at least 8 characters.");
-      return;
-    }
-    if (activeRole === "agent" && !firmName.trim()) {
-      setError("Please enter your real estate brokerage or agency name.");
       return;
     }
     if (!agreed) {
@@ -173,7 +154,7 @@ function RegisterForm() {
     const origin = window.location.origin;
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: `${origin}${callbackUrl ?? (activeRole === "agent" ? "/agent" : "/buyer")}`,
+      callbackURL: `${origin}${callbackUrl ?? "/buyer"}`,
       newUserCallbackURL: `${origin}/complete-profile${
         callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
       }`,
@@ -183,11 +164,7 @@ function RegisterForm() {
   return (
     <AuthFrame
       title="Create your account"
-      description={
-        activeRole === "agent"
-          ? "Register as a certified real estate advisor. Manage high-value property listings and buyer tours."
-          : "Discover residences, schedule verified viewings, and submit secure purchase reservations."
-      }
+      description="Discover residences, schedule verified viewings, and submit secure purchase reservations."
       footer={
         <>
           <div className="auth-register-prompt">
@@ -219,77 +196,12 @@ function RegisterForm() {
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
             <span>
-              TLS 1.3 encrypted session · Client funds in protected escrow accounts
+              TLS 1.3 encrypted session · Verified reservation deposits &amp; title due diligence
             </span>
           </div>
         </>
       }
     >
-      {/* Role Selector Tabs */}
-      <div
-        className="role-tabs"
-        role="tablist"
-        aria-label="Account Registration Role"
-      >
-        <button
-          type="button"
-          className={`role-tab-btn ${activeRole === "buyer" ? "active" : ""}`}
-          id="tabBuyer"
-          role="tab"
-          aria-selected={activeRole === "buyer"}
-          onClick={() => {
-            setActiveRole("buyer");
-            setError(null);
-          }}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          <span className="role-txt-long">Private Client</span>
-          <span className="role-txt-short">Buyer</span>
-        </button>
-
-        <button
-          type="button"
-          className={`role-tab-btn ${activeRole === "agent" ? "active" : ""}`}
-          id="tabAgent"
-          role="tab"
-          aria-selected={activeRole === "agent"}
-          onClick={() => {
-            setActiveRole("agent");
-            setError(null);
-          }}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-          </svg>
-          <span className="role-txt-long">Certified Advisor</span>
-          <span className="role-txt-short">Advisor</span>
-        </button>
-      </div>
-
       {/* Quick-Fill Demo Bar */}
       <div className="demo-fill-bar">
         <span className="demo-fill-label">Test Access:</span>
@@ -297,18 +209,10 @@ function RegisterForm() {
           <button
             type="button"
             className="btn-demo-quick"
-            onClick={() => fillDemo("buyer")}
+            onClick={fillDemo}
             title="Auto-fill Buyer Demo details"
           >
             Buyer Demo
-          </button>
-          <button
-            type="button"
-            className="btn-demo-quick"
-            onClick={() => fillDemo("agent")}
-            title="Auto-fill Advisor Demo details"
-          >
-            Advisor Demo
           </button>
         </div>
       </div>
@@ -319,14 +223,14 @@ function RegisterForm() {
         {/* Full Name */}
         <div className="form-group">
           <label htmlFor="nameInput" className="form-label">
-            {activeRole === "agent" ? "LEGAL ADVISOR NAME" : "FULL LEGAL NAME"}
+            FULL LEGAL NAME
           </label>
           <div className="input-wrapper">
             <input
               id="nameInput"
               type="text"
               className="form-input"
-              placeholder={activeRole === "agent" ? "Hana Khalil" : "Tarek Mansour"}
+              placeholder="Tarek Mansour"
               autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -338,18 +242,14 @@ function RegisterForm() {
         {/* Email */}
         <div className="form-group">
           <label htmlFor="emailInput" className="form-label">
-            {activeRole === "agent" ? "PROFESSIONAL EMAIL ADDRESS" : "EMAIL ADDRESS"}
+            EMAIL ADDRESS
           </label>
           <div className="input-wrapper">
             <input
               id="emailInput"
               type="email"
               className="form-input"
-              placeholder={
-                activeRole === "agent"
-                  ? "advisor@settly.estate"
-                  : "buyer@settly.estate"
-              }
+              placeholder="buyer@settly.estate"
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -411,44 +311,6 @@ function RegisterForm() {
           </div>
         </div>
 
-        {/* Certified Advisor Fields (Dynamic) */}
-        {activeRole === "agent" && (
-          <div className="dynamic-advisor-fields">
-            <div className="form-group">
-              <label htmlFor="firmInput" className="form-label">
-                REAL ESTATE BROKERAGE / AGENCY
-              </label>
-              <div className="input-wrapper">
-                <input
-                  id="firmInput"
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g. Cairo Capital Advisors"
-                  value={firmName}
-                  onChange={(e) => setFirmName(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="licenseInput" className="form-label">
-                BROKER LICENSE / COMMERCIAL REGISTRATION (OPTIONAL)
-              </label>
-              <div className="input-wrapper">
-                <input
-                  id="licenseInput"
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g. BRK-EG #4810-C"
-                  value={licenseNo}
-                  onChange={(e) => setLicenseNo(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Terms & Privacy */}
         <div className="form-check-row">
           <input
@@ -474,11 +336,7 @@ function RegisterForm() {
 
         <SubmitButton
           loading={loading}
-          label={
-            activeRole === "agent"
-              ? "Register as Certified Advisor"
-              : "Create Client Account"
-          }
+          label="Create Account"
           loadingLabel="Creating verified account…"
         />
       </form>

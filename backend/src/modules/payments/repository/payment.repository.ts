@@ -431,6 +431,12 @@ export class PaymentRepository {
       { maxWait: 15000, timeout: 30000 }
     );
   }
+
+  async countFailedRefunds(): Promise<number> {
+    return await prisma.refund.count({
+      where: { status: "FAILED" },
+    });
+  }
 }
 
 export const paymentRepository = new PaymentRepository();

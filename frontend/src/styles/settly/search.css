@@ -75,8 +75,118 @@
   top: 74px;
   z-index: 900;
 }
+/* Discovery Natural Language Search Prompt Strip */
+.discovery-search-strip {
+  border-bottom: 1px solid var(--line);
+  background: var(--canvas);
+  padding-block: 0.65rem;
+}
+.discovery-search-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+.discovery-search-input-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.discovery-search-icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  color: var(--brass-600);
+  pointer-events: none;
+}
+.discovery-search-field {
+  width: 100%;
+  height: 40px;
+  padding-inline-start: 40px;
+  padding-inline-end: 105px;
+  background: var(--canvas-2);
+  border: 1px solid var(--line-2);
+  border-radius: 99px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--navy-900);
+  transition: all 0.2s ease;
+}
+.discovery-search-field:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--brass-600);
+  box-shadow: 0 0 0 3px var(--brass-050);
+}
+.discovery-search-field::placeholder {
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+.discovery-search-clear-btn {
+  position: absolute;
+  inset-inline-end: 74px;
+  background: none;
+  border: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: color 0.15s ease;
+}
+.discovery-search-clear-btn:hover {
+  color: var(--navy-900);
+}
+.discovery-search-btn {
+  position: absolute;
+  inset-inline-end: 4px;
+  height: 32px;
+  padding-inline: 14px;
+  background: var(--navy-900);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.2s ease;
+}
+.discovery-search-btn:hover:not(:disabled) {
+  background: var(--navy-800);
+}
+.discovery-search-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.discovery-degraded-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+  white-space: nowrap;
+}
+.degraded-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D97706;
+}
+
 .discovery-bar-row {
-  max-width: 1720px;
+  max-width: var(--max-w);
   margin-inline: auto;
   padding-inline: 1.25rem;
   display: flex;
@@ -121,6 +231,27 @@
   color: var(--navy-900);
   border: 1px solid var(--brass-200);
   border-radius: 99px;
+}
+.active-chip.chip-bedrooms {
+  background: rgba(61, 90, 76, 0.08);
+  border-color: rgba(61, 90, 76, 0.25);
+  color: #2D4439;
+}
+.active-chip.chip-maxPrice,
+.active-chip.chip-minPrice {
+  background: rgba(198, 151, 73, 0.12);
+  border-color: rgba(198, 151, 73, 0.35);
+  color: #78521A;
+}
+.active-chip.chip-type {
+  background: rgba(30, 42, 74, 0.08);
+  border-color: rgba(30, 42, 74, 0.2);
+  color: var(--navy-900);
+}
+.active-chip.chip-area {
+  background: rgba(14, 116, 144, 0.08);
+  border-color: rgba(14, 116, 144, 0.25);
+  color: #0E7490;
 }
 .active-chip button {
   background: none;

@@ -10,8 +10,10 @@ import {
   Bookmark,
   Building2,
   CalendarDays,
+  ChartBar,
   ClipboardList,
   Compass,
+  CreditCard,
   FileText,
   HandCoins,
   LayoutDashboard,
@@ -21,14 +23,15 @@ import {
   Scale,
   Search,
   Settings,
+  ShieldAlert,
   ShieldCheck,
+  Users,
   X,
   type LucideIcon,
 } from "lucide-react";
 import { authClient, roleOf } from "@/lib/auth-client";
 import { VerificationBanner, VerificationProvider } from "./EmailVerification";
 import { NotificationBell } from "../notifications/NotificationBell";
-import "@/styles/settly/portal.css";
 
 export type Portal = "buyer" | "agent" | "admin";
 
@@ -74,7 +77,15 @@ const NAV_GROUPS: Record<Portal, NavGroup[]> = {
         { href: "/agent/listings", label: "My Listings", icon: Building2 },
         { href: "/agent/calendar", label: "Viewing Calendar", icon: CalendarDays },
         { href: "/agent/offers", label: "Offers Review", icon: HandCoins },
+        { href: "/agent/leads", label: "Leads & CRM", icon: Users },
         { href: "/agent/messages", label: "Client Inquiries", icon: MessageSquare },
+      ],
+    },
+    {
+      title: "Performance & Plan",
+      items: [
+        { href: "/agent/analytics", label: "Analytics", icon: ChartBar },
+        { href: "/agent/subscription", label: "Subscription & Quota", icon: CreditCard },
       ],
     },
     {
@@ -93,13 +104,20 @@ const NAV_GROUPS: Record<Portal, NavGroup[]> = {
         { href: "/admin/moderation", label: "Listing Moderation", icon: ClipboardList },
         { href: "/admin/verification", label: "Agent Verification", icon: BadgeCheck },
         { href: "/admin/sales", label: "Sales & Closings", icon: Scale },
-        { href: "/buyer", label: "Buyer Portal", icon: LayoutDashboard },
+      ],
+    },
+    {
+      title: "Compliance & Security",
+      items: [
+        { href: "/admin/audit-log", label: "Audit Log", icon: FileText },
+        { href: "/admin/reports", label: "Abuse Reports", icon: ShieldAlert },
       ],
     },
     {
       title: "Account & System",
       items: [
         { href: "/admin/notifications", label: "Notifications", icon: Bell },
+        { href: "/buyer", label: "Buyer Portal View", icon: LayoutDashboard },
       ],
     },
   ],

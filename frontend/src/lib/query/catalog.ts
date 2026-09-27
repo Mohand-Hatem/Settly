@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { fetchAreas, fetchCompare, fetchPropertyList } from "@/api/catalog";
+import { fetchAreas, fetchCompare, fetchMyProperties, fetchPropertyList } from "@/api/catalog";
 import { fetchMarketPulse } from "@/api/analytics";
 import { analyticsKeys, catalogKeys } from "./keys";
 
@@ -33,4 +33,12 @@ export const marketPulseQuery = () =>
     queryKey: analyticsKeys.marketPulse(),
     queryFn: ({ signal }) => fetchMarketPulse(signal),
     staleTime: 10 * 60_000,
+  });
+
+/** Query for the agent's own listings (all at once — endpoint returns all agent properties). */
+export const myPropertiesQuery = () =>
+  queryOptions({
+    queryKey: catalogKeys.myProperties(),
+    queryFn: ({ signal }) => fetchMyProperties({}, signal),
+    staleTime: 30_000,
   });

@@ -6,6 +6,7 @@ export type PropertyResponse = components["schemas"]["PropertyResponse"];
 export type PropertyListResponse = components["schemas"]["PropertyListResponse"];
 export type CompareItem = components["schemas"]["CompareItem"];
 export type CompareResponse = components["schemas"]["CompareResponse"];
+export type PropertyStatus = components["schemas"]["PropertyStatus"];
 
 export async function fetchPropertyList(
   params: { limit?: number } = {},
@@ -23,4 +24,15 @@ export async function fetchCompare(ids: readonly string[], signal?: AbortSignal)
 
 export async function fetchAreas(signal?: AbortSignal) {
   return unwrap(await api.GET("/api/v1/areas", { signal }));
+}
+
+/** Agent's own listings — GET /api/v1/me/properties */
+export async function fetchMyProperties(
+  _params: { limit?: number; cursor?: string } = {},
+  signal?: AbortSignal
+): Promise<PropertyListResponse> {
+  void _params;
+  return unwrap(
+    await api.GET("/api/v1/me/properties", { signal })
+  );
 }

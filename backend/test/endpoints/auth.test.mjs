@@ -315,6 +315,40 @@ async function run() {
     assert.equal(await prisma.session.count({ where: { id: oldSession.id } }), 0);
     console.log("  ✅ Passed: capped session returns 401 and is deleted.\n");
 
+    // --------------------------------------------------------------------------
+    // 12. Account deletion & anonymization (BUSINESS_RULES §11, SECURITY.md §13)
+    // --------------------------------------------------------------------------
+    console.log("Test 12: Account deletion and anonymization via DELETE /api/v1/me...");
+    await prisma.user.update({
+      where: { id: buyerUserId },
+      data: { banned: false, banReason: null },
+    });
+
+    const deleteRes = await fetch(`${BASE_URL}/api/v1/me`, {
+      method: "DELETE",
+      headers: { Cookie: buyerCookie },
+    });
+    assert.equal(deleteRes.status, 200, "DELETE /api/v1/me should succeed with 200");
+    const deleteData = await deleteRes.json();
+    assert.equal(deleteData.success, true);
+
+    const anonymizedUser = await prisma.user.findUnique({ where: { id: buyerUserId } });
+    assert.ok(anonymizedUser, "User row must survive (not deleted outright)");
+    assert.equal(anonymizedUser.name, "Former User");
+    assert.equal(anonymizedUser.phone, null);
+    assert.equal(anonymizedUser.banned, true);
+    assert.ok(anonymizedUser.anonymizedAt instanceof Date);
+    assert.ok(anonymizedUser.email.startsWith(`anonymized_${buyerUserId}`));
+
+    const remainingSessions = await prisma.session.count({ where: { userId: buyerUserId } });
+    const remainingAccounts = await prisma.account.count({ where: { userId: buyerUserId } });
+    assert.equal(remainingSessions, 0, "All sessions must be wiped");
+    assert.equal(remainingAccounts, 0, "All credentials/accounts must be wiped");
+
+    const subsequentRes = await fetch(`${BASE_URL}/api/v1/me`, { headers: { Cookie: buyerCookie } });
+    assert.equal(subsequentRes.status, 401, "Subsequent request with deleted session must return 401");
+    console.log("  ✅ Passed: account PII anonymized in place, credentials wiped, sessions deleted.\n");
+
     console.log("===============================================================================");
     console.log("All Better Auth & RBAC Tests Passed Successfully! ✅");
     console.log("===============================================================================\n");

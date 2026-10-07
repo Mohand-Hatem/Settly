@@ -22,7 +22,7 @@ import {
   propertyOfferRouter,
   adminSalesRouter,
 } from "./modules/pipeline/index.js";
-import { paymentsRouter, depositOfferRouter } from "./modules/payments/index.js";
+import { paymentsRouter, depositOfferRouter, agentSubscriptionRouter } from "./modules/payments/index.js";
 import {
   messagingRouter,
   conversationRouter,
@@ -42,6 +42,7 @@ import { toNodeHandler, fromNodeHeaders } from "better-auth/node";
 import { auth } from "./modules/identity/auth.js";
 import { profileRouter } from "./modules/identity/routes/profile.routes.js";
 import { adminAgentRouter } from "./modules/identity/routes/admin-agent.routes.js";
+import { adminAgentApplicationRouter } from "./modules/identity/routes/admin-agent-application.routes.js";
 import { adminStatsRouter } from "./modules/identity/routes/admin-stats.routes.js";
 import { deviceRouter } from "./modules/identity/routes/device.routes.js";
 import {
@@ -130,6 +131,8 @@ app.use("/api/v1/me/viewings", myViewingRouter);
 app.use("/api/v1/me/offers", myOfferRouter);
 app.use("/api/v1/me/agent/viewings", myAgentViewingRouter);
 app.use("/api/v1/me/agent/offers", myAgentOfferRouter);
+app.use("/api/v1/agent/subscription", agentSubscriptionRouter);
+app.use("/api/v1/me/agent/subscription", agentSubscriptionRouter);
 app.use("/api/v1/conversations", conversationRouter);
 app.use("/api/v1/me/conversations", myConversationsRouter);
 app.use("/api/v1/me/availability", availabilityRouter);
@@ -139,6 +142,7 @@ app.use("/api/v1/amenities", amenityRouter);
 app.use("/api/v1/uploads", uploadRouter);
 app.use("/api/v1/admin/stats", adminStatsRouter);
 app.use("/api/v1/admin/agents", adminAgentRouter);
+app.use("/api/v1/admin/agent-applications", adminAgentApplicationRouter);
 app.use("/api/v1/admin/properties", adminPropertyRouter);
 app.use("/api/v1/admin/sales", adminSalesRouter);
 app.use("/api/v1/me", profileRouter);

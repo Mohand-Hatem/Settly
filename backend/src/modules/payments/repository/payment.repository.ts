@@ -437,6 +437,45 @@ export class PaymentRepository {
       where: { status: "FAILED" },
     });
   }
+
+  /**
+   * Release any checkout holds that have naturally expired (checkoutHoldExpiresAt < now)
+   */
+  async clearExpiredCheckoutHolds(now = new Date()): Promise<number> {
+    const updated = await prisma.$executeRaw`
+      UPDATE "Property"
+      SET "checkoutHoldExpiresAt" = NULL,
+          "checkoutHoldUserId" = NULL,
+          "updatedAt" = NOW()
+      WHERE "checkoutHoldExpiresAt" IS NOT NULL
+        AND "checkoutHoldExpiresAt" < ${now}
+    `;
+    return Number(updated);
+  }
+
+  /**
+   * Find payments in PROCESSING status older than staleMinutes for provider reconciliation
+   */
+  async findStaleProcessingPayments(staleMinutes: number = 10) {
+    const cutoff = new Date(Date.now() - staleMinutes * 60 * 1000);
+    return prisma.payment.findMany({
+      where: {
+        status: "PROCESSING",
+        updatedAt: { lte: cutoff },
+      },
+      include: {
+        offer: {
+          include: {
+            property: true,
+          },
+        },
+        attempts: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+        },
+      },
+    });
+  }
 }
 
 export const paymentRepository = new PaymentRepository();

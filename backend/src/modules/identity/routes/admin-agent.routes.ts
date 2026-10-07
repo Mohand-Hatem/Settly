@@ -4,6 +4,7 @@ import { requireRole } from "../middleware/auth.middleware.js";
 import * as agentService from "../service/agent.service.js";
 import {
   AgentVerificationSchema,
+  AgentRevocationSchema,
   AgentListResponseSchema,
   AgentListItemSchema,
 } from "../schema/agent.schema.js";
@@ -216,3 +217,82 @@ adminAgentRouter.post(
     }
   }
 );
+
+/**
+ * POST /api/v1/admin/agents/:id/revoke
+ */
+registry.registerPath({
+  method: "post",
+  path: "/api/v1/admin/agents/{id}/revoke",
+  summary: "Revoke agent verification status and cascade suspension (Admin only)",
+  description: "Revokes agent verification, suspends active listings, and notifies the agent per Decisions #52, #58.",
+  tags: ["Admin", "Identity"],
+  security: [{ sessionAuth: [] }],
+  request: {
+    params: z.object({
+      id: z.string().uuid(),
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: AgentRevocationSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Agent verification revoked and listings suspended",
+      content: {
+        "application/json": {
+          schema: AgentListItemSchema,
+        },
+      },
+    },
+    401: {
+      description: "Unauthenticated",
+      content: { "application/problem+json": { schema: UnauthenticatedProblemSchema } },
+    },
+    403: {
+      description: "Forbidden (Conflict of interest #67, #71 or non-admin)",
+      content: { "application/problem+json": { schema: ForbiddenProblemSchema } },
+    },
+    404: {
+      description: "Agent profile not found",
+      content: { "application/problem+json": { schema: NotFoundProblemSchema } },
+    },
+    422: {
+      description: "Validation error",
+      content: { "application/problem+json": { schema: ValidationProblemSchema } },
+    },
+  },
+});
+
+adminAgentRouter.post(
+  "/:id/revoke",
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const parsedBody = AgentRevocationSchema.safeParse(req.body);
+      if (!parsedBody.success) {
+        return next(validationError(parsedBody.error, req.originalUrl));
+      }
+
+      const adminUserId = req.user!.id;
+      const revoked = await agentService.revokeAgentVerification({
+        agentProfileId: id as string,
+        adminUserId,
+        notes: parsedBody.data.notes,
+      });
+
+      if (!revoked) {
+        return next(notFoundError("Agent profile not found", `/api/v1/admin/agents/${id}/revoke`));
+      }
+
+      res.status(200).json(revoked);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+

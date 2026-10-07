@@ -947,6 +947,80 @@ export class OfferService {
   async countActionRequiredSales(): Promise<number> {
     return await offerRepository.countActionRequiredSales();
   }
+
+  /**
+   * O10: Expire pending offers (PENDING_AGENT, PENDING_BUYER) past 7-day TTL.
+   */
+  async expireStalePendingOffers(now = new Date()): Promise<number> {
+    const expired = await offerRepository.expireStalePendingOffers(now);
+    for (const off of expired) {
+      void notificationService
+        .notifyUser({
+          userId: off.buyerId,
+          type: "OFFER_EXPIRED",
+          params: {
+            offerId: off.id,
+            propertyTitle: off.property.titleEn,
+            message: `Your offer on "${off.property.titleEn}" has expired due to 7 days with no response.`,
+            recipientRole: "buyer",
+          },
+          sendEmail: true,
+        })
+        .catch(() => {});
+
+      void notificationService
+        .notifyUser({
+          userId: off.agentId,
+          type: "OFFER_EXPIRED",
+          params: {
+            offerId: off.id,
+            propertyTitle: off.property.titleEn,
+            message: `The pending offer on "${off.property.titleEn}" has expired due to 7 days with no response.`,
+            recipientRole: "agent",
+          },
+          sendEmail: true,
+        })
+        .catch(() => {});
+    }
+    return expired.length;
+  }
+
+  /**
+   * O9 / Y6: Expire ACCEPTED offers where 72h deposit deadline has passed unpaid.
+   */
+  async expireStaleAcceptedOffers(now = new Date()): Promise<number> {
+    const expired = await offerRepository.expireStaleAcceptedOffers(now);
+    for (const off of expired) {
+      void notificationService
+        .notifyUser({
+          userId: off.buyerId,
+          type: "DEPOSIT_EXPIRED",
+          params: {
+            offerId: off.id,
+            propertyTitle: off.property.titleEn,
+            message: `The 72-hour deposit deadline for "${off.property.titleEn}" has expired unpaid. The offer has expired.`,
+            recipientRole: "buyer",
+          },
+          sendEmail: true,
+        })
+        .catch(() => {});
+
+      void notificationService
+        .notifyUser({
+          userId: off.agentId,
+          type: "DEPOSIT_EXPIRED",
+          params: {
+            offerId: off.id,
+            propertyTitle: off.property.titleEn,
+            message: `The buyer did not complete the reservation deposit within 72 hours for "${off.property.titleEn}". The offer has expired and your listing remains available.`,
+            recipientRole: "agent",
+          },
+          sendEmail: true,
+        })
+        .catch(() => {});
+    }
+    return expired.length;
+  }
 }
 
 export const offerService = new OfferService();

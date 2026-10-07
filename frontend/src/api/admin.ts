@@ -10,6 +10,12 @@ export type AgentListItem = components["schemas"]["AgentListItem"];
 export type AgentListResponse = components["schemas"]["AgentListResponse"];
 export type AgentVerificationInput = components["schemas"]["AgentVerificationInput"];
 export type ActionReasonInput = components["schemas"]["ActionReason"];
+export type AgentApplicationItem = components["schemas"]["AgentApplicationItem"];
+export type AgentApplicationStatus = AgentApplicationItem["status"];
+export type AgentApplicationDetail = components["schemas"]["AgentApplicationDetail"];
+export type AgentApplicationListResponse = components["schemas"]["AgentApplicationListResponse"];
+export type AgentApplicationReviewInput = components["schemas"]["AgentApplicationReviewInput"];
+export type AgentRevocationInput = components["schemas"]["AgentRevocationInput"];
 
 /**
  * Fetch operational dashboard stats (ADM-01, Decision #28)
@@ -127,6 +133,66 @@ export async function verifyAgent(
     await api.POST("/api/v1/admin/agents/{id}/verify", {
       params: { path: { id } },
       body: input,
+    })
+  );
+}
+
+/**
+ * List agent verification applications with optional status filter (ADM-04)
+ */
+export async function fetchAdminAgentApplications(
+  params?: { status?: AgentApplicationStatus },
+  signal?: AbortSignal
+): Promise<AgentApplicationListResponse> {
+  return unwrap(
+    await api.GET("/api/v1/admin/agent-applications", {
+      params: { query: params },
+      signal,
+    })
+  );
+}
+
+/**
+ * Get full agent verification application details including KYC document previews (ADM-04, Decision #56)
+ */
+export async function fetchAdminAgentApplication(
+  id: string,
+  signal?: AbortSignal
+): Promise<AgentApplicationDetail> {
+  return unwrap(
+    await api.GET("/api/v1/admin/agent-applications/{id}", {
+      params: { path: { id } },
+      signal,
+    })
+  );
+}
+
+/**
+ * Review agent verification application: APPROVE or REJECT with reason (ADM-05, Decision #57)
+ */
+export async function reviewAdminAgentApplication(
+  id: string,
+  body: AgentApplicationReviewInput
+): Promise<AgentApplicationItem> {
+  return unwrap(
+    await api.POST("/api/v1/admin/agent-applications/{id}/review", {
+      params: { path: { id } },
+      body,
+    })
+  );
+}
+
+/**
+ * Revoke verified agent accreditation and cascade suspension (Decisions #52, #58)
+ */
+export async function revokeAdminAgent(
+  id: string,
+  body: AgentRevocationInput
+): Promise<AgentListItem> {
+  return unwrap(
+    await api.POST("/api/v1/admin/agents/{id}/revoke", {
+      params: { path: { id } },
+      body,
     })
   );
 }

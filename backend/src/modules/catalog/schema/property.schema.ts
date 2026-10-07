@@ -105,6 +105,7 @@ export const PropertyResponseSchema = z
     latitude: z.number(),
     longitude: z.number(),
     publishedAt: z.string().datetime().nullable(),
+    approvedWaitingForQuotaAt: z.string().datetime().nullable().optional(),
     createdAt: z.string().datetime(),
     updatedAt: z.string().datetime(),
     images: z.array(PropertyImageSchema).default([]),

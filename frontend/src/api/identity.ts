@@ -6,6 +6,9 @@ export type UserProfileResponse = components["schemas"]["UserProfileResponse"];
 export type UpdateUserProfile = components["schemas"]["UpdateUserProfile"];
 export type AgentProfileResponse = components["schemas"]["AgentProfileResponse"];
 export type CreateOrUpdateAgentProfile = components["schemas"]["CreateOrUpdateAgentProfile"];
+export type AgentApplicationSubmitInput = components["schemas"]["AgentApplicationSubmitInput"];
+export type AgentApplicationItem = components["schemas"]["AgentApplicationItem"];
+export type AccountDeletedResponse = components["schemas"]["AccountDeletedResponse"];
 
 /**
  * Fetch authenticated user profile details from /api/v1/me.
@@ -22,6 +25,13 @@ export async function updateMyProfile(
   signal?: AbortSignal
 ): Promise<UserProfileResponse> {
   return unwrap(await api.PATCH("/api/v1/me", { body, signal }));
+}
+
+/**
+ * Delete and anonymize current account credentials and PII.
+ */
+export async function deleteMyAccount(signal?: AbortSignal): Promise<AccountDeletedResponse> {
+  return unwrap(await api.DELETE("/api/v1/me", { signal }));
 }
 
 /**
@@ -45,6 +55,33 @@ export async function saveMyAgentProfile(
   signal?: AbortSignal
 ): Promise<AgentProfileResponse> {
   return unwrap(await api.POST("/api/v1/me/agent-profile", { body, signal }));
+}
+
+/**
+ * Fetch current user's latest agent accreditation application status (APP-03).
+ * Returns null if 404 (no application submitted yet).
+ */
+export async function fetchMyAgentApplication(
+  signal?: AbortSignal
+): Promise<AgentApplicationItem | null> {
+  try {
+    return unwrap(await api.GET("/api/v1/me/agent-profile/application", { signal }));
+  } catch (err: unknown) {
+    if (err && typeof err === "object" && "status" in err && (err as { status: number }).status === 404) {
+      return null;
+    }
+    throw err;
+  }
+}
+
+/**
+ * Submit self-service agent verification application with KYC credentials (APP-02, Decisions #49, #55, #56).
+ */
+export async function submitAgentApplication(
+  body: AgentApplicationSubmitInput,
+  signal?: AbortSignal
+): Promise<AgentApplicationItem> {
+  return unwrap(await api.POST("/api/v1/me/agent-profile/apply", { body, signal }));
 }
 
 /**

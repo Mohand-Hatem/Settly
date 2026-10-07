@@ -442,6 +442,277 @@
           "createdAt"
         ]
       },
+      "AgentApplicationSubmitInput": {
+        "type": "object",
+        "properties": {
+          "nationalIdUrl": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "Private storage URL for Egyptian National ID document (#49)",
+            "example": "https://storage.settly.estate/kyc/national-id.pdf"
+          },
+          "selfieUrl": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "Private storage URL for live verification selfie (#49, #56)",
+            "example": "https://storage.settly.estate/kyc/selfie.jpg"
+          },
+          "proofType": {
+            "type": "string",
+            "enum": [
+              "BROKER_LICENSE",
+              "BROKERAGE_AUTHORIZATION",
+              "COMMERCIAL_REGISTRATION",
+              "OTHER"
+            ],
+            "description": "Type of professional verification proof (#55)",
+            "example": "BROKER_LICENSE"
+          },
+          "proofDocumentUrl": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "Private storage URL for professional proof document",
+            "example": "https://storage.settly.estate/kyc/broker-license.pdf"
+          },
+          "proofDescription": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Mandatory description if proofType is OTHER (#55)",
+            "example": "Syndicate member registration card"
+          },
+          "licenseNumber": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "description": "Official Egyptian Real Estate Regulatory Authority license number",
+            "example": "EGY-RE-2026-9912"
+          },
+          "brokerageName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 150,
+            "description": "Registered brokerage or agency name",
+            "example": "Sovereign Cairo Partners"
+          },
+          "bioEn": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "English biography and specialties",
+            "example": "Specialist in New Cairo and Golden Square luxury villas."
+          },
+          "bioAr": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Arabic biography and specialties",
+            "example": "متخصص في فلل القاهرة الجديدة والمربع الذهبي."
+          }
+        },
+        "required": [
+          "nationalIdUrl",
+          "selfieUrl",
+          "proofType",
+          "proofDocumentUrl",
+          "licenseNumber"
+        ]
+      },
+      "AgentApplicationReviewInput": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "APPROVED",
+              "REJECTED"
+            ],
+            "description": "Review decision: APPROVED or REJECTED",
+            "example": "APPROVED"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "Mandatory rejection reason shown to applicant (Decision #57)",
+            "example": "National ID scan was unreadable. Please provide a clear photograph."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Internal administrative review notes",
+            "example": "Visual verification completed against national register."
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "AgentRevocationInput": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 500,
+            "description": "Administrative rationale for revoking agent status (Decisions #52, #58)",
+            "example": "License expired or disciplinary suspension."
+          }
+        },
+        "required": [
+          "notes"
+        ]
+      },
+      "AgentApplicationItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Application UUIDv7"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "proofType": {
+            "type": "string",
+            "enum": [
+              "BROKER_LICENSE",
+              "BROKERAGE_AUTHORIZATION",
+              "COMMERCIAL_REGISTRATION",
+              "OTHER"
+            ]
+          },
+          "proofDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseNumber": {
+            "type": "string"
+          },
+          "brokerageName": {
+            "type": "string",
+            "nullable": true
+          },
+          "bioEn": {
+            "type": "string",
+            "nullable": true
+          },
+          "bioAr": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "rejectionReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "reviewedByUserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "reviewedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true
+              },
+              "image": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "proofType",
+          "licenseNumber",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "user"
+        ]
+      },
+      "AgentApplicationDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AgentApplicationItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "nationalIdUrl": {
+                "type": "string",
+                "description": "Private URL/path for National ID"
+              },
+              "selfieUrl": {
+                "type": "string",
+                "description": "Private URL/path for live selfie"
+              },
+              "proofDocumentUrl": {
+                "type": "string",
+                "description": "Private URL/path for proof document"
+              }
+            },
+            "required": [
+              "nationalIdUrl",
+              "selfieUrl",
+              "proofDocumentUrl"
+            ]
+          }
+        ]
+      },
+      "AgentApplicationListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentApplicationItem"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
       "OfferStatus": {
         "type": "string",
         "enum": [
@@ -1769,6 +2040,11 @@
             "nullable": true,
             "format": "date-time"
           },
+          "approvedWaitingForQuotaAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -2438,6 +2714,21 @@
         },
         "required": [
           "licenseNumber"
+        ]
+      },
+      "AccountDeletedResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "message"
         ]
       },
       "CompareItem": {
@@ -5091,6 +5382,50 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Identity"
+        ],
+        "summary": "Delete and anonymize current account",
+        "description": "Permanently delete user account credentials and anonymize PII in accordance with privacy retention policy (BUSINESS_RULES §11, SECURITY.md §13).",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account successfully anonymized and credentials stripped",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDeletedResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (account suspended or banned)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/me/agent-profile": {
@@ -5205,6 +5540,117 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/agent-profile/apply": {
+      "post": {
+        "tags": [
+          "Identity"
+        ],
+        "summary": "Submit self-service agent verification application (KYC)",
+        "description": "Submits Egyptian National ID, verification selfie, and professional credentials for administrative review per Decisions #49, #55, #56, #57, #74.",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentApplicationSubmitInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Application successfully submitted and placed in review queue",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApplicationItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (already an agent, or already has a pending application per Decision #74)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error in submitted fields",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/agent-profile/application": {
+      "get": {
+        "tags": [
+          "Identity"
+        ],
+        "summary": "Get current agent application status",
+        "description": "Retrieves the user's latest agent verification application and status (APP-03).",
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest application status and review outcome",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApplicationItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No application found for current user",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
                 }
               }
             }
@@ -5406,6 +5852,93 @@
           },
           "403": {
             "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent profile not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/agents/{id}/revoke": {
+      "post": {
+        "summary": "Revoke agent verification status and cascade suspension (Admin only)",
+        "description": "Revokes agent verification, suspends active listings, and notifies the agent per Decisions #52, #58.",
+        "tags": [
+          "Admin",
+          "Identity"
+        ],
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentRevocationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent verification revoked and listings suspended",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentListItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (Conflict of interest #67, #71 or non-admin)",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10053,6 +10586,800 @@
           },
           "422": {
             "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/agent-applications": {
+      "get": {
+        "summary": "List agent verification applications (Admin only, ADM-04)",
+        "description": "Returns agent verification applications with optional status filtering for administrative queue review.",
+        "tags": [
+          "Admin",
+          "Identity"
+        ],
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "REJECTED"
+              ]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of agent applications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApplicationListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (Admin role required)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/agent-applications/{id}": {
+      "get": {
+        "summary": "Get agent application details for visual verification (Admin only, ADM-04)",
+        "description": "Retrieves full application details including National ID, verification selfie, and professional proof URLs for side-by-side inspection (Decisions #56, #57).",
+        "tags": [
+          "Admin",
+          "Identity"
+        ],
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full application details with identity document references",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApplicationDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/agent-applications/{id}/review": {
+      "post": {
+        "summary": "Approve or reject agent application (Admin only, ADM-04)",
+        "description": "Submits an administrative review decision. Approving elevates user to AGENT and creates verified AgentProfile. Rejecting requires a mandatory reason shown to applicant (Decision #57). Enforces Conflict of Interest guards (Decisions #67, #71).",
+        "tags": [
+          "Admin",
+          "Identity"
+        ],
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentApplicationReviewInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application review processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApplicationItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden (Conflict of interest: admin is personally involved per Decisions #67, #71)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (Application already reviewed)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error (e.g. rejection without reason)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/subscription": {
+      "get": {
+        "tags": [
+          "Subscription"
+        ],
+        "summary": "Gets agent subscription status, current plan, quota and renewal eligibility (SUB-01, SUB-04, SUB-09)",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent subscription details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan": {
+                      "type": "string",
+                      "enum": [
+                        "FREE",
+                        "PRO",
+                        "ENTERPRISE"
+                      ]
+                    },
+                    "isVerified": {
+                      "type": "boolean"
+                    },
+                    "quota": {
+                      "type": "object",
+                      "properties": {
+                        "used": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "remaining": {
+                          "type": "number"
+                        },
+                        "resetDate": {
+                          "type": "string"
+                        },
+                        "waitingCount": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "used",
+                        "total",
+                        "remaining",
+                        "resetDate",
+                        "waitingCount"
+                      ]
+                    },
+                    "currentPeriod": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "plan": {
+                          "type": "string",
+                          "enum": [
+                            "FREE",
+                            "PRO",
+                            "ENTERPRISE"
+                          ]
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "NEW",
+                            "RENEWAL",
+                            "UPGRADE",
+                            "DOWNGRADE"
+                          ]
+                        },
+                        "startsAt": {
+                          "type": "string"
+                        },
+                        "endsAt": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "SCHEDULED",
+                            "ACTIVE",
+                            "ENDED",
+                            "SUPERSEDED"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "plan",
+                        "kind",
+                        "startsAt",
+                        "endsAt",
+                        "status"
+                      ]
+                    },
+                    "queuedPeriod": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "plan": {
+                          "type": "string",
+                          "enum": [
+                            "FREE",
+                            "PRO",
+                            "ENTERPRISE"
+                          ]
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "NEW",
+                            "RENEWAL",
+                            "UPGRADE",
+                            "DOWNGRADE"
+                          ]
+                        },
+                        "startsAt": {
+                          "type": "string"
+                        },
+                        "endsAt": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "SCHEDULED",
+                            "ACTIVE",
+                            "ENDED",
+                            "SUPERSEDED"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "plan",
+                        "kind",
+                        "startsAt",
+                        "endsAt",
+                        "status"
+                      ]
+                    },
+                    "canRenew": {
+                      "type": "boolean"
+                    },
+                    "canUpgrade": {
+                      "type": "boolean"
+                    },
+                    "renewalBlockedReason": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "upgradeBlockedReason": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "cancelledAt": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "receipts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "receiptNumber": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "plan": {
+                            "type": "string",
+                            "enum": [
+                              "FREE",
+                              "PRO",
+                              "ENTERPRISE"
+                            ]
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "NEW",
+                              "RENEWAL",
+                              "UPGRADE",
+                              "DOWNGRADE"
+                            ]
+                          },
+                          "amountEgp": {
+                            "type": "number"
+                          },
+                          "amountUsd": {
+                            "type": "number"
+                          },
+                          "fxRate": {
+                            "type": "number"
+                          },
+                          "paidAt": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "PENDING",
+                              "PROCESSING",
+                              "SUCCEEDED",
+                              "EXPIRED",
+                              "CANCELLED"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "receiptNumber",
+                          "plan",
+                          "kind",
+                          "amountEgp",
+                          "amountUsd",
+                          "fxRate",
+                          "paidAt",
+                          "status"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "plan",
+                    "isVerified",
+                    "quota",
+                    "currentPeriod",
+                    "queuedPeriod",
+                    "canRenew",
+                    "canUpgrade",
+                    "renewalBlockedReason",
+                    "upgradeBlockedReason",
+                    "cancelledAt",
+                    "receipts"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden / Unverified email / Unverified agent",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State conflict / Quota / Period constraint",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/subscription/checkout": {
+      "post": {
+        "tags": [
+          "Subscription"
+        ],
+        "summary": "Initiates Paymob checkout for Pro or Enterprise subscription tier (SUB-02, #89, #103, #104, #105)",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "Idempotency-Key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plan": {
+                    "type": "string",
+                    "enum": [
+                      "PRO",
+                      "ENTERPRISE"
+                    ]
+                  },
+                  "returnUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "plan"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session created and Paymob redirect generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "checkoutUrl": {
+                      "type": "string"
+                    },
+                    "orderReference": {
+                      "type": "string"
+                    },
+                    "amountEgp": {
+                      "type": "number"
+                    },
+                    "amountUsd": {
+                      "type": "number"
+                    },
+                    "plan": {
+                      "type": "string",
+                      "enum": [
+                        "PRO",
+                        "ENTERPRISE"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "NEW",
+                        "RENEWAL",
+                        "UPGRADE",
+                        "DOWNGRADE"
+                      ]
+                    },
+                    "expiresAt": {
+                      "type": "string"
+                    },
+                    "isSimulated": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "checkoutUrl",
+                    "orderReference",
+                    "amountEgp",
+                    "amountUsd",
+                    "plan",
+                    "kind",
+                    "expiresAt",
+                    "isSimulated"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden / Unverified email / Unverified agent",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State conflict / Quota / Period constraint",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/subscription/cancel": {
+      "post": {
+        "tags": [
+          "Subscription"
+        ],
+        "summary": "Cancels subscription renewal; active period runs to completion without refund (SUB-07, #91)",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subscription cancelled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "cancelledAt": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "cancelledAt",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthenticatedProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden / Unverified email / Unverified agent",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State conflict / Quota / Period constraint",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
             "content": {
               "application/problem+json": {
                 "schema": {

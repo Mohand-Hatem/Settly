@@ -61,8 +61,6 @@ share/python-wheels/
 # ------------------------------------------------------------------------------
 # Environment Variables, Secrets & Credentials
 # ------------------------------------------------------------------------------
-.env
-.env.*
 *.env
 *.env.*
 *.pem
@@ -92,6 +90,7 @@ coverage/
 playwright-report/
 test-results/
 blob-report/
+.playwright-mcp/
 cypress/videos/
 cypress/screenshots/
 
@@ -156,12 +155,10 @@ $RECYCLE.BIN/
 *.sublime-project
 
 # VS Code (ignore local state, preserve shared configurations)
-.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.vscode/*.log
 
 # ------------------------------------------------------------------------------
 # Prisma
@@ -183,3 +180,4 @@ docker/volumes/
 .claude/
 graphify-out/
 skills-lock.json
+config.bat

@@ -17,3 +17,8 @@ export const analyticsKeys = {
   all: ["analytics"] as const,
   marketPulse: () => [...analyticsKeys.all, "market-pulse"] as const,
 };
+
+export const subscriptionKeys = {
+  all: ["subscription"] as const,
+  status: () => [...subscriptionKeys.all, "status"] as const,
+};

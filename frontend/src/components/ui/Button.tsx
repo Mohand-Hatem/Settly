@@ -70,7 +70,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           leftIcon
         )}
-        <span>{children}</span>
+        <span className="inline-flex flex-row items-center justify-center gap-1.5">{children}</span>
         {!isLoading && rightIcon}
       </button>
     );

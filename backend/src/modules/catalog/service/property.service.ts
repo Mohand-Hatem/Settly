@@ -2,6 +2,8 @@ import { publish } from "../../../shared/events/bus.js";
 import * as propertyRepo from "../repository/property.repository.js";
 import { areaService } from "./area.service.js";
 import { getAgentByUserId } from "../../identity/service/agent.service.js";
+import { subscriptionService } from "../../payments/service/index.js";
+import { notificationService } from "../../notifications/service/index.js";
 import {
   conflictError,
   forbiddenError,
@@ -224,6 +226,31 @@ export async function approveProperty(
     );
   }
 
+  // Quota enforcement: check if first publication of lifecycle (#86, #87, #94, Invariant I13)
+  const isFirstPublication = !raw.publishedAt;
+  if (isFirstPublication) {
+    const quota = await subscriptionService.getQuotaUsage(raw.agentId);
+    if (!quota.hasQuota) {
+      // Content approved, but quota exhausted: stays PENDING_REVIEW as Approved, Waiting for Quota (#94)
+      const waitingProperty = await propertyRepo.markApprovedWaitingForQuota(propertyId, adminId);
+
+      void notificationService
+        .notifyUser({
+          userId: raw.agentId,
+          type: "LISTING_APPROVED_WAITING_FOR_QUOTA",
+          params: {
+            propertyId: raw.id,
+            propertyTitle: raw.titleEn || "Listing",
+            recipientRole: "agent",
+          },
+          sendEmail: true,
+        })
+        .catch(() => {});
+
+      return waitingProperty;
+    }
+  }
+
   return await transitionAndPublish({
     propertyId,
     newStatus: "PUBLISHED",
@@ -232,7 +259,7 @@ export async function approveProperty(
     action: "PROPERTY_APPROVED",
     expectedStatus: "PENDING_REVIEW",
     previousStatus: "PENDING_REVIEW",
-    setPublishedAt: !raw.publishedAt,
+    setPublishedAt: isFirstPublication,
   });
 }
 
@@ -306,6 +333,11 @@ export async function editProperty(
 
   // Two-tier check if currently PUBLISHED
   let newStatus: "PENDING_REVIEW" | undefined = undefined;
+
+  // Decision #94: Editing a waiting listing invalidates its approval; it must be reviewed again
+  if (raw.approvedWaitingForQuotaAt) {
+    await propertyRepo.clearWaitingForQuotaApproval(propertyId);
+  }
 
   if (raw.status === "PUBLISHED") {
     const hasStructuralChange = STRUCTURAL_FIELDS.some(

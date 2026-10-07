@@ -25,6 +25,19 @@ enum DeviceType {
   WEB
 }
 
+enum AgentApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AgentProofType {
+  BROKER_LICENSE
+  BROKERAGE_AUTHORIZATION
+  COMMERCIAL_REGISTRATION
+  OTHER
+}
+
 enum PropertyType {
   APARTMENT
   VILLA
@@ -138,6 +151,33 @@ enum RefundStatus {
   COMPLETED
 }
 
+enum SubscriptionPlan {
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionPeriodKind {
+  NEW
+  RENEWAL
+  UPGRADE
+  DOWNGRADE
+}
+
+enum SubscriptionPeriodStatus {
+  SCHEDULED
+  ACTIVE
+  ENDED
+  SUPERSEDED
+}
+
+enum SubscriptionPaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  EXPIRED
+  CANCELLED
+}
+
 enum VisibilityScope {
   PUBLIC
   PARTY
@@ -247,6 +287,10 @@ model User {
   idempotencyKeys        IdempotencyKey[]
   priceHistoriesChanged  PropertyPriceHistory[]
   checkoutHeldProperties Property[]             @relation("CheckoutHoldUser")
+  subscription           AgentSubscription?
+  subscriptionPayments   SubscriptionPayment[]
+  agentApplications      AgentApplication[]     @relation("ApplicantAgentApplications")
+  reviewedApplications   AgentApplication[]     @relation("ReviewedAgentApplications")
 
   @@map("user")
 }
@@ -328,6 +372,31 @@ model UserDevice {
   updatedAt  DateTime   @updatedAt
 }
 
+model AgentApplication {
+  id               String                 @id
+  userId           String
+  user             User                   @relation("ApplicantAgentApplications", fields: [userId], references: [id], onDelete: Cascade)
+  nationalIdUrl    String
+  selfieUrl        String
+  proofType        AgentProofType
+  proofDocumentUrl String
+  proofDescription String?
+  licenseNumber    String
+  brokerageName    String?
+  bioEn            String?
+  bioAr            String?
+  status           AgentApplicationStatus @default(PENDING)
+  rejectionReason  String?
+  reviewedByUserId String?
+  reviewedByUser   User?                  @relation("ReviewedAgentApplications", fields: [reviewedByUserId], references: [id])
+  reviewedAt       DateTime?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
 // ==============================================================================
 // 3. Catalog (6 Tables)
 // ==============================================================================
@@ -358,12 +427,13 @@ model Property {
   embedding             Unsupported("vector(1536)")?
   searchVectorEn        Unsupported("tsvector")?
   searchVectorAr        Unsupported("tsvector")?
-  publishedAt           DateTime?
-  checkoutHoldExpiresAt DateTime?
-  checkoutHoldUserId    String?
-  checkoutHoldUser      User?                                  @relation("CheckoutHoldUser", fields: [checkoutHoldUserId], references: [id])
-  createdAt             DateTime                               @default(now())
-  updatedAt             DateTime                               @updatedAt
+  publishedAt               DateTime?
+  approvedWaitingForQuotaAt DateTime?
+  checkoutHoldExpiresAt     DateTime?
+  checkoutHoldUserId        String?
+  checkoutHoldUser          User?                                  @relation("CheckoutHoldUser", fields: [checkoutHoldUserId], references: [id])
+  createdAt                 DateTime                               @default(now())
+  updatedAt                 DateTime                               @updatedAt
 
   images             PropertyImage[]
   amenities          PropertyAmenity[]
@@ -383,6 +453,7 @@ model Property {
   @@index([bedrooms])
   @@index([publishedAt(sort: Desc)])
   @@index([agentId, status, updatedAt(sort: Desc)])
+  @@index([agentId, status, approvedWaitingForQuotaAt])
 }
 
 model PropertyImage {
@@ -707,6 +778,76 @@ model IdempotencyKey {
 
   @@unique([userId, key])
   @@index([expiresAt])
+}
+
+model AgentSubscription {
+  id          String    @id
+  agentId     String    @unique
+  agent       User      @relation(fields: [agentId], references: [id])
+  cancelledAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  periods SubscriptionPeriod[]
+}
+
+model SubscriptionPeriod {
+  id             String                   @id
+  subscriptionId String
+  subscription   AgentSubscription        @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  plan           SubscriptionPlan
+  kind           SubscriptionPeriodKind
+  startsAt       DateTime
+  endsAt         DateTime
+  endedEarlyAt   DateTime?
+  status         SubscriptionPeriodStatus @default(ACTIVE)
+  paymentId      String                   @unique
+  payment        SubscriptionPayment      @relation(fields: [paymentId], references: [id])
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  @@index([subscriptionId, status])
+  @@index([startsAt, endsAt])
+}
+
+model SubscriptionPayment {
+  id                 String                    @id
+  agentId            String
+  agent              User                      @relation(fields: [agentId], references: [id])
+  plan               SubscriptionPlan
+  kind               SubscriptionPeriodKind
+  baseAmountMinor    BigInt
+  baseCurrency       String                    @default("USD")
+  fxRate             Decimal                   @db.Decimal(10, 4)
+  chargedAmountMinor BigInt
+  chargedCurrency    String                    @default("EGP")
+  feeAmountMinor     BigInt                    @default(0)
+  netAmountMinor     BigInt                    @default(0)
+  status             SubscriptionPaymentStatus @default(PENDING)
+  expiresAt          DateTime
+  paidAt             DateTime?
+  receiptNumber      String?                   @unique
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  attempts SubscriptionPaymentAttempt[]
+  period   SubscriptionPeriod?
+
+  @@index([agentId, status])
+}
+
+model SubscriptionPaymentAttempt {
+  id                    String              @id
+  subscriptionPaymentId String
+  subscriptionPayment   SubscriptionPayment @relation(fields: [subscriptionPaymentId], references: [id], onDelete: Cascade)
+  provider              String              @default("PAYMOB")
+  providerTransactionId String?
+  status                AttemptStatus       @default(INITIATED)
+  errorMessage          String?
+  createdAt             DateTime            @default(now())
+
+  @@index([subscriptionPaymentId])
+  @@index([providerTransactionId])
 }
 
 // ==============================================================================

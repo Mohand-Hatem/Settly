@@ -82,12 +82,15 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
   const [messageOpen, setMessageOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [downPaymentPct, setDownPaymentPct] = useState(15);
-  const [selectedFloor, setSelectedFloor] = useState<"ground" | "first" | "roof">("ground");
+  const [tenureYears, setTenureYears] = useState<3 | 5 | 7>(7);
 
   const title = property.titleEn ?? "Property";
   const images = property.images.length
     ? [...property.images].sort((a, b) => Number(b.isCover) - Number(a.isCover) || a.order - b.order)
     : [];
+  const floorplanImage = images.find(
+    (img) => (img as { tag?: string }).tag === "FLOORPLAN" || img.url.toLowerCase().includes("floorplan") || img.url.toLowerCase().includes("blueprint")
+  );
   const price = piastresToEgp(property.price);
   const isRent = property.listingIntent === "RENT";
   const isOwnListing = session?.user?.id === property.agentId;
@@ -168,28 +171,62 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
   };
 
   const getCommuteItems = () => {
+    const lat = property.latitude;
+    const lon = property.longitude;
+    if (lat && lon && lat !== 0 && lon !== 0) {
+      const calculateDistanceKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+        const R = 6371;
+        const dLat = ((lat2 - lat1) * Math.PI) / 180;
+        const dLon = ((lon2 - lon1) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      };
+
+      const hubs = [
+        { name: "AUC New Cairo Campus", lat: 30.0169, lon: 31.4996 },
+        { name: "Cairo Int'l Airport (CAI)", lat: 30.1219, lon: 31.4056 },
+        { name: "Downtown Tahrir / Zamalek", lat: 30.0444, lon: 31.2357 },
+        { name: "Sheikh Zayed / Arkan Plaza", lat: 30.0210, lon: 30.9850 },
+      ];
+
+      return hubs.map((h) => {
+        const km = calculateDistanceKm(lat, lon, h.lat, h.lon);
+        const minutes = Math.max(6, Math.round(km * 2.2));
+        return {
+          time: `~${minutes} mins`,
+          place: `${h.name} (${km.toFixed(1)} km)`,
+        };
+      });
+    }
+
     const area = (areaName ?? "").toLowerCase();
     if (area.includes("zayed") || area.includes("october")) {
       return [
-        { time: "10 mins", place: "Smart Village Tech Park" },
-        { time: "8 mins", place: "26th July Corridor / Mall of Arabia" },
-        { time: "16 mins", place: "Sphinx Int'l Airport" },
-        { time: "25 mins", place: "Central Cairo / Downtown" },
+        { time: "~10 mins", place: "Smart Village Tech Park" },
+        { time: "~8 mins", place: "26th July Corridor / Mall of Arabia" },
+        { time: "~16 mins", place: "Sphinx Int'l Airport" },
+        { time: "~25 mins", place: "Central Cairo / Downtown" },
       ];
     }
     if (area.includes("coast") || area.includes("sahel") || area.includes("alamein")) {
       return [
-        { time: "4 mins", place: "Alexandria-Matrouh Coastal Highway" },
-        { time: "12 mins", place: "Marassi Marina" },
-        { time: "24 mins", place: "Alamein International Airport" },
-        { time: "50 mins", place: "Borg El Arab Airport" },
+        { time: "~4 mins", place: "Alexandria-Matrouh Coastal Highway" },
+        { time: "~12 mins", place: "Marassi Marina" },
+        { time: "~24 mins", place: "Alamein International Airport" },
+        { time: "~50 mins", place: "Borg El Arab Airport" },
       ];
     }
     return [
-      { time: "6 mins", place: "Road 90 & Ring Road Arterial" },
-      { time: "8 mins", place: "AUC New Cairo Campus" },
-      { time: "12 mins", place: "Cairo Festival City Mall" },
-      { time: "18 mins", place: "Cairo International Airport" },
+      { time: "~6 mins", place: "Road 90 & Ring Road Arterial" },
+      { time: "~8 mins", place: "AUC New Cairo Campus" },
+      { time: "~12 mins", place: "Cairo Festival City Mall" },
+      { time: "~18 mins", place: "Cairo International Airport" },
     ];
   };
 
@@ -542,148 +579,136 @@ function PropertyDetail({ property }: { property: PropertyResponse }) {
                       className="calc-slider"
                       aria-label="Down payment percentage"
                     />
-                    <div className="calc-readout-row">
+
+                    <div className="mt-3 flex items-center justify-between text-xs text-ink-3 flex-wrap gap-2">
+                      <span className="font-semibold text-navy-900">Simulated Installment Horizon:</span>
+                      <div className="flex gap-1.5" role="group" aria-label="Tenure Horizon">
+                        {([3, 5, 7] as const).map((yrs) => (
+                          <button
+                            key={yrs}
+                            type="button"
+                            onClick={() => setTenureYears(yrs)}
+                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold transition ${
+                              tenureYears === yrs
+                                ? "bg-navy-900 text-white"
+                                : "bg-canvas border border-line text-ink-2 hover:bg-white"
+                            }`}
+                          >
+                            {yrs} Years ({yrs * 4} Quarters)
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="calc-readout-row mt-3">
                       <div className="calc-readout-item">
                         <span>Simulated Down Payment</span>
                         <b>{Math.round(price * (downPaymentPct / 100)).toLocaleString("en-US")} EGP</b>
                       </div>
                       <div className="calc-readout-item">
-                        <span>Simulated Quarterly Outlay (7 Years)</span>
-                        <b>{Math.round((price - Math.round(price * (downPaymentPct / 100))) / 28).toLocaleString("en-US")} EGP</b>
+                        <span>Simulated Quarterly Outlay ({tenureYears} Years)</span>
+                        <b>{Math.round((price - Math.round(price * (downPaymentPct / 100))) / (tenureYears * 4)).toLocaleString("en-US")} EGP</b>
                       </div>
                     </div>
+
+                    <p className="mt-3 text-[11px] text-ink-3 border-t border-line pt-2 leading-relaxed">
+                      <strong>Hypothetical Disclaimer:</strong> This simulation is for educational scenario comparison only. Actual purchase installments, cash considerations, maintenance fees (est. 8%), and transfer dues (est. 4%) are governed exclusively by developer contracts and the formal Sale &amp; Purchase Agreement (SPA).
+                    </p>
                   </div>
                 </div>
               )}
 
-              {/* Architectural Floorplans Section */}
+              {/* Architectural Floorplans Section (PUB-03, Data Honesty Standard) */}
               <div className="detail-card">
                 <div className="detail-card-title">
-                  <span>Architectural Floorplan Reference &amp; Layout</span>
-                  <span className="font-mono text-xs font-semibold text-brass-700">Spatial Configuration</span>
-                </div>
-                <div className="mb-3 rounded-lg border border-line bg-canvas p-3 text-xs text-ink-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                  <span>Official CAD blueprints have not been uploaded for this specific listing. Layout preview below illustrates the verified {property.areaSqm} m² BUA spatial zoning. Request the official architectural dossier or schedule a physical viewing to inspect room dimensions.</span>
-                  {!isOwnListing && (
-                    <button type="button" onClick={onMessageAgent} className="shrink-0 text-xs font-semibold text-navy-900 underline hover:text-brass-600">
-                      Request Blueprint →
-                    </button>
-                  )}
+                  <span>Architectural Floorplan &amp; Spatial Specifications</span>
+                  <span className="font-mono text-xs font-semibold text-brass-700">Verified Geometry</span>
                 </div>
 
-                <div className="floor-tab-bar" role="tablist">
-                  <button
-                    type="button"
-                    className={`floor-tab-btn ${selectedFloor === "ground" ? "active" : ""}`}
-                    onClick={() => setSelectedFloor("ground")}
-                  >
-                    Ground Floor ({Math.round(property.areaSqm * 0.45)} m²)
-                  </button>
-                  <button
-                    type="button"
-                    className={`floor-tab-btn ${selectedFloor === "first" ? "active" : ""}`}
-                    onClick={() => setSelectedFloor("first")}
-                  >
-                    First Floor ({Math.round(property.areaSqm * 0.40)} m²)
-                  </button>
-                  <button
-                    type="button"
-                    className={`floor-tab-btn ${selectedFloor === "roof" ? "active" : ""}`}
-                    onClick={() => setSelectedFloor("roof")}
-                  >
-                    Penthouse Roof ({Math.round(property.areaSqm * 0.15)} m²)
-                  </button>
-                </div>
-
-                <div className="floor-plan-view-box">
-                  {selectedFloor === "ground" && (
-                    <>
-                      <svg className="cad-blueprint-svg" viewBox="0 0 600 380" aria-label="Ground Floor Architectural Blueprint">
-                        <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" strokeWidth="3" />
-                        <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" strokeDasharray="4,4" />
-                        <line x1="280" y1="30" x2="280" y2="350" stroke="var(--navy-800)" strokeWidth="2" />
-                        <line x1="280" y1="180" x2="560" y2="180" stroke="var(--navy-800)" strokeWidth="2" />
-                        <line x1="40" y1="210" x2="280" y2="210" stroke="var(--navy-800)" strokeWidth="2" />
-                        <rect x="45" y="35" width="230" height="170" fill="rgba(198, 151, 73, 0.08)" />
-                        <text x="65" y="85" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Double Reception &amp; Salon</text>
-                        <text x="65" y="108" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">11.8m × 8.2m ({Math.round(property.areaSqm * 0.22)} m²)</text>
-                        <text x="65" y="255" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Show Kitchen &amp; Dining</text>
-                        <text x="65" y="278" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">6.4m × 5.8m ({Math.round(property.areaSqm * 0.09)} m²)</text>
-                        <text x="305" y="85" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Guest Suite (En-suite)</text>
-                        <text x="305" y="108" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">5.2m × 4.8m ({Math.round(property.areaSqm * 0.08)} m²)</text>
-                        <rect x="290" y="190" width="260" height="150" fill="rgba(61, 90, 76, 0.08)" />
-                        <text x="305" y="245" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Covered Loggia &amp; Veranda</text>
-                        <text x="305" y="268" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Direct Garden Frontage ({Math.round(property.areaSqm * 0.06)} m²)</text>
-                      </svg>
-                      <div className="floor-rooms-list">
-                        <div className="room-item"><span>Grand Reception:</span><b>{Math.round(property.areaSqm * 0.22)} m²</b></div>
-                        <div className="room-item"><span>Show Kitchen &amp; Dining:</span><b>{Math.round(property.areaSqm * 0.09)} m²</b></div>
-                        <div className="room-item"><span>Guest Suite:</span><b>{Math.round(property.areaSqm * 0.08)} m²</b></div>
-                        <div className="room-item"><span>Guest Powder Room:</span><b>6.2 m²</b></div>
-                        <div className="room-item"><span>Maid&apos;s Quarters &amp; Utility:</span><b>{Math.round(property.areaSqm * 0.04)} m²</b></div>
-                        <div className="room-item"><span>Covered Loggia &amp; Veranda:</span><b>{Math.round(property.areaSqm * 0.06)} m²</b></div>
+                {floorplanImage ? (
+                  <div className="space-y-3">
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-line bg-canvas">
+                      <Image
+                        src={floorplanImage.url}
+                        alt="Architectural Floorplan Blueprint"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-ink-3">
+                      <span>Official Architectural Blueprint</span>
+                      <button
+                        type="button"
+                        onClick={() => setLightbox(images.findIndex((i) => i.id === floorplanImage.id))}
+                        className="text-xs font-semibold text-navy-900 underline hover:text-brass-600"
+                      >
+                        Enlarge Blueprint →
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-line bg-canvas p-6 text-center space-y-4">
+                    <div className="max-w-md mx-auto space-y-2">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-900/5 text-navy-900 mx-auto">
+                        <Layers className="h-6 w-6 text-brass-600" />
                       </div>
-                    </>
-                  )}
+                      <h4 className="font-display text-base font-bold text-navy-900">
+                        CAD Floorplan Available on Verified Request
+                      </h4>
+                      <p className="text-xs text-ink-2 leading-relaxed">
+                        Vector CAD blueprints and room-by-room dimension schematics have not been digitized for this listing. Physical floorplans and spatial zoning are provided by the listing broker during verified on-site inspection tours.
+                      </p>
+                    </div>
 
-                  {selectedFloor === "first" && (
-                    <>
-                      <svg className="cad-blueprint-svg" viewBox="0 0 600 380" aria-label="First Floor Architectural Blueprint">
-                        <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" strokeWidth="3" />
-                        <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" strokeDasharray="4,4" />
-                        <line x1="300" y1="30" x2="300" y2="350" stroke="var(--navy-800)" strokeWidth="2" />
-                        <line x1="40" y1="180" x2="300" y2="180" stroke="var(--navy-800)" strokeWidth="2" />
-                        <line x1="300" y1="190" x2="560" y2="190" stroke="var(--navy-800)" strokeWidth="2" />
-                        <rect x="45" y="35" width="250" height="140" fill="rgba(198, 151, 73, 0.08)" />
-                        <text x="65" y="80" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Master Bedroom Suite</text>
-                        <text x="65" y="103" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Walk-in Dressing &amp; Master Bath ({Math.round(property.areaSqm * 0.16)} m²)</text>
-                        <text x="65" y="245" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Family Living Room</text>
-                        <text x="65" y="268" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Panoramic Window Wall ({Math.round(property.areaSqm * 0.10)} m²)</text>
-                        <text x="325" y="80" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Bedroom 2 (En-suite)</text>
-                        <text x="325" y="103" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Private Balcony ({Math.round(property.areaSqm * 0.07)} m²)</text>
-                        <rect x="305" y="195" width="250" height="145" fill="rgba(61, 90, 76, 0.08)" />
-                        <text x="325" y="245" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Bedroom 3 (En-suite)</text>
-                        <text x="325" y="268" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Corner Aspect ({Math.round(property.areaSqm * 0.07)} m²)</text>
-                      </svg>
-                      <div className="floor-rooms-list">
-                        <div className="room-item"><span>Master Suite &amp; Dressing:</span><b>{Math.round(property.areaSqm * 0.16)} m²</b></div>
-                        <div className="room-item"><span>Family Living Room:</span><b>{Math.round(property.areaSqm * 0.10)} m²</b></div>
-                        <div className="room-item"><span>Bedroom 2 (En-suite):</span><b>{Math.round(property.areaSqm * 0.07)} m²</b></div>
-                        <div className="room-item"><span>Bedroom 3 (En-suite):</span><b>{Math.round(property.areaSqm * 0.07)} m²</b></div>
-                        <div className="room-item"><span>Master Bathroom (5-piece):</span><b>12.5 m²</b></div>
-                        <div className="room-item"><span>Bedrooms Balcony:</span><b>{Math.round(property.areaSqm * 0.03)} m²</b></div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto pt-2">
+                      <div className="rounded-xl border border-line bg-white p-3 text-center">
+                        <span className="font-mono text-[10px] text-ink-4 uppercase block">Gross BUA</span>
+                        <span className="font-mono text-sm font-bold text-navy-900">{property.areaSqm} m²</span>
                       </div>
-                    </>
-                  )}
+                      <div className="rounded-xl border border-line bg-white p-3 text-center">
+                        <span className="font-mono text-[10px] text-ink-4 uppercase block">Bedrooms</span>
+                        <span className="font-mono text-sm font-bold text-navy-900">{property.bedrooms}</span>
+                      </div>
+                      <div className="rounded-xl border border-line bg-white p-3 text-center">
+                        <span className="font-mono text-[10px] text-ink-4 uppercase block">Bathrooms</span>
+                        <span className="font-mono text-sm font-bold text-navy-900">{property.bathrooms}</span>
+                      </div>
+                      <div className="rounded-xl border border-line bg-white p-3 text-center">
+                        <span className="font-mono text-[10px] text-ink-4 uppercase block">Typology</span>
+                        <span className="font-mono text-sm font-bold text-navy-900">{label(TYPE_LABEL, property.propertyType)}</span>
+                      </div>
+                    </div>
 
-                  {selectedFloor === "roof" && (
-                    <>
-                      <svg className="cad-blueprint-svg" viewBox="0 0 600 380" aria-label="Penthouse Roof Architectural Blueprint">
-                        <rect x="40" y="30" width="520" height="320" rx="4" fill="none" stroke="var(--navy-900)" strokeWidth="3" />
-                        <rect x="44" y="34" width="512" height="312" rx="2" fill="none" stroke="var(--line-2)" strokeDasharray="4,4" />
-                        <rect x="45" y="35" width="220" height="310" fill="rgba(198, 151, 73, 0.08)" />
-                        <line x1="265" y1="30" x2="265" y2="350" stroke="var(--navy-800)" strokeWidth="2" />
-                        <text x="65" y="110" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Sky Lounge / Penthouse Suite</text>
-                        <text x="65" y="133" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Panoramic Glass Enclosure ({Math.round(property.areaSqm * 0.08)} m²)</text>
-                        <text x="65" y="210" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Roof Powder Room &amp; Bar</text>
-                        <text x="65" y="233" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Pre-plumbed Kitchenette (8.4 m²)</text>
-                        <rect x="270" y="35" width="285" height="310" fill="rgba(61, 90, 76, 0.08)" />
-                        <text x="295" y="110" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Open Panoramic Sky Deck</text>
-                        <text x="295" y="133" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">360° Corridor Horizon View ({Math.round(property.areaSqm * 0.12)} m²)</text>
-                        <text x="295" y="210" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="13" fill="var(--navy-900)">Shaded Pergola &amp; Solarium</text>
-                        <text x="295" y="233" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-3)">Hardwood Decking (18.6 m²)</text>
-                      </svg>
-                      <div className="floor-rooms-list">
-                        <div className="room-item"><span>Penthouse Sky Lounge:</span><b>{Math.round(property.areaSqm * 0.08)} m²</b></div>
-                        <div className="room-item"><span>Open Panoramic Sky Deck:</span><b>{Math.round(property.areaSqm * 0.12)} m²</b></div>
-                        <div className="room-item"><span>Roof Powder Room &amp; Bath:</span><b>5.8 m²</b></div>
-                        <div className="room-item"><span>Pre-plumbed Wet Bar:</span><b>4.6 m²</b></div>
-                        <div className="room-item"><span>Shaded Wooden Pergola:</span><b>18.6 m²</b></div>
-                        <div className="room-item"><span>Mechanical &amp; Storage Loft:</span><b>6.2 m²</b></div>
-                      </div>
-                    </>
-                  )}
-                </div>
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                      {!isOwnListing && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={onMessageAgent}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white px-3.5 py-2 text-xs font-semibold text-navy-900 transition hover:border-brass hover:text-brass-700 shadow-sm"
+                          >
+                            <MessageSquare className="h-3.5 w-3.5 text-brass-600" />
+                            <span>Request Blueprint from Broker</span>
+                          </button>
+                          {canRequest && (
+                            <button
+                              type="button"
+                              onClick={onRequest}
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-navy-800 shadow-sm"
+                            >
+                              <CalendarPlus className="h-3.5 w-3.5 text-brass" />
+                              <span>Schedule On-Site Inspection Tour</span>
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-ink-4 pt-1">
+                      Data Honesty Notice: Settly strictly prohibits fabricated room dimensions (Decision #45). Spatial layout is verified during private viewings.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Amenities Grid */}

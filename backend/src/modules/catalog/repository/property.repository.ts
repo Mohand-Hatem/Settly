@@ -84,6 +84,7 @@ export function formatProperty(p: any): PropertyResponse {
     latitude: p.latitude,
     longitude: p.longitude,
     publishedAt: p.publishedAt ? p.publishedAt.toISOString() : null,
+    approvedWaitingForQuotaAt: p.approvedWaitingForQuotaAt ? p.approvedWaitingForQuotaAt.toISOString() : null,
     createdAt: p.createdAt.toISOString(),
     updatedAt: p.updatedAt.toISOString(),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -251,6 +252,7 @@ export async function getRawPropertyById(id: string) {
       areaId: true,
       status: true,
       publishedAt: true,
+      approvedWaitingForQuotaAt: true,
       titleEn: true,
       titleAr: true,
       descriptionEn: true,
@@ -756,5 +758,46 @@ export async function findPublishedForCompare(refs: string[]): Promise<CompareIt
         category: pa.amenity.category,
       })),
     };
+  });
+}
+
+export async function markApprovedWaitingForQuota(
+  propertyId: string,
+  adminId: string
+): Promise<PropertyResponse> {
+  const now = new Date();
+  await prisma.$transaction(async (tx) => {
+    await tx.property.update({
+      where: { id: propertyId },
+      data: {
+        approvedWaitingForQuotaAt: now,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        id: uuidv7(),
+        actorType: "ADMIN",
+        actorId: adminId,
+        action: "PROPERTY_APPROVED_WAITING_FOR_QUOTA",
+        entityType: "Property",
+        entityId: propertyId,
+        metadata: {
+          approvedWaitingForQuotaAt: now.toISOString(),
+        },
+      },
+    });
+  });
+
+  const updated = await getPropertyById(propertyId);
+  return updated!;
+}
+
+export async function clearWaitingForQuotaApproval(propertyId: string): Promise<void> {
+  await prisma.property.update({
+    where: { id: propertyId },
+    data: {
+      approvedWaitingForQuotaAt: null,
+    },
   });
 }

@@ -1197,7 +1197,48 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete and anonymize current account
+         * @description Permanently delete user account credentials and anonymize PII in accordance with privacy retention policy (BUSINESS_RULES §11, SECURITY.md §13).
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Account successfully anonymized and credentials stripped */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AccountDeletedResponse"];
+                    };
+                };
+                /** @description Unauthenticated request */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden (account suspended or banned) */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         /**
@@ -1362,6 +1403,133 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/agent-profile/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit self-service agent verification application (KYC)
+         * @description Submits Egyptian National ID, verification selfie, and professional credentials for administrative review per Decisions #49, #55, #56, #57, #74.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AgentApplicationSubmitInput"];
+                };
+            };
+            responses: {
+                /** @description Application successfully submitted and placed in review queue */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentApplicationItem"];
+                    };
+                };
+                /** @description Unauthenticated request */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Conflict (already an agent, or already has a pending application per Decision #74) */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ConflictProblem"];
+                    };
+                };
+                /** @description Validation error in submitted fields */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/agent-profile/application": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current agent application status
+         * @description Retrieves the user's latest agent verification application and status (APP-03).
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Latest application status and review outcome */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentApplicationItem"];
+                    };
+                };
+                /** @description Unauthenticated request */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description No application found for current user */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1548,6 +1716,87 @@ export interface paths {
                     };
                 };
                 /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Agent profile not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/agents/{id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke agent verification status and cascade suspension (Admin only)
+         * @description Revokes agent verification, suspends active listings, and notifies the agent per Decisions #52, #58.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AgentRevocationInput"];
+                };
+            };
+            responses: {
+                /** @description Agent verification revoked and listings suspended */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentListItem"];
+                    };
+                };
+                /** @description Unauthenticated */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden (Conflict of interest #67, #71 or non-admin) */
                 403: {
                     headers: {
                         [name: string]: unknown;
@@ -5559,6 +5808,553 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/agent-applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List agent verification applications (Admin only, ADM-04)
+         * @description Returns agent verification applications with optional status filtering for administrative queue review.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    status?: "PENDING" | "APPROVED" | "REJECTED";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of agent applications */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentApplicationListResponse"];
+                    };
+                };
+                /** @description Unauthenticated */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden (Admin role required) */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Validation error */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/agent-applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get agent application details for visual verification (Admin only, ADM-04)
+         * @description Retrieves full application details including National ID, verification selfie, and professional proof URLs for side-by-side inspection (Decisions #56, #57).
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Full application details with identity document references */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentApplicationDetail"];
+                    };
+                };
+                /** @description Unauthenticated */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Application not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/agent-applications/{id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve or reject agent application (Admin only, ADM-04)
+         * @description Submits an administrative review decision. Approving elevates user to AGENT and creates verified AgentProfile. Rejecting requires a mandatory reason shown to applicant (Decision #57). Enforces Conflict of Interest guards (Decisions #67, #71).
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AgentApplicationReviewInput"];
+                };
+            };
+            responses: {
+                /** @description Application review processed successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AgentApplicationItem"];
+                    };
+                };
+                /** @description Unauthenticated */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden (Conflict of interest: admin is personally involved per Decisions #67, #71) */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Application not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+                /** @description Conflict (Application already reviewed) */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ConflictProblem"];
+                    };
+                };
+                /** @description Validation error (e.g. rejection without reason) */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gets agent subscription status, current plan, quota and renewal eligibility (SUB-01, SUB-04, SUB-09) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Agent subscription details */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {string} */
+                            plan: "FREE" | "PRO" | "ENTERPRISE";
+                            isVerified: boolean;
+                            quota: {
+                                used: number;
+                                total: number;
+                                remaining: number;
+                                resetDate: string;
+                                waitingCount: number;
+                            };
+                            currentPeriod: {
+                                id: string;
+                                /** @enum {string} */
+                                plan: "FREE" | "PRO" | "ENTERPRISE";
+                                /** @enum {string} */
+                                kind: "NEW" | "RENEWAL" | "UPGRADE" | "DOWNGRADE";
+                                startsAt: string;
+                                endsAt: string;
+                                /** @enum {string} */
+                                status: "SCHEDULED" | "ACTIVE" | "ENDED" | "SUPERSEDED";
+                            } | null;
+                            queuedPeriod: {
+                                id: string;
+                                /** @enum {string} */
+                                plan: "FREE" | "PRO" | "ENTERPRISE";
+                                /** @enum {string} */
+                                kind: "NEW" | "RENEWAL" | "UPGRADE" | "DOWNGRADE";
+                                startsAt: string;
+                                endsAt: string;
+                                /** @enum {string} */
+                                status: "SCHEDULED" | "ACTIVE" | "ENDED" | "SUPERSEDED";
+                            } | null;
+                            canRenew: boolean;
+                            canUpgrade: boolean;
+                            renewalBlockedReason: string | null;
+                            upgradeBlockedReason: string | null;
+                            cancelledAt: string | null;
+                            receipts: {
+                                id: string;
+                                receiptNumber: string | null;
+                                /** @enum {string} */
+                                plan: "FREE" | "PRO" | "ENTERPRISE";
+                                /** @enum {string} */
+                                kind: "NEW" | "RENEWAL" | "UPGRADE" | "DOWNGRADE";
+                                amountEgp: number;
+                                amountUsd: number;
+                                fxRate: number;
+                                paidAt: string | null;
+                                /** @enum {string} */
+                                status: "PENDING" | "PROCESSING" | "SUCCEEDED" | "EXPIRED" | "CANCELLED";
+                            }[];
+                        };
+                    };
+                };
+                /** @description Not signed in */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden / Unverified email / Unverified agent */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+                /** @description State conflict / Quota / Period constraint */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ConflictProblem"];
+                    };
+                };
+                /** @description Validation failed */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent/subscription/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Initiates Paymob checkout for Pro or Enterprise subscription tier (SUB-02, #89, #103, #104, #105) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "Idempotency-Key"?: string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        plan: "PRO" | "ENTERPRISE";
+                        /** Format: uri */
+                        returnUrl?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Checkout session created and Paymob redirect generated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            checkoutUrl: string;
+                            orderReference: string;
+                            amountEgp: number;
+                            amountUsd: number;
+                            /** @enum {string} */
+                            plan: "PRO" | "ENTERPRISE";
+                            /** @enum {string} */
+                            kind: "NEW" | "RENEWAL" | "UPGRADE" | "DOWNGRADE";
+                            expiresAt: string;
+                            isSimulated: boolean;
+                        };
+                    };
+                };
+                /** @description Not signed in */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden / Unverified email / Unverified agent */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+                /** @description State conflict / Quota / Period constraint */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ConflictProblem"];
+                    };
+                };
+                /** @description Validation failed */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent/subscription/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancels subscription renewal; active period runs to completion without refund (SUB-07, #91) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Subscription cancelled successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                            cancelledAt: string;
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Not signed in */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["UnauthenticatedProblem"];
+                    };
+                };
+                /** @description Forbidden / Unverified email / Unverified agent */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ForbiddenProblem"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["NotFoundProblem"];
+                    };
+                };
+                /** @description State conflict / Quota / Period constraint */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ConflictProblem"];
+                    };
+                };
+                /** @description Validation failed */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ValidationProblem"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -5731,6 +6527,122 @@ export interface components {
             platform: string;
             /** Format: date-time */
             createdAt: string;
+        };
+        AgentApplicationSubmitInput: {
+            /**
+             * @description Private storage URL for Egyptian National ID document (#49)
+             * @example https://storage.settly.estate/kyc/national-id.pdf
+             */
+            nationalIdUrl: string;
+            /**
+             * @description Private storage URL for live verification selfie (#49, #56)
+             * @example https://storage.settly.estate/kyc/selfie.jpg
+             */
+            selfieUrl: string;
+            /**
+             * @description Type of professional verification proof (#55)
+             * @example BROKER_LICENSE
+             * @enum {string}
+             */
+            proofType: "BROKER_LICENSE" | "BROKERAGE_AUTHORIZATION" | "COMMERCIAL_REGISTRATION" | "OTHER";
+            /**
+             * @description Private storage URL for professional proof document
+             * @example https://storage.settly.estate/kyc/broker-license.pdf
+             */
+            proofDocumentUrl: string;
+            /**
+             * @description Mandatory description if proofType is OTHER (#55)
+             * @example Syndicate member registration card
+             */
+            proofDescription?: string;
+            /**
+             * @description Official Egyptian Real Estate Regulatory Authority license number
+             * @example EGY-RE-2026-9912
+             */
+            licenseNumber: string;
+            /**
+             * @description Registered brokerage or agency name
+             * @example Sovereign Cairo Partners
+             */
+            brokerageName?: string;
+            /**
+             * @description English biography and specialties
+             * @example Specialist in New Cairo and Golden Square luxury villas.
+             */
+            bioEn?: string;
+            /**
+             * @description Arabic biography and specialties
+             * @example متخصص في فلل القاهرة الجديدة والمربع الذهبي.
+             */
+            bioAr?: string;
+        };
+        AgentApplicationReviewInput: {
+            /**
+             * @description Review decision: APPROVED or REJECTED
+             * @example APPROVED
+             * @enum {string}
+             */
+            decision: "APPROVED" | "REJECTED";
+            /**
+             * @description Mandatory rejection reason shown to applicant (Decision #57)
+             * @example National ID scan was unreadable. Please provide a clear photograph.
+             */
+            rejectionReason?: string;
+            /**
+             * @description Internal administrative review notes
+             * @example Visual verification completed against national register.
+             */
+            notes?: string;
+        };
+        AgentRevocationInput: {
+            /**
+             * @description Administrative rationale for revoking agent status (Decisions #52, #58)
+             * @example License expired or disciplinary suspension.
+             */
+            notes: string;
+        };
+        AgentApplicationItem: {
+            /**
+             * Format: uuid
+             * @description Application UUIDv7
+             */
+            id: string;
+            userId: string;
+            /** @enum {string} */
+            proofType: "BROKER_LICENSE" | "BROKERAGE_AUTHORIZATION" | "COMMERCIAL_REGISTRATION" | "OTHER";
+            proofDescription?: string | null;
+            licenseNumber: string;
+            brokerageName?: string | null;
+            bioEn?: string | null;
+            bioAr?: string | null;
+            /** @enum {string} */
+            status: "PENDING" | "APPROVED" | "REJECTED";
+            rejectionReason?: string | null;
+            reviewedByUserId?: string | null;
+            /** Format: date-time */
+            reviewedAt?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            user: {
+                id: string;
+                name: string;
+                email: string;
+                phone?: string | null;
+                image?: string | null;
+            };
+        };
+        AgentApplicationDetail: components["schemas"]["AgentApplicationItem"] & {
+            /** @description Private URL/path for National ID */
+            nationalIdUrl: string;
+            /** @description Private URL/path for live selfie */
+            selfieUrl: string;
+            /** @description Private URL/path for proof document */
+            proofDocumentUrl: string;
+        };
+        AgentApplicationListResponse: {
+            items: components["schemas"]["AgentApplicationItem"][];
         };
         /** @enum {string} */
         OfferStatus: "PENDING_AGENT" | "PENDING_BUYER" | "ACCEPTED" | "RESERVED" | "REJECTED" | "WITHDRAWN" | "EXPIRED" | "SUPERSEDED" | "COMPLETED" | "FELL_THROUGH";
@@ -6199,6 +7111,8 @@ export interface components {
             /** Format: date-time */
             publishedAt: string | null;
             /** Format: date-time */
+            approvedWaitingForQuotaAt?: string | null;
+            /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
@@ -6452,6 +7366,10 @@ export interface components {
             bioEn?: string | null;
             /** @description Arabic biography */
             bioAr?: string | null;
+        };
+        AccountDeletedResponse: {
+            success: boolean;
+            message: string;
         };
         CompareItem: {
             id: string;

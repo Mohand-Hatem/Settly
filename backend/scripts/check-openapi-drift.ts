@@ -22,6 +22,8 @@ import "../src/modules/messaging/routes/conversation.routes.js";
 import "../src/modules/notifications/routes/notification.routes.js";
 import "../src/modules/search/routes/index.js";
 import "../src/modules/knowledge/routes/index.js";
+import "../src/modules/identity/routes/admin-agent-application.routes.js";
+import "../src/modules/payments/routes/agent-subscription.routes.js";
 
 
 const __filename = fileURLToPath(import.meta.url);

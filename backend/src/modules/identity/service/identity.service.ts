@@ -107,6 +107,18 @@ export class IdentityService {
     const profile = await this.repo.upsertAgentProfile(userId, data);
     return mapAgentProfileToResponse(profile);
   }
+
+  async pruneExpiredSessions(now = new Date()): Promise<number> {
+    return await this.repo.pruneExpiredSessions(now);
+  }
+
+  async deleteAccount(userId: string): Promise<{ success: boolean; message: string }> {
+    await this.repo.anonymizeUser(userId);
+    return {
+      success: true,
+      message: "Account has been permanently deleted and personal data anonymized.",
+    };
+  }
 }
 
 export const identityService = new IdentityService();

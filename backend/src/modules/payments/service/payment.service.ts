@@ -2,6 +2,7 @@ import { ProblemError } from "../../../shared/errors/problem-details.js";
 import { paymentRepository } from "../repository/payment.repository.js";
 import { paymobAdapter } from "../adapter/paymob.adapter.js";
 import { notificationService } from "../../notifications/service/index.js";
+import { subscriptionService } from "./subscription.service.js";
 import type { CheckoutInitiateResponse, DepositStatusResponse } from "../schema/payment.schema.js";
 
 function problem(status: number, title: string, detail: string, type: string, params?: Record<string, unknown>) {
@@ -183,8 +184,12 @@ export class PaymentService {
     const eventId = String(obj.id || payload.id);
     const orderReference = String(obj.order?.merchant_order_id || obj.merchant_order_id || "");
 
+    if (orderReference.startsWith("sub_")) {
+      return subscriptionService.handleSubscriptionWebhook(payload, signature);
+    }
+
     if (!orderReference.startsWith("dep_")) {
-      return { success: true, reason: "ignored_non_deposit_event" };
+      return { success: true, reason: "ignored_unknown_event" };
     }
 
     const payment = await paymentRepository.findPaymentByOrderReference(orderReference);
@@ -275,6 +280,75 @@ export class PaymentService {
 
   async countFailedRefunds(): Promise<number> {
     return await paymentRepository.countFailedRefunds();
+  }
+
+  async clearExpiredCheckoutHolds(now = new Date()): Promise<number> {
+    return await paymentRepository.clearExpiredCheckoutHolds(now);
+  }
+
+  /**
+   * Reconciles stale PROCESSING payments older than staleMinutes (BUSINESS_RULES §5.1)
+   */
+  async reconcileStalePayments(staleMinutes: number = 15): Promise<number> {
+    const stalePayments = await paymentRepository.findStaleProcessingPayments(staleMinutes);
+    let reconciledCount = 0;
+
+    for (const payment of stalePayments) {
+      const latestAttempt = payment.attempts[0];
+      if (!latestAttempt?.providerTransactionId) {
+        // Abandoned without redirect: revert to PENDING so buyer can re-attempt
+        await paymentRepository.updatePayment(payment.id, { status: "PENDING" });
+        await paymentRepository.releaseCheckoutHold(payment.offer.propertyId, payment.buyerId);
+        reconciledCount++;
+        continue;
+      }
+
+      const txDetails = await paymobAdapter.getTransaction(latestAttempt.providerTransactionId);
+      if (!txDetails) continue;
+
+      if (txDetails.success && !txDetails.pending) {
+        // Payment succeeded at Paymob, but webhook was dropped: execute Atomic Bundle
+        await paymentRepository.executeAtomicBundle({
+          paymentId: payment.id,
+          attemptId: latestAttempt.id,
+          offerId: payment.offerId,
+          propertyId: payment.offer.propertyId,
+          buyerId: payment.buyerId,
+          provider: "PAYMOB",
+          eventId: `rec_${latestAttempt.providerTransactionId}`,
+          providerTransactionId: latestAttempt.providerTransactionId,
+          grossAmount: payment.grossAmount,
+          payload: { reconciled: true, providerDetails: txDetails },
+        });
+
+        void notificationService
+          .notifyUser({
+            userId: payment.buyerId,
+            type: "DEPOSIT_CONFIRMED",
+            params: {
+              offerId: payment.offerId,
+              propertyTitle: payment.offer.property.titleEn,
+              amountEgp: Math.round(Number(payment.grossAmount)),
+              recipientRole: "buyer",
+            },
+            sendEmail: true,
+          })
+          .catch(() => {});
+
+        reconciledCount++;
+      } else if (!txDetails.success && !txDetails.pending) {
+        // Provider confirmed failure
+        await paymentRepository.updateAttempt(latestAttempt.id, {
+          status: "FAILED",
+          errorMessage: "Provider confirmed transaction failed during automated reconciliation",
+        });
+        await paymentRepository.updatePayment(payment.id, { status: "PENDING" });
+        await paymentRepository.releaseCheckoutHold(payment.offer.propertyId, payment.buyerId);
+        reconciledCount++;
+      }
+    }
+
+    return reconciledCount;
   }
 }
 

@@ -35,6 +35,7 @@ async function run() {
   let secondApplicationId = null;
   let agentProfileId = null;
   let testPropertyId = null;
+  let testAreaId = null;
 
   try {
     // --------------------------------------------------------------------------
@@ -346,7 +347,19 @@ async function run() {
     // --------------------------------------------------------------------------
     console.log("\nTest 14: Revocation cascade suspends active listings (Decisions #52, #58)...");
     // Create an active PUBLISHED listing for this agent
-    const area = await prisma.area.findFirst();
+    let area = await prisma.area.findFirst();
+    if (!area) {
+      area = await prisma.area.create({
+        data: {
+          id: uuidv7(),
+          slug: `test-area-revocation-${Date.now()}`,
+          nameEn: "Test Area Revocation",
+          nameAr: "منطقة تجربة الإلغاء",
+          level: "DISTRICT",
+        },
+      });
+      testAreaId = area.id;
+    }
     testPropertyId = uuidv7();
     await prisma.property.create({
       data: {
@@ -435,6 +448,9 @@ async function run() {
     console.log("Cleaning up test fixtures from database...");
     if (testPropertyId) {
       await prisma.property.deleteMany({ where: { id: testPropertyId } }).catch(() => {});
+    }
+    if (testAreaId) {
+      await prisma.area.deleteMany({ where: { id: testAreaId } }).catch(() => {});
     }
     const userIds = [buyerUserId, admin1UserId, admin2UserId].filter(Boolean);
     for (const uid of userIds) {

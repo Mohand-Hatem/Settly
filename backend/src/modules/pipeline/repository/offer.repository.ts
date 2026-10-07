@@ -733,6 +733,103 @@ export class OfferRepository {
       },
     });
   }
+
+  /**
+   * O10: Expire pending offers (PENDING_AGENT, PENDING_BUYER) past their 7-day TTL.
+   */
+  async expireStalePendingOffers(now = new Date()): Promise<OfferRecord[]> {
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const staleOffers = await prisma.offer.findMany({
+      where: {
+        status: { in: ["PENDING_AGENT", "PENDING_BUYER"] },
+        OR: [
+          { expiresAt: { lte: now } },
+          { expiresAt: null, updatedAt: { lte: sevenDaysAgo } },
+        ],
+      },
+      include: offerInclude,
+    });
+
+    const expired: OfferRecord[] = [];
+    for (const off of staleOffers) {
+      const res = await prisma.$transaction(async (tx) => {
+        const cur = await tx.offer.findUnique({ where: { id: off.id } });
+        if (!cur || !["PENDING_AGENT", "PENDING_BUYER"].includes(cur.status)) {
+          return null;
+        }
+        await tx.offer.update({
+          where: { id: off.id },
+          data: { status: "EXPIRED" },
+        });
+        return tx.offer.findUniqueOrThrow({
+          where: { id: off.id },
+          include: offerInclude,
+        });
+      });
+      if (res) expired.push(res);
+    }
+    return expired;
+  }
+
+  /**
+   * O9 / Y6: Expire ACCEPTED offers where 72h deposit deadline has passed unpaid.
+   */
+  async expireStaleAcceptedOffers(now = new Date()): Promise<OfferRecord[]> {
+    const staleOffers = await prisma.offer.findMany({
+      where: {
+        status: "ACCEPTED",
+        OR: [
+          { expiresAt: { lte: now } },
+          { payments: { some: { status: { in: ["PENDING", "PROCESSING"] }, deadlineAt: { lte: now } } } },
+        ],
+      },
+      include: offerInclude,
+    });
+
+    const expired: OfferRecord[] = [];
+    for (const off of staleOffers) {
+      const res = await prisma.$transaction(async (tx) => {
+        const cur = await tx.offer.findUnique({
+          where: { id: off.id },
+          include: { payments: { where: { status: "SUCCEEDED" } } },
+        });
+        if (!cur || cur.status !== "ACCEPTED" || cur.payments.length > 0) {
+          return null;
+        }
+
+        await tx.payment.updateMany({
+          where: {
+            offerId: off.id,
+            status: { in: ["PENDING", "PROCESSING"] },
+          },
+          data: { status: "EXPIRED" },
+        });
+
+        await tx.property.updateMany({
+          where: {
+            id: off.propertyId,
+            checkoutHoldUserId: off.buyerId,
+          },
+          data: {
+            checkoutHoldExpiresAt: null,
+            checkoutHoldUserId: null,
+          },
+        });
+
+        await tx.offer.update({
+          where: { id: off.id },
+          data: { status: "EXPIRED" },
+        });
+
+        return tx.offer.findUniqueOrThrow({
+          where: { id: off.id },
+          include: offerInclude,
+        });
+      });
+      if (res) expired.push(res);
+    }
+    return expired;
+  }
 }
 
 export const offerRepository = new OfferRepository();

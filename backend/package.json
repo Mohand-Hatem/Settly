@@ -32,8 +32,9 @@
     "check:openapi-drift": "tsx scripts/check-openapi-drift.ts",
     "test:knowledge": "node test/endpoints/knowledge.test.mjs",
     "test:admin-moderation": "node test/endpoints/admin-moderation.test.mjs",
-    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:viewings && npm run test:discovery && npm run test:offers && npm run test:payments && npm run test:messaging && npm run test:notifications && npm run test:sales && npm run test:search && npm run test:knowledge && npm run test:admin-moderation"
-
+    "test:sweepers": "node test/endpoints/worker-sweepers.test.mjs",
+    "test:subscriptions": "node test/endpoints/subscriptions.test.mjs",
+    "test": "npm run test:boundaries && npm run test:health && npm run check:openapi-drift && npm run test:endpoints && npm run test:auth && npm run test:agent-verification && npm run test:catalog && npm run test:viewings && npm run test:discovery && npm run test:offers && npm run test:payments && npm run test:messaging && npm run test:notifications && npm run test:sales && npm run test:search && npm run test:knowledge && npm run test:admin-moderation && npm run test:sweepers && npm run test:subscriptions"
   },
   "dependencies": {
     "@prisma/client": "^6.4.0",

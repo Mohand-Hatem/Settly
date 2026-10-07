@@ -16,8 +16,15 @@ import {
   fetchAdminAgents,
   fetchAdminAgentDetail,
   verifyAgent,
+  fetchAdminAgentApplications,
+  fetchAdminAgentApplication,
+  reviewAdminAgentApplication,
+  revokeAdminAgent,
   type PropertyStatus,
   type AgentVerificationInput,
+  type AgentApplicationStatus,
+  type AgentApplicationReviewInput,
+  type AgentRevocationInput,
 } from "@/api/admin";
 
 export const adminKeys = {
@@ -29,6 +36,10 @@ export const adminKeys = {
     [...adminKeys.all, "agents", verified ?? "all"] as const,
   agentDetail: (id: string) =>
     [...adminKeys.all, "agents", "detail", id] as const,
+  agentApplications: (status?: string) =>
+    [...adminKeys.all, "agent-applications", status ?? "all"] as const,
+  agentApplicationDetail: (id: string) =>
+    [...adminKeys.all, "agent-applications", "detail", id] as const,
 };
 
 /**
@@ -149,6 +160,63 @@ export function useVerifyAgentMutation() {
       id: string;
       input: AgentVerificationInput;
     }) => verifyAgent(id, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.all });
+    },
+  });
+}
+
+/**
+ * Agent application review queue (ADM-04)
+ */
+export const adminAgentApplicationsQuery = (status?: AgentApplicationStatus) =>
+  queryOptions({
+    queryKey: adminKeys.agentApplications(status),
+    queryFn: ({ signal }) => fetchAdminAgentApplications(status ? { status } : undefined, signal),
+  });
+
+/**
+ * Single agent application detail with KYC documents (ADM-04, Decision #56)
+ */
+export const adminAgentApplicationDetailQuery = (id: string) =>
+  queryOptions({
+    queryKey: adminKeys.agentApplicationDetail(id),
+    queryFn: ({ signal }) => fetchAdminAgentApplication(id, signal),
+    enabled: Boolean(id),
+  });
+
+/**
+ * Review agent application mutation (APPROVE or REJECT) (ADM-05, Decision #57)
+ */
+export function useReviewAgentApplicationMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: AgentApplicationReviewInput;
+    }) => reviewAdminAgentApplication(id, body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.all });
+    },
+  });
+}
+
+/**
+ * Revoke agent verification mutation (Decisions #52, #58)
+ */
+export function useRevokeAgentMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: AgentRevocationInput;
+    }) => revokeAdminAgent(id, body),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: adminKeys.all });
     },

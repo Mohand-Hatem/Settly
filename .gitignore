@@ -92,6 +92,7 @@ coverage/
 playwright-report/
 test-results/
 blob-report/
+.playwright-mcp/
 cypress/videos/
 cypress/screenshots/
 

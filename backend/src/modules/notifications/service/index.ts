@@ -18,8 +18,10 @@ function determineCategory(type: string): NotificationCategory {
     case "OFFER_REJECTED":
     case "OFFER_WITHDRAWN":
     case "OFFER_SUPERSEDED":
+    case "OFFER_EXPIRED":
     case "DEPOSIT_CONFIRMED":
     case "DEPOSIT_SUPERSEDED":
+    case "DEPOSIT_EXPIRED":
     case "DEPOSIT_DEADLINE_APPROACHING":
     case "SALE_COMPLETED":
     case "BUYER_CONFIRMED_SALE":
@@ -127,6 +129,12 @@ export function formatNotification(raw: {
       actionUrl = "/buyer/offers";
       break;
 
+    case "OFFER_EXPIRED":
+      title = `Offer Expired`;
+      body = (p.message as string) || `An offer on ${propTitle} has expired with no response after 7 days.`;
+      actionUrl = userRole === "agent" ? "/agent/offers" : "/buyer/offers";
+      break;
+
     case "DEPOSIT_CONFIRMED":
       title = `Reservation Deposit Confirmed!`;
       body = `Reservation deposit of ${deposit} confirmed for ${propTitle}. The property is now officially RESERVED.`;
@@ -137,6 +145,12 @@ export function formatNotification(raw: {
       title = `Deposit Cancelled / Released`;
       body = `Another buyer completed checkout first on ${propTitle}. Any pending holds were released.`;
       actionUrl = "/buyer/offers";
+      break;
+
+    case "DEPOSIT_EXPIRED":
+      title = `Deposit Window Expired`;
+      body = (p.message as string) || `The 72-hour deposit deadline for ${propTitle} expired unpaid.`;
+      actionUrl = userRole === "agent" ? "/agent/listings" : "/buyer/offers";
       break;
 
     case "DEPOSIT_DEADLINE_APPROACHING":
@@ -185,6 +199,24 @@ export function formatNotification(raw: {
       title = `Sale Review Period Extended`;
       body = (p.message as string) || `Administrative review for ${propTitle} has been granted an extension.`;
       actionUrl = userRole === "agent" ? "/agent/offers" : "/buyer/offers";
+      break;
+
+    case "AGENT_APPLICATION_APPROVED":
+      title = (p.title as string) || "Agent Application Approved! 🎉";
+      body = (p.body as string) || "Congratulations! Your agent verification application has been approved. You now have full access to the Agent Portal.";
+      actionUrl = (p.actionUrl as string) || "/agent";
+      break;
+
+    case "AGENT_APPLICATION_REJECTED":
+      title = (p.title as string) || "Agent Application Update";
+      body = (p.body as string) || `Your agent application was not approved. Reason: ${(p.rejectionReason as string) || "Did not meet requirements"}.`;
+      actionUrl = (p.actionUrl as string) || "/buyer/become-agent";
+      break;
+
+    case "AGENT_VERIFICATION_REVOKED":
+      title = (p.title as string) || "Agent Verification Revoked";
+      body = (p.body as string) || "Your agent verification status has been revoked. All active listings have been suspended (Decisions #52, #58).";
+      actionUrl = (p.actionUrl as string) || "/buyer";
       break;
 
     default:

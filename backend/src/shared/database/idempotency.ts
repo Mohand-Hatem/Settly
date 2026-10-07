@@ -62,3 +62,10 @@ export async function completeIdempotencyKey(
 export async function releaseIdempotencyKey(userId: string, key: string): Promise<void> {
   await prisma.idempotencyKey.deleteMany({ where: { userId, key, statusCode: null } });
 }
+
+export async function pruneExpiredIdempotencyKeys(now = new Date()): Promise<number> {
+  const result = await prisma.idempotencyKey.deleteMany({
+    where: { expiresAt: { lte: now } },
+  });
+  return result.count;
+}

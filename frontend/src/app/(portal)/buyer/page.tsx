@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   CalendarDays,
   HandCoins,
@@ -22,6 +22,7 @@ import type { Viewing } from "@/api/pipeline";
 import { authClient } from "@/lib/auth-client";
 import { myViewingsQuery } from "@/lib/query/pipeline";
 import { myOffersQuery } from "@/lib/query/offers";
+import { myAgentApplicationQuery } from "@/lib/query/identity";
 import { ViewingDrawer } from "@/components/viewings/ViewingDrawer";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -36,7 +37,10 @@ export default function BuyerDashboardPage() {
   const upcoming = useInfiniteQuery(myViewingsQuery("upcoming"));
   const pending = useInfiniteQuery(myViewingsQuery("pending"));
   const liveOffers = useInfiniteQuery(myOffersQuery("live"));
+  const applicationQuery = useQuery(myAgentApplicationQuery());
   const [open, setOpen] = useState<Viewing | null>(null);
+
+  const appData = applicationQuery.data;
 
   const nextViewings = upcoming.data?.pages[0]?.items ?? [];
   const primaryViewing = nextViewings[0];
@@ -169,6 +173,62 @@ export default function BuyerDashboardPage() {
           <div className="action-center-actions">
             <Link href="/buyer/offers" className="btn-portal-outline text-xs">
               <span>View Offers</span>
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Agent Accreditation Pending Action Banner */}
+      {appData?.status === "PENDING" && (
+        <section className="action-center bg-[#FAF8F4] border border-brass/40" role="region" aria-label="Agent Application Pending Review">
+          <div className="action-center-left">
+            <div className="action-center-icon bg-brass/10 text-brass-700">
+              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div className="action-center-body">
+              <div className="action-center-title">
+                <span className="font-display font-bold text-navy-900">Agent Accreditation Under Review</span>
+                <span className="inline-flex items-center rounded-full bg-brass/15 text-brass-800 px-2 py-0.5 text-[11px] font-mono font-bold">
+                  COMPLIANCE REVIEW
+                </span>
+              </div>
+              <p className="action-center-desc">
+                Your application for <strong>{appData.brokerageName || "Accredited Agent"}</strong> is currently being reviewed by Settly compliance. National ID and selfie inspection typically completes within 1 business day.
+              </p>
+            </div>
+          </div>
+          <div className="action-center-actions">
+            <Link href="/buyer/become-agent" className="btn-portal-outline text-xs">
+              <span>View Dossier Status</span>
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Agent Accreditation Rejected Action Banner */}
+      {appData?.status === "REJECTED" && (
+        <section className="action-center bg-red-50/60 border border-red-200" role="region" aria-label="Agent Application Action Required">
+          <div className="action-center-left">
+            <div className="action-center-icon bg-red-100 text-red-700">
+              <AlertCircle className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div className="action-center-body">
+              <div className="action-center-title">
+                <span className="font-display font-bold text-navy-900">Agent Application Requires Revision</span>
+                <span className="inline-flex items-center rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-[11px] font-mono font-bold">
+                  REVISION REQUIRED
+                </span>
+              </div>
+              <p className="action-center-desc">
+                Compliance note: &ldquo;{appData.rejectionReason || "Please verify credentials and re-submit with updated documents."}&rdquo; You can re-apply immediately.
+              </p>
+            </div>
+          </div>
+          <div className="action-center-actions">
+            <Link href="/buyer/become-agent" className="btn-portal-primary bg-red-700 hover:bg-red-800 text-xs">
+              <span>Review &amp; Re-apply</span>
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </div>
         </section>
@@ -539,8 +599,68 @@ export default function BuyerDashboardPage() {
                 </div>
                 <ArrowRight className="h-3.5 w-3.5 text-ink-3" aria-hidden="true" />
               </Link>
+
+              {session?.user?.role !== "AGENT" && (
+                <Link
+                  href="/buyer/become-agent"
+                  className="flex items-center justify-between rounded-xl border border-line p-3 transition-all hover:border-brass/40 hover:bg-brass-050/20"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="h-4 w-4 text-brass-600" aria-hidden="true" />
+                    <span className="text-xs font-semibold text-navy-900">Agent Accreditation</span>
+                  </div>
+                  <span className="font-mono text-[10px] font-bold text-brass-700">
+                    {appData?.status === "PENDING"
+                      ? "IN REVIEW"
+                      : appData?.status === "REJECTED"
+                      ? "ACTION REQ"
+                      : "APPLY"}
+                  </span>
+                </Link>
+              )}
             </nav>
           </div>
+
+          {/* Become an Agent Promo Card (shown for buyers) */}
+          {session?.user?.role !== "AGENT" && (
+            <div className="rounded-2xl border border-brass/25 bg-gradient-to-br from-white via-[#FAF8F4] to-brass-050/40 p-5 shadow-settly">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-brass-600" aria-hidden="true" />
+                  <h3 className="font-display text-base font-bold text-navy-900">
+                    List Properties on Settly
+                  </h3>
+                </div>
+                <span className="rounded-full bg-brass/15 px-2 py-0.5 font-mono text-[10px] font-bold text-brass-800">
+                  {appData?.status === "PENDING"
+                    ? "IN REVIEW"
+                    : appData?.status === "REJECTED"
+                    ? "REVISION NEEDED"
+                    : "ACCREDITATION"}
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-ink-2">
+                {appData?.status === "PENDING"
+                  ? "Your application dossier is currently undergoing compliance review. National ID and selfie verification in progress."
+                  : appData?.status === "REJECTED"
+                  ? "Your application requires document corrections. Re-apply with updated files."
+                  : "Licensed brokers and developers: complete National ID accreditation to publish verified Egypt properties and receive direct buyer purchase offers."}
+              </p>
+              <Link
+                href="/buyer/become-agent"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-brass-700 hover:text-brass-800"
+              >
+                <span>
+                  {appData?.status === "PENDING"
+                    ? "Check Accreditation Status"
+                    : appData?.status === "REJECTED"
+                    ? "Review Reason & Re-apply"
+                    : "Apply for Accreditation"}
+                </span>
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            </div>
+          )}
 
           {/* Prime Egypt Destinations */}
           <div className="rounded-2xl border border-line bg-navy-900 p-5 text-white shadow-settly">
